@@ -60,7 +60,7 @@
             ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <latest.release.version>5.0.2</latest.release.version>
-        <version.guava>33.3.0-jre</version.guava>
+        <version.guava>33.3.1-jre</version.guava>
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
         <version.highlight.js>11.9.0</version.highlight.js>
         <version.jackson>2.17.2</version.jackson>
