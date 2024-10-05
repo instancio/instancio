@@ -223,7 +223,7 @@ Please check the [User Guide](https://www.instancio.org/user-guide), previous is
 # Sponsors
 
 If you like Instancio, please consider supporting its maintenance and development
-by becoming a [sponsor](https://github.com/sponsors/armandino).
+by becoming a [sponsor](https://github.com/sponsors/instancio).
 
 A big thank you to the current project sponsors:
 
