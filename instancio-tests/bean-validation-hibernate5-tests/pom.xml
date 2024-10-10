@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>apache-el</artifactId>
-            <version>9.0.52</version>
+            <version>11.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
