@@ -1,0 +1,272 @@
+[
+  {
+    "name":"org.instancio.internal.generator.sql.SqlDateGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.sql.TimestampGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.xml.XMLGregorianCalendarGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.xml.QNameGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.ByteGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.ShortGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.IntegerGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.LongGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.DoubleGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.BooleanGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.CharacterGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.StringGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.ClassGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.lang.StringBuilderGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.math.BigDecimalGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.math.BigIntegerGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.net.InetAddressGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.net.URIGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.net.URLGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.io.FileGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.nio.PathGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.InstantGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.LocalDateGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.LocalDateTimeGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.LocalTimeGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.DurationGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.MonthDayGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.OffsetTimeGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.OffsetDateTimeGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.PeriodGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.YearGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.YearMonthGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.ZonedDateTimeGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.ZoneIdGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.time.ZoneOffsetGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.MapEntryGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.CalendarGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.DateGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.LocaleGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.MapEntryGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.OptionalGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.OptionalDoubleGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.OptionalIntGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.OptionalLongGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.TimeZoneGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.UUIDGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.UUIDGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.CollectionGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.EnumSetGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.MapGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.concurrent.atomic.AtomicBooleanGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name":"org.instancio.internal.generator.misc.NullGenerator",
+    "queryAllPublicConstructors": true,
+    "allPublicConstructors": true
+  }
+]
