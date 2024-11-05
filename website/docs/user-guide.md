@@ -266,7 +266,9 @@ These types are:
 - [convenience selectors](#convenience-selectors)
 - [setter selectors](#setter-selectors)
 
-All of the above can be created using static methods from the {{Select}} class.
+
+!!! info "All selectors can be created using static methods from the {{Select}} class."
+    The following examples assume `import org.instancio.Select`
 
 #### Regular selectors
 
@@ -313,12 +315,12 @@ The mapping logic supports the following naming conventions:
 
 For example, all the following combinations of field and method names are supported:
 
-|Method name  |Field name  | Example                                                            |
-|-------------|------------|--------------------------------------------------------------------|
-|`getName()`  | `name`     | `field(Person::getName)`  -&gt; `field(Person.class, "name")`      |
-|`name()`     | `name`     | `field(Person::name)`  -&gt; `field(Person.class, "name")`         |
-|`isActive()` | `active`   | `field(Person::isActive)`  -&gt; `field(Person.class, "active")`   |
-|`isActive()` | `isActive` | `field(Person::isActive)`  -&gt; `field(Person.class, "isActive")` |
+|Method name  |Field name  | Example                                                                          |
+|-------------|------------|----------------------------------------------------------------------------------|
+|`getName()`  | `name`     | `Select.field(Person::getName)`  -&gt; `Select.field(Person.class, "name")`      |
+|`name()`     | `name`     | `Select.field(Person::name)`  -&gt; `Select.field(Person.class, "name")`         |
+|`isActive()` | `active`   | `Select.field(Person::isActive)`  -&gt; `Select.field(Person.class, "active")`   |
+|`isActive()` | `isActive` | `Select.field(Person::isActive)`  -&gt; `Select.field(Person.class, "isActive")` |
 
 For methods that follow other naming conventions, or situations where no method is available, regular field selectors can be used instead.
 
@@ -382,22 +384,23 @@ Select.root()
 ```
 !!! attention ""
     <lnum>1</lnum> For combining multiple selectors.<br/>
-    <lnum>2</lnum> Equivalent to `all(String.class)`.<br/>
-    <lnum>3</lnum> Equivalent to `all(all(int.class), all(Integer.class))`.<br/>
+    <lnum>2</lnum> Equivalent to `Select.all(String.class)`.<br/>
+    <lnum>3</lnum> Equivalent to `Select.all(Select.all(int.class), Select.all(Integer.class))`.<br/>
     <lnum>4</lnum> Builder for constructing `Predicate<Field>` selectors.<br/>
     <lnum>5</lnum> Builder for constructing `Predicate<Class<?>>` selectors.<br/>
     <lnum>6</lnum> Selects the root, that is, the object being created.<br/>
 
-!!! info "The `allXxx()` methods such as `allInts()`, are available for all core types."
+!!! info "The `Select.allXxx()` methods such as `Select.allInts()`, are available for all core types."
 
 - **`Select.all(GroupableSelector... selectors)`**
 
 This method can be used for grouping multiple selectors, allowing for more concise code as shown below.
 
 ``` java
-all(field(Address::getCity),
-    field(Address.class, "postalCode"),
-    all(Phone.class))
+Select.all(
+    Select.field(Address::getCity),
+    Select.field(Address.class, "postalCode"),
+    Select.all(Phone.class))
 ```
 
 - **`Select.fields()`** and **`Select.types()`**
@@ -422,13 +425,13 @@ where the outer list and inner lists have different sizes:
 
 ``` java linenums="1" hl_lines="2"
 List<List<String>> result = Instancio.of(new TypeToken<List<List<String>>>() {})
-    .generate(root(), gen -> gen.collection().size(outerListSize))
-    .generate(all(List.class), gen -> gen.collection().size(innerListSize))
+    .generate(Select.root(), gen -> gen.collection().size(outerListSize))
+    .generate(Select.all(List.class), gen -> gen.collection().size(innerListSize))
     .create();
 ```
 
-In this case, `all(List.class)` matches all lists except the outer list,
-because `root()` selector has higher precedence than other selectors.
+In this case, `Select.all(List.class)` matches all lists except the outer list,
+because `Select.root()` selector has higher precedence than other selectors.
 
 #### Setter selectors
 
@@ -477,21 +480,21 @@ Consider the following example:
 
 ``` java linenums="1"
 Address address = Instancio.of(Address.class)
-    .set(allStrings(), "foo")
-    .set(field("city"), "bar")
+    .set(Select.allStrings(), "foo")
+    .set(Select.field("city"), "bar")
     .create();
 ```
 
 This will produce an address object with all strings set to "foo". However, since field selectors
 have higher precedence, the city will be set to "bar".
 
-In the following example, the city will also be set to "bar" because the predicate `fields()` selector
-has lower precedence than the regular `field()` selector:
+In the following example, the city will also be set to "bar" because the predicate `Select.fields()` selector
+has lower precedence than the regular `Select.field()` selector:
 
 ``` java linenums="1"
 Address address = Instancio.of(Address.class)
-    .set(fields().named("city"), "foo")
-    .set(field("city"), "bar")
+    .set(Select.fields().named("city"), "foo")
+    .set(Select.field("city"), "bar")
     .create();
 ```
 
@@ -505,8 +508,8 @@ replaces the first (internally, regular selectors are stored as `Map` keys).
 
 ``` java linenums="1"
 Address address = Instancio.of(Address.class)
-    .set(field(Address.class, "city"), "foo")
-    .set(field(Address.class, "city"), "bar") // wins!
+    .set(Select.field(Address.class, "city"), "foo")
+    .set(Select.field(Address.class, "city"), "bar") // wins!
     .create();
 ```
 
@@ -515,8 +518,8 @@ sequentially starting from the last entry.
 
 ``` java linenums="1"
 Address address = Instancio.of(Address.class)
-    .set(fields().named("city"), "foo")
-    .set(fields().named("city"), "bar") // wins!
+    .set(Select.fields().named("city"), "foo")
+    .set(Select.fields().named("city"), "bar") // wins!
     .lenient()
     .create();
 ```
@@ -563,12 +566,12 @@ Without scopes, it would not be possible to set the two cities to different valu
 Using scopes solves this problem:
 
 ``` java linenums="1" title="Creating scope using toScope() method"
-Scope homeAddress = field(Person::getHomeAddress).toScope();
-Scope workAddress = field(Person::getWorkAddress).toScope();
+Scope homeAddress = Select.field(Person::getHomeAddress).toScope();
+Scope workAddress = Select.field(Person::getWorkAddress).toScope();
 
 Person person = Instancio.of(Person.class)
-    .set(field(Address::getCity).within(homeAddress), "foo")
-    .set(field(Address::getCity).within(workAddress), "bar")
+    .set(Select.field(Address::getCity).within(homeAddress), "foo")
+    .set(Select.field(Address::getCity).within(workAddress), "bar")
     .create();
 ```
 
@@ -625,7 +628,7 @@ For example, the following snippet will set each string field of each class to "
 
 ``` java linenums="1" title="Set all strings to &quot;Foo&quot;"
 Person person = Instancio.of(Person.class)
-    .set(allStrings(), "foo")
+    .set(Select.allStrings(), "foo")
     .create();
 ```
 
@@ -634,21 +637,21 @@ For brevity, `Instancio.of(Person.class)` is omitted.
 
 
 ``` java title="Set all strings in all Address instances; this includes Phone instances as they are contained within addresses"
-allStrings().within(scope(Address.class))
+Select.allStrings().within(scope(Address.class))
 ```
 
 ``` java title="Set all strings contained within lists (matches all Phone instances in our example)"
-allStrings().within(scope(List.class))
+Select.allStrings().within(scope(List.class))
 ```
 
 ``` java title="Set all strings in Person.homeAddress address object"
-allStrings().within(scope(Person.class, "homeAddress"))
+Select.allStrings().within(scope(Person.class, "homeAddress"))
 ```
 
 Using `within()` also allows specifying multiple scopes. Scopes must be specified top-down, starting from the outermost to the innermost.
 
 ``` java title="Set all strings of all Phone instances contained within Person.workAddress field"
-allStrings().within(scope(Person::getWorkAddress), scope(Phone.class))
+Select.allStrings().within(scope(Person::getWorkAddress), scope(Phone.class))
 ```
 
 The `Person.workAddress` object contains a list of phones, therefore `Person.workAddress` is the outermost scope and is specified first.
@@ -658,19 +661,19 @@ The final examples illustrate the creation of scope objects from regular selecto
 The following examples are equivalent to each other:
 
 ``` java title="Equivalent ways of creating scopes based on field"
-allStrings().within(scope(Person.class, "homeAddress"))
+Select.allStrings().within(scope(Person.class, "homeAddress"))
 
-allStrings().within(scope(Person::getHomeAddress))
+Select.allStrings().within(scope(Person::getHomeAddress))
 
-allStrings().within(field(Person.class, "homeAddress").toScope())
+Select.allStrings().within(field(Person.class, "homeAddress").toScope())
 
-allStrings().within(field(Person::getHomeAddress).toScope())
+Select.allStrings().within(field(Person::getHomeAddress).toScope())
 ```
 
 ``` java title="Equivalent ways of creating scopes based on class"
-allStrings().within(scope(Person.class))
+Select.allStrings().within(scope(Person.class))
 
-allStrings().within(all(Person.class).toScope())
+Select.allStrings().within(all(Person.class).toScope())
 ```
 
 ### Selector Depth
@@ -724,7 +727,7 @@ In the first few examples, we will target class `A` at different levels:
 
 ``` java title="Select the <code>A</code> at depth 1"
 Root root = Instancio.of(Root.class)
-    .set(all(A.class).atDepth(1), new A("Hello!"))
+    .set(Select.all(A.class).atDepth(1), new A("Hello!"))
     .create();
 
 => Root[a=A[value="Hello!"], b=B[a1=A[value="BRHD"], a2=A[value="AVBMJRP"], c=C[a=A[value="PZK"], d=D[a=A[value="AQVXCT"]]]]]
@@ -733,19 +736,19 @@ Root root = Instancio.of(Root.class)
 Similar to the above, but omitting `Instancio.of()` for brevity:
 
 ``` java title="Select the two <code>A</code> nodes at depth 2"
-all(A.class).atDepth(2)
+Select.all(A.class).atDepth(2)
 
 => Root[a=A[value="FNPI"], b=B[a1=A[value="Hello!"], a2=A[value="Hello!"], c=C[a=A[value="IDLOM"], d=D[a=A[value="QXPW"]]]]]
 ```
 
 ``` java title="Select the <code>A</code> nodes at depths 3 and 4 (and beyond, if any)"
-types().of(A.class).atDepth(depth -> depth > 2)
+Select.types().of(A.class).atDepth(depth -> depth > 2)
 
 => Root[a=A[value="MWAASZU"], b=B[a1=A[value="ODSRTG"], a2=A[value="TDG"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
 ```
 
 ``` java title="Select all (four) <code>A</code> nodes reachable from <code>B</code>"
-all(A.class).within(scope(B.class))
+Select.all(A.class).within(scope(B.class))
 
 => Root[a=A[value="GNDUXU"], b=B[a1=A[value="hello!"], a2=A[value="hello!"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
 ```
@@ -755,7 +758,7 @@ This snippet targets all strings that are reachable from class `A`, but only if 
 
 ``` java title="Select all Strings reachable from <code>A</code> nodes at depth 3 or greater" linenums="1" hl_lines="2"
 Root root = Instancio.of(Root.class)
-    .set(allStrings().within(all(A.class).atDepth(3).toScope()), "Hello!")
+    .set(Select.allStrings().within(all(A.class).atDepth(3).toScope()), "Hello!")
     .create();
 
 => Root[a=A[value="SERWVQV"], b=B[a1=A[value="PTF"], a2=A[value="CHZP"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
@@ -767,7 +770,7 @@ Root root = Instancio.of(Root.class)
 The final example is targeting the field `A.value` but only within the `a1` field of class `B`:
 
 ``` java title="Select <code>A.value</code> of the <code>a1</code> field"
-field(A::value).within(field(B::a1).toScope())
+Select.field(A::value).within(field(B::a1).toScope())
 
 => Root[a=A[value="DBOS"], b=B[a1=A[value="hello!"], a2=A[value="KFBWJL"], c=C[a=A[value="VLTNXF"], d=D[a=A[value="CDV"]]]]]
 ```
@@ -797,7 +800,7 @@ class SamplePojo {
 }
 
 SamplePojo pojo = Instancio.of(SamplePojo.class)
-    .generate(all(Set.class), gen -> gen.collection().size(10))
+    .generate(Select.all(Set.class), gen -> gen.collection().size(10))
     .create();
 ```
 
@@ -805,7 +808,7 @@ At first glance, we might expect a `Set` of size 10 to be generated.
 However, since the field is declared as a `SortedSet` and the class selector
 targets `Set`, the `generate()` method will not be applied. 
 
-Since `all(Set.class)` did not match any target, Instancio produces an error:
+Since `Select.all(Set.class)` did not match any target, Instancio produces an error:
 
 ```
 org.instancio.exception.UnusedSelectorException:
@@ -843,7 +846,7 @@ The first option is shown below, where the selector is marked as `lenient()`:
 
 ```java title="Marking an individual selector as lenient"
 Person person = Instancio.of(Person.class)
-    .set(fields().named("someFieldThatMayNotExist").lenient(), "some value")
+    .set(Select.fields().named("someFieldThatMayNotExist").lenient(), "some value")
     .create();
 ```
 
@@ -851,8 +854,8 @@ The second option is to enable lenient mode for all selectors:
 
 ``` java title="Setting lenient mode using the builder API"
 Person person = Instancio.of(Person.class)
-    .set(fields().named("someFieldThatMayNotExist"), "some value")
-    .set(fields().named("anotherFieldThatMayNotExist"), "another value")
+    .set(Select.fields().named("someFieldThatMayNotExist"), "some value")
+    .set(Select.fields().named("anotherFieldThatMayNotExist"), "another value")
     .lenient()
     .create();
 ```
@@ -885,6 +888,8 @@ Properties of an object created by Instancio can be customised using
 - [`supply()`](#using-supply)
 
 methods defined in the {{InstancioApi}} class.
+
+!!! info "For brevity, the following examples assume a static import for selectors `import static org.instancio.Select.*`"
 
 
 ### Using `generate()`
