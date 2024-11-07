@@ -27,7 +27,7 @@
         <version.lombok>1.18.34</version.lombok>
         <version.mockito>4.11.0</version.mockito>
         <!-- plugins -->
-        <version.maven-failsafe-plugin>3.5.1</version.maven-failsafe-plugin>
+        <version.maven-failsafe-plugin>3.5.2</version.maven-failsafe-plugin>
         <version.maven-surefire-plugin>3.5.2</version.maven-surefire-plugin>
     </properties>
 
