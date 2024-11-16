@@ -227,6 +227,7 @@ by becoming a [sponsor](https://github.com/sponsors/instancio).
 
 A big thank you to the current project sponsors:
 
+- [@bit-dot](https://github.com/bit-dot)
 - [@darthblonderss](https://github.com/darthblonderss)
 
 Thanks to [JetBrains](https://www.jetbrains.com/opensource) and [YourKit](https://www.yourkit.com)
