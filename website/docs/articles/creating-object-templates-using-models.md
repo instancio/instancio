@@ -45,36 +45,24 @@ class Address {
 ```
 
 Our conversion service `ApplicantToAvroMapper` requires that an applicant is 18-25 years old and has achieved grade A or B.
-If those conditions are met, it constructs an Avro object and returns an `Optional` containing the result.
+If those conditions are met, it constructs an Avro object and returns it as the result.
 
 ``` java
 public class ApplicantToAvroMapper {
 
-    public Optional<ApplicantAvro> toAvro(Applicant applicant) {
-
+    public ApplicantAvro toAvro(final Applicant applicant) {
         Validate.isTrue(applicant.getAge() >= 18 && applicant.getAge() <= 25,
                 "Applicant must be between 18 and 25 years of age");
 
         Validate.isTrue(applicant.getGrade() == Grade.A || applicant.getGrade() == Grade.B,
                 "Applicant's grade must be either A or B");
 
-        try {
-            ApplicantAvro applicantAvro = ApplicantAvro.newBuilder()
-                    .setFirstName(applicant.getFirstName())
-                    .setMiddleName(applicant.getMiddleName())
-                    .setLastName(applicant.getLastName())
-                    .setAddress(addressToAvro(applicant.getAddress()))
-                    .build();
-
-            return Optional.of(applicantAvro);
-
-        } catch (AvroRuntimeException ex) { // log
-
-            System.out.printf("Error converting applicant id=%d to Avro. Cause: '%s'%n",
-                applicant.getId(), ex.getMessage());
-
-            return Optional.empty();
-        }
+        return ApplicantAvro.newBuilder()
+                .setFirstName(applicant.getFirstName())
+                .setMiddleName(applicant.getMiddleName())
+                .setLastName(applicant.getLastName())
+                .setAddress(addressToAvro(applicant.getAddress()))
+                .build();
     }
 
     private AddressAvro addressToAvro(Address address) {
@@ -90,7 +78,6 @@ public class ApplicantToAvroMapper {
 
 In addition, the Avro schema requires all the fields to be non-null except `middleName` and `postalCode`.
 If a required field is `null`, the Avro builder will throw an `AvroRuntimeException`.
-When that happens, we log the error and return an empty `Optional`.
 
 ## Test cases
 
@@ -100,13 +87,13 @@ Although our service is very simple, it still presents a few scenarios that need
 
 
 | Test case                            | Expectation                                  |
-| ------------------------------------ | ---------------------------------------------|
-| Successful conversion                | An `Optional` containing `ApplicantAvro`     |
+| ------------------------------------ |----------------------------------------------|
+| Successful conversion                | An `ApplicantAvro` object                    |
 | Applicant is under 18                | Validation error: `IllegalArgumentException` |
 | Applicant is over 25                 | Validation error: `IllegalArgumentException` |
 | Applicant has grade C, D, or E       | Validation error: `IllegalArgumentException` |
-| Applicant missing required data      | Conversion error: empty `Optional`           |
-| Applicant missing optional data      | An `Optional` containing `ApplicantAvro`     |
+| Applicant missing required data      | Conversion error: `AvroRuntimeException`     |
+| Applicant missing optional data      | An `ApplicantAvro` object                    |
 
 
 ### Successful scenario
@@ -139,7 +126,7 @@ applicants aged 17 and 26 and those with grades C, D, and F.
 
 Finally, we have schema validation implemented within auto-generated Avro classes.
 For example, `firstName` is required in our [schema](https://github.com/instancio/instancio-samples/blob/main/instancio-models-sample/src/main/avro/applicant.avsc),
-therefore passing `null` to `setFirstName()` will throw an `AvroRuntimeException` in which case our service should return an empty `Optional`.
+therefore passing `null` to `setFirstName()` will throw an `AvroRuntimeException`.
 We should have a test for that.
 Ideally, we should verify this with **every** required field being `null`. Doing so has two benefits:
 
@@ -157,7 +144,7 @@ We will look at how to implement such a test fairly easily using Instancio.
 Let's start by testing a valid applicant. Typically, it will be implemented as follows:
 
 
-``` java hl_lines="37 38"
+```java hl_lines="35 36"
 @Test
 @DisplayName("Valid applicant should be successfully converted to Avro")
 void verifyValidApplicantAvro() {
@@ -165,12 +152,10 @@ void verifyValidApplicantAvro() {
     Applicant applicant = createValidApplicant();
 
     // When
-    Optional<ApplicantAvro> result = mapper.toAvro(applicant);
+    ApplicantAvro applicantAvro = mapper.toAvro(applicant);
 
     // Then
-    assertThat(result).isPresent();
-
-    ApplicantAvro applicantAvro = result.get();
+    assertThat(applicantAvro).isNotNull();
     assertThat(applicantAvro.getFirstName()).isEqualTo(applicant.getFirstName());
     assertThat(applicantAvro.getMiddleName()).isEqualTo(applicant.getMiddleName());
     assertThat(applicantAvro.getLastName()).isEqualTo(applicant.getLastName());
@@ -218,7 +203,7 @@ The updated code is shown below. JUnit will automatically convert parameters to 
 @ParameterizedTest
 void verifyValidApplicantAvro(int age, Grade grade) {
     Applicant applicant = createValidApplicant(age, grade);
-    Optional<ApplicantAvro> result = mapper.toAvro(applicant);
+    ApplicantAvro applicantAvro = mapper.toAvro(applicant);
     // Remaining code is the same
 }
 
@@ -263,7 +248,7 @@ This can be implemented using `@MethodSource` as the source of arguments.
 @MethodSource("validApplicants")
 @ParameterizedTest
 void verifyValidApplicantAvro(Applicant applicant) {
-    Optional<ApplicantAvro> result = mapper.toAvro(applicant);
+    ApplicantAvro applicantAvro = mapper.toAvro(applicant);
     // Remaining code is the same
 }
 
@@ -300,11 +285,10 @@ void applicantWithMissingOptionalData() {
     applicant.getAddress().setPostalCode(null);
 
     // When
-    Optional<ApplicantAvro> result = mapper.toAvro(applicant);
+    ApplicantAvro applicantAvro = mapper.toAvro(applicant);
 
     // Then
-    assertThat(result).isPresent();
-    assertApplicant(applicant, result.get());
+    assertApplicant(applicant, applicantAvro);
 }
 
 private static void assertApplicant(final Applicant applicant, final ApplicantAvro applicantAvro) {
@@ -380,10 +364,10 @@ This completes our "success scenario" test case. Next we will test the validatio
 
 ### Implementing application validation tests
 
-As a reminder, the service throws an exception if an `Applicant` does not meet the the following requirements:
+As a reminder, the service throws an exception if an `Applicant` does not meet the following requirements:
 
 ``` java
-public Optional<ApplicantAvro> toAvro(Applicant applicant) {
+public ApplicantAvro toAvro(Applicant applicant) {
 
     Validate.isTrue(applicant.getAge() >= 18 && applicant.getAge() <= 25,
             "Applicant must be between 18 and 25 years of age");
@@ -459,7 +443,7 @@ void applicantGradeValidation() {
 ### Implementing schema validation tests
 
 The last test left to implement is to verify the schema.
-We want to ensure that if any required field is set to `null`, the service returns an empty `Optional` as expected.
+We want to ensure that if any required field is set to `null`, the service throws the `AvroRuntimeException`.
 Essentially, we only want to test one required `null` field at a time.
 In order to achieve this goal, we will again use our applicant `Model` as the starting point and then nullify a required field.
 We will repeat this process for each required field, as shown in the following method.
@@ -467,29 +451,27 @@ We will repeat this process for each required field, as shown in the following m
 
 ``` java linenums="1" hl_lines="17"
 @Test
-@DisplayName("Should return an empty Optional if any of the required fields is null")
-void shouldReturnEmptyResultIfRequiredDataIsMissing() {
+@DisplayName("Should throw AvroRuntimeException if any of the required fields is null")
+void shouldThrowAvroRuntimeExceptionIfRequiredDataIsMissing() {
     Selector[] requiredFields = {
-            field(Applicant.class, "firstName"),
-            field(Applicant.class, "lastName"),
-            field(Address.class, "street"),
-            field(Address.class, "city"),
-            field(Address.class, "country")
+            field(Applicant::getFirstName),
+            field(Applicant::getLastName),
+            field(Address::getStreet),
+            field(Address::getCity),
+            field(Address::getCountry)
     };
 
     // Set each of these to null individually, so that only one required field is null at a time
-    Arrays.stream(requiredFields).forEach(requiredField -> {
-
+    Arrays.stream(requiredFields).forEach(selector -> {
         // Given
         Applicant applicant = Instancio.of(createValidApplicantModel())
-                .set(requiredField, null)
+                .set(selector, null)
                 .create();
 
-        // When
-        Optional<ApplicantAvro> result = mapper.toAvro(applicant);
-
         // Then
-        assertThat(result).as("Expected %s to be required", requiredField).isNotPresent();
+        assertThatThrownBy(() -> mapper.toAvro(applicant))
+                .as("Expected %s to be required", selector)
+                .isInstanceOf(AvroRuntimeException.class);
     });
 }
 ```
