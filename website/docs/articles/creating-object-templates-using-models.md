@@ -61,6 +61,8 @@ public class ApplicantToAvroMapper {
                 .setFirstName(applicant.getFirstName())
                 .setMiddleName(applicant.getMiddleName())
                 .setLastName(applicant.getLastName())
+                .setAge(applicant.getAge())
+                .setGrade(applicant.getGrade().toString())
                 .setAddress(addressToAvro(applicant.getAddress()))
                 .build();
     }
@@ -159,6 +161,8 @@ void verifyValidApplicantAvro() {
     assertThat(applicantAvro.getFirstName()).isEqualTo(applicant.getFirstName());
     assertThat(applicantAvro.getMiddleName()).isEqualTo(applicant.getMiddleName());
     assertThat(applicantAvro.getLastName()).isEqualTo(applicant.getLastName());
+    assertThat(applicantAvro.getAge()).isEqualTo(applicant.getAge());
+    assertThat(applicantAvro.getGrade()).isEqualTo(applicant.getGrade().name());
     assertThat(applicantAvro.getAddress()).isNotNull();
 
     Address address = applicant.getAddress();
@@ -232,7 +236,7 @@ Possible options are:
     The ideal number of arguments for a function is zero (niladic). Next comes one (monadic), followed closely by two (dyadic). Three arguments (triadic) should be avoided where possible. More than three (polyadic) requires very special justification - and then shouldn’t be used anyway.
 
 
-**Option 2** is also not ideal. If the optional values are set to `null` then we are no longer testing those fields' mapping assertions.
+**Option 2** is also not ideal. If the optional values are `null` then we are no longer testing the mapping for those fields.
 Both, expected and actual, would always be `null` giving us a false sense of confidence.
 
 ``` java
