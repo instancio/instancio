@@ -23,7 +23,9 @@ import org.instancio.generator.GeneratorSpec;
  * @param <T> type of value
  * @since 1.0.1
  */
-public interface OneOfArrayGeneratorSpec<T> extends NullableGeneratorSpec<T> {
+public interface OneOfArrayGeneratorSpec<T> extends
+        AsGeneratorSpec<T>,
+        NullableGeneratorSpec<T> {
 
     /**
      * Selects a random value from the given choices.
