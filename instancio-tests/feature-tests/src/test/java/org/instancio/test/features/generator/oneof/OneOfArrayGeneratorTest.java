@@ -17,6 +17,7 @@ package org.instancio.test.features.generator.oneof;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.misc.OptionalString;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
@@ -24,11 +25,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 
 @FeatureTag({Feature.GENERATE, Feature.ONE_OF_ARRAY_GENERATOR})
 @ExtendWith(InstancioExtension.class)
@@ -73,5 +76,14 @@ class OneOfArrayGeneratorTest {
                 .limit(Constants.SAMPLE_SIZE_DD);
 
         assertThat(results).containsOnly("one", null);
+    }
+
+    @Test
+    void oneOfAs() {
+        final OptionalString result = Instancio.of(OptionalString.class)
+                .generate(field(OptionalString::getOptional), gen -> gen.oneOf("one").as(Optional::of))
+                .create();
+
+        assertThat(result.getOptional()).contains("one");
     }
 }

@@ -18,6 +18,7 @@ package org.instancio.test.features.generator.oneof;
 import org.instancio.Instancio;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.pojo.misc.OptionalString;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
@@ -28,11 +29,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.field;
 
 @FeatureTag({Feature.GENERATE, Feature.ONE_OF_COLLECTION_GENERATOR})
 @ExtendWith(InstancioExtension.class)
@@ -79,5 +82,16 @@ class OneOfCollectionGeneratorTest {
                 .limit(Constants.SAMPLE_SIZE_DD);
 
         assertThat(results).containsOnly("one", null);
+    }
+
+    @Test
+    void oneOfAs() {
+        final Set<String> choices = Collections.singleton("one");
+
+        final OptionalString result = Instancio.of(OptionalString.class)
+                .generate(field(OptionalString::getOptional), gen -> gen.oneOf(choices).as(Optional::of))
+                .create();
+
+        assertThat(result.getOptional()).contains("one");
     }
 }
