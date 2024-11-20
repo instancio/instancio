@@ -31,6 +31,11 @@ public final class TargetClass implements Target {
     }
 
     @Override
+    public ScopelessSelector toScopelessSelector() {
+        return new ScopelessSelector(targetClass);
+    }
+
+    @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof TargetClass)) return false;

@@ -16,6 +16,7 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.documentation.InternalApi;
+import org.instancio.internal.util.Fail;
 
 /**
  * Represents the target of a {@link org.instancio.Selector}
@@ -27,4 +28,8 @@ import org.instancio.documentation.InternalApi;
 public interface Target {
 
     Class<?> getTargetClass();
+
+    default ScopelessSelector toScopelessSelector() {
+        throw Fail.withFataInternalError("Unhandled selector target: %s", getTargetClass());
+    }
 }
