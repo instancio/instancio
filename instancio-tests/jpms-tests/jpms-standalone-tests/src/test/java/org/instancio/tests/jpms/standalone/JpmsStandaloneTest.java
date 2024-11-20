@@ -54,4 +54,12 @@ class JpmsStandaloneTest {
         assertThat(result.name).isNotBlank();
         assertThat(result.age).isPositive();
     }
+
+    @Test
+    void wordGenerator() {
+        // Verify that loading resources works on module path
+        final String result = Instancio.gen().text().word().get();
+
+        assertThat(result).isNotBlank();
+    }
 }
