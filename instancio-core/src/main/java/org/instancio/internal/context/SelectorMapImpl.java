@@ -30,14 +30,11 @@ import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.Target;
 import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
-import org.instancio.internal.selectors.TargetRoot;
 import org.instancio.internal.selectors.TargetSetter;
 import org.instancio.internal.util.Fail;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,27 +96,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         if (targetSelector instanceof SelectorImpl) {
             final SelectorImpl selector = (SelectorImpl) targetSelector;
             final Target target = selector.getTarget();
-
-            final ScopelessSelector scopeless;
-
-            if (target instanceof TargetClass) {
-                scopeless = new ScopelessSelector(selector.getTargetClass());
-            } else if (target instanceof TargetField) {
-                final TargetField t = (TargetField) target;
-                final Field field = t.getField();
-
-                scopeless = new ScopelessSelector(field.getDeclaringClass(), field);
-            } else if (target instanceof TargetSetter) {
-                final TargetSetter t = (TargetSetter) target;
-                final Method method = t.getSetter();
-
-                scopeless = new ScopelessSelector(method.getDeclaringClass(), method);
-            } else if (target instanceof TargetRoot) {
-                scopeless = SCOPELESS_ROOT;
-            } else {
-                // should not be reachable
-                throw Fail.withFataInternalError("Unhandled selector target: %s", target.getTargetClass());
-            }
+            final ScopelessSelector scopeless = target.toScopelessSelector();
 
             selectors.put(selector, value);
             scopelessSelectors.computeIfAbsent(scopeless, selectorList -> new ArrayList<>(3)).add(selector);
