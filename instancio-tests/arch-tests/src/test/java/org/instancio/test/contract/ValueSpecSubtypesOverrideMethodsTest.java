@@ -42,6 +42,7 @@ import org.instancio.generator.specs.StringSpec;
 import org.instancio.generator.specs.URISpec;
 import org.instancio.generator.specs.URLSpec;
 import org.instancio.generator.specs.UUIDStringSpec;
+import org.instancio.generator.specs.WordSpec;
 import org.instancio.generator.specs.YearMonthSpec;
 import org.instancio.generator.specs.YearSpec;
 import org.instancio.generator.specs.ZonedDateTimeSpec;
@@ -136,7 +137,8 @@ class ValueSpecSubtypesOverrideMethodsTest {
 
     @ValueSource(classes = {
             LoremIpsumSpec.class,
-            UUIDStringSpec.class
+            UUIDStringSpec.class,
+            WordSpec.class
     })
     @ParameterizedTest
     void text(final Class<?> specClass) {

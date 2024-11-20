@@ -13,61 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators;
+package org.instancio.generator.specs;
 
 import org.instancio.documentation.ExperimentalApi;
-import org.instancio.generator.specs.CsvSpec;
-import org.instancio.generator.specs.LoremIpsumSpec;
-import org.instancio.generator.specs.TextPatternSpec;
-import org.instancio.generator.specs.UUIDStringSpec;
-import org.instancio.generator.specs.WordSpec;
+import org.instancio.generator.ValueSpec;
 
 /**
- * Provides text generators.
+ * Spec for generating English words.
  *
- * @since 5.0.0
+ * @since 5.1.0
  */
-public interface TextSpecs extends TextGenerators {
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
-    @Override
-    @ExperimentalApi
-    CsvSpec csv();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
-    @Override
-    LoremIpsumSpec loremIpsum();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
-    @Override
-    TextPatternSpec pattern(String pattern);
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
-    @Override
-    UUIDStringSpec uuid();
+@ExperimentalApi
+public interface WordSpec extends ValueSpec<String>, WordGeneratorSpec {
 
     /**
      * {@inheritDoc}
      *
      * @since 5.1.0
      */
-    @Override
     @ExperimentalApi
-    WordSpec word();
+    @Override
+    WordSpec adjective();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.1.0
+     */
+    @ExperimentalApi
+    @Override
+    WordSpec adverb();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.1.0
+     */
+    @ExperimentalApi
+    @Override
+    WordSpec noun();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.1.0
+     */
+    @ExperimentalApi
+    @Override
+    WordSpec verb();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.1.0
+     */
+    @ExperimentalApi
+    @Override
+    WordSpec nullable();
 }

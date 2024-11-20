@@ -20,6 +20,7 @@ import org.instancio.generator.specs.CsvGeneratorSpec;
 import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
 import org.instancio.generator.specs.TextPatternGeneratorSpec;
 import org.instancio.generator.specs.UUIDStringGeneratorSpec;
+import org.instancio.generator.specs.WordGeneratorSpec;
 
 /**
  * Contains built-in text generators.
@@ -79,4 +80,46 @@ public interface TextGenerators {
      * @since 1.5.0
      */
     UUIDStringGeneratorSpec uuid();
+
+    /**
+     * Generates random words. This spec generates various word classes,
+     * including nouns, verbs, adjectives, and adverbs.
+     *
+     * <p>Example:
+     * <pre>{@code
+     * record Example(String word) {}
+     *
+     * Example example = Instancio.of(Example.class)
+     *     .generate(field(Example::word), gen -> gen.text().word().noun())
+     *     .create();
+     *
+     * // Sample output: Example[word=achievement]
+     * }</pre>
+     *
+     * <p>You can construct phrases or sentences using a {@code Supplier}:
+     *
+     * <pre>{@code
+     * record Company(String website) {}
+     *
+     * Supplier<String> websiteSupplier = () -> String.format(
+     *     "https://www.%s-%s.com",
+     *     Instancio.gen().text().word().adjective().get(),
+     *     Instancio.gen().text().word().noun().get());
+     *
+     * List<Company> companies = Instancio.ofList(Company.class)
+     *     .size(3)
+     *     .supply(field(Company::website), websiteSupplier)
+     *     .create();
+     *
+     * // Sample output:
+     * [[Company[website=https://www.global-bidder.com],
+     *   Company[website=https://www.independent-beat.com],
+     *   Company[website=https://www.promotional-clock.com]]
+     * }</pre>
+     *
+     * @return word generator spec
+     * @since 5.1.0
+     */
+    @ExperimentalApi
+    WordGeneratorSpec word();
 }

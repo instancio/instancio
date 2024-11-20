@@ -4784,7 +4784,8 @@ Generators
 │   ├── csv()
 │   ├── loremIpsum()
 │   ├── pattern(String)
-│   └── uuid()
+│   ├── uuid()
+│   └── word()
 │
 ├── checksum()
 │   ├── luhn()

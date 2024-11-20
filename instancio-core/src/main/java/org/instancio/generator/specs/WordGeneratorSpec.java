@@ -13,54 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators;
+package org.instancio.generator.specs;
 
 import org.instancio.documentation.ExperimentalApi;
-import org.instancio.generator.specs.CsvSpec;
-import org.instancio.generator.specs.LoremIpsumSpec;
-import org.instancio.generator.specs.TextPatternSpec;
-import org.instancio.generator.specs.UUIDStringSpec;
-import org.instancio.generator.specs.WordSpec;
 
 /**
- * Provides text generators.
+ * Spec for generating English words.
  *
- * @since 5.0.0
+ * @since 5.1.0
  */
-public interface TextSpecs extends TextGenerators {
+@ExperimentalApi
+public interface WordGeneratorSpec extends
+        AsGeneratorSpec<String>,
+        NullableGeneratorSpec<String> {
 
     /**
-     * {@inheritDoc}
+     * Specifies that an adjective should be generated.
      *
-     * @since 5.0.0
+     * @return spec builder
+     * @since 5.1.0
      */
-    @Override
     @ExperimentalApi
-    CsvSpec csv();
+    WordGeneratorSpec adjective();
 
     /**
-     * {@inheritDoc}
+     * Specifies that an adverb should be generated.
      *
-     * @since 5.0.0
+     * @return spec builder
+     * @since 5.1.0
      */
-    @Override
-    LoremIpsumSpec loremIpsum();
+    @ExperimentalApi
+    WordGeneratorSpec adverb();
 
     /**
-     * {@inheritDoc}
+     * Specifies that a noun should be generated.
      *
-     * @since 5.0.0
+     * @return spec builder
+     * @since 5.1.0
      */
-    @Override
-    TextPatternSpec pattern(String pattern);
+    @ExperimentalApi
+    WordGeneratorSpec noun();
 
     /**
-     * {@inheritDoc}
+     * Specifies that a verb should be generated.
      *
-     * @since 5.0.0
+     * @return spec builder
+     * @since 5.1.0
      */
-    @Override
-    UUIDStringSpec uuid();
+    @ExperimentalApi
+    WordGeneratorSpec verb();
 
     /**
      * {@inheritDoc}
@@ -69,5 +70,5 @@ public interface TextSpecs extends TextGenerators {
      */
     @Override
     @ExperimentalApi
-    WordSpec word();
+    WordGeneratorSpec nullable();
 }
