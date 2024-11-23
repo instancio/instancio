@@ -89,18 +89,19 @@ final class SetModelSelectorHelper {
         final InternalSelector internalModelTarget = (InternalSelector) modelTarget;
         final InternalSelector internalModelSelector = (InternalSelector) modelSelector;
 
-        if (internalModelSelector.isRootSelector()) {
-            // convert root() to a regular class selector
-            return SelectorImpl.builder()
-                    .target(new TargetClass(rootClass))
-                    .apiMethodSelector(internalModelTarget.getApiMethodSelector())
-                    .build();
-        }
-
         final List<Scope> scopes = new ArrayList<>(4);
         scopes.addAll(internalModelTarget.getScopes());
         scopes.add(internalModelTarget.toScope());
         scopes.addAll(internalModelSelector.getScopes());
+
+        if (internalModelSelector.isRootSelector()) {
+            // convert root() to a regular class selector
+            return SelectorImpl.builder()
+                    .target(new TargetClass(rootClass))
+                    .scopes(scopes)
+                    .apiMethodSelector(internalModelTarget.getApiMethodSelector())
+                    .build();
+        }
 
         return internalModelSelector.within(scopes.toArray(new Scope[0]));
     }
