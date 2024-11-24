@@ -229,6 +229,8 @@ A big thank you to the current project sponsors:
 
 - [@bit-dot](https://github.com/bit-dot)
 - [@darthblonderss](https://github.com/darthblonderss)
+- [@mevlana14](https://github.com/mevlana14)
+- [@tix320](https://github.com/tix320)
 
 Thanks to [JetBrains](https://www.jetbrains.com/opensource) and [YourKit](https://www.yourkit.com)
 for supporting this project with their open source licenses.
