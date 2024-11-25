@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>jpms-tests</artifactId>
-        <version>5.1.0-SNAPSHOT</version>
+        <version>5.1.0</version>
     </parent>
     <artifactId>jpms-bean-validation-hibernate-tests</artifactId>
     <name>Instancio tests: JPMS Bean Validation Hibernate Tests</name>
