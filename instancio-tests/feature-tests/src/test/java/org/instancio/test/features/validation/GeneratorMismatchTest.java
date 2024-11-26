@@ -139,6 +139,7 @@ class GeneratorMismatchTest {
         assertMessageContains("pattern()", gen -> gen.text().pattern("foo"));
         assertMessageContains("uuid()", gen -> gen.text().uuid());
         assertMessageContains("word()", gen -> gen.text().word());
+        assertMessageContains("wordTemplate()", gen -> gen.text().wordTemplate("example"));
     }
 
     @Test

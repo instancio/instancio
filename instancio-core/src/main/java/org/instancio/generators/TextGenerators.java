@@ -21,6 +21,7 @@ import org.instancio.generator.specs.LoremIpsumGeneratorSpec;
 import org.instancio.generator.specs.TextPatternGeneratorSpec;
 import org.instancio.generator.specs.UUIDStringGeneratorSpec;
 import org.instancio.generator.specs.WordGeneratorSpec;
+import org.instancio.generator.specs.WordTemplateGeneratorSpec;
 
 /**
  * Contains built-in text generators.
@@ -118,8 +119,60 @@ public interface TextGenerators {
      * }</pre>
      *
      * @return word generator spec
+     * @see #wordTemplate(String)
      * @since 5.1.0
      */
     @ExperimentalApi
     WordGeneratorSpec word();
+
+    /**
+     * Generates strings based on the specified template.
+     *
+     * <p>The template can include placeholders representing different
+     * parts of speech, such as:
+     *
+     * <ul>
+     *   <li>{@code ${adjective}} produces a random adjective</li>
+     *   <li>{@code ${adverb}} produces a random adverb</li>
+     *   <li>{@code ${noun}} produces a random noun</li>
+     *   <li>{@code ${verb}} produces a random verb</li>
+     * </ul>
+     *
+     * <p>These placeholders will be dynamically replaced with randomly generated words
+     * matching their respective categories. For example:
+     *
+     * <pre>{@code
+     * record Company(String website) {}
+     *
+     * List<Company> companies = Instancio.ofList(Company.class)
+     *     .size(3)
+     *     .generate(field(Company::website), gen -> gen.text().wordTemplate("${adjective}-${noun}.com"))
+     *     .create();
+     *
+     * // Sample output:
+     * [[Company[website=global-bidder.com],
+     *   Company[website=independent-beat.com],
+     *   Company[website=promotional-clock.com]]
+     * }</pre>
+     *
+     * <p>The placeholders are case-sensitive and support three case styles
+     * for the output, for example:
+     *
+     * <ul>
+     *   <li>{@code ${noun}} - Outputs a lowercase word (e.g., "cat").</li>
+     *   <li>{@code ${Noun}} - Outputs a capitalised word (e.g., "Cat").</li>
+     *   <li>{@code ${NOUN}} - Outputs an uppercase word (e.g., "CAT").</li>
+     * </ul>
+     *
+     * <p><b>Note:</b> The behavior for mixed-case placeholders,
+     * such as {@code ${NoUn}}, is undefined. Avoid using such placeholders
+     * to ensure consistent results.
+     *
+     * @param template the template from which to generate strings
+     * @return word template generator spec
+     * @see #word()
+     * @since 5.2.0
+     */
+    @ExperimentalApi
+    WordTemplateGeneratorSpec wordTemplate(String template);
 }

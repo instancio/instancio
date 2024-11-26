@@ -47,25 +47,26 @@ public class WordGenerator extends AbstractGenerator<String> implements WordSpec
 
     @Override
     public WordGenerator adjective() {
-        wordClass = WordClass.ADJECTIVE;
-        return this;
+        return wordClass(WordClass.ADJECTIVE);
     }
 
     @Override
     public WordGenerator adverb() {
-        wordClass = WordClass.ADVERB;
-        return this;
+        return wordClass(WordClass.ADVERB);
     }
 
     @Override
     public WordGenerator noun() {
-        wordClass = WordClass.NOUN;
-        return this;
+        return wordClass(WordClass.NOUN);
     }
 
     @Override
     public WordGenerator verb() {
-        wordClass = WordClass.VERB;
+        return wordClass(WordClass.VERB);
+    }
+
+    WordGenerator wordClass(final WordClass wordClass) {
+        this.wordClass = wordClass;
         return this;
     }
 
@@ -99,16 +100,27 @@ public class WordGenerator extends AbstractGenerator<String> implements WordSpec
         return words;
     }
 
-    private enum WordClass {
-        ADJECTIVE("/adjectives.txt"),
-        ADVERB("/adverbs.txt"),
-        NOUN("/nouns.txt"),
-        VERB("/verbs.txt");
+    enum WordClass {
+        ADJECTIVE("adjective", "/adjectives.txt"),
+        ADVERB("adverb", "/adverbs.txt"),
+        NOUN("noun", "/nouns.txt"),
+        VERB("verb", "/verbs.txt");
 
+        private final String key;
         private final String file;
 
-        WordClass(String file) {
+        WordClass(final String key, final String file) {
+            this.key = key;
             this.file = file;
+        }
+
+        static WordClass getByKey(final String k) {
+            for (WordClass wc : values()) {
+                if (k.equals(wc.key)) {
+                    return wc;
+                }
+            }
+            return null;
         }
     }
 

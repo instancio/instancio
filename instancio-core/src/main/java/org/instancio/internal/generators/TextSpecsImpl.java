@@ -20,6 +20,7 @@ import org.instancio.generator.specs.CsvSpec;
 import org.instancio.generator.specs.LoremIpsumSpec;
 import org.instancio.generator.specs.TextPatternSpec;
 import org.instancio.generator.specs.UUIDStringSpec;
+import org.instancio.generator.specs.WordTemplateSpec;
 import org.instancio.generator.specs.WordSpec;
 import org.instancio.generators.TextSpecs;
 import org.instancio.internal.generator.text.CsvGenerator;
@@ -27,6 +28,7 @@ import org.instancio.internal.generator.text.LoremIpsumGenerator;
 import org.instancio.internal.generator.text.TextPatternGenerator;
 import org.instancio.internal.generator.text.UUIDStringGenerator;
 import org.instancio.internal.generator.text.WordGenerator;
+import org.instancio.internal.generator.text.WordTemplateGenerator;
 
 final class TextSpecsImpl implements TextSpecs {
 
@@ -59,5 +61,10 @@ final class TextSpecsImpl implements TextSpecs {
     @Override
     public WordSpec word() {
         return new WordGenerator(context);
+    }
+
+    @Override
+    public WordTemplateSpec wordTemplate(final String template) {
+        return new WordTemplateGenerator(context, template);
     }
 }
