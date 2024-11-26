@@ -571,12 +571,13 @@ public final class ErrorMessageUtils {
                 .append("  }");
     }
 
-    public static String invalidStringTemplate(final String pattern, final String reason) {
+    public static String invalidStringTemplate(final String template, final String reason) {
         return new StringBuilder(INITIAL_SB_SIZE)
-                .append("invalid pattern").append(NL)
-                .append(" -> \"").append(pattern).append('"').append(NL)
+                .append("the specified template is invalid").append(NL)
                 .append(NL)
-                .append("Reason: ").append(reason)
+                .append(" -> \"").append(template).append('"').append(NL)
+                .append(NL)
+                .append("Cause: ").append(reason)
                 .toString();
     }
 

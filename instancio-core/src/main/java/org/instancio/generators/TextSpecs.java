@@ -21,6 +21,7 @@ import org.instancio.generator.specs.LoremIpsumSpec;
 import org.instancio.generator.specs.TextPatternSpec;
 import org.instancio.generator.specs.UUIDStringSpec;
 import org.instancio.generator.specs.WordSpec;
+import org.instancio.generator.specs.WordTemplateSpec;
 
 /**
  * Provides text generators.
@@ -70,4 +71,13 @@ public interface TextSpecs extends TextGenerators {
     @Override
     @ExperimentalApi
     WordSpec word();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 5.2.0
+     */
+    @Override
+    @ExperimentalApi
+    WordTemplateSpec wordTemplate(String template);
 }

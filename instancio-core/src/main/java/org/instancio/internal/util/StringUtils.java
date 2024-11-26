@@ -119,24 +119,24 @@ public final class StringUtils {
      * Extracts properties keys from a string template, e.g. given
      * the string {@code "${foo} and ${bar}"} returns {@code ["foo", "bar"]}.
      */
-    public static List<String> getTemplateKeys(final String pattern) {
+    public static List<String> getTemplateKeys(final String template) {
         final List<String> results = new ArrayList<>();
 
-        final int length = pattern.length();
+        final int length = template.length();
         int i = 0;
 
         while (i < length) {
-            if (pattern.charAt(i) == '$' && i + 1 < length && pattern.charAt(i + 1) == '{') {
-                final int j = pattern.indexOf('}', i + 2);
+            if (template.charAt(i) == '$' && i + 1 < length && template.charAt(i + 1) == '{') {
+                final int j = template.indexOf('}', i + 2);
 
                 if (j == -1) {
                     throw Fail.withUsageError(invalidStringTemplate(
-                            pattern, "unterminated placeholder"));
+                            template, "unterminated template key"));
                 }
-                final String key = pattern.substring(i + 2, j);
+                final String key = template.substring(i + 2, j);
                 if (key.isEmpty() || key.contains("${")) {
-                    final String reason = String.format("invalid key \"${%s}\"", key);
-                    throw Fail.withUsageError(invalidStringTemplate(pattern, reason));
+                    final String reason = String.format("invalid template key '${%s}'", key);
+                    throw Fail.withUsageError(invalidStringTemplate(template, reason));
                 }
                 results.add(key);
                 i = j + 1;

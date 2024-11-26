@@ -139,14 +139,14 @@ class StringUtilsTest {
         void empty() {
             assertThatThrownBy(() -> StringUtils.getTemplateKeys("${}"))
                     .isExactlyInstanceOf(InstancioApiException.class)
-                    .hasMessageContaining("invalid key \"${}\"");
+                    .hasMessageContaining("invalid template key '${}'");
         }
 
         @Test
         void nested() {
             assertThatThrownBy(() -> StringUtils.getTemplateKeys("${a} ${foo {${bar}} ${b}"))
                     .isExactlyInstanceOf(InstancioApiException.class)
-                    .hasMessageContaining("invalid key \"${foo {${bar}\"");
+                    .hasMessageContaining("invalid template key '${foo {${bar}'");
         }
 
         @ValueSource(strings = {"${", "${foo} ${bar"})
@@ -154,7 +154,7 @@ class StringUtilsTest {
         void unterminated(final String template) {
             assertThatThrownBy(() -> StringUtils.getTemplateKeys(template))
                     .isExactlyInstanceOf(InstancioApiException.class)
-                    .hasMessageContaining("unterminated placeholder");
+                    .hasMessageContaining("unterminated template key");
         }
 
         private void assertResult(final String input, final String... expectedKeys) {

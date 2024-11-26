@@ -4785,7 +4785,8 @@ Generators
 │   ├── loremIpsum()
 │   ├── pattern(String)
 │   ├── uuid()
-│   └── word()
+│   ├── word()
+│   └── wordTemplate(String)
 │
 ├── checksum()
 │   ├── luhn()
