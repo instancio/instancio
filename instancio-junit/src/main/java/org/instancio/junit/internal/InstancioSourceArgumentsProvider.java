@@ -34,6 +34,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.instancio.junit.internal.Constants.INSTANCIO_NAMESPACE;
+import static org.instancio.junit.internal.Constants.INSTANCIO_SOURCE_STATE;
+
 /**
  * A provider that generates arguments for {@link InstancioSource}.
  */
@@ -59,8 +62,14 @@ public class InstancioSourceArgumentsProvider
         final Parameter[] parameters = context.getRequiredTestMethod().getParameters();
         final int samples = getNumberOfSamples(settings);
 
+        final InstancioSourceState state = new InstancioSourceState(threadLocalRandom.get().getSeed(), samples);
+        context.getStore(INSTANCIO_NAMESPACE).put(INSTANCIO_SOURCE_STATE, state);
+
         return Stream
-                .generate(() -> Arguments.of(createObjects(parameters, random, settings)))
+                .generate(() -> {
+                    state.decrementSamplesRemaining();
+                    return Arguments.of(createObjects(parameters, random, settings));
+                })
                 .limit(samples);
     }
 
