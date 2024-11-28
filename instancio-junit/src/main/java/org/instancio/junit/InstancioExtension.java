@@ -20,6 +20,7 @@ import org.instancio.internal.util.Sonar;
 import org.instancio.junit.internal.ElementAnnotations;
 import org.instancio.junit.internal.ExtensionSupport;
 import org.instancio.junit.internal.FieldAnnotationMap;
+import org.instancio.junit.internal.InstancioSourceState;
 import org.instancio.junit.internal.ObjectCreator;
 import org.instancio.junit.internal.ReflectionUtils;
 import org.instancio.settings.Settings;
@@ -32,7 +33,6 @@ import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.slf4j.Logger;
@@ -47,7 +47,8 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
+import static org.instancio.junit.internal.Constants.INSTANCIO_NAMESPACE;
+import static org.instancio.junit.internal.Constants.INSTANCIO_SOURCE_STATE;
 
 /**
  * The Instancio JUnit extension adds support for additional
@@ -114,7 +115,6 @@ public class InstancioExtension implements
         ParameterResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(InstancioExtension.class);
-    private static final Namespace INSTANCIO = create("org.instancio");
     private static final String ELEMENT_ANNOTATIONS = "elementAnnotations";
     private static final String ANNOTATION_MAP = "annotationMap";
 
@@ -141,7 +141,7 @@ public class InstancioExtension implements
     public void beforeAll(final ExtensionContext context) {
         final Class<?> testClass = context.getRequiredTestClass();
 
-        context.getStore(INSTANCIO)
+        context.getStore(INSTANCIO_NAMESPACE)
                 .put(ANNOTATION_MAP, new FieldAnnotationMap(testClass));
     }
 
@@ -150,7 +150,7 @@ public class InstancioExtension implements
     public void beforeEach(final ExtensionContext context) throws IllegalAccessException {
         ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
 
-        final FieldAnnotationMap annotationMap = context.getStore(INSTANCIO)
+        final FieldAnnotationMap annotationMap = context.getStore(INSTANCIO_NAMESPACE)
                 .get(ANNOTATION_MAP, FieldAnnotationMap.class);
 
         for (Field field : context.getRequiredTestClass().getDeclaredFields()) {
@@ -174,14 +174,21 @@ public class InstancioExtension implements
 
     @Override
     public void afterAll(final ExtensionContext context) {
-        context.getStore(INSTANCIO).remove(ANNOTATION_MAP, FieldAnnotationMap.class);
+        context.getStore(INSTANCIO_NAMESPACE).remove(ANNOTATION_MAP, FieldAnnotationMap.class);
     }
 
     @Override
     public void afterEach(final ExtensionContext context) {
         threadLocalRandom.remove();
         threadLocalSettings.remove();
-        context.getStore(INSTANCIO).remove(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
+        context.getStore(INSTANCIO_NAMESPACE).remove(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
+
+        final InstancioSourceState instancioSourceState = context.getStore(INSTANCIO_NAMESPACE)
+                .get(INSTANCIO_SOURCE_STATE, InstancioSourceState.class);
+
+        if (instancioSourceState != null && instancioSourceState.allSamplesGenerated()) {
+            context.getStore(INSTANCIO_NAMESPACE).remove(INSTANCIO_SOURCE_STATE);
+        }
     }
 
     @Override
@@ -189,9 +196,22 @@ public class InstancioExtension implements
         if (context.getExecutionException().isPresent()) {
             final Method testMethod = context.getRequiredTestMethod();
 
-            // Should be safe to case. We don't  expect any other implementations of Random.
+            // Should be safe to cast since we don't expect any other implementations of Random.
             final DefaultRandom random = (DefaultRandom) threadLocalRandom.get();
-            final long seed = random.getSeed();
+
+            final InstancioSourceState instancioSourceState = context.getStore(INSTANCIO_NAMESPACE)
+                    .get(INSTANCIO_SOURCE_STATE, InstancioSourceState.class);
+
+            // When using @InstancioSource, all failed samples will report the same seed value.
+            // This allows reproducing the entire dataset for all samples using the @Seed annotation.
+            //
+            // For @Test, @RepeatedTest, and @ParameterizedTest without @InstancioSource,
+            // each failed sample reports its own seed. Adding the @Seed annotation to a
+            // @ParameterizedTest (without @InstancioSource) ensures the same random data is
+            // generated for each run.
+            final long seed = instancioSourceState != null
+                    ? instancioSourceState.getInitialSeed()
+                    : random.getSeed();
 
             final String seedMsg = String.format("Test method '%s' failed with seed: %d (seed source: %s)%n",
                     testMethod.getName(), seed, random.getSource().getDescription());
@@ -227,7 +247,7 @@ public class InstancioExtension implements
                         .isPresent();
 
         if (supportsParameter) {
-            extensionContext.getStore(INSTANCIO)
+            extensionContext.getStore(INSTANCIO_NAMESPACE)
                     .put(ELEMENT_ANNOTATIONS, new ElementAnnotations(annotations));
         }
         return supportsParameter;
@@ -240,7 +260,7 @@ public class InstancioExtension implements
 
         final Parameter parameter = parameterContext.getParameter();
 
-        final ElementAnnotations elementAnnotations = extensionContext.getStore(INSTANCIO)
+        final ElementAnnotations elementAnnotations = extensionContext.getStore(INSTANCIO_NAMESPACE)
                 .get(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
 
         final Type targetType = parameter.getParameterizedType();

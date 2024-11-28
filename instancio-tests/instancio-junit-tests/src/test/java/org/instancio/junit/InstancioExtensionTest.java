@@ -20,6 +20,7 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.internal.ElementAnnotations;
 import org.instancio.junit.internal.FieldAnnotationMap;
+import org.instancio.junit.internal.InstancioSourceState;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.Seeds;
@@ -42,6 +43,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.junit.internal.Constants.INSTANCIO_SOURCE_STATE;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
@@ -233,19 +235,44 @@ class InstancioExtensionTest {
     }
 
     @Test
-    @DisplayName("Verify seed value is reported if a test fails")
-    void afterTestExecutionWithFailedTest() throws NoSuchMethodException {
-        final long expectedSeed = 789;
+    @DisplayName("Seed (from Random) is reported if a test fails")
+    void afterTestExecutionWithFailedTest_reportsSeedFrom_Random() throws NoSuchMethodException {
+        final long seedFromRandom = 789;
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
 
+        ExtensionContext.Store store = mock(ExtensionContext.Store.class);
+        doReturn(store).when(context).getStore(create("org.instancio"));
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
         when(context.getRequiredTestMethod()).thenReturn(method);
-        when(threadLocalRandom.get()).thenReturn(new DefaultRandom(expectedSeed, Seeds.Source.SEED_ANNOTATION));
+        when(threadLocalRandom.get()).thenReturn(new DefaultRandom(seedFromRandom, Seeds.Source.SEED_ANNOTATION));
 
         // Method under test
         extension.afterTestExecution(context);
 
-        final String expectedMsg = String.format("'%s' failed with seed: %s", method.getName(), expectedSeed);
+        final String expectedMsg = String.format("'%s' failed with seed: %s", method.getName(), seedFromRandom);
+        verify(context).publishReportEntry(eq("Instancio"), contains(expectedMsg));
+    }
+
+    @Test
+    @DisplayName("Seed (from InstancioSourceState) is reported if a test fails")
+    void afterTestExecutionWithFailedTest_reportsSeedFrom_InstancioSourceState() throws NoSuchMethodException {
+        final long seedFromInstancioSourceState = 123;
+        final long seedFromRandom = 789;
+        final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
+
+        ExtensionContext.Store store = mock(ExtensionContext.Store.class);
+        doReturn(store).when(context).getStore(create("org.instancio"));
+        when(store.get(INSTANCIO_SOURCE_STATE, InstancioSourceState.class))
+                .thenReturn(new InstancioSourceState(seedFromInstancioSourceState, 0));
+
+        when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
+        when(context.getRequiredTestMethod()).thenReturn(method);
+        when(threadLocalRandom.get()).thenReturn(new DefaultRandom(seedFromRandom, Seeds.Source.SEED_ANNOTATION));
+
+        // Method under test
+        extension.afterTestExecution(context);
+
+        final String expectedMsg = String.format("'%s' failed with seed: %s", method.getName(), seedFromInstancioSourceState);
         verify(context).publishReportEntry(eq("Instancio"), contains(expectedMsg));
     }
 
