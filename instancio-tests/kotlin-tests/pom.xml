@@ -10,7 +10,7 @@
     <name>Instancio tests: Kotlin Tests</name>
 
     <properties>
-        <version.kotlin>2.0.21</version.kotlin>
+        <version.kotlin>2.1.0</version.kotlin>
     </properties>
 
     <dependencies>
