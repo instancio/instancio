@@ -212,14 +212,6 @@ Feedback and bug reports are greatly appreciated!
 
 Please check the [User Guide](https://www.instancio.org/user-guide), previous issues and discussions before creating a new one.
 
-# Third-party Extensions
-
-- [instancio-jpa](https://github.com/Mobe91/instancio-jpa) created by [Moritz Becker](https://github.com/Mobe91)
-
-> Instancio-jpa is an extension on top of the Instancio library that enables the creation and population
-> of JPA entities including the subsequent persistence of these entities using JPA for the purpose of test
-> data generation in integration tests.
-
 # Sponsors
 
 If you like Instancio, please consider supporting its maintenance and development
