@@ -19,6 +19,8 @@ import lombok.Data;
 import org.instancio.Instancio;
 import org.instancio.feed.Feed;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.test.support.pojo.feed.FeedSupportedTypes;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
@@ -84,6 +86,7 @@ class ApplyFeedSupportedTypesTest {
     void applyToPojoWithPrimitiveFields() {
         final PrimitiveTypes result = Instancio.of(PrimitiveTypes.class)
                 .applyFeed(root(), feed -> feed.ofResource(FeedSupportedTypes.CSV_FILE))
+                .withSetting(Keys.ON_FEED_PROPERTY_UNMATCHED, OnFeedPropertyUnmatched.IGNORE)
                 .create();
 
         assertThat(result.is_boolean()).isTrue();

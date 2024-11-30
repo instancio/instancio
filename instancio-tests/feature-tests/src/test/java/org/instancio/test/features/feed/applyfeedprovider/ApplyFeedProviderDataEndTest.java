@@ -18,6 +18,8 @@ package org.instancio.test.features.feed.applyfeedprovider;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.FeedDataEndAction;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -38,6 +40,7 @@ class ApplyFeedProviderDataEndTest {
     void recycle() {
         final List<StringHolder> results = Instancio.ofList(StringHolder.class)
                 .size(Constants.SAMPLE_SIZE_DD)
+                .withSetting(Keys.ON_FEED_PROPERTY_UNMATCHED, OnFeedPropertyUnmatched.IGNORE)
                 .applyFeed(all(StringHolder.class), source -> source.ofResource("data/FeedExample.csv")
                         .onDataEnd(FeedDataEndAction.RECYCLE)) // method under test
                 .create();

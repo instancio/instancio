@@ -394,6 +394,17 @@ public final class Keys {
     public static final SettingKey<Mode> MODE = registerRequiredNonAdjustable("mode", Mode.class, Mode.STRICT);
 
     /**
+     * Specifies what should happen if a feed property is unmatched when using the {@code applyFeed()} method;
+     * default is {@link OnFeedPropertyUnmatched#FAIL}; property name {@code on.feed.property.unmatched}.
+     *
+     * @see OnFeedPropertyUnmatched
+     * @since 5.2.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<OnFeedPropertyUnmatched> ON_FEED_PROPERTY_UNMATCHED = registerRequiredNonAdjustable(
+            "on.feed.property.unmatched", OnFeedPropertyUnmatched.class, OnFeedPropertyUnmatched.FAIL);
+
+    /**
      * Specifies what should happen if an error occurs setting a field's value;
      * default is {@link OnSetFieldError#IGNORE}; property name {@code on.set.field.error}.
      *

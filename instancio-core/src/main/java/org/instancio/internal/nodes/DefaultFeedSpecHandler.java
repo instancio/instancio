@@ -22,6 +22,12 @@ import org.instancio.generator.Generator;
 import org.instancio.internal.context.SelectorMap;
 import org.instancio.internal.feed.InternalFeedSpecResolver;
 import org.instancio.internal.selectors.FeedSelectors;
+import org.instancio.internal.util.ErrorMessageUtils;
+import org.instancio.internal.util.Fail;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
+
+import java.util.Set;
 
 final class DefaultFeedSpecHandler implements InternalFeedSpecHandler {
 
@@ -60,6 +66,18 @@ final class DefaultFeedSpecHandler implements InternalFeedSpecHandler {
                 final TargetSelector selector = FeedSelectors.forProperty(child);
                 nodeContext.putGenerator(selector, (Generator<?>) spec);
             }
+        }
+
+        final OnFeedPropertyUnmatched onFeedPropertyUnmatched =
+                nodeContext.getSettings().get(Keys.ON_FEED_PROPERTY_UNMATCHED);
+
+        final Set<String> unmappedProperties = specsResolver.getUnmappedFeedProperties();
+
+        if (onFeedPropertyUnmatched == OnFeedPropertyUnmatched.FAIL
+                && !unmappedProperties.isEmpty()) {
+
+            throw Fail.withUsageError(ErrorMessageUtils.unmappedFeedProperties(
+                    unmappedProperties, nodeContext.getSettings()));
         }
     }
 }

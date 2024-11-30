@@ -2838,9 +2838,11 @@ List<Person> persons = Instancio.ofList(Person.class)
 The mapping works as follows:
 
 - Data properties are mapped to matching field names declared by the class.
-- Data properties that do not map to any field declared by the class are ignored.
 - Class fields that do not have a corresponding property in the data file are populated
 with random values (such as the `id` field in the previous example).
+- If a data property does not map to any field in the target class, an exception will be thrown.
+  To ignore unmatched properties, set the `Keys.ON_FEED_PROPERTY_UNMATCHED`
+  setting to `OnFeedPropertyUnmatched.IGNORE`.
 
 ## Custom Feeds
 
@@ -3512,7 +3514,7 @@ Instancio will automatically load this file from the root of the classpath.
 The following listing shows all the property keys that can be configured.
 
 
-```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 30 31 37 46 58"
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 30 31 37 47 59"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -3553,6 +3555,7 @@ mode=STRICT
 hint.after.generate=POPULATE_NULLS_AND_DEFAULT_PRIMITIVES
 overwrite.existing.values=true
 assignment.type=FIELD
+on.feed.property.unmatched=FAIL
 on.set.field.error=IGNORE
 on.set.method.error=ASSIGN_FIELD
 on.set.method.not.found=ASSIGN_FIELD
@@ -3580,8 +3583,8 @@ subtype.java.util.SortedMap=java.util.TreeMap
     <lnum>1,11,30-31</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
     <lnum>37</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
-    <lnum>46</lnum> Specifies a global seed value.<br/>
-    <lnum>58</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>47</lnum> Specifies a global seed value.<br/>
+    <lnum>59</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 

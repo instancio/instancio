@@ -24,6 +24,7 @@ import org.instancio.feed.PostProcessor;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -82,6 +83,7 @@ class ApplyFeedTemplateAndFunctionSpecTest {
         final List<StringFields> results = Instancio.ofList(StringFields.class)
                 .size(4)
                 .applyFeed(all(StringFields.class), feed)
+                .withSetting(Keys.ON_FEED_PROPERTY_UNMATCHED, OnFeedPropertyUnmatched.IGNORE)
                 .create();
 
         assertThat(results)

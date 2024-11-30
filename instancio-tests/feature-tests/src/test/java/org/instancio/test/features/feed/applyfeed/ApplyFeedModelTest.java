@@ -22,6 +22,7 @@ import org.instancio.feed.Feed;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
@@ -44,7 +45,8 @@ class ApplyFeedModelTest {
 
     @WithSettings
     private static final Settings settings = Settings.create()
-            .set(Keys.FEED_TAG_KEY, "tag");
+            .set(Keys.FEED_TAG_KEY, "tag")
+            .set(Keys.ON_FEED_PROPERTY_UNMATCHED, OnFeedPropertyUnmatched.IGNORE);
 
     @Feed.Source(string = "tag,value\n1,foo\n2,bar\n3,baz")
     private interface SampleFeed extends Feed {}

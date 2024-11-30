@@ -25,6 +25,7 @@ import org.instancio.settings.AssignmentType;
 import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
@@ -37,6 +38,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static org.instancio.internal.util.Constants.NL;
 import static org.instancio.internal.util.Format.formatField;
@@ -49,6 +51,7 @@ import static org.instancio.internal.util.Format.withoutPackage;
 @SuppressWarnings({
         Sonar.STRING_LITERALS_DUPLICATED,
         "PMD.AvoidDuplicateLiterals",
+        "PMD.ExcessiveImports",
         "StringBufferReplaceableByString"
 })
 public final class ErrorMessageUtils {
@@ -59,7 +62,6 @@ public final class ErrorMessageUtils {
     }
 
     public static String maxGenerationAttemptsExceeded(final InternalNode node, final int maxGenerationAttempts) {
-
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append("failed generating a value for node:").append(NL)
                 .append(NL)
@@ -696,6 +698,38 @@ public final class ErrorMessageUtils {
                 .append(enumValueDesc(FeedDataAccess.RANDOM)).append(NL)
                 .append(NL)
                 .append("Note that the last two options may result in duplicate values being produced.")
+                .toString();
+    }
+
+    public static String unmappedFeedProperties(
+            final Collection<String> unmappedProperties,
+            final Settings settings) {
+
+        final String properties = unmappedProperties.stream()
+                .sorted()
+                .collect(Collectors.joining(", "));
+
+        final String onFeedPropertyUnmatchedKey = keyDesc(Keys.ON_FEED_PROPERTY_UNMATCHED);
+        final String currentOnFeedPropertyUnmatched = settings.get(Keys.ON_FEED_PROPERTY_UNMATCHED).toString();
+
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("unmapped feed properties").append(NL)
+                .append(NL)
+                .append(" -> The feed specified in the applyFeed() method contains the following").append(NL)
+                .append("    properties that do not map to any field in the target class:").append(NL)
+                .append(NL)
+                .append("    ").append(properties).append(NL)
+                .append(NL)
+                .append("The error was triggered because of the following setting:").append(NL)
+                .append(NL)
+                .append(" -> ").append(onFeedPropertyUnmatchedKey).append(": ").append(currentOnFeedPropertyUnmatched).append(NL)
+                .append(NL)
+                .append("To resolve this error, consider one of the following:").append(NL)
+                .append(NL)
+                .append(" -> Ensure that each property in the feed has a corresponding field in the target class").append(NL)
+                .append(NL)
+                .append(" -> Update the ").append(onFeedPropertyUnmatchedKey).append(" setting to: ").append(OnFeedPropertyUnmatched.IGNORE).append(NL)
+                .append("    if the unmatched properties are intentional")
                 .toString();
     }
 
