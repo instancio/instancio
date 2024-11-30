@@ -23,13 +23,20 @@ import org.instancio.internal.util.Sonar;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
+import java.util.Set;
 
 public class InternalFeedSpecResolver {
 
     private final InternalFeed feed;
+    private final Set<String> unmappedFeedProperties;
 
     public InternalFeedSpecResolver(final Feed feed) {
         this.feed = InternalFeedProxy.asInternalFeed(feed);
+        this.unmappedFeedProperties = this.feed.getFeedProperties();
+    }
+
+    public Set<String> getUnmappedFeedProperties() {
+        return unmappedFeedProperties;
     }
 
     /**
@@ -37,7 +44,7 @@ public class InternalFeedSpecResolver {
      *
      * <ol>
      *   <li>see if the {@link Feed} subclass has a matching property</li>
-     *   <li>if note, fallback to a matching data property, if any</li>
+     *   <li>if not, fallback to a matching data property, if any</li>
      * </ol>
      *
      * @param node to resolve the spec for
@@ -48,15 +55,16 @@ public class InternalFeedSpecResolver {
     public FeedSpec<?> getSpec(final InternalNode node) {
         final Class<?> feedClass = feed.getFeedContext().getFeedClass();
         final String nodeFieldName = node.getField().getName();
-        final Method matchingSpec = ReflectionUtils.getZeroArgMethod(feedClass, nodeFieldName);
+        final boolean nodeMatchedFeedProperty = unmappedFeedProperties.remove(nodeFieldName);
+        final Method customFeedSpecMethod = ReflectionUtils.getZeroArgMethod(feedClass, nodeFieldName);
 
-        if (matchingSpec != null) {
-            return feed.createSpec(new SpecMethod(matchingSpec), /*args=*/ null);
+        if (customFeedSpecMethod != null) {
+            return feed.createSpec(new SpecMethod(customFeedSpecMethod), /*args=*/ null);
         }
 
         // If no explicit FeedSpec method defined, then attempt
         // to map the field name to a property in the data source
-        return feed.getDataProperties().contains(nodeFieldName)
+        return nodeMatchedFeedProperty
                 ? feed.createSpec(nodeFieldName, node.getTargetClass())
                 : null;
     }

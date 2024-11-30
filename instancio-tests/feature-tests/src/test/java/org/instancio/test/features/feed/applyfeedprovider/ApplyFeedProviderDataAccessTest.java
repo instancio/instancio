@@ -18,6 +18,8 @@ package org.instancio.test.features.feed.applyfeedprovider;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.FeedDataAccess;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -39,6 +41,7 @@ class ApplyFeedProviderDataAccessTest {
     @Test
     void dataAccess() {
         final Set<StringHolder> results = Stream.generate(() -> Instancio.of(StringHolder.class)
+                        .withSetting(Keys.ON_FEED_PROPERTY_UNMATCHED, OnFeedPropertyUnmatched.IGNORE)
                         .applyFeed(root(), source -> source.ofResource("data/FeedExample.csv")
                                 .dataAccess(FeedDataAccess.RANDOM)) // method under test
                         .create())

@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -42,6 +43,7 @@ class ApplyFeedProviderSettingsTest {
         final Set<StringHolder> results = Stream.generate(() -> Instancio.of(StringHolder.class)
                         .applyFeed(root(), source -> source.ofResource("data/FeedExample.csv"))
                         .withSetting(Keys.FEED_DATA_ACCESS, FeedDataAccess.RANDOM)
+                        .withSetting(Keys.ON_FEED_PROPERTY_UNMATCHED, OnFeedPropertyUnmatched.IGNORE)
                         .create())
                 .limit(Constants.SAMPLE_SIZE_DD)
                 .collect(Collectors.toSet());
@@ -57,6 +59,7 @@ class ApplyFeedProviderSettingsTest {
         final Set<StringHolder> results = Stream.generate(() -> Instancio.of(StringHolder.class)
                         .applyFeed(root(), source -> source.ofResource("data/FeedExample.csv"))
                         .withSetting(Keys.FEED_DATA_ACCESS, FeedDataAccess.RANDOM)
+                        .withSetting(Keys.ON_FEED_PROPERTY_UNMATCHED, OnFeedPropertyUnmatched.IGNORE)
                         .withSetting(Keys.SEED, -1L)
                         .create())
                 .limit(Constants.SAMPLE_SIZE_DD)

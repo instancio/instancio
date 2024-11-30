@@ -19,10 +19,13 @@ import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.feed.Feed;
 import org.instancio.feed.FeedSpec;
+import org.instancio.feed.FeedSpecAnnotations.DataSpec;
+import org.instancio.feed.FeedSpecAnnotations.WithPostProcessor;
 import org.instancio.feed.PostProcessor;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Phone;
@@ -87,6 +90,7 @@ class ApplyFeedDataSpecAndWithPostProcessorTest {
                 .size(numPersons)
                 .generate(field(Address::getPhoneNumbers), gen -> gen.collection().size(numPhonesPerPerson))
                 .applyFeed(all(Phone.class), feed)
+                .withSetting(Keys.ON_FEED_PROPERTY_UNMATCHED, OnFeedPropertyUnmatched.IGNORE)
                 .create();
 
         final List<Phone> phones = results.stream()

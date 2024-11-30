@@ -29,11 +29,11 @@ public interface InternalFeed {
     InternalFeedContext<?> getFeedContext();
 
     /**
-     * Returns all the properties defined in the data store.
-     * Note that these properties may or may not be explicitly
-     * declared by a {@link Feed} subclass.
+     * Returns all properties defined in the data file, as well as
+     * the properties specified by the methods in the {@link Feed}
+     * subclass that return {@link FeedSpec}.
      */
-    Set<String> getDataProperties();
+    Set<String> getFeedProperties();
 
     /**
      * Returns a spec for the given invocation of a {@code method}

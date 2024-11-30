@@ -41,6 +41,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -97,8 +98,15 @@ public abstract class AbstractFeed<R> implements InternalFeed {
     }
 
     @Override
-    public final Set<String> getDataProperties() {
-        return dataStore.getPropertyKeys();
+    public Set<String> getFeedProperties() {
+        final Set<String> properties = new HashSet<>(dataStore.getPropertyKeys());
+        final Method[] methods = feedClass.getDeclaredMethods();
+        for (Method method : methods) {
+            if (method.getReturnType() == FeedSpec.class) {
+                properties.add(method.getName());
+            }
+        }
+        return properties;
     }
 
     @Override

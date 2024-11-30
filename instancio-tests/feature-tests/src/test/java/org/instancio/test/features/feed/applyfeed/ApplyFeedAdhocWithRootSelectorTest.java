@@ -23,6 +23,8 @@ import org.instancio.feed.FeedSpec;
 import org.instancio.feed.PostProcessor;
 import org.instancio.generator.Generator;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -83,6 +85,7 @@ class ApplyFeedAdhocWithRootSelectorTest {
 
         final PersonPojo result = Instancio.of(PersonPojo.class)
                 .applyFeed(root(), feed)
+                .withSetting(Keys.ON_FEED_PROPERTY_UNMATCHED, OnFeedPropertyUnmatched.IGNORE)
                 .create();
 
         assertThat(result.firstName).isEqualTo("John");
