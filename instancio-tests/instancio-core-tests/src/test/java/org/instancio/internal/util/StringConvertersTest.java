@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.settings.Mode;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,5 +39,7 @@ class StringConvertersTest {
         assertThat(StringConverters.getConverter(long.class).apply("8")).isEqualTo(8L);
         assertThat(StringConverters.getConverter(float.class).apply("10.8")).isEqualTo(10.8f);
         assertThat(StringConverters.getConverter(double.class).apply("10.2")).isEqualTo(10.2d);
+        // enum
+        assertThat(StringConverters.getConverter(Mode.class).apply("LENIENT")).isEqualTo(Mode.LENIENT);
     }
 }
