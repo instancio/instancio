@@ -123,7 +123,7 @@ List<Person> person = Instancio.ofList(Person.class)
     .create();
 ```
 
-8. Inject arguments into fields and parameters with JUnit 5:
+8. Inject arguments into fields and parameters with JUnit 5 ([video tutorial](https://www.youtube.com/watch?v=H8jT43SQis0)):
 
 ```java
 @ExtendWith(InstancioExtension.class)
