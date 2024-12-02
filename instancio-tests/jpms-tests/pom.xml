@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-tests</artifactId>
-        <version>5.2.0</version>
+        <version>5.2.1-SNAPSHOT</version>
     </parent>
     <artifactId>jpms-tests</artifactId>
     <packaging>pom</packaging>
