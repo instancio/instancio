@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>jpms-tests</artifactId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>5.2.0</version>
     </parent>
     <artifactId>jpms-standalone-tests</artifactId>
     <name>Instancio tests: JPMS Standalone Tests</name>

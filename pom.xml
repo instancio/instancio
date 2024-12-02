@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-         child.project.url.inherit.append.path="false">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" child.project.url.inherit.append.path="false">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-parent</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>5.2.0</version>
     <packaging>pom</packaging>
 
     <name>Instancio Parent</name>
@@ -33,13 +31,11 @@
         </developer>
     </developers>
 
-    <scm child.scm.url.inherit.append.path="false"
-         child.scm.developerConnection.inherit.append.path="false"
-         child.scm.connection.inherit.append.path="false">
+    <scm child.scm.url.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.connection.inherit.append.path="false">
         <url>https://github.com/instancio/instancio</url>
         <connection>scm:git:https://github.com/instancio/instancio.git</connection>
         <developerConnection>scm:git:https://github.com/instancio/instancio.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>instancio-parent-5.2.0</tag>
     </scm>
 
     <distributionManagement>
@@ -64,7 +60,7 @@
         <sonar.coverage.jacoco.xmlReportPaths>
             ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
-        <latest.release.version>5.1.0</latest.release.version>
+        <latest.release.version>5.2.0</latest.release.version>
         <version.guava>33.3.1-jre</version.guava>
         <version.hibernate.validator>8.0.0.Final</version.hibernate.validator>
         <version.highlight.js>11.9.0</version.highlight.js>
