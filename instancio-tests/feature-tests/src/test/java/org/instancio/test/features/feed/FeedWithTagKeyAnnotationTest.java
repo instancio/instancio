@@ -73,7 +73,9 @@ class FeedWithTagKeyAnnotationTest {
 
         @Test
         void withoutTag() {
-            final List<Integer> results = Instancio.createFeed(SampleFeedWithBlankTag.class).id().list(10);
+            final SampleFeedWithBlankTag feed = Instancio.createFeed(SampleFeedWithBlankTag.class);
+
+            final List<Integer> results = feed.id().list(100);
 
             assertThat(results).containsOnly(1, 2);
         }
