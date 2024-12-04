@@ -63,11 +63,12 @@ Pair<String, Long> pair = Instancio.create(new TypeToken<Pair<String, Long>>() {
 
 Map<Integer, List<String>> map = Instancio.create(new TypeToken<Map<Integer, List<String>>>() {});
 
-// Create from a model
+// Create from a model of person with the age field ignored
 Model<Person> personModel = Instancio.of(Person.class)
     .ignore(field(Person::getAge))
     .toModel();
 
+// Create a person from the model, and additionally ignore the address field
 Person personWithoutAgeAndAddress = Instancio.of(personModel)
     .ignore(field(Person::getAddress))
     .create();
