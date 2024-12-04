@@ -28,6 +28,7 @@ theme:
     - announce.dismiss
     - content.code.annotate
     - content.code.copy
+    - icons
     - navigation.instant
     - navigation.tracking
     - navigation.tabs
@@ -50,6 +51,7 @@ plugins:
       minify_css: true
 
 markdown_extensions:
+  - attr_list
   - toc:
       permalink: True
       toc_depth: 3
@@ -57,6 +59,9 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.snippets
   - pymdownx.superfences:
       custom_fences:
