@@ -22,6 +22,11 @@ lnum {
     border: .05rem solid #ff9100;
 }
 
+.md-banner__inner {
+    color: #bec1c6;
+    font-size: 0.7rem;
+}
+
 footer .md-typeset {
     font-size: 0.5rem;
 }
