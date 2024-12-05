@@ -29,8 +29,11 @@ import org.instancio.testsupport.fixtures.Nodes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -148,13 +151,10 @@ class TypeSelectorBuilderImplTest {
     }
 
     private static List<InternalNode> toNodes(final Class<?>... types) {
+        final Map<TypeVariable<?>, Type> rootTypeMap = Nodes.nodeContext().getRootTypeMap();
+
         return Arrays.stream(types)
-                .map(type -> InternalNode.builder()
-                        .type(type)
-                        .rawType(type)
-                        .targetClass(type)
-                        .nodeContext(Nodes.nodeContext())
-                        .build())
+                .map(type -> InternalNode.builder(type, type, rootTypeMap).build())
                 .collect(Collectors.toList());
     }
 

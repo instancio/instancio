@@ -66,24 +66,17 @@ class PredefinedNodeCreator {
             final Member member,
             final InternalNode parent) {
 
-        final InternalNode result = InternalNode.builder()
-                .nodeContext(nodeContext)
+        final InternalNode result = InternalNode.builder(type, type, nodeContext.getRootTypeMap())
                 .nodeKind(NodeKind.CONTAINER)
                 .member(member)
-                .type(type)
-                .rawType(type)
-                .targetClass(type)
                 .parent(parent)
                 .build();
 
-        result.setChildren(Collections.singletonList(InternalNode.builder()
-                .nodeContext(nodeContext)
-                .nodeKind(nodeKindResolverFacade.getNodeKind(childType))
-                .type(childType)
-                .rawType(childType)
-                .targetClass(childType)
-                .parent(result)
-                .build()));
+        result.setChildren(Collections.singletonList(
+                InternalNode.builder(childType, childType, nodeContext.getRootTypeMap())
+                        .nodeKind(nodeKindResolverFacade.getNodeKind(childType))
+                        .parent(result)
+                        .build()));
 
         return result;
     }

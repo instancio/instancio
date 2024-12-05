@@ -206,10 +206,12 @@ class NodeCreator {
         return null;
     }
 
-    private InternalNode.Builder builderTemplate(final Class<?> targetClass, final Member member) {
-        return InternalNode.builder()
-                .nodeContext(nodeContext)
-                .targetClass(targetClass)
+    private InternalNode.Builder builderTemplate(
+            final Type type,
+            final Class<?> rawType,
+            final Member member) {
+
+        return InternalNode.builder(type, rawType, nodeContext.getRootTypeMap())
                 .member(member);
     }
 
@@ -221,9 +223,7 @@ class NodeCreator {
 
         final Class<?> rawType = TypeUtils.getRawType(type);
 
-        InternalNode node = builderTemplate(rawType, member)
-                .type(type)
-                .rawType(rawType)
+        InternalNode node = builderTemplate(type, rawType, member)
                 .parent(parent)
                 .nodeKind(getNodeKind(rawType))
                 .member(setter)
@@ -307,10 +307,7 @@ class NodeCreator {
 
         final Class<?> rawComponentType = TypeUtils.getRawType(genericComponentType);
         final Class<?> arrayClass = TypeUtils.getArrayClass(rawComponentType);
-        final InternalNode node = builderTemplate(arrayClass, member)
-                .type(arrayType)
-                .rawType(arrayClass)
-                .targetClass(arrayClass)
+        final InternalNode node = builderTemplate(arrayType, arrayClass, member)
                 .parent(parent)
                 .nodeKind(NodeKind.ARRAY)
                 .member(setter)
