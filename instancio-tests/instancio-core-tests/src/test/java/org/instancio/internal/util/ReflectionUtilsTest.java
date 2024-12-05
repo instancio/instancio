@@ -118,6 +118,12 @@ class ReflectionUtilsTest {
 
     @Test
     void getField() {
+        record SampleRecord(String foo, int bar) {}
+
+        assertThat(ReflectionUtils.getField(SampleRecord.class, "foo"))
+                .extracting(Field::getName)
+                .isEqualTo("foo");
+
         assertThat(ReflectionUtils.getField(Person.class, "name"))
                 .isNotNull()
                 .extracting(Field::getName)
