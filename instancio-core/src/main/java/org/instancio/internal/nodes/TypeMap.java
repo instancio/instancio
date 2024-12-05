@@ -16,7 +16,9 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.internal.util.ObjectUtils;
+import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -36,24 +38,17 @@ public final class TypeMap {
     private final Map<TypeVariable<?>, Type> rootTypeMap;
     private final Map<Type, Type> typeVariableMap;
 
-    TypeMap(final Type genericType,
-            final Map<TypeVariable<?>, Type> rootTypeMap,
-            final Map<Type, Type> subtypeMappingTypeMap,
-            final TypeMap copyFrom) {
-
-        this.rootTypeMap = new HashMap<>(copyFrom.rootTypeMap);
-        this.rootTypeMap.putAll(rootTypeMap);
-
-        this.typeVariableMap = new HashMap<>(copyFrom.typeVariableMap);
-        this.typeVariableMap.putAll(buildTypeMap(genericType, subtypeMappingTypeMap));
-    }
-
-    TypeMap(final Type genericType,
-            final Map<TypeVariable<?>, Type> rootTypeMap,
-            final Map<Type, Type> subtypeMappingTypeMap) {
+    TypeMap(@NotNull final Type genericType,
+            @NotNull final Map<TypeVariable<?>, Type> rootTypeMap,
+            @NotNull final Map<Type, Type> subtypeMappingTypeMap) {
 
         this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
-        this.typeVariableMap = Collections.unmodifiableMap(buildTypeMap(genericType, subtypeMappingTypeMap));
+        this.typeVariableMap = buildTypeMap(genericType, subtypeMappingTypeMap);
+    }
+
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
+    public Map<TypeVariable<?>, Type> getRootTypeMap() {
+        return rootTypeMap;
     }
 
     public Type get(final Type type) {

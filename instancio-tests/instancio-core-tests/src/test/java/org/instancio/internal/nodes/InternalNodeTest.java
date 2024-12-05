@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,22 +72,20 @@ class InternalNodeTest {
         final InternalNode parent = createNode(Person.class, new TypeToken<Person>() {});
         final List<InternalNode> children = Collections.singletonList(createNode(String.class, new TypeToken<String>() {}));
 
-        final InternalNode node = InternalNode.builder()
-                .type(Types.LIST_STRING.get())
-                .rawType(List.class)
-                .targetClass(List.class)
+        final InternalNode node = InternalNode.builder(
+                        Types.LIST_STRING.get(),
+                        List.class,
+                        Nodes.nodeContext().getRootTypeMap())
                 .nodeKind(NodeKind.COLLECTION)
                 .member(ReflectionUtils.getField(ListString.class, "list"))
                 .member(ReflectionUtils.getSetterMethod(ListString.class, "setList", List.class))
                 .parent(parent)
-                .nodeContext(Nodes.nodeContext())
                 .children(children)
                 .cyclic()
                 .build();
 
         final InternalNode copy = node.toBuilder().build();
 
-        assertThat(copy.getNodeContext()).isEqualTo(node.getNodeContext());
         assertThat(copy.getType()).isEqualTo(node.getType());
         assertThat(copy.getRawType()).isEqualTo(node.getRawType());
         assertThat(copy.getTargetClass()).isEqualTo(node.getTargetClass());
@@ -101,6 +100,42 @@ class InternalNodeTest {
     }
 
     @Nested
+    class TargetClassTest {
+
+        @Test
+        void differentRawTypeAndTargetClass() {
+            final Class<?> rawType = List.class;
+            final Class<?> targetClass = LinkedList.class;
+
+            final InternalNode node = InternalNode.builder(
+                            Types.LIST_STRING.get(),
+                            rawType,
+                            Nodes.nodeContext().getRootTypeMap())
+                    .targetClass(targetClass)
+                    .build();
+
+            assertNode(node)
+                    .hasRawType(rawType)
+                    .hasTargetClass(targetClass);
+        }
+
+        @Test
+        void ifNotSpecified_TargetClassShouldDefaultToRawType() {
+            final Class<?> rawType = List.class;
+
+            final InternalNode node = InternalNode.builder(
+                            Types.LIST_STRING.get(),
+                            rawType,
+                            Nodes.nodeContext().getRootTypeMap())
+                    .build();
+
+            assertNode(node)
+                    .hasRawType(rawType)
+                    .hasTargetClass(rawType);
+        }
+    }
+
+    @Nested
     class EqualsTest {
 
         @Test
@@ -110,18 +145,19 @@ class InternalNodeTest {
 
             InternalNode bazInteger = createNode(List.class, typeBazInteger);
             InternalNode bazString = createNode(List.class, typeBazString);
-            InternalNode bazIntegerClassNode = InternalNode.builder()
-                    .nodeContext(Nodes.nodeContext())
-                    .type(typeBazInteger.get())
-                    .rawType(Baz.class)
-                    .targetClass(Baz.class)
+            InternalNode bazIntegerClassNode = InternalNode.builder(
+                            typeBazInteger.get(),
+                            Baz.class,
+                            Nodes.nodeContext().getRootTypeMap())
                     .build();
 
             assertThat(bazString)
-                    .isEqualTo(bazString).hasSameHashCodeAs(bazString)
-                    .isNotEqualTo(bazInteger).doesNotHaveSameHashCodeAs(bazInteger);
+                    .isNotEqualTo(bazInteger)
+                    .doesNotHaveSameHashCodeAs(bazInteger);
 
-            assertThat(bazInteger).isNotEqualTo(bazIntegerClassNode).doesNotHaveSameHashCodeAs(bazIntegerClassNode);
+            assertThat(bazInteger)
+                    .isNotEqualTo(bazIntegerClassNode)
+                    .doesNotHaveSameHashCodeAs(bazIntegerClassNode);
         }
 
         @Test
@@ -298,10 +334,7 @@ class InternalNodeTest {
     }
 
     private static InternalNode createNode(Class<?> klass, TypeToken<?> type) {
-        return InternalNode.builder()
-                .nodeContext(Nodes.nodeContext())
-                .type(type.get())
-                .rawType(klass)
+        return InternalNode.builder(type.get(), klass, Nodes.nodeContext().getRootTypeMap())
                 .targetClass(klass)
                 .build();
     }

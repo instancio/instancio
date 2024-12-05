@@ -37,8 +37,10 @@ class DeclaredAndInheritedMemberCollectorTest {
     private final DeclaredAndInheritedMemberCollector collector = new DeclaredAndInheritedMemberCollector(
             Settings.defaults());
 
-    private final InternalNode node = InternalNode.builder()
-            .nodeContext(Nodes.nodeContext())
+    private final InternalNode node = InternalNode.builder(
+                    BaseClassSubClassInheritance.SubClass.class,
+                    BaseClassSubClassInheritance.SubClass.class,
+                    Nodes.nodeContext().getRootTypeMap())
             .build();
 
     @Test

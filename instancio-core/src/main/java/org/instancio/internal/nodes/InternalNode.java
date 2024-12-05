@@ -16,7 +16,9 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.Node;
+import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Format;
+import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.Verify;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +26,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -32,36 +35,31 @@ import java.util.Objects;
 @SuppressWarnings("PMD.GodClass")
 public final class InternalNode implements Node {
 
-    private final NodeContext nodeContext;
     private final Type type;
     private final Class<?> rawType;
     private final Class<?> targetClass;
     private final Field field;
     private final Method setter;
     private final InternalNode parent;
-    private final TypeMap typeMap;
     private final NodeKind nodeKind;
-    private final int depth;
     private final boolean cyclic;
+    private final TypeMap typeMap;
     private List<InternalNode> children;
+    private final int depth;
     private int hash;
 
     private InternalNode(final Builder builder) {
-        nodeContext = builder.nodeContext;
         type = builder.type;
         rawType = builder.rawType;
         targetClass = builder.targetClass;
         field = builder.field;
         setter = builder.setter;
         parent = builder.parent;
-        children = builder.children == null ? Collections.emptyList() : Collections.unmodifiableList(builder.children);
         nodeKind = builder.nodeKind;
-        typeMap = builder.typeMap == null
-                ? new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap)
-                : new TypeMap(type, nodeContext.getRootTypeMap(), builder.additionalTypeMap, builder.typeMap);
-
-        depth = parent == null ? 0 : parent.depth + 1;
         cyclic = builder.cyclic;
+        typeMap = builder.typeMap;
+        children = CollectionUtils.asUnmodifiableList(builder.children);
+        depth = parent == null ? 0 : parent.depth + 1;
     }
 
     public NodeKind getNodeKind() {
@@ -85,30 +83,6 @@ public final class InternalNode implements Node {
                 || is(NodeKind.MAP)
                 || is(NodeKind.ARRAY)
                 || is(NodeKind.CONTAINER);
-    }
-
-    public Builder toBuilder() {
-        final Builder builder = new Builder();
-        builder.nodeContext = nodeContext;
-        builder.type = type;
-        builder.rawType = rawType;
-        builder.targetClass = targetClass;
-        builder.field = field;
-        builder.setter = setter;
-        builder.parent = parent;
-        builder.children = children;
-        builder.nodeKind = nodeKind;
-        builder.cyclic = cyclic;
-        builder.typeMap = typeMap;
-        return builder;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public NodeContext getNodeContext() {
-        return nodeContext;
     }
 
     /**
@@ -311,10 +285,30 @@ public final class InternalNode implements Node {
         return sb.toString();
     }
 
+    public Builder toBuilder() {
+        final Builder builder = new Builder(type, rawType, typeMap.getRootTypeMap());
+        builder.targetClass = targetClass;
+        builder.field = field;
+        builder.setter = setter;
+        builder.parent = parent;
+        builder.children = children;
+        builder.nodeKind = nodeKind;
+        builder.cyclic = cyclic;
+        builder.typeMap = typeMap;
+        return builder;
+    }
+
+    public static Builder builder(
+            final Type type,
+            final Class<?> rawType,
+            final Map<TypeVariable<?>, Type> rootTypeMap) {
+
+        return new Builder(type, rawType, rootTypeMap);
+    }
+
     public static final class Builder {
-        private NodeContext nodeContext;
-        private Type type;
-        private Class<?> rawType;
+        private final Type type;
+        private final Class<?> rawType;
         private Class<?> targetClass;
         private Field field;
         private Method setter;
@@ -322,27 +316,18 @@ public final class InternalNode implements Node {
         private List<InternalNode> children;
         private NodeKind nodeKind;
         private boolean cyclic;
-        private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
-        // only set when making toBuilder() copies
-        // might be worth refactoring
         private TypeMap typeMap;
+        private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
+        private final Map<TypeVariable<?>, Type> rootTypeMap;
 
-        private Builder() {
-        }
+        private Builder(
+                final Type type,
+                final Class<?> rawType,
+                final Map<TypeVariable<?>, Type> rootTypeMap) {
 
-        public Builder nodeContext(final NodeContext nodeContext) {
-            this.nodeContext = nodeContext;
-            return this;
-        }
-
-        public Builder type(final Type type) {
             this.type = type;
-            return this;
-        }
-
-        public Builder rawType(final Class<?> rawType) {
             this.rawType = rawType;
-            return this;
+            this.rootTypeMap = rootTypeMap;
         }
 
         public Builder targetClass(final Class<?> targetClass) {
@@ -396,6 +381,8 @@ public final class InternalNode implements Node {
         }
 
         public InternalNode build() {
+            targetClass = ObjectUtils.defaultIfNull(targetClass, rawType);
+            typeMap = new TypeMap(type, rootTypeMap, additionalTypeMap);
             return new InternalNode(this);
         }
     }
