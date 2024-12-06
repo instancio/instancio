@@ -61,7 +61,7 @@ public final class NodeFactory {
     }
 
     public InternalNode createRootNode(final Type type) {
-        final InternalNode root = nodeCreator.createNode(type, null, null);
+        final InternalNode root = nodeCreator.createNode(type, /* parent = */ null);
 
         final Queue<InternalNode> nodeQueue = new ArrayDeque<>();
         nodeQueue.offer(root);
@@ -173,7 +173,7 @@ public final class NodeFactory {
     private List<InternalNode> createContainerNodeChildren(final InternalNode parent, final Type... types) {
         final List<InternalNode> results = new ArrayList<>(types.length);
         for (Type type : types) {
-            final InternalNode node = nodeCreator.createNode(type, null, parent);
+            final InternalNode node = nodeCreator.createNode(type, parent);
             if (node != null) {
                 results.add(node);
             }
