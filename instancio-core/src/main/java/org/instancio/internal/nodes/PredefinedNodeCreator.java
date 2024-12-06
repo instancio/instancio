@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.internal.RootType;
 import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,11 +29,14 @@ import java.util.OptionalLong;
 
 class PredefinedNodeCreator {
 
-    private final NodeContext nodeContext;
+    private final RootType rootType;
     private final NodeKindResolverFacade nodeKindResolverFacade;
 
-    PredefinedNodeCreator(final NodeContext nodeContext, final NodeKindResolverFacade nodeKindResolverFacade) {
-        this.nodeContext = nodeContext;
+    PredefinedNodeCreator(
+            final RootType rootType,
+            final NodeKindResolverFacade nodeKindResolverFacade) {
+
+        this.rootType = rootType;
         this.nodeKindResolverFacade = nodeKindResolverFacade;
     }
 
@@ -61,19 +65,19 @@ class PredefinedNodeCreator {
      * the child node. For this reason, the nodes are defined manually.
      */
     private InternalNode createOptional(
-            final Class<?> type,
-            final Class<?> childType,
-            final Member member,
-            final InternalNode parent) {
+            @NotNull final Class<?> type,
+            @NotNull final Class<?> childType,
+            @Nullable final Member member,
+            @Nullable final InternalNode parent) {
 
-        final InternalNode result = InternalNode.builder(type, type, nodeContext.getRootTypeMap())
+        final InternalNode result = InternalNode.builder(type, type, rootType)
                 .nodeKind(NodeKind.CONTAINER)
                 .member(member)
                 .parent(parent)
                 .build();
 
         result.setChildren(Collections.singletonList(
-                InternalNode.builder(childType, childType, nodeContext.getRootTypeMap())
+                InternalNode.builder(childType, childType, rootType)
                         .nodeKind(nodeKindResolverFacade.getNodeKind(childType))
                         .parent(result)
                         .build()));

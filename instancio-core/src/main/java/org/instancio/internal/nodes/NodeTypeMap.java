@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.internal.RootType;
 import org.instancio.internal.util.ObjectUtils;
-import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,34 +32,33 @@ import java.util.Objects;
 /**
  * Helper class for mapping type variables to actual type arguments.
  */
-public final class TypeMap {
+public final class NodeTypeMap {
 
-    private final Map<TypeVariable<?>, Type> rootTypeMap;
-    private final Map<Type, Type> typeVariableMap;
+    private final RootType rootType;
+    private final Map<Type, Type> typeMap;
 
-    TypeMap(@NotNull final Type genericType,
-            @NotNull final Map<TypeVariable<?>, Type> rootTypeMap,
-            @NotNull final Map<Type, Type> subtypeMappingTypeMap) {
+    NodeTypeMap(@NotNull final Type genericType,
+                @NotNull final RootType rootType,
+                @NotNull final Map<Type, Type> subtypeMappingTypeMap) {
 
-        this.rootTypeMap = Collections.unmodifiableMap(rootTypeMap);
-        this.typeVariableMap = buildTypeMap(genericType, subtypeMappingTypeMap);
+        this.rootType = rootType;
+        this.typeMap = buildTypeMap(genericType, subtypeMappingTypeMap);
     }
 
-    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    public Map<TypeVariable<?>, Type> getRootTypeMap() {
-        return rootTypeMap;
+    public RootType getRootType() {
+        return rootType;
     }
 
     public Type get(final Type type) {
-        return typeVariableMap.get(type);
+        return typeMap.get(type);
     }
 
     public Type getOrDefault(final Type type, final Type defaultValue) {
-        return typeVariableMap.getOrDefault(type, defaultValue);
+        return typeMap.getOrDefault(type, defaultValue);
     }
 
     public int size() {
-        return typeVariableMap.size();
+        return typeMap.size();
     }
 
     /**
@@ -89,10 +87,12 @@ public final class TypeMap {
             return map;
         }
 
-        if (type instanceof TypeVariable && rootTypeMap.containsKey(type)) {
-            final Type mappedType = rootTypeMap.get(type);
-            map.put(type, mappedType);
-            return map;
+        if (type instanceof TypeVariable) {
+            final Type mappedType = rootType.getTypeMapping(type);
+            if (mappedType != null) {
+                map.put(type, mappedType);
+                return map;
+            }
         }
 
         if (type instanceof ParameterizedType) {
@@ -114,7 +114,7 @@ public final class TypeMap {
         if (type instanceof Class || type instanceof ParameterizedType || type instanceof GenericArrayType) {
             return type;
         } else if (type instanceof TypeVariable) {
-            return rootTypeMap.get(type);
+            return rootType.getTypeMapping(type);
         } else if (type instanceof WildcardType) {
             WildcardType wType = (WildcardType) type;
             return resolveTypeMapping(wType.getUpperBounds()[0]); // TODO multiple bounds
@@ -125,16 +125,13 @@ public final class TypeMap {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof TypeMap)) return false;
-        final TypeMap other = (TypeMap) o;
-        return Objects.equals(rootTypeMap, other.rootTypeMap)
-                && Objects.equals(typeVariableMap, other.typeVariableMap);
+        if (!(o instanceof NodeTypeMap)) return false;
+        final NodeTypeMap other = (NodeTypeMap) o;
+        return Objects.equals(typeMap, other.typeMap);
     }
 
     @Override
     public int hashCode() {
-        int result = rootTypeMap != null ? rootTypeMap.hashCode() : 0;
-        result = 31 * result + (typeVariableMap != null ? typeVariableMap.hashCode() : 0);
-        return result;
+        return typeMap == null ? 0 : typeMap.hashCode();
     }
 }

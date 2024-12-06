@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.context;
+package org.instancio.internal;
 
-import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.TypeUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +30,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class ModelContextHelper {
-    private static final Logger LOG = LoggerFactory.getLogger(ModelContextHelper.class);
+public final class RootType {
 
-    static Map<TypeVariable<?>, Type> buildRootTypeMap(
+    private static final Logger LOG = LoggerFactory.getLogger(RootType.class);
+
+    private final Type type;
+    private final List<Type> typeParameters;
+    private final Map<Type, Type> typeMap;
+
+    public RootType(
+            @NotNull final Type type,
+            @NotNull final List<Type> typeParameters) {
+
+        this.type = type;
+        this.typeParameters = typeParameters;
+        this.typeMap = buildRootTypeMap(type, typeParameters);
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public List<Type> getTypeParameters() {
+        return typeParameters;
+    }
+
+    @Nullable
+    public Type getTypeMapping(Type type) {
+        return typeMap.get(type);
+    }
+
+    private static Map<Type, Type> buildRootTypeMap(
             final Type rootType,
             final List<Type> rootTypeParameters) {
 
@@ -49,7 +76,7 @@ final class ModelContextHelper {
                 : rootClass;
 
         final TypeVariable<?>[] typeVariables = targetClass.getTypeParameters();
-        final Map<TypeVariable<?>, Type> typeMap = new HashMap<>();
+        final Map<Type, Type> typeMap = new HashMap<>();
 
         for (int i = 0; i < typeVariables.length; i++) {
             final TypeVariable<?> typeVariable = typeVariables[i];
@@ -63,12 +90,8 @@ final class ModelContextHelper {
     }
 
     private static void populateTypeMapFromGenericSuperclass(
-            @Nullable final Class<?> rootClass,
-            final Map<TypeVariable<?>, Type> typeMap) {
-
-        if (rootClass == null) {
-            return;
-        }
+            final Class<?> rootClass,
+            final Map<Type, Type> typeMap) {
 
         final Type gsClass = rootClass.getGenericSuperclass();
         if (gsClass instanceof ParameterizedType) {
@@ -91,9 +114,5 @@ final class ModelContextHelper {
         if (gsClass != null) {
             populateTypeMapFromGenericSuperclass(TypeUtils.getRawType(gsClass), typeMap);
         }
-    }
-
-    private ModelContextHelper() {
-        // non-instantiable
     }
 }

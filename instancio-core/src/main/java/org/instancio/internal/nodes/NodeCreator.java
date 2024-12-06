@@ -55,9 +55,9 @@ class NodeCreator {
 
     NodeCreator(final NodeContext nodeContext) {
         this.nodeContext = nodeContext;
-        this.typeHelper = new TypeHelper(nodeContext);
+        this.typeHelper = new TypeHelper(nodeContext.getRootType());
         this.nodeKindResolverFacade = new NodeKindResolverFacade(nodeContext.getInternalServiceProviders());
-        this.predefinedNodeCreator = new PredefinedNodeCreator(nodeContext, nodeKindResolverFacade);
+        this.predefinedNodeCreator = new PredefinedNodeCreator(nodeContext.getRootType(), nodeKindResolverFacade);
     }
 
     @Nullable
@@ -211,7 +211,7 @@ class NodeCreator {
             final Class<?> rawType,
             final Member member) {
 
-        return InternalNode.builder(type, rawType, nodeContext.getRootTypeMap())
+        return InternalNode.builder(type, rawType, nodeContext.getRootType())
                 .member(member);
     }
 

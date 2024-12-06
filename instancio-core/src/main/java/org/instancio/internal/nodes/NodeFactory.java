@@ -53,7 +53,7 @@ public final class NodeFactory {
     public NodeFactory(final NodeContext nodeContext) {
         this.nodeContext = nodeContext;
         this.nodeCreator = new NodeCreator(nodeContext);
-        this.typeHelper = new TypeHelper(nodeContext);
+        this.typeHelper = new TypeHelper(nodeContext.getRootType());
         this.originSelectorValidator = new OriginSelectorValidator(nodeContext);
         this.memberCollector = new DeclaredAndInheritedMemberCollector(nodeContext.getSettings());
         this.feedSpecHandler = DefaultFeedSpecHandler.create(nodeContext);

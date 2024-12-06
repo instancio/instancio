@@ -25,12 +25,12 @@ import org.jetbrains.annotations.NotNull;
 
 class UsingGeneratorResolverHandler implements NodeHandler {
 
-    private final ModelContext<?> context;
+    private final ModelContext context;
     private final GeneratorResolver generatorResolver;
     private final GeneratedValuePostProcessor stringPostProcessor;
 
     UsingGeneratorResolverHandler(
-            final ModelContext<?> context,
+            final ModelContext context,
             final GeneratorResolver generatorResolver) {
 
         this.context = context;

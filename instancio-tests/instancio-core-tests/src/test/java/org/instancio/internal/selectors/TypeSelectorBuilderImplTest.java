@@ -17,6 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.RootType;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
@@ -29,11 +30,8 @@ import org.instancio.testsupport.fixtures.Nodes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -151,10 +149,10 @@ class TypeSelectorBuilderImplTest {
     }
 
     private static List<InternalNode> toNodes(final Class<?>... types) {
-        final Map<TypeVariable<?>, Type> rootTypeMap = Nodes.nodeContext().getRootTypeMap();
+        final RootType rootType = Nodes.nodeContext().getRootType();
 
         return Arrays.stream(types)
-                .map(type -> InternalNode.builder(type, type, rootTypeMap).build())
+                .map(type -> InternalNode.builder(type, type, rootType).build())
                 .collect(Collectors.toList());
     }
 

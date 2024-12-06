@@ -36,13 +36,13 @@ import java.util.function.Predicate;
 class AssignmentNodeHandler implements NodeHandler {
     private static final Logger LOG = LoggerFactory.getLogger(AssignmentNodeHandler.class);
 
-    private final ModelContext<?> context;
+    private final ModelContext context;
     private final AssigmentObjectStore assigmentObjectStore;
     private final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor;
     private final Set<InternalAssignment> unresolvedAssignments = new LinkedHashSet<>();
 
     private AssignmentNodeHandler(
-            final ModelContext<?> context,
+            final ModelContext context,
             final AssigmentObjectStore assigmentObjectStore,
             final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
 
@@ -52,7 +52,7 @@ class AssignmentNodeHandler implements NodeHandler {
     }
 
     static AssignmentNodeHandler create(
-            final ModelContext<?> context,
+            final ModelContext context,
             final AssigmentObjectStore assigmentObjectStore,
             final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
 

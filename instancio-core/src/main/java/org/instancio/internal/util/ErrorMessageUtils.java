@@ -265,7 +265,7 @@ public final class ErrorMessageUtils {
      * @see #mapCouldNotBePopulated(ModelContext, InternalNode, int)
      */
     public static String collectionCouldNotBePopulated(
-            final ModelContext<?> context,
+            final ModelContext context,
             final InternalNode node,
             final int targetSize) {
 
@@ -315,7 +315,7 @@ public final class ErrorMessageUtils {
      * @see #collectionCouldNotBePopulated(ModelContext, InternalNode, int)
      */
     public static String mapCouldNotBePopulated(
-            final ModelContext<?> context,
+            final ModelContext context,
             final InternalNode node,
             final int targetSize) {
 

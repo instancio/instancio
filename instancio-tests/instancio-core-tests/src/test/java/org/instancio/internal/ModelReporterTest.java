@@ -46,7 +46,7 @@ class ModelReporterTest {
     @Test
     void consumeWithTraceLoggingAndVerboseModeNotEnabled() {
         final InternalModel<?> mockModel = Mockito.mock(InternalModel.class);
-        final ModelContext<?> context = ModelContext.builder(Phone.class).build();
+        final ModelContext context = ModelContext.builder(Phone.class).build();
 
         doReturn(context).when(mockModel).getModelContext();
 
@@ -60,7 +60,7 @@ class ModelReporterTest {
     void consumeWithVerbose() {
         final long seed = 123L;
 
-        final ModelContext<?> context = ModelContext.builder(Phone.class)
+        final ModelContext context = ModelContext.builder(Phone.class)
                 .withSeed(seed)
                 .withSupplier(field(Phone::getCountryCode), () -> "+123")
                 .verbose() // enable verbose

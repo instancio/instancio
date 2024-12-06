@@ -28,7 +28,7 @@ class UserSuppliedGeneratorHandlerTest {
 
     @Test
     void createShouldReturnNoopClass_whenModelContextHasNoGenerators() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class).build();
+        final ModelContext ctx = ModelContext.builder(String.class).build();
         final NodeHandler result = UserSuppliedGeneratorHandler.create(ctx, generatorProcessor);
 
         assertThat(result).isSameAs(NodeHandler.NOOP_HANDLER);
@@ -36,7 +36,7 @@ class UserSuppliedGeneratorHandlerTest {
 
     @Test
     void shouldReturnGeneratorHandler_whenModelContextHasGenerators() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class)
+        final ModelContext ctx = ModelContext.builder(String.class)
                 .withGenerator(allStrings(), random -> "foo")
                 .build();
 

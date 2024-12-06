@@ -25,18 +25,18 @@ import java.util.Optional;
 
 final class UserSuppliedGeneratorHandler implements NodeHandler {
 
-    private final ModelContext<?> modelContext;
+    private final ModelContext modelContext;
     private final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor;
 
     private UserSuppliedGeneratorHandler(
-            final ModelContext<?> modelContext,
+            final ModelContext modelContext,
             final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
 
         this.modelContext = modelContext;
         this.userSuppliedGeneratorProcessor = userSuppliedGeneratorProcessor;
     }
 
-    static NodeHandler create(final ModelContext<?> modelContext,
+    static NodeHandler create(final ModelContext modelContext,
                               final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
         return modelContext.getSelectorMaps().hasGenerators()
                 ? new UserSuppliedGeneratorHandler(modelContext, userSuppliedGeneratorProcessor)

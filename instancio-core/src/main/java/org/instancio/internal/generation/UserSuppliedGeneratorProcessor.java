@@ -39,13 +39,13 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  */
 public final class UserSuppliedGeneratorProcessor {
 
-    private final ModelContext<?> context;
+    private final ModelContext context;
     private final GeneratorResolver generatorResolver;
     private final SpiGeneratorResolver spiGeneratorResolver;
     private final EmitGeneratorHelper emitGeneratorHelper;
 
     public UserSuppliedGeneratorProcessor(
-            final ModelContext<?> context,
+            final ModelContext context,
             final GeneratorResolver generatorResolver,
             final SpiGeneratorResolver spiGeneratorResolver) {
 

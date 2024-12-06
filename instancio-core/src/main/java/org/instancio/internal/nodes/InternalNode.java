@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.Node;
+import org.instancio.internal.RootType;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
@@ -26,7 +27,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +43,7 @@ public final class InternalNode implements Node {
     private final InternalNode parent;
     private final NodeKind nodeKind;
     private final boolean cyclic;
-    private final TypeMap typeMap;
+    private final NodeTypeMap nodeTypeMap;
     private List<InternalNode> children;
     private final int depth;
     private int hash;
@@ -57,7 +57,7 @@ public final class InternalNode implements Node {
         parent = builder.parent;
         nodeKind = builder.nodeKind;
         cyclic = builder.cyclic;
-        typeMap = builder.typeMap;
+        nodeTypeMap = builder.nodeTypeMap;
         children = CollectionUtils.asUnmodifiableList(builder.children);
         depth = parent == null ? 0 : parent.depth + 1;
     }
@@ -143,8 +143,8 @@ public final class InternalNode implements Node {
         return parent;
     }
 
-    public TypeMap getTypeMap() {
-        return typeMap;
+    public NodeTypeMap getTypeMap() {
+        return nodeTypeMap;
     }
 
     public InternalNode getOnlyChild() {
@@ -286,7 +286,7 @@ public final class InternalNode implements Node {
     }
 
     public Builder toBuilder() {
-        final Builder builder = new Builder(type, rawType, typeMap.getRootTypeMap());
+        final Builder builder = new Builder(type, rawType, nodeTypeMap.getRootType());
         builder.targetClass = targetClass;
         builder.field = field;
         builder.setter = setter;
@@ -294,21 +294,22 @@ public final class InternalNode implements Node {
         builder.children = children;
         builder.nodeKind = nodeKind;
         builder.cyclic = cyclic;
-        builder.typeMap = typeMap;
+        builder.nodeTypeMap = nodeTypeMap;
         return builder;
     }
 
     public static Builder builder(
             final Type type,
             final Class<?> rawType,
-            final Map<TypeVariable<?>, Type> rootTypeMap) {
+            final RootType rootType) {
 
-        return new Builder(type, rawType, rootTypeMap);
+        return new Builder(type, rawType, rootType);
     }
 
     public static final class Builder {
         private final Type type;
         private final Class<?> rawType;
+        private final RootType rootType;
         private Class<?> targetClass;
         private Field field;
         private Method setter;
@@ -316,18 +317,17 @@ public final class InternalNode implements Node {
         private List<InternalNode> children;
         private NodeKind nodeKind;
         private boolean cyclic;
-        private TypeMap typeMap;
+        private NodeTypeMap nodeTypeMap;
         private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
-        private final Map<TypeVariable<?>, Type> rootTypeMap;
 
         private Builder(
                 final Type type,
                 final Class<?> rawType,
-                final Map<TypeVariable<?>, Type> rootTypeMap) {
+                final RootType rootType) {
 
             this.type = type;
             this.rawType = rawType;
-            this.rootTypeMap = rootTypeMap;
+            this.rootType = rootType;
         }
 
         public Builder targetClass(final Class<?> targetClass) {
@@ -382,7 +382,7 @@ public final class InternalNode implements Node {
 
         public InternalNode build() {
             targetClass = ObjectUtils.defaultIfNull(targetClass, rawType);
-            typeMap = new TypeMap(type, rootTypeMap, additionalTypeMap);
+            nodeTypeMap = new NodeTypeMap(type, rootType, additionalTypeMap);
             return new InternalNode(this);
         }
     }

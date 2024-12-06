@@ -184,7 +184,7 @@ class FieldSelectorBuilderImplTest {
 
     // Note: creates a minimal node for tests to pass (will throw an exception if toString() is called)
     private static InternalNode createNode(final Class<?> type, final String field) {
-        return InternalNode.builder(type, type, Nodes.nodeContext().getRootTypeMap())
+        return InternalNode.builder(type, type, Nodes.nodeContext().getRootType())
                 .member(getField(type, field))
                 .build();
     }

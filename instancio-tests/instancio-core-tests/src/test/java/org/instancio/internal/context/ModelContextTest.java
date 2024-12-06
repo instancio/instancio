@@ -41,6 +41,7 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.testsupport.fixtures.Types;
+import org.instancio.testsupport.utils.TypeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -70,13 +71,13 @@ class ModelContextTest {
     @Test
     void getRootType() {
         final Type rootGenericType = Types.FOO_LIST_INTEGER.get();
-        ModelContext<?> ctx = ModelContext.builder(rootGenericType).build();
-        assertThat(ctx.getRootType()).isEqualTo(rootGenericType);
+        ModelContext ctx = ModelContext.builder(rootGenericType).build();
+        assertThat(ctx.getRootType().getType()).isEqualTo(rootGenericType);
     }
 
     @Test
     void withNullableField() {
-        ModelContext<?> ctx = ModelContext.builder(Person.class)
+        ModelContext ctx = ModelContext.builder(Person.class)
                 .withNullable(toFieldSelector(NAME_FIELD))
                 .withNullable(toFieldSelector(ADDRESS_FIELD))
                 .build();
@@ -87,7 +88,7 @@ class ModelContextTest {
 
     @Test
     void withNullableClass() {
-        ModelContext<?> ctx = ModelContext.builder(Person.class)
+        ModelContext ctx = ModelContext.builder(Person.class)
                 .withNullable(all(Address.class))
                 .withNullable(all(UUID.class))
                 .build();
@@ -99,13 +100,13 @@ class ModelContextTest {
     @Test
     void withSeed() {
         final int expected = 123;
-        ModelContext<?> ctx = ModelContext.builder(Person.class).withSeed(expected).build();
+        ModelContext ctx = ModelContext.builder(Person.class).withSeed(expected).build();
         assertThat(ctx.getRandom().getSeed()).isEqualTo(expected);
     }
 
     @Test
     void withIgnoredField() {
-        ModelContext<?> ctx = ModelContext.builder(Person.class)
+        ModelContext ctx = ModelContext.builder(Person.class)
                 .withIgnored(toFieldSelector(NAME_FIELD))
                 .withIgnored(toFieldSelector(ADDRESS_FIELD))
                 .build();
@@ -116,7 +117,7 @@ class ModelContextTest {
 
     @Test
     void withIgnoredClass() {
-        ModelContext<?> ctx = ModelContext.builder(Person.class)
+        ModelContext ctx = ModelContext.builder(Person.class)
                 .withIgnored(Select.all(all(Address.class), all(Pet.class)))
                 .build();
 
@@ -140,7 +141,7 @@ class ModelContextTest {
             }
         };
 
-        ModelContext<?> ctx = ModelContext.builder(Person.class)
+        ModelContext ctx = ModelContext.builder(Person.class)
                 .withGenerator(field(ADDRESS_FIELD.getName()), addressGenerator)
                 .withGenerator(all(String.class), stringGenerator)
                 .build();
@@ -159,7 +160,7 @@ class ModelContextTest {
     @Test
     void withSuppliers() {
         final Supplier<Address> addressSupplier = Address::new;
-        ModelContext<?> ctx = ModelContext.builder(Person.class)
+        ModelContext ctx = ModelContext.builder(Person.class)
                 .withSupplier(field(ADDRESS_FIELD.getName()), addressSupplier)
                 .build();
 
@@ -177,7 +178,7 @@ class ModelContextTest {
 
         final GeneratorSpec<String> stringSpec = generators.string().minLength(5).allowEmpty();
 
-        ModelContext<?> ctx = ModelContext.builder(Person.class)
+        ModelContext ctx = ModelContext.builder(Person.class)
                 .withGeneratorSpec(field("pets"), gens -> petsSpec)
                 .withGeneratorSpec(allStrings(), gen -> stringSpec)
                 .build();
@@ -188,7 +189,7 @@ class ModelContextTest {
 
     @Test
     void withSubtypeMapping() {
-        ModelContext<?> ctx = ModelContext.builder(Person.class)
+        ModelContext ctx = ModelContext.builder(Person.class)
                 .withSubtype(all(Collection.class), HashSet.class)
                 .withSubtype(all(List.class), LinkedList.class)
                 .build();
@@ -199,7 +200,7 @@ class ModelContextTest {
 
     @Test
     void withFilter() {
-        ModelContext<?> ctx = ModelContext.builder(Person.class)
+        ModelContext ctx = ModelContext.builder(Person.class)
                 .filter(all(Collection.class), o -> true)
                 .filter(all(List.class), o -> false)
                 .build();
@@ -210,7 +211,7 @@ class ModelContextTest {
 
     @Test
     void nullSubtype() {
-        final ModelContext.Builder<Object> builder = ModelContext.builder(Person.class);
+        final ModelContext.Builder builder = ModelContext.builder(Person.class);
         final Selector allLists = all(List.class);
 
         assertThatThrownBy(() -> builder.withSubtype(allLists, null))
@@ -220,13 +221,13 @@ class ModelContextTest {
 
     @Test
     void lenient() {
-        final ModelContext<?> ctx = ModelContext.builder(Person.class).lenient().build();
+        final ModelContext ctx = ModelContext.builder(Person.class).lenient().build();
         assertThat(ctx.getSettings().get(Keys.MODE)).isEqualTo(Mode.LENIENT);
     }
 
     @Test
     void unusedSelectors() {
-        final ModelContext<?> ctx = ModelContext.builder(Person.class)
+        final ModelContext ctx = ModelContext.builder(Person.class)
                 .withSupplier(field("name"), () -> "foo")
                 .withIgnored(field("address"))
                 .build();
@@ -237,7 +238,7 @@ class ModelContextTest {
         ctx.isIgnored(mockNode(Person.class, ADDRESS_FIELD));
         ctx.reportUnusedSelectorWarnings(); // no error
 
-        final ModelContext<?> newCtx = ctx.toBuilder().build();
+        final ModelContext newCtx = ctx.toBuilder().build();
 
         assertThatThrownBy(newCtx::reportUnusedSelectorWarnings)
                 .as("Cloned context should have its own unused selectors state")
@@ -257,7 +258,7 @@ class ModelContextTest {
                 .set(Keys.INTEGER_MIN, min)
                 .set(Keys.INTEGER_MAX, max);
 
-        final ModelContext<?> ctx = ModelContext.builder(Person.class)
+        final ModelContext ctx = ModelContext.builder(Person.class)
                 .withSettings(settings1)
                 .withSettings(Settings.create())
                 .withSettings(settings2)
@@ -283,7 +284,7 @@ class ModelContextTest {
         final long seed = 37635;
         final int integerMinValue = 26546;
 
-        final ModelContext<?> ctx = ModelContext.builder(Person.class)
+        final ModelContext ctx = ModelContext.builder(Person.class)
                 .lenient()
                 .withGenerator(all(String.class), allStringsGenerator)
                 .withGenerator(toFieldSelector(ADDRESS_CITY_FIELD), addressCityGenerator)
@@ -298,7 +299,7 @@ class ModelContextTest {
                 .withSubtype(all(List.class), LinkedList.class)
                 .build();
 
-        final ModelContext<?> actual = ctx.toBuilder().build();
+        final ModelContext actual = ctx.toBuilder().build();
 
         assertThat(actual.getGenerator(mockNode(String.class))).get().isInstanceOf(GeneratorDecorator.class);
         assertThat(actual.getGenerator(mockNode(Person.class, ADDRESS_CITY_FIELD))).get().isInstanceOf(GeneratorDecorator.class);
@@ -325,21 +326,20 @@ class ModelContextTest {
         final long seed = 37635;
         final int integerMinValue = 26546;
 
-        final ModelContext<?> elementModel = ModelContext.builder(Person.class)
+        final ModelContext elementModel = ModelContext.builder(Person.class)
                 .withSeed(seed)
                 .withSettings(Settings.defaults().set(Keys.INTEGER_MIN, integerMinValue))
                 .withSubtype(all(List.class), LinkedList.class)
                 .build();
 
-        ModelContext<?> ctx = ModelContext.builder(List.class)
+        ModelContext ctx = ModelContext.builder(List.class)
                 .useModelAsTypeArgument(elementModel)
                 .build();
 
-        assertThat(ctx.getRootType()).isEqualTo(List.class);
-        assertThat(ctx.getRootTypeMap())
+        assertThat(ctx.getRootType().getType()).isEqualTo(List.class);
+        assertThat(ctx.getRootType().getTypeMapping(TypeUtils.getTypeVar(List.class, "E")))
                 .as("Model type should be added as a type parameter")
-                .hasSize(1)
-                .containsValue(Person.class);
+                .isEqualTo(Person.class);
 
         assertThat(ctx.getInternalServiceProviders()).isEqualTo(elementModel.getInternalServiceProviders());
         assertThat(ctx.getContextSource().getSubtypeMap())

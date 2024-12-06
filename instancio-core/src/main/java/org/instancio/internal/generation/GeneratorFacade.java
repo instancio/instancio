@@ -35,13 +35,13 @@ import java.util.Set;
 public class GeneratorFacade {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorFacade.class);
 
-    private final ModelContext<?> context;
+    private final ModelContext context;
     private final AssignmentNodeHandler assignmentNodeHandler;
     private final NodeHandler userSuppliedGeneratorHandler;
     private final GeneratedPojoStore generatedPojoStore;
     private final List<NodeHandler> nodeHandlers = new ArrayList<>();
 
-    public GeneratorFacade(final ModelContext<?> context, final AssigmentObjectStore assigmentObjectStore) {
+    public GeneratorFacade(final ModelContext context, final AssigmentObjectStore assigmentObjectStore) {
         this.context = context;
         this.generatedPojoStore = GeneratedPojoStore.createStore(context);
 

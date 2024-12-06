@@ -76,7 +76,7 @@ class InstancioEngine {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioEngine.class);
 
     private final GeneratorFacade generatorFacade;
-    private final ModelContext<?> context;
+    private final ModelContext context;
     private final InternalNode rootNode;
     private final ErrorHandler errorHandler;
     private final CallbackHandler callbackHandler;

@@ -30,13 +30,13 @@ import java.lang.reflect.Type;
 
 final class SetModelValidatingListener implements GenerationListener {
 
-    private final ModelContext<?> context;
+    private final ModelContext context;
 
-    private SetModelValidatingListener(final ModelContext<?> context) {
+    private SetModelValidatingListener(final ModelContext context) {
         this.context = context;
     }
 
-    static GenerationListener create(final ModelContext<?> context) {
+    static GenerationListener create(final ModelContext context) {
         return context.getSelectorMaps().hasSetModels()
                 ? new SetModelValidatingListener(context)
                 : NOOP_LISTENER;
@@ -49,13 +49,13 @@ final class SetModelValidatingListener implements GenerationListener {
      */
     @Override
     public void objectCreated(final InternalNode node, final GeneratorResult result) {
-        final ModelContext<?> otherContext = context.getSetModelSelectorMap().getContext(node);
+        final ModelContext otherContext = context.getSetModelSelectorMap().getContext(node);
 
         if (otherContext == null) {
             return;
         }
 
-        final Type modelRootType = otherContext.getRootType();
+        final Type modelRootType = otherContext.getRootType().getType();
         final Class<?> modelRawType = TypeUtils.getRawType(modelRootType);
         final Class<?> targetClass = node.getTargetClass().isPrimitive()
                 ? PrimitiveWrapperBiLookup.getEquivalent(node.getTargetClass())

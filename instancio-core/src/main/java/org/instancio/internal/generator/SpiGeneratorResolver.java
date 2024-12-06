@@ -48,7 +48,7 @@ public class SpiGeneratorResolver {
     private final AfterGenerate afterGenerate;
 
     public SpiGeneratorResolver(
-            final ModelContext<?> modelContext,
+            final ModelContext modelContext,
             final GeneratorContext generatorContext,
             final GeneratorResolver generatorResolver) {
 

@@ -33,9 +33,9 @@ final class NodeFilter implements NodePopulationFilter {
     private final boolean isMethodAssignment;
     private final boolean overwriteExistingValues;
     private final OnSetMethodNotFound onSetMethodNotFound;
-    private final ModelContext<?> context;
+    private final ModelContext context;
 
-    NodeFilter(final ModelContext<?> context) {
+    NodeFilter(final ModelContext context) {
         this.context = context;
         this.isMethodAssignment = context.getSettings().get(Keys.ASSIGNMENT_TYPE) == AssignmentType.METHOD;
         this.onSetMethodNotFound = context.getSettings().get(Keys.ON_SET_METHOD_NOT_FOUND);

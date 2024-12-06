@@ -35,7 +35,7 @@ public final class AnnotationExtractor {
     private final BeanValidationTarget beanValidationTarget;
     private final GetterMethodResolver getterMethodResolver;
 
-    public AnnotationExtractor(final ModelContext<?> context) {
+    public AnnotationExtractor(final ModelContext context) {
         this.beanValidationTarget = context.getSettings().get(Keys.BEAN_VALIDATION_TARGET);
         this.getterMethodResolver = new GetterMethodResolverImpl();
     }

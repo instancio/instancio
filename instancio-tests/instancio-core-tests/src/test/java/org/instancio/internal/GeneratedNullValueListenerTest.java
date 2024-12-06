@@ -34,7 +34,7 @@ class GeneratedNullValueListenerTest {
 
     @Test
     void createShouldReturnNoopClass_whenAllSelectorMapsAreEmpty() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class).build();
+        final ModelContext ctx = ModelContext.builder(String.class).build();
         final GenerationListener result = GeneratedNullValueListener.create(ctx);
 
         assertThat(result).isSameAs(GenerationListener.NOOP_LISTENER);
@@ -42,7 +42,7 @@ class GeneratedNullValueListenerTest {
 
     @Test
     void createShouldReturnNoopClass_whenLenientModeIsEnabled() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class)
+        final ModelContext ctx = ModelContext.builder(String.class)
                 .withGenerator(allStrings(), random -> null)
                 .lenient()
                 .build();
@@ -58,7 +58,7 @@ class GeneratedNullValueListenerTest {
      */
     @MethodSource("args")
     @ParameterizedTest
-    void createShouldReturnGeneratedNullValueListener_whenSelectorIsPresent(final ModelContext<?> ctx) {
+    void createShouldReturnGeneratedNullValueListener_whenSelectorIsPresent(final ModelContext ctx) {
         final GenerationListener result = GeneratedNullValueListener.create(ctx);
 
         assertThat(result).isExactlyInstanceOf(GeneratedNullValueListener.class);

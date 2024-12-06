@@ -62,7 +62,7 @@ final class ModelReporter {
     }
 
     private static String createModelDump(final InternalModel<?> model) {
-        final ModelContext<?> context = model.getModelContext();
+        final ModelContext context = model.getModelContext();
         final InternalNode rootNode = model.getRootNode();
         final NodeStats nodeStats = NodeStats.compute(rootNode);
         final String location = Format.firstNonInstancioStackTraceLine(new Throwable());
@@ -105,7 +105,7 @@ final class ModelReporter {
 
     private static void appendSelectorMatches(final StringBuilder sb, final InternalModel<?> model) {
         final InternalNode rootNode = model.getRootNode();
-        final ModelContext<?> context = model.getModelContext();
+        final ModelContext context = model.getModelContext();
         final Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> map = context.getSelectors(rootNode);
 
         sb.append("### Selectors").append(NL)

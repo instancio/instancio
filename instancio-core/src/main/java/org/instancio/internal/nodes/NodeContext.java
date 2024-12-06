@@ -20,6 +20,7 @@ import org.instancio.Random;
 import org.instancio.TargetSelector;
 import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
+import org.instancio.internal.RootType;
 import org.instancio.internal.context.BooleanSelectorMap;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.context.SelectorMap;
@@ -29,19 +30,16 @@ import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 public final class NodeContext {
-    private final ModelContext<?> modelContext;
+    private final ModelContext modelContext;
     private final int maxDepth;
     private final Settings settings;
     private final Random random;
-    private final Map<TypeVariable<?>, Type> rootTypeMap;
     private final BooleanSelectorMap ignoredSelectorMap;
     private final SubtypeSelectorMap subtypeSelectorMap;
     private final BooleanSelectorMap assignmentOriginSelectors;
@@ -49,12 +47,11 @@ public final class NodeContext {
     private final TypeResolverFacade typeResolverFacade;
     private final List<InternalServiceProvider> internalServiceProviders;
 
-    public NodeContext(final ModelContext<?> modelContext) {
+    public NodeContext(final ModelContext modelContext) {
         this.modelContext = modelContext;
         maxDepth = modelContext.getMaxDepth();
         settings = modelContext.getSettings();
         random = modelContext.getRandom();
-        rootTypeMap = modelContext.getRootTypeMap();
         ignoredSelectorMap = modelContext.getIgnoreSelectorMap();
         subtypeSelectorMap = modelContext.getSubtypeSelectorMap();
         assignmentOriginSelectors = modelContext.getAssignmentOriginSelectorMap();
@@ -75,8 +72,8 @@ public final class NodeContext {
         return random;
     }
 
-    public Map<TypeVariable<?>, Type> getRootTypeMap() {
-        return rootTypeMap;
+    public RootType getRootType() {
+        return modelContext.getRootType();
     }
 
     public Set<TargetSelector> getAssignmentOriginSelectors(final InternalNode node) {

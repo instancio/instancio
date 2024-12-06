@@ -24,23 +24,23 @@ import java.util.Map;
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 public class ModelContextSelectorMap {
 
-    private final SelectorMap<ModelContext<?>> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<ModelContext> selectorMap = new SelectorMapImpl<>();
 
-    void putAll(final Map<TargetSelector, ModelContext<?>> modelContexts) {
-        for (Map.Entry<TargetSelector, ModelContext<?>> entry : modelContexts.entrySet()) {
+    void putAll(final Map<TargetSelector, ModelContext> modelContexts) {
+        for (Map.Entry<TargetSelector, ModelContext> entry : modelContexts.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
 
-    void put(final TargetSelector selector, final ModelContext<?> value) {
+    void put(final TargetSelector selector, final ModelContext value) {
         this.selectorMap.put(selector, value);
     }
 
-    public SelectorMap<ModelContext<?>> getSelectorMap() {
+    public SelectorMap<ModelContext> getSelectorMap() {
         return selectorMap;
     }
 
-    public ModelContext<?> getContext(final InternalNode node) {
+    public ModelContext getContext(final InternalNode node) {
         return selectorMap.getValue(node).orElse(null);
     }
 }
