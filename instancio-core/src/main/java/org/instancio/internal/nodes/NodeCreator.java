@@ -62,10 +62,9 @@ class NodeCreator {
 
     @Nullable
     InternalNode createNode(@NotNull final Type type,
-                            @Nullable final Member member,
                             @Nullable final InternalNode parent) {
 
-        return createNode(type, member, /* setter = */ null, parent);
+        return createNode(type, /* member = */ null, /* setter = */ null, parent);
     }
 
     /**
