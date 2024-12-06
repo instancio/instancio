@@ -15,7 +15,7 @@
  */
 package org.instancio.internal;
 
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +25,7 @@ class DelayedRecordComponentNodeTest {
     @Test
     void verifyToString() {
         final DelayedRecordComponentNode delayedNode = new DelayedRecordComponentNode(
-                Nodes.node(String.class), 2);
+                Fixtures.node(String.class), 2);
 
         assertThat(delayedNode).hasToString(
                 "DelayedRecordComponentNode[Node[String, depth=0, type=String], 2]");

@@ -19,6 +19,7 @@ import org.instancio.TargetSelector;
 import org.instancio.feed.Feed;
 import org.instancio.feed.FeedSpec;
 import org.instancio.generator.Generator;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.context.SelectorMap;
 import org.instancio.internal.feed.InternalFeedSpecResolver;
 import org.instancio.internal.selectors.FeedSelectors;
@@ -34,17 +35,17 @@ final class DefaultFeedSpecHandler implements InternalFeedSpecHandler {
     private static final InternalFeedSpecHandler NOOP_HANDLER = node -> {
     };
 
-    private final NodeContext nodeContext;
+    private final ModelContext modelContext;
     private final SelectorMap<Feed> feedSelectorMap;
 
-    private DefaultFeedSpecHandler(final NodeContext nodeContext) {
-        this.nodeContext = nodeContext;
-        this.feedSelectorMap = nodeContext.getFeedSelectorMap();
+    private DefaultFeedSpecHandler(final ModelContext modelContext) {
+        this.modelContext = modelContext;
+        this.feedSelectorMap = modelContext.getFeedSelectorMap();
     }
 
-    static InternalFeedSpecHandler create(final NodeContext nodeContext) {
-        final SelectorMap<Feed> map = nodeContext.getFeedSelectorMap();
-        return map.isEmpty() ? NOOP_HANDLER : new DefaultFeedSpecHandler(nodeContext);
+    static InternalFeedSpecHandler create(final ModelContext modelContext) {
+        final SelectorMap<Feed> map = modelContext.getFeedSelectorMap();
+        return map.isEmpty() ? NOOP_HANDLER : new DefaultFeedSpecHandler(modelContext);
     }
 
     @Override
@@ -64,12 +65,12 @@ final class DefaultFeedSpecHandler implements InternalFeedSpecHandler {
 
             if (spec != null) {
                 final TargetSelector selector = FeedSelectors.forProperty(child);
-                nodeContext.putGenerator(selector, (Generator<?>) spec);
+                modelContext.putGenerator(selector, (Generator<?>) spec);
             }
         }
 
         final OnFeedPropertyUnmatched onFeedPropertyUnmatched =
-                nodeContext.getSettings().get(Keys.ON_FEED_PROPERTY_UNMATCHED);
+                modelContext.getSettings().get(Keys.ON_FEED_PROPERTY_UNMATCHED);
 
         final Set<String> unmappedProperties = specsResolver.getUnmappedFeedProperties();
 
@@ -77,7 +78,7 @@ final class DefaultFeedSpecHandler implements InternalFeedSpecHandler {
                 && !unmappedProperties.isEmpty()) {
 
             throw Fail.withUsageError(ErrorMessageUtils.unmappedFeedProperties(
-                    unmappedProperties, nodeContext.getSettings()));
+                    unmappedProperties, modelContext.getSettings()));
         }
     }
 }

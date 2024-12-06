@@ -26,7 +26,7 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.Pojo;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -149,7 +149,7 @@ class TypeSelectorBuilderImplTest {
     }
 
     private static List<InternalNode> toNodes(final Class<?>... types) {
-        final RootType rootType = Nodes.nodeContext().getRootType();
+        final RootType rootType = Fixtures.modelContext().getRootType();
 
         return Arrays.stream(types)
                 .map(type -> InternalNode.builder(type, type, rootType).build())

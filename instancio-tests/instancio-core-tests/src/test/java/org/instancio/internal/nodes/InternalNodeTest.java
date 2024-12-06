@@ -27,7 +27,7 @@ import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.GenericsTag;
 import org.instancio.test.support.tags.NodeTag;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.instancio.testsupport.fixtures.Types;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 @NodeTag
 class InternalNodeTest {
 
-    private static final NodeFactory NODE_FACTORY = new NodeFactory(Nodes.nodeContext());
+    private static final NodeFactory NODE_FACTORY = new NodeFactory(Fixtures.modelContext());
 
     @Test
     void getNodeKind() {
@@ -75,7 +75,7 @@ class InternalNodeTest {
         final InternalNode node = InternalNode.builder(
                         Types.LIST_STRING.get(),
                         List.class,
-                        Nodes.nodeContext().getRootType())
+                        Fixtures.modelContext().getRootType())
                 .nodeKind(NodeKind.COLLECTION)
                 .member(ReflectionUtils.getField(ListString.class, "list"))
                 .member(ReflectionUtils.getSetterMethod(ListString.class, "setList", List.class))
@@ -110,7 +110,7 @@ class InternalNodeTest {
             final InternalNode node = InternalNode.builder(
                             Types.LIST_STRING.get(),
                             rawType,
-                            Nodes.nodeContext().getRootType())
+                            Fixtures.modelContext().getRootType())
                     .targetClass(targetClass)
                     .build();
 
@@ -126,7 +126,7 @@ class InternalNodeTest {
             final InternalNode node = InternalNode.builder(
                             Types.LIST_STRING.get(),
                             rawType,
-                            Nodes.nodeContext().getRootType())
+                            Fixtures.modelContext().getRootType())
                     .build();
 
             assertNode(node)
@@ -148,7 +148,7 @@ class InternalNodeTest {
             InternalNode bazIntegerClassNode = InternalNode.builder(
                             typeBazInteger.get(),
                             Baz.class,
-                            Nodes.nodeContext().getRootType())
+                            Fixtures.modelContext().getRootType())
                     .build();
 
             assertThat(bazString)
@@ -337,7 +337,7 @@ class InternalNodeTest {
         return InternalNode.builder(
                         type.get(),
                         klass,
-                        Nodes.nodeContext().getRootType())
+                        Fixtures.modelContext().getRootType())
                 .targetClass(klass)
                 .build();
     }

@@ -20,7 +20,7 @@ import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.utils.NodeUtils;
 import org.junit.jupiter.api.Test;
@@ -100,7 +100,7 @@ class FormatTest {
 
     @Test
     void nodePathToRoot() {
-        final NodeFactory nodeFactory = Nodes.nodeFactory();
+        final NodeFactory nodeFactory = Fixtures.nodeFactory();
         final InternalNode person = nodeFactory.createRootNode(Person.class);
 
         assertThat(Format.nodePathToRoot(person, "")).isEqualTo("<0:Person>");

@@ -18,7 +18,7 @@ package org.instancio.internal.selectors;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +26,7 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 
 class FeedSelectorsTest {
 
-    private static final NodeFactory NODE_FACTORY = new NodeFactory(Nodes.nodeContext());
+    private static final NodeFactory NODE_FACTORY = new NodeFactory(Fixtures.modelContext());
 
     @Test
     void verifyToString() {

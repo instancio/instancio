@@ -221,13 +221,13 @@ public final class ModelContext {
         selectorMaps.getGeneratorSelectorMap().putGenerator(selector, generator);
     }
 
+    public Set<TargetSelector> getAssignmentOriginSelectors(final InternalNode node) {
+        return getAssignmentOriginSelectorMap().getSelectorMap().getSelectors(node);
+    }
+
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public List<OnCompleteCallback<?>> getCallbacks(final InternalNode node) {
         return selectorMaps.getOnCompleteSelectorMap().getCallbacks(node);
-    }
-
-    public BooleanSelectorMap getIgnoreSelectorMap() {
-        return selectorMaps.getIgnoreSelectorMap();
     }
 
     public SubtypeSelectorMap getSubtypeSelectorMap() {

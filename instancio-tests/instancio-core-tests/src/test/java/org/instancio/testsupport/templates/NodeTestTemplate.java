@@ -19,7 +19,7 @@ import org.instancio.TypeTokenSupplier;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.test.support.tags.NodeTag;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -41,7 +41,7 @@ public abstract class NodeTestTemplate<T> {
 
     @Test
     protected final void verifyingModelFromTypeToken() {
-        final NodeFactory nodeFactory = Nodes.nodeFactory();
+        final NodeFactory nodeFactory = Fixtures.nodeFactory();
         final TypeTokenSupplier<Type> typeSupplier = typeContext::getGenericType;
         final InternalNode rootNode = nodeFactory.createRootNode(typeSupplier.get());
         verify(rootNode);

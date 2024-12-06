@@ -20,7 +20,7 @@ import nl.jqno.equalsverifier.Warning;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -40,7 +40,7 @@ class DeclaredAndInheritedMemberCollectorTest {
     private final InternalNode node = InternalNode.builder(
                     BaseClassSubClassInheritance.SubClass.class,
                     BaseClassSubClassInheritance.SubClass.class,
-                    Nodes.nodeContext().getRootType())
+                    Fixtures.modelContext().getRootType())
             .build();
 
     @Test
