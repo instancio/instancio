@@ -130,7 +130,7 @@ public final class ModelContext {
 
         LOG.trace("Resolved settings: {}", settings);
 
-        final SetterSelectorHolder holder = builder.getSetMethodSelectorHolder();
+        final SetterSelectorHolder holder = builder.setMethodSelectorHolder;
 
         ApiValidator.failIfMethodSelectorIsUsedWithFieldAssignment(
                 settings.get(Keys.ASSIGNMENT_TYPE),
@@ -308,10 +308,6 @@ public final class ModelContext {
             this.rootType = rootType;
             this.selectorProcessor = new SelectorProcessor(
                     TypeUtils.getRawType(rootType), INTERNAL_SERVICE_PROVIDERS, setMethodSelectorHolder);
-        }
-
-        private SetterSelectorHolder getSetMethodSelectorHolder() {
-            return setMethodSelectorHolder;
         }
 
         public Builder withRootTypeParameters(final List<Type> rootTypeParameters) {

@@ -60,6 +60,7 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
             return results;
         }
     }
+
     @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.EmptyControlStatement"})
     private String[] parseLine(String line) {
         List<String> tokens = new ArrayList<>();
