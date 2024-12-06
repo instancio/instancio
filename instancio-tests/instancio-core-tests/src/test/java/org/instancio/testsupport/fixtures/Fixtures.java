@@ -17,7 +17,6 @@ package org.instancio.testsupport.fixtures;
 
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
@@ -26,28 +25,26 @@ import org.instancio.settings.Settings;
 
 import java.lang.reflect.Type;
 
-public final class Nodes {
+public final class Fixtures {
 
     public static InternalNode node(final Type type) {
         return nodeFactory().createRootNode(type);
     }
 
     public static NodeFactory nodeFactory() {
-        return new NodeFactory(nodeContext());
+        return new NodeFactory(modelContext());
     }
 
-    public static NodeContext nodeContext() {
-        final ModelContext modelContext = ModelContext.builder(Object.class)
+    public static ModelContext modelContext() {
+        return ModelContext.builder(Object.class)
                 .withMaxDepth(Integer.MAX_VALUE)
                 .withSettings(Settings.create()
                         .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)
                         .set(Keys.ON_SET_METHOD_UNMATCHED, OnSetMethodUnmatched.INVOKE))
                 .build();
-
-        return new NodeContext(modelContext);
     }
 
-    private Nodes() {
+    private Fixtures() {
         // non-instantiable
     }
 }

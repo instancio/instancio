@@ -24,7 +24,7 @@ import org.instancio.test.support.pojo.person.PersonName;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.Pojo;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -184,7 +184,7 @@ class FieldSelectorBuilderImplTest {
 
     // Note: creates a minimal node for tests to pass (will throw an exception if toString() is called)
     private static InternalNode createNode(final Class<?> type, final String field) {
-        return InternalNode.builder(type, type, Nodes.nodeContext().getRootType())
+        return InternalNode.builder(type, type, Fixtures.modelContext().getRootType())
                 .member(getField(type, field))
                 .build();
     }

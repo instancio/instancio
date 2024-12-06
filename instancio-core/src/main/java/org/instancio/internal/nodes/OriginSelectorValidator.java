@@ -17,6 +17,7 @@ package org.instancio.internal.nodes;
 
 import org.instancio.TargetSelector;
 import org.instancio.internal.assignment.AssignmentErrorUtil;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.util.Fail;
 
 import java.util.HashMap;
@@ -54,11 +55,11 @@ import java.util.Set;
  */
 class OriginSelectorValidator {
 
-    private final NodeContext nodeContext;
+    private final ModelContext modelContext;
     private final Map<TargetSelector, InternalNode> seen = new HashMap<>();
 
-    OriginSelectorValidator(final NodeContext nodeContext) {
-        this.nodeContext = nodeContext;
+    OriginSelectorValidator(final ModelContext modelContext) {
+        this.modelContext = modelContext;
     }
 
     void checkNode(final InternalNode node) {
@@ -66,7 +67,7 @@ class OriginSelectorValidator {
             return;
         }
 
-        final Set<TargetSelector> originSelectors = nodeContext.getAssignmentOriginSelectors(node);
+        final Set<TargetSelector> originSelectors = modelContext.getAssignmentOriginSelectors(node);
 
         for (TargetSelector selector : originSelectors) {
             final InternalNode prevSeen = seen.put(selector, node);

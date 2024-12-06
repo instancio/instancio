@@ -17,9 +17,9 @@ package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.instancio.internal.util.Format;
-import org.instancio.internal.util.SealedClassUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
@@ -36,9 +36,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Helper class for creating nodes.
@@ -49,15 +47,17 @@ class NodeCreator {
     private static final Logger LOG = LoggerFactory.getLogger(NodeCreator.class);
 
     private final PredefinedNodeCreator predefinedNodeCreator;
-    private final NodeContext nodeContext;
+    private final ModelContext modelContext;
     private final TypeHelper typeHelper;
     private final NodeKindResolverFacade nodeKindResolverFacade;
+    private final SubtypeResolver subtypeResolver;
 
-    NodeCreator(final NodeContext nodeContext) {
-        this.nodeContext = nodeContext;
-        this.typeHelper = new TypeHelper(nodeContext.getRootType());
-        this.nodeKindResolverFacade = new NodeKindResolverFacade(nodeContext.getInternalServiceProviders());
-        this.predefinedNodeCreator = new PredefinedNodeCreator(nodeContext.getRootType(), nodeKindResolverFacade);
+    NodeCreator(final ModelContext modelContext) {
+        this.modelContext = modelContext;
+        this.typeHelper = new TypeHelper(modelContext.getRootType());
+        this.nodeKindResolverFacade = new NodeKindResolverFacade(modelContext.getInternalServiceProviders());
+        this.predefinedNodeCreator = new PredefinedNodeCreator(modelContext.getRootType(), nodeKindResolverFacade);
+        this.subtypeResolver = new SubtypeResolver(modelContext);
     }
 
     @Nullable
@@ -117,8 +117,8 @@ class NodeCreator {
 
         Verify.notNull(type, "'type' is null");
 
-        if (parent != null && parent.getDepth() >= nodeContext.getMaxDepth()) {
-            LOG.trace("Maximum depth ({}) reached {}", nodeContext.getMaxDepth(), parent);
+        if (parent != null && parent.getDepth() >= modelContext.getMaxDepth()) {
+            LOG.trace("Maximum depth ({}) reached {}", modelContext.getMaxDepth(), parent);
             return null;
         }
 
@@ -145,7 +145,7 @@ class NodeCreator {
             throw new InstancioException("Unsupported type: " + type.getClass());
         }
 
-        if (node != null && nodeContext.isIgnored(node)) {
+        if (node != null && modelContext.isIgnored(node)) {
             node = node.toBuilder().nodeKind(NodeKind.IGNORED).build();
         }
 
@@ -177,41 +177,12 @@ class NodeCreator {
         return createNode(resolvedType, member, setter, parent);
     }
 
-    private Optional<Class<?>> resolveSubtype(final InternalNode node) {
-        final Optional<Class<?>> subtype = nodeContext.getSubtype(node);
-
-        if (subtype.isPresent()) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.get().getName());
-            }
-            return subtype;
-        }
-        if (SealedClassUtils.isSealedAbstractType(node.getTargetClass())
-                && (node.is(NodeKind.POJO) || node.is(NodeKind.RECORD))) {
-            final List<Class<?>> impls = SealedClassUtils.getSealedClassImplementations(node.getTargetClass());
-            return Optional.of(nodeContext.getRandom().oneOf(impls));
-        }
-        return Optional.ofNullable(resolveSubtypeFromAncestors(node));
-    }
-
-    private static Class<?> resolveSubtypeFromAncestors(final InternalNode node) {
-        InternalNode next = node;
-        while (next != null) {
-            final Type actualType = next.getTypeMap().get(node.getRawType());
-            if (actualType != null) {
-                return TypeUtils.getRawType(actualType);
-            }
-            next = next.getParent();
-        }
-        return null;
-    }
-
     private InternalNode.Builder builderTemplate(
             final Type type,
             final Class<?> rawType,
             final Member member) {
 
-        return InternalNode.builder(type, rawType, nodeContext.getRootType())
+        return InternalNode.builder(type, rawType, modelContext.getRootType())
                 .member(member);
     }
 
@@ -229,7 +200,7 @@ class NodeCreator {
                 .member(setter)
                 .build();
 
-        final Class<?> targetClass = resolveSubtype(node).orElse(rawType);
+        final Class<?> targetClass = subtypeResolver.resolveSubtype(node).orElse(rawType);
 
         // Handle the case where: Child<T> extends Parent<T>
         // If the child node inherits a TypeVariable field declaration from
@@ -313,7 +284,7 @@ class NodeCreator {
                 .member(setter)
                 .build();
 
-        final Class<?> targetClass = resolveSubtype(node).orElse(rawComponentType);
+        final Class<?> targetClass = subtypeResolver.resolveSubtype(node).orElse(rawComponentType);
         final Class<?> targetClassComponentType = targetClass.getComponentType();
 
         if (!rawComponentType.isPrimitive()

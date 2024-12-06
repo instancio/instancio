@@ -26,13 +26,13 @@ import org.instancio.test.support.pojo.misc.ClassWithoutFields;
 import org.instancio.test.support.pojo.misc.StringsDef;
 import org.instancio.test.support.pojo.misc.StringsGhi;
 import org.instancio.test.support.pojo.person.Person;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NodeStatsTest {
-    private static final NodeFactory NODE_FACTORY = Nodes.nodeFactory();
+    private static final NodeFactory NODE_FACTORY = Fixtures.nodeFactory();
 
     /**
      * {@link Class#getDeclaredFields()} ()} does not guarantee the order of returned fields.
@@ -90,10 +90,10 @@ class NodeStatsTest {
                 .target(new TargetField(ReflectionUtils.getField(StringsGhi.class, "h")))
                 .build();
 
-        final NodeContext ctx = new NodeContext(ModelContext.builder(StringsDef.class)
+        final ModelContext ctx = ModelContext.builder(StringsDef.class)
                 .withSettings(Settings.defaults())
                 .withIgnored(fieldH)
-                .build());
+                .build();
 
         final NodeFactory nodeFactory = new NodeFactory(ctx);
         final InternalNode node = nodeFactory.createRootNode(StringsDef.class);

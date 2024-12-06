@@ -32,7 +32,7 @@ import org.instancio.test.support.pojo.person.PersonHolder;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -52,7 +52,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
 class SelectorMapImplTest {
-    private final NodeFactory nodeFactory = Nodes.nodeFactory();
+    private final NodeFactory nodeFactory = Fixtures.nodeFactory();
 
     private final InternalNode rootNode = nodeFactory.createRootNode(PersonHolder.class);
     private final InternalNode personNameNode = getNodeWithField(rootNode, Person.class, "name");

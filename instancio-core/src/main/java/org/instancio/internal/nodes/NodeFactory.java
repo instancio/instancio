@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
@@ -44,19 +45,19 @@ public final class NodeFactory {
     private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
     private final DeclaredAndInheritedMemberCollector memberCollector;
-    private final NodeContext nodeContext;
+    private final ModelContext modelContext;
     private final NodeCreator nodeCreator;
     private final TypeHelper typeHelper;
     private final OriginSelectorValidator originSelectorValidator;
     private final InternalFeedSpecHandler feedSpecHandler;
 
-    public NodeFactory(final NodeContext nodeContext) {
-        this.nodeContext = nodeContext;
-        this.nodeCreator = new NodeCreator(nodeContext);
-        this.typeHelper = new TypeHelper(nodeContext.getRootType());
-        this.originSelectorValidator = new OriginSelectorValidator(nodeContext);
-        this.memberCollector = new DeclaredAndInheritedMemberCollector(nodeContext.getSettings());
-        this.feedSpecHandler = DefaultFeedSpecHandler.create(nodeContext);
+    public NodeFactory(final ModelContext modelContext) {
+        this.modelContext = modelContext;
+        this.nodeCreator = new NodeCreator(modelContext);
+        this.typeHelper = new TypeHelper(modelContext.getRootType());
+        this.originSelectorValidator = new OriginSelectorValidator(modelContext);
+        this.memberCollector = new DeclaredAndInheritedMemberCollector(modelContext.getSettings());
+        this.feedSpecHandler = DefaultFeedSpecHandler.create(modelContext);
     }
 
     public InternalNode createRootNode(final Type type) {
@@ -98,8 +99,8 @@ public final class NodeFactory {
             return Collections.emptyList();
         }
 
-        if (node.getDepth() >= nodeContext.getMaxDepth()) {
-            LOG.trace("Maximum depth ({}) reached {}", nodeContext.getMaxDepth(), node);
+        if (node.getDepth() >= modelContext.getMaxDepth()) {
+            LOG.trace("Maximum depth ({}) reached {}", modelContext.getMaxDepth(), node);
             return Collections.emptyList();
         }
 

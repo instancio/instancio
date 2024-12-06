@@ -18,7 +18,6 @@ package org.instancio.internal;
 import org.instancio.Model;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeContext;
 import org.instancio.internal.nodes.NodeFactory;
 
 public final class InternalModel<T> implements Model<T> {
@@ -40,8 +39,7 @@ public final class InternalModel<T> implements Model<T> {
     }
 
     private InternalNode createRootNode() {
-        final NodeContext nodeContext = new NodeContext(modelContext);
-        final NodeFactory nodeFactory = new NodeFactory(nodeContext);
+        final NodeFactory nodeFactory = new NodeFactory(modelContext);
         return nodeFactory.createRootNode(modelContext.getRootType().getType());
     }
 

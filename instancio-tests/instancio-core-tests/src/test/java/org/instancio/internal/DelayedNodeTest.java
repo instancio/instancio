@@ -18,7 +18,7 @@ package org.instancio.internal;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.testsupport.fixtures.Nodes;
+import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +27,7 @@ class DelayedNodeTest {
 
     @Test
     void verifyToString() {
-        final DelayedNode delayedNode = new DelayedNode(Nodes.node(String.class),
+        final DelayedNode delayedNode = new DelayedNode(Fixtures.node(String.class),
                 GeneratorResult.create("foo", Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS)));
 
         assertThat(delayedNode).hasToString(

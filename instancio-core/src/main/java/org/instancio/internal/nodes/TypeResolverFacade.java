@@ -16,7 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.internal.spi.ProviderEntry;
-import org.instancio.spi.InstancioServiceProvider;
+import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.InstancioSpiException;
 
 import java.util.List;
@@ -24,9 +24,9 @@ import java.util.Optional;
 
 class TypeResolverFacade {
 
-    private final List<ProviderEntry<InstancioServiceProvider.TypeResolver>> providerEntries;
+    private final List<ProviderEntry<TypeResolver>> providerEntries;
 
-    TypeResolverFacade(final List<ProviderEntry<InstancioServiceProvider.TypeResolver>> providerEntries) {
+    TypeResolverFacade(final List<ProviderEntry<TypeResolver>> providerEntries) {
         this.providerEntries = providerEntries;
     }
 
@@ -36,7 +36,7 @@ class TypeResolverFacade {
     }
 
     private Class<?> resolveViaSPI(final Class<?> typeToResolve) {
-        for (ProviderEntry<InstancioServiceProvider.TypeResolver> entry : providerEntries) {
+        for (ProviderEntry<TypeResolver> entry : providerEntries) {
             final Class<?> resolved = entry.getProvider().getSubtype(typeToResolve);
 
             if (resolved != null) {
