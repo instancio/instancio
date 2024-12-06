@@ -39,10 +39,10 @@ public final class ErrorHandler {
             "%n -> To display the stack trace, run in verbose() mode or with TRACE logging." +
             "%n", Keys.FAIL_ON_ERROR.propertyKey());
 
-    private final ModelContext<?> context;
+    private final ModelContext context;
     private final boolean isFailOnErrorSettingEnabled;
 
-    ErrorHandler(final ModelContext<?> context) {
+    ErrorHandler(final ModelContext context) {
         this.context = context;
         this.isFailOnErrorSettingEnabled = context.getSettings().get(Keys.FAIL_ON_ERROR);
     }
@@ -90,7 +90,7 @@ public final class ErrorHandler {
                             "Exception occurred while generating the root object of type %s.%n" +
                             "Printing stacktrace because verbose() mode is enabled.%n" +
                             "To propagate internal errors, set Keys.FAIL_ON_ERROR setting to true.%n",
-                    Format.withoutPackage(context.getRootType()));
+                    Format.withoutPackage(context.getRootType().getType()));
 
             System.err.println(errorMsg);
             t.printStackTrace();

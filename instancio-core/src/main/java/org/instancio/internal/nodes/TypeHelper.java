@@ -15,7 +15,9 @@
  */
 package org.instancio.internal.nodes;
 
+import org.instancio.internal.RootType;
 import org.instancio.internal.util.TypeUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,18 +35,21 @@ import java.util.Map;
 class TypeHelper {
     private static final Logger LOG = LoggerFactory.getLogger(TypeHelper.class);
 
-    private final NodeContext nodeContext;
+    private final RootType rootType;
 
-    TypeHelper(final NodeContext nodeContext) {
-        this.nodeContext = nodeContext;
+    TypeHelper(final RootType rootType) {
+        this.rootType = rootType;
     }
 
-    Type resolveTypeVariable(final TypeVariable<?> typeVar, @Nullable final InternalNode parent) {
+    Type resolveTypeVariable(
+            @NotNull final TypeVariable<?> typeVar,
+            @Nullable final InternalNode parent) {
+
         Type mappedType = parent == null ? typeVar : parent.getTypeMap().getOrDefault(typeVar, typeVar);
         InternalNode ancestor = parent;
 
         while ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {
-            Type rootTypeMapping = nodeContext.getRootTypeMap().get(mappedType);
+            Type rootTypeMapping = rootType.getTypeMapping(mappedType);
             if (rootTypeMapping != null) {
                 return rootTypeMapping;
             }

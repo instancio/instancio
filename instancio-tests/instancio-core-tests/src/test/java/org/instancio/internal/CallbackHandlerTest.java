@@ -26,7 +26,7 @@ class CallbackHandlerTest {
 
     @Test
     void createShouldReturnNoopClass_whenThereAreNoCallbacks() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class).build();
+        final ModelContext ctx = ModelContext.builder(String.class).build();
         final GenerationListener result = CallbackHandler.create(ctx);
 
         assertThat(result).isExactlyInstanceOf(CallbackHandler.NoopCallbackHandler.class);
@@ -34,7 +34,7 @@ class CallbackHandlerTest {
 
     @Test
     void createShouldReturnCallbackHandler_whenThereCallbackIsPresent() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class)
+        final ModelContext ctx = ModelContext.builder(String.class)
                 .withOnCompleteCallback(allStrings(), System.out::println)
                 .build();
 

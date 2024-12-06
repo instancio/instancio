@@ -16,7 +16,7 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
-import org.instancio.internal.nodes.TypeMap;
+import org.instancio.internal.nodes.NodeTypeMap;
 
 import java.lang.reflect.Type;
 
@@ -24,17 +24,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 
 @SuppressWarnings("UnusedReturnValue")
-public class TypeMapResolverAssert extends AbstractAssert<TypeMapResolverAssert, TypeMap> {
+public class NodeTypeMapAssert extends AbstractAssert<NodeTypeMapAssert, NodeTypeMap> {
 
-    private TypeMapResolverAssert(TypeMap actual) {
-        super(actual, TypeMapResolverAssert.class);
+    private NodeTypeMapAssert(NodeTypeMap actual) {
+        super(actual, NodeTypeMapAssert.class);
     }
 
-    public static TypeMapResolverAssert assertThatResolver(TypeMap actual) {
-        return new TypeMapResolverAssert(actual);
+    public static NodeTypeMapAssert assertNodeTypeMap(NodeTypeMap actual) {
+        return new NodeTypeMapAssert(actual);
     }
 
-    public TypeMapResolverAssert hasTypeMapping(Class<?> klass, String typeVar, Type expectedMappedType) {
+    public NodeTypeMapAssert hasTypeMapping(Class<?> klass, String typeVar, Type expectedMappedType) {
         Type mappedType = actual.get(getTypeVar(klass, typeVar));
         assertThat(mappedType)
                 .as("Wrong mapping for klass: %s, type variable: %s", klass.getName(), typeVar)
@@ -42,7 +42,7 @@ public class TypeMapResolverAssert extends AbstractAssert<TypeMapResolverAssert,
         return this;
     }
 
-    public TypeMapResolverAssert hasTypeMapping(Class<?> klass, String typeVar, String expectedTypeName) {
+    public NodeTypeMapAssert hasTypeMapping(Class<?> klass, String typeVar, String expectedTypeName) {
         Type mappedType = actual.get(getTypeVar(klass, typeVar));
         assertThat(mappedType)
                 .as("Wrong mapping for klass: %s, type variable: %s", klass.getName(), typeVar)
@@ -52,12 +52,12 @@ public class TypeMapResolverAssert extends AbstractAssert<TypeMapResolverAssert,
         return this;
     }
 
-    public TypeMapResolverAssert hasTypeMapWithSize(int expected) {
+    public NodeTypeMapAssert hasTypeMapWithSize(int expected) {
         assertThat(actual.size()).isEqualTo(expected);
         return this;
     }
 
-    public TypeMapResolverAssert hasEmptyTypeMap() {
+    public NodeTypeMapAssert hasEmptyTypeMap() {
         assertThat(actual.size()).isZero();
         return this;
     }

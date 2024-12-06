@@ -33,6 +33,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.InternalModel;
 import org.instancio.internal.RandomHelper;
+import org.instancio.internal.RootType;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.feed.InternalFeedContext;
 import org.instancio.internal.feed.InternalFeedProxy;
@@ -65,7 +66,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -79,12 +79,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static java.util.Collections.unmodifiableMap;
-import static org.instancio.internal.context.ModelContextHelper.buildRootTypeMap;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
-public final class ModelContext<T> {
+public final class ModelContext {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
     private static final List<InternalServiceProvider> INTERNAL_SERVICE_PROVIDERS =
@@ -92,34 +90,29 @@ public final class ModelContext<T> {
                     ServiceLoaders.loadAll(InternalServiceProvider.class),
                     new InternalServiceProviderImpl());
 
-    private final Providers providers;
-    private final Type rootType;
-    private final List<Type> rootTypeParameters;
-    private final Map<TypeVariable<?>, Type> rootTypeMap;
+    private final ModelContextSource contextSource;
+    private final RootType rootType;
     private final Integer maxDepth;
     private final Long seed;
-    private final Random random;
-    private final Settings settings;
-    private final ModelContextSource contextSource;
-    private final SelectorMaps selectorMaps;
     private final boolean verbose;
+    private final Settings settings;
+    private final Random random;
+    private final SelectorMaps selectorMaps;
+    private final Providers providers;
 
-    private ModelContext(final Builder<T> builder) {
+    private ModelContext(final Builder builder) {
         contextSource = builder.getModelContextSource();
-        rootType = builder.rootType;
-        rootTypeParameters = contextSource.getWithTypeParametersList();
-        rootTypeMap = unmodifiableMap(buildRootTypeMap(builder.rootType, rootTypeParameters));
-        seed = builder.seed;
+        rootType = new RootType(builder.rootType, contextSource.getWithTypeParametersList());
         maxDepth = builder.maxDepth;
+        seed = builder.seed;
         verbose = builder.verbose;
         settings = createSettings(builder);
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
-        selectorMaps = new SelectorMaps(new GeneratorContext(settings, random));
-        selectorMaps.initSelectorMaps(contextSource);
+        selectorMaps = new SelectorMaps(contextSource, new GeneratorContext(settings, random));
         providers = new Providers(new InternalServiceProviderContext(settings, random));
     }
 
-    private static Settings createSettings(final Builder<?> builder) {
+    private static Settings createSettings(final Builder builder) {
         final Settings settings = Global.getPropertiesFileSettings()
                 .merge(ThreadLocalSettings.getInstance().get())
                 .merge(builder.settings);
@@ -175,13 +168,8 @@ public final class ModelContext<T> {
         return new SelectorNodeMatchesCollector(selectorMaps).getNodeMatches(rootNode);
     }
 
-    public Type getRootType() {
+    public RootType getRootType() {
         return rootType;
-    }
-
-    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    public Map<TypeVariable<?>, Type> getRootTypeMap() {
-        return rootTypeMap;
     }
 
     public Settings getSettings() {
@@ -270,12 +258,12 @@ public final class ModelContext<T> {
         return contextSource;
     }
 
-    public Builder<T> toBuilder() {
-        final Builder<T> builder = new Builder<>(rootType);
+    public Builder toBuilder() {
+        final Builder builder = new Builder(rootType.getType());
         builder.maxDepth = this.maxDepth;
         builder.seed = this.seed;
         builder.settings = this.settings;
-        builder.withTypeParametersList = new ArrayList<>(this.rootTypeParameters);
+        builder.withTypeParametersList = new ArrayList<>(rootType.getTypeParameters());
         builder.withNullableSet = new LinkedHashSet<>(this.contextSource.getWithNullableSet());
         builder.ignoreSet = new LinkedHashSet<>(this.contextSource.getIgnoreSet());
         builder.generatorMap = new LinkedHashMap<>(this.contextSource.getGeneratorMap());
@@ -289,12 +277,12 @@ public final class ModelContext<T> {
         return builder;
     }
 
-    public static <T> Builder<T> builder(final Type rootType) {
-        return new Builder<>(rootType);
+    public static Builder builder(final Type rootType) {
+        return new Builder(rootType);
     }
 
     @SuppressWarnings({"PMD.GodClass", "PMD.TooManyFields"})
-    public static final class Builder<T> {
+    public static final class Builder {
         private final Type rootType;
         private List<Type> withTypeParametersList;
         private Map<TargetSelector, Class<?>> subtypeMap;
@@ -303,7 +291,7 @@ public final class ModelContext<T> {
         private Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap;
         private Map<TargetSelector, Predicate<?>> filterMap;
         private Map<TargetSelector, List<Assignment>> assignmentMap;
-        private Map<TargetSelector, ModelContext<?>> setModelMap;
+        private Map<TargetSelector, ModelContext> setModelMap;
         private Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap;
         private Set<TargetSelector> ignoreSet;
         private Set<TargetSelector> withNullableSet;
@@ -326,13 +314,13 @@ public final class ModelContext<T> {
             return setMethodSelectorHolder;
         }
 
-        public Builder<T> withRootTypeParameters(final List<Type> rootTypeParameters) {
+        public Builder withRootTypeParameters(final List<Type> rootTypeParameters) {
             ApiValidator.validateTypeParameters(rootType, rootTypeParameters);
             this.withTypeParametersList = new ArrayList<>(rootTypeParameters);
             return this;
         }
 
-        private <V> Builder<T> addSelector(
+        private <V> Builder addSelector(
                 final Map<TargetSelector, V> map,
                 final TargetSelector selector,
                 final V value,
@@ -345,18 +333,18 @@ public final class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withSubtype(final TargetSelector selector, final Class<?> subtype) {
+        public Builder withSubtype(final TargetSelector selector, final Class<?> subtype) {
             ApiValidator.notNull(subtype, "subtype must not be null");
             subtypeMap = CollectionUtils.newLinkedHashMapIfNull(subtypeMap);
             return addSelector(subtypeMap, selector, subtype, ApiMethodSelector.SUBTYPE);
         }
 
-        public Builder<T> withGenerator(final TargetSelector selector, final Generator<?> generator) {
+        public Builder withGenerator(final TargetSelector selector, final Generator<?> generator) {
             ApiValidator.validateGeneratorNotNull(generator);
             return addGenerator(selector, generator, ApiMethodSelector.GENERATE);
         }
 
-        private Builder<T> addGenerator(
+        private Builder addGenerator(
                 final TargetSelector selector,
                 final Generator<?> generator,
                 final ApiMethodSelector apiMethodSelector) {
@@ -365,32 +353,32 @@ public final class ModelContext<T> {
             return addSelector(generatorMap, selector, generator, apiMethodSelector);
         }
 
-        public Builder<T> withSet(final TargetSelector selector, final Object value) {
+        public Builder withSet(final TargetSelector selector, final Object value) {
             return addGenerator(selector, GeneratorDecorator.decorate(() -> value), ApiMethodSelector.SET);
         }
 
-        public Builder<T> withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
+        public Builder withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
             ApiValidator.validateSupplierNotNull(supplier);
             return addGenerator(selector, GeneratorDecorator.decorate(supplier), ApiMethodSelector.SUPPLY);
         }
 
-        public <V> Builder<T> withGeneratorSpec(final TargetSelector selector, final GeneratorSpecProvider<V> spec) {
+        public <V> Builder withGeneratorSpec(final TargetSelector selector, final GeneratorSpecProvider<V> spec) {
             ApiValidator.validateGenerateSecondArgument(spec);
             generatorSpecMap = CollectionUtils.newLinkedHashMapIfNull(generatorSpecMap);
             return addSelector(generatorSpecMap, selector, spec, ApiMethodSelector.GENERATE);
         }
 
-        public Builder<T> withOnCompleteCallback(final TargetSelector selector, final OnCompleteCallback<?> callback) {
+        public Builder withOnCompleteCallback(final TargetSelector selector, final OnCompleteCallback<?> callback) {
             onCompleteMap = CollectionUtils.newLinkedHashMapIfNull(onCompleteMap);
             return addSelector(onCompleteMap, selector, callback, ApiMethodSelector.ON_COMPLETE);
         }
 
-        public Builder<T> filter(final TargetSelector selector, final Predicate<?> predicate) {
+        public Builder filter(final TargetSelector selector, final Predicate<?> predicate) {
             ApiValidator.notNull(predicate, "predicate must not be null");
             return addFilterPredicate(selector, predicate, ApiMethodSelector.FILTER);
         }
 
-        public Builder<T> withUnique(final TargetSelector selector) {
+        public Builder withUnique(final TargetSelector selector) {
             final FilterPredicate<Object> predicate = new FilterPredicate<Object>() {
                 final Set<Object> generatedValues = new HashSet<>();
 
@@ -403,7 +391,7 @@ public final class ModelContext<T> {
             return addFilterPredicate(selector, predicate, ApiMethodSelector.WITH_UNIQUE);
         }
 
-        private Builder<T> addFilterPredicate(
+        private Builder addFilterPredicate(
                 final TargetSelector selector,
                 final Predicate<?> predicate,
                 final ApiMethodSelector apiMethodSelector) {
@@ -412,11 +400,11 @@ public final class ModelContext<T> {
             return addSelector(filterMap, selector, predicate, apiMethodSelector);
         }
 
-        public Builder<T> applyFeed(final TargetSelector selector, final Feed feed) {
+        public Builder applyFeed(final TargetSelector selector, final Feed feed) {
             return addFeedFunction(selector, generatorCtx -> feed);
         }
 
-        public Builder<T> applyFeed(final TargetSelector selector, final FeedProvider provider) {
+        public Builder applyFeed(final TargetSelector selector, final FeedProvider provider) {
             return addFeedFunction(selector, generatorCtx -> {
                 final FeedProvider.FeedBuilderFactory factory = new FeedProvider.FeedBuilderFactory() {};
                 final InternalFeedContext.Builder<?> builder =
@@ -428,7 +416,7 @@ public final class ModelContext<T> {
             });
         }
 
-        private Builder<T> addFeedFunction(
+        private Builder addFeedFunction(
                 final TargetSelector selector,
                 final Function<GeneratorContext, Feed> feedFn) {
 
@@ -436,25 +424,25 @@ public final class ModelContext<T> {
             return addSelector(feedMap, selector, feedFn, ApiMethodSelector.APPLY_FEED);
         }
 
-        public Builder<T> withIgnored(final TargetSelector selector) {
+        public Builder withIgnored(final TargetSelector selector) {
             ignoreSet = CollectionUtils.newLinkedHashSetIfNull(ignoreSet);
             ignoreSet.addAll(selectorProcessor.process(selector, ApiMethodSelector.IGNORE));
             return this;
         }
 
-        public Builder<T> withNullable(final TargetSelector selector) {
+        public Builder withNullable(final TargetSelector selector) {
             withNullableSet = CollectionUtils.newLinkedHashSetIfNull(withNullableSet);
             withNullableSet.addAll(selectorProcessor.process(selector, ApiMethodSelector.WITH_NULLABLE));
             return this;
         }
 
-        public Builder<T> withMaxDepth(final int maxDepth) {
+        public Builder withMaxDepth(final int maxDepth) {
             ApiValidator.isTrue(maxDepth >= 0, "Maximum depth must not be negative: %s", maxDepth);
             this.maxDepth = maxDepth;
             return this;
         }
 
-        public Builder<T> withAssignments(final Assignment... assignments) {
+        public Builder withAssignments(final Assignment... assignments) {
             ApiValidator.notNull(assignments, "assignments array must not be null");
             assignmentMap = CollectionUtils.newLinkedHashMapIfNull(assignmentMap);
 
@@ -491,7 +479,7 @@ public final class ModelContext<T> {
             }
         }
 
-        public <V> Builder<T> withSetting(final SettingKey<V> key, final V value) {
+        public <V> Builder withSetting(final SettingKey<V> key, final V value) {
             if (settings == null) {
                 settings = Settings.create();
             } else if (settings.isLocked()) {
@@ -501,7 +489,7 @@ public final class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withSettings(final Settings arg) {
+        public Builder withSettings(final Settings arg) {
             ApiValidator.notNull(arg, "Null Settings provided to withSettings() method");
 
             if (settings == null) {
@@ -512,12 +500,12 @@ public final class ModelContext<T> {
             return this;
         }
 
-        public Builder<T> withSeed(final long seed) {
+        public Builder withSeed(final long seed) {
             this.seed = seed;
             return this;
         }
 
-        public Builder<T> setBlank(final TargetSelector selector) {
+        public Builder setBlank(final TargetSelector selector) {
             if (selector instanceof InternalSelector && ((InternalSelector) selector).isRootSelector()) {
                 setBlankTargets(); // special case for root selector (no scopes)
             } else {
@@ -542,19 +530,19 @@ public final class ModelContext<T> {
             withGeneratorSpec(BlankSelectors.arraySelector().within(scopes).lenient(), gen -> gen.array().length(0));
         }
 
-        public Builder<T> lenient() {
+        public Builder lenient() {
             this.lenient = true;
             return this;
         }
 
-        public Builder<T> verbose() {
+        public Builder verbose() {
             this.verbose = true;
             return this;
         }
 
-        public Builder<T> useModelAsTypeArgument(final ModelContext<?> otherContext) {
+        public Builder useModelAsTypeArgument(final ModelContext otherContext) {
             seed = otherContext.seed;
-            withTypeParametersList = Collections.singletonList(otherContext.getRootType());
+            withTypeParametersList = Collections.singletonList(otherContext.getRootType().getType());
 
             final ModelContextSource src = otherContext.contextSource;
             withNullableSet = new LinkedHashSet<>(src.getWithNullableSet());
@@ -581,7 +569,7 @@ public final class ModelContext<T> {
          * Copies (only) selectors from {@code otherContext} to this context.
          * Other data, such as maxDepth, seed, and settings are <b>not</b> copied.
          */
-        public Builder<T> setModel(final TargetSelector modelSelector, final Model<?> model) {
+        public Builder setModel(final TargetSelector modelSelector, final Model<?> model) {
             final TargetSelector actualModelSelector;
 
             if (modelSelector instanceof InternalSelector && ((InternalSelector) modelSelector).isRootSelector()) {
@@ -591,7 +579,7 @@ public final class ModelContext<T> {
             }
 
             setModelMap = CollectionUtils.newLinkedHashMapIfNull(setModelMap);
-            final ModelContext<?> otherCtx = ((InternalModel<?>) model).getModelContext();
+            final ModelContext otherCtx = ((InternalModel<?>) model).getModelContext();
             final List<TargetSelector> processedSelectors = selectorProcessor.process(
                     actualModelSelector, ApiMethodSelector.SET_MODEL);
 
@@ -616,8 +604,8 @@ public final class ModelContext<T> {
                     withNullableSet);
         }
 
-        public ModelContext<T> build() {
-            return new ModelContext<>(this);
+        public ModelContext build() {
+            return new ModelContext(this);
         }
     }
 }

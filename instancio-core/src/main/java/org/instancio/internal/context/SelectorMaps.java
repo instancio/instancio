@@ -44,16 +44,17 @@ public final class SelectorMaps {
     private final PredicateSelectorMap filterSelectorMap = new PredicateSelectorMap();
     private final SubtypeSelectorMap subtypeSelectorMap = new SubtypeSelectorMap();
 
-    SelectorMaps(final GeneratorContext generatorContext) {
+    SelectorMaps(final ModelContextSource contextSource, final GeneratorContext generatorContext) {
         this.generatorContext = generatorContext;
         this.assignmentSelectorMap = new AssignmentSelectorMap(generatorContext);
         this.generatorSelectorMap = new GeneratorSelectorMap(generatorContext);
+        initSelectorMaps(contextSource);
     }
 
     void initSelectorMaps(final ModelContextSource contextSource) {
         // Before initialising remaining selector maps, update this model
         // with selectors from other models provided via setModel()
-        for (Map.Entry<TargetSelector, ModelContext<?>> entry : contextSource.getSetModelMap().entrySet()) {
+        for (Map.Entry<TargetSelector, ModelContext> entry : contextSource.getSetModelMap().entrySet()) {
             copyToThisContext(entry.getKey(), entry.getValue());
         }
 
@@ -78,10 +79,10 @@ public final class SelectorMaps {
     }
 
     @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
-    private void copyToThisContext(final TargetSelector modelTarget, final ModelContext<?> otherCtx) {
+    private void copyToThisContext(final TargetSelector modelTarget, final ModelContext otherCtx) {
         final ModelContextSource src = otherCtx.getContextSource();
         final SetModelSelectorHelper setModelSelectorHelper = new SetModelSelectorHelper(
-                TypeUtils.getRawType(otherCtx.getRootType()));
+                TypeUtils.getRawType(otherCtx.getRootType().getType()));
 
         for (Map.Entry<TargetSelector, Function<GeneratorContext, Feed>> entry : src.getFeedMap().entrySet()) {
             final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
@@ -145,7 +146,7 @@ public final class SelectorMaps {
             subtypeSelectorMap.put(resolvedSelector, entry.getValue());
         }
 
-        for (Map.Entry<TargetSelector, ModelContext<?>> entry : src.getSetModelMap().entrySet()) {
+        for (Map.Entry<TargetSelector, ModelContext> entry : src.getSetModelMap().entrySet()) {
             final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
             setModelSelectorMap.put(resolvedSelector, entry.getValue());
 

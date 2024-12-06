@@ -40,7 +40,7 @@ public final class AnnotationConsumers {
         // non-instantiable
     }
 
-    public static List<AnnotationConsumer> get(final ModelContext<?> modelContext) {
+    public static List<AnnotationConsumer> get(final ModelContext modelContext) {
         final Settings settings = modelContext.getSettings();
         final boolean jpaEnabled = settings.get(Keys.JPA_ENABLED);
         final boolean beanValidationEnabled = settings.get(Keys.BEAN_VALIDATION_ENABLED);

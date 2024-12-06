@@ -31,14 +31,14 @@ import java.util.Queue;
  * false positive "unused selector" errors in strict mode.
  */
 final class GeneratedNullValueListener implements GenerationListener {
-    private final ModelContext<?> context;
+    private final ModelContext context;
     private final Queue<InternalNode> queue = new ArrayDeque<>();
 
-    private GeneratedNullValueListener(final ModelContext<?> context) {
+    private GeneratedNullValueListener(final ModelContext context) {
         this.context = context;
     }
 
-    static GenerationListener create(final ModelContext<?> context) {
+    static GenerationListener create(final ModelContext context) {
         final boolean isLenient = context.getSettings().get(Keys.MODE) == Mode.LENIENT;
 
         return isLenient || context.getSelectorMaps().allEmpty()

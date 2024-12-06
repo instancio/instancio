@@ -29,7 +29,7 @@ class AssignmentNodeHandlerTest {
 
     @Test
     void createShouldReturnNoopClass_whenModelContextHasNoAssignments() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class).build();
+        final ModelContext ctx = ModelContext.builder(String.class).build();
         final NodeHandler result = AssignmentNodeHandler.create(ctx, objectStore, generatorProcessor);
 
         assertThat(result).isExactlyInstanceOf(AssignmentNodeHandler.NoopAssignmentNodeHandler.class);
@@ -37,7 +37,7 @@ class AssignmentNodeHandlerTest {
 
     @Test
     void createShouldReturnAssignmentHandler_whenModelContextHasAssignments() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class)
+        final ModelContext ctx = ModelContext.builder(String.class)
                 .withAssignments(Assign.valueOf(String.class).to(all(String.class)))
                 .build();
 

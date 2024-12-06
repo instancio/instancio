@@ -40,7 +40,7 @@ class DeclaredAndInheritedMemberCollectorTest {
     private final InternalNode node = InternalNode.builder(
                     BaseClassSubClassInheritance.SubClass.class,
                     BaseClassSubClassInheritance.SubClass.class,
-                    Nodes.nodeContext().getRootTypeMap())
+                    Nodes.nodeContext().getRootType())
             .build();
 
     @Test

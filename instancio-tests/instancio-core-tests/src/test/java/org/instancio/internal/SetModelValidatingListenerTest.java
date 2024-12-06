@@ -27,7 +27,7 @@ class SetModelValidatingListenerTest {
 
     @Test
     void createShouldReturnNoopClass_whenThereIsNoSetModel() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class).build();
+        final ModelContext ctx = ModelContext.builder(String.class).build();
         final GenerationListener result = SetModelValidatingListener.create(ctx);
 
         assertThat(result).isSameAs(GenerationListener.NOOP_LISTENER);
@@ -35,7 +35,7 @@ class SetModelValidatingListenerTest {
 
     @Test
     void createShouldReturnSetModelValidatingListener_whenSetModelIsPresent() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class)
+        final ModelContext ctx = ModelContext.builder(String.class)
                 .setModel(allStrings(), Instancio.of(String.class).toModel())
                 .build();
 

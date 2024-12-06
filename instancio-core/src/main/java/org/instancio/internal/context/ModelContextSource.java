@@ -45,7 +45,7 @@ final class ModelContextSource {
     private final Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap;
     private final Map<TargetSelector, Predicate<?>> filterMap;
     private final Map<TargetSelector, List<Assignment>> assignmentMap;
-    private final Map<TargetSelector, ModelContext<?>> setModelMap;
+    private final Map<TargetSelector, ModelContext> setModelMap;
     private final Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap;
     private final Set<TargetSelector> ignoreSet;
     private final Set<TargetSelector> withNullableSet;
@@ -59,7 +59,7 @@ final class ModelContextSource {
             final Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap,
             final Map<TargetSelector, Predicate<?>> filterMap,
             final Map<TargetSelector, List<Assignment>> assignmentMap,
-            final Map<TargetSelector, ModelContext<?>> setModelMap,
+            final Map<TargetSelector, ModelContext> setModelMap,
             final Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap,
             final Set<TargetSelector> ignoreSet,
             final Set<TargetSelector> withNullableSet) {
@@ -105,7 +105,7 @@ final class ModelContextSource {
         return assignmentMap;
     }
 
-    Map<TargetSelector, ModelContext<?>> getSetModelMap() {
+    Map<TargetSelector, ModelContext> getSetModelMap() {
         return setModelMap;
     }
 

@@ -24,11 +24,11 @@ import org.jetbrains.annotations.NotNull;
 
 class SpiGeneratorNodeHandler implements NodeHandler {
 
-    private final ModelContext<?> modelContext;
+    private final ModelContext modelContext;
     private final SpiGeneratorResolver spiGeneratorResolver;
 
     SpiGeneratorNodeHandler(
-            final ModelContext<?> modelContext,
+            final ModelContext modelContext,
             final SpiGeneratorResolver spiGeneratorResolver) {
 
         this.modelContext = modelContext;

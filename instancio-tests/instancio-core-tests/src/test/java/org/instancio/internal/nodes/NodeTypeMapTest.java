@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.instancio.internal.RootType;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.test.support.pojo.generics.PairAPairIntegerString;
 import org.instancio.test.support.pojo.generics.PairLongPairIntegerString;
@@ -24,48 +25,47 @@ import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.pojo.generics.basic.Triplet;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.GenericsTag;
-import org.instancio.testsupport.utils.TypeMapBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
-import static org.instancio.testsupport.asserts.TypeMapResolverAssert.assertThatResolver;
+import static org.instancio.testsupport.asserts.NodeTypeMapAssert.assertNodeTypeMap;
 
 @GenericsTag
-class TypeMapTest {
+class NodeTypeMapTest {
 
-    private static final Map<TypeVariable<?>, Type> EMPTY_ROOT_TYPE_MAP = Collections.emptyMap();
     private static final Map<Type, Type> EMPTY_SUBTYPE_MAP = Collections.emptyMap();
 
     @Test
     void verifyEqualsAndHashcode() {
-        EqualsVerifier.forClass(TypeMap.class).verify();
+        EqualsVerifier.forClass(NodeTypeMap.class)
+                .withIgnoredFields("rootType")
+                .verify();
     }
 
     @Test
     void personAge() {
         final Class<?> klass = Person.class;
         final String field = "age";
-        final TypeMap resolver = new TypeMap(getGenericType(klass, field), EMPTY_ROOT_TYPE_MAP, EMPTY_SUBTYPE_MAP);
+        final RootType rootType = new RootType(Person.class, Collections.emptyList());
 
-        assertThatResolver(resolver).hasEmptyTypeMap();
+        final NodeTypeMap typeMap = new NodeTypeMap(getGenericType(klass, field), rootType, EMPTY_SUBTYPE_MAP);
+
+        assertNodeTypeMap(typeMap).hasEmptyTypeMap();
     }
 
     @Test
     void pairAPairIntegerString() {
         final Class<?> klass = PairAPairIntegerString.class;
         final String field = "pairAPairIntegerString";
+        final RootType rootType = new RootType(klass, List.of(Boolean.class));
 
-        final Map<TypeVariable<?>, Type> rootTypeMap = TypeMapBuilder.forClass(klass)
-                .with("A", Boolean.class)
-                .get();
+        final NodeTypeMap typeMap = new NodeTypeMap(getGenericType(klass, field), rootType, EMPTY_SUBTYPE_MAP);
 
-        final TypeMap resolver = new TypeMap(getGenericType(klass, field), rootTypeMap, EMPTY_SUBTYPE_MAP);
-
-        assertThatResolver(resolver)
+        assertNodeTypeMap(typeMap)
                 .hasTypeMapping(Pair.class, "L", Boolean.class)
                 .hasTypeMapping(Pair.class, "R", "org.instancio.test.support.pojo.generics.basic." +
                         "Pair<java.lang.Integer, java.lang.String>")
@@ -76,10 +76,11 @@ class TypeMapTest {
     void pairLongPairIntegerString() {
         final Class<?> klass = PairLongPairIntegerString.class;
         final String field = "pairLongPairIntegerString";
+        final RootType rootType = new RootType(klass, Collections.emptyList());
 
-        final TypeMap resolver = new TypeMap(getGenericType(klass, field), EMPTY_ROOT_TYPE_MAP, EMPTY_SUBTYPE_MAP);
+        final NodeTypeMap typeMap = new NodeTypeMap(getGenericType(klass, field), rootType, EMPTY_SUBTYPE_MAP);
 
-        assertThatResolver(resolver)
+        assertNodeTypeMap(typeMap)
                 .hasTypeMapping(Pair.class, "L", Long.class)
                 .hasTypeMapping(Pair.class, "R", "org.instancio.test.support.pojo.generics.basic." +
                         "Pair<java.lang.Integer, java.lang.String>")
@@ -90,14 +91,11 @@ class TypeMapTest {
     void tripletAFooBarBazStringListOfB() {
         final Class<?> klass = TripletAFooBarBazStringListOfB.class;
         final String field = "tripletA_FooBarBazString_ListOfB";
+        final RootType rootType = new RootType(klass, List.of(Long.class, Long.class));
 
-        final Map<TypeVariable<?>, Type> rootTypeMap = TypeMapBuilder.forClass(klass)
-                .with("A", Long.class)
-                .get();
+        final NodeTypeMap typeMap = new NodeTypeMap(getGenericType(klass, field), rootType, EMPTY_SUBTYPE_MAP);
 
-        final TypeMap resolver = new TypeMap(getGenericType(klass, field), rootTypeMap, EMPTY_SUBTYPE_MAP);
-
-        assertThatResolver(resolver)
+        assertNodeTypeMap(typeMap)
                 .hasTypeMapping(Triplet.class, "M", Long.class)
                 .hasTypeMapping(Triplet.class, "N", "org.instancio.test.support.pojo.generics.foobarbaz." +
                         "Foo<org.instancio.test.support.pojo.generics.foobarbaz." +

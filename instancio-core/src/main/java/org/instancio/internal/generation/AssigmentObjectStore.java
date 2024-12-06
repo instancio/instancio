@@ -41,16 +41,16 @@ public class AssigmentObjectStore implements GenerationListener {
     // selectors to generated objects as values.
     private final Map<Object, Map<TargetSelector, GeneratorResult>> objectStore = new IdentityHashMap<>();
     private final Deque<Object> scopes = new ArrayDeque<>();
-    private final ModelContext<?> context;
+    private final ModelContext context;
 
     private boolean hasNewValues;
 
-    private AssigmentObjectStore(final ModelContext<?> context) {
+    private AssigmentObjectStore(final ModelContext context) {
         this.context = context;
         enterScope(); // root object's scope
     }
 
-    public static AssigmentObjectStore create(final ModelContext<?> context) {
+    public static AssigmentObjectStore create(final ModelContext context) {
         return context.getSelectorMaps().hasAssignments()
                 ? new AssigmentObjectStore(context)
                 : new NoopAssigmentObjectStore();

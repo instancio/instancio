@@ -37,7 +37,7 @@ public final class Nodes {
     }
 
     public static NodeContext nodeContext() {
-        final ModelContext<?> modelContext = ModelContext.builder(Object.class)
+        final ModelContext modelContext = ModelContext.builder(Object.class)
                 .withMaxDepth(Integer.MAX_VALUE)
                 .withSettings(Settings.create()
                         .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)

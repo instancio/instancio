@@ -26,7 +26,7 @@ public class AssignerImpl implements Assigner {
 
     private final Assigner delegate;
 
-    public AssignerImpl(final ModelContext<?> context) {
+    public AssignerImpl(final ModelContext context) {
         this.delegate = resolveAssigner(context);
     }
 
@@ -35,7 +35,7 @@ public class AssignerImpl implements Assigner {
         delegate.assign(node, target, value);
     }
 
-    private static Assigner resolveAssigner(final ModelContext<?> context) {
+    private static Assigner resolveAssigner(final ModelContext context) {
         final Settings settings = context.getSettings();
         final AssignmentType assignment = settings.get(Keys.ASSIGNMENT_TYPE);
 

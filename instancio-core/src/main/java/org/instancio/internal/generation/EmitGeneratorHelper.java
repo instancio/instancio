@@ -43,13 +43,13 @@ class EmitGeneratorHelper {
 
     private static final GeneratorResult NULL_RESULT = GeneratorResult.create(null, EMIT_NULL_HINT);
 
-    private final ModelContext<?> modelContext;
+    private final ModelContext modelContext;
 
     // Keep track of values emitted by a generator and nodes the values
     // were assigned to for error reporting
     private final Map<Generator<?>, Map<InternalNode, List<Object>>> generatorEmittedValues = new HashMap<>();
 
-    EmitGeneratorHelper(final ModelContext<?> modelContext) {
+    EmitGeneratorHelper(final ModelContext modelContext) {
         this.modelContext = modelContext;
     }
 

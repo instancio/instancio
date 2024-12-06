@@ -26,7 +26,7 @@ class AssigmentObjectStoreTest {
 
     @Test
     void createShouldReturnNoopClass_whenModelContextHasNoAssignments() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class).build();
+        final ModelContext ctx = ModelContext.builder(String.class).build();
         final AssigmentObjectStore result = AssigmentObjectStore.create(ctx);
 
         assertThat(result).isExactlyInstanceOf(AssigmentObjectStore.NoopAssigmentObjectStore.class);
@@ -34,7 +34,7 @@ class AssigmentObjectStoreTest {
 
     @Test
     void createShouldReturnGeneratedObjectStore_whenModelContextHasAssignments() {
-        final ModelContext<Object> ctx = ModelContext.builder(String.class)
+        final ModelContext ctx = ModelContext.builder(String.class)
                 .withAssignments(Assign.valueOf(String.class).to(all(String.class)))
                 .build();
 

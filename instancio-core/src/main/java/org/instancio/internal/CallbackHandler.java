@@ -34,14 +34,14 @@ import java.util.Map;
 class CallbackHandler implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(CallbackHandler.class);
 
-    private final ModelContext<?> context;
+    private final ModelContext context;
     private final Map<InternalNode, List<Object>> resultsForCallbacks = new IdentityHashMap<>();
 
-    private CallbackHandler(final ModelContext<?> context) {
+    private CallbackHandler(final ModelContext context) {
         this.context = context;
     }
 
-    static CallbackHandler create(final ModelContext<?> context) {
+    static CallbackHandler create(final ModelContext context) {
         return context.getSelectorMaps().hasCallbacks()
                 ? new CallbackHandler(context)
                 : new NoopCallbackHandler();

@@ -18,7 +18,7 @@ package org.instancio.testsupport.asserts;
 import org.assertj.core.api.AbstractAssert;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
-import org.instancio.internal.nodes.TypeMap;
+import org.instancio.internal.nodes.NodeTypeMap;
 
 import java.lang.reflect.Type;
 
@@ -106,11 +106,11 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
     public NodeAssert hasTypeMappedTo(Class<?> klass, String typeVariable, Type expectedMapping) {
         isNotNull();
         final Type typeVar = getTypeVar(klass, typeVariable);
-        final TypeMap typeMap = actual.getTypeMap();
-        final Type actualMapping = typeMap.get(typeVar);
+        final NodeTypeMap nodeTypeMap = actual.getTypeMap();
+        final Type actualMapping = nodeTypeMap.get(typeVar);
 
         assertThat(actualMapping)
-                .as("Actual type map: %s", typeMap)
+                .as("Actual type map: %s", nodeTypeMap)
                 .isEqualTo(expectedMapping);
         return this;
     }
@@ -118,11 +118,11 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
     public NodeAssert hasTypeMappedTo(Class<?> klass, String typeVariable, String expectedTypeName) {
         isNotNull();
         final Type typeVar = getTypeVar(klass, typeVariable);
-        final TypeMap typeMap = actual.getTypeMap();
-        final Type actualMapping = typeMap.get(typeVar);
+        final NodeTypeMap nodeTypeMap = actual.getTypeMap();
+        final Type actualMapping = nodeTypeMap.get(typeVar);
 
         assertThat(actualMapping)
-                .as("Actual type map: %s", typeMap)
+                .as("Actual type map: %s", nodeTypeMap)
                 .isNotNull()
                 .extracting(Type::getTypeName)
                 .isEqualTo(expectedTypeName);
@@ -133,11 +133,11 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
                                       final Class<?> class2, final String typeVariable2) {
         isNotNull();
         final Type typeVar1 = getTypeVar(class1, typeVariable1);
-        final TypeMap typeMap = actual.getTypeMap();
-        final Type actualMapping = typeMap.get(typeVar1);
+        final NodeTypeMap nodeTypeMap = actual.getTypeMap();
+        final Type actualMapping = nodeTypeMap.get(typeVar1);
 
         assertThat(actualMapping)
-                .as("Actual type map: %s", typeMap)
+                .as("Actual type map: %s", nodeTypeMap)
                 .isNotNull()
                 .isEqualTo(getTypeVar(class2, typeVariable2));
         return this;

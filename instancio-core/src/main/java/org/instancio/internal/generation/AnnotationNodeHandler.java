@@ -69,7 +69,7 @@ final class AnnotationNodeHandler implements NodeHandler {
 
     private final List<AnnotationConsumer> annotationConsumers;
     private final AnnotationExtractor annotationExtractor;
-    private final ModelContext<?> modelContext;
+    private final ModelContext modelContext;
     private final GeneratorContext generatorContext;
     private final GeneratorResolver generatorResolver;
     private final GeneratedValuePostProcessor stringPostProcessor;
@@ -77,7 +77,7 @@ final class AnnotationNodeHandler implements NodeHandler {
     private final boolean beanValidationOrJpaEnabled;
 
     private AnnotationNodeHandler(
-            final ModelContext<?> modelContext,
+            final ModelContext modelContext,
             final GeneratorResolver generatorResolver,
             final List<ProviderEntry<AnnotationProcessor>> annotationProcessors,
             final boolean beanValidationOrJpaEnabled) {
@@ -93,7 +93,7 @@ final class AnnotationNodeHandler implements NodeHandler {
         this.beanValidationOrJpaEnabled = beanValidationOrJpaEnabled;
     }
 
-    static NodeHandler create(final ModelContext<?> context, final GeneratorResolver generatorResolver) {
+    static NodeHandler create(final ModelContext context, final GeneratorResolver generatorResolver) {
         final boolean bvOrJpaEnabled = context.getSettings().get(Keys.BEAN_VALIDATION_ENABLED)
                 || context.getSettings().get(Keys.JPA_ENABLED);
 

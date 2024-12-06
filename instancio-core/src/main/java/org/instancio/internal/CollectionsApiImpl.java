@@ -41,7 +41,7 @@ public final class CollectionsApiImpl<T, C extends Collection<T>>
             final Model<T> elementModel) {
 
         final InternalModel<T> model = (InternalModel<T>) elementModel;
-        final ModelContext<C> context = ModelContext.<C>builder(collectionType)
+        final ModelContext context = ModelContext.builder(collectionType)
                 .useModelAsTypeArgument(model.getModelContext())
                 .build();
 

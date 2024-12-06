@@ -33,7 +33,7 @@ class InstantiatingHandler implements NodeHandler {
 
     private final Instantiator instantiator;
 
-    InstantiatingHandler(final ModelContext<?> context) {
+    InstantiatingHandler(final ModelContext context) {
         this.instantiator = new Instantiator(context.getServiceProviders().getTypeInstantiators());
 
     }

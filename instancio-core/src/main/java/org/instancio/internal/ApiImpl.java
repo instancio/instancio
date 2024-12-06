@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 
 public class ApiImpl<T> implements InstancioApi<T> {
 
-    private final ModelContext.Builder<T> modelContextBuilder;
+    private final ModelContext.Builder modelContextBuilder;
 
     public ApiImpl(final Type klass) {
         this.modelContextBuilder = ModelContext.builder(klass);
@@ -54,7 +54,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
 
     public ApiImpl(final Model<T> model) {
         final InternalModel<T> suppliedModel = (InternalModel<T>) model;
-        final ModelContext<T> suppliedContext = suppliedModel.getModelContext();
+        final ModelContext suppliedContext = suppliedModel.getModelContext();
         // copy context data to allow overriding
         this.modelContextBuilder = suppliedContext.toBuilder();
     }

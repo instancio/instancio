@@ -75,7 +75,7 @@ class InternalNodeTest {
         final InternalNode node = InternalNode.builder(
                         Types.LIST_STRING.get(),
                         List.class,
-                        Nodes.nodeContext().getRootTypeMap())
+                        Nodes.nodeContext().getRootType())
                 .nodeKind(NodeKind.COLLECTION)
                 .member(ReflectionUtils.getField(ListString.class, "list"))
                 .member(ReflectionUtils.getSetterMethod(ListString.class, "setList", List.class))
@@ -110,7 +110,7 @@ class InternalNodeTest {
             final InternalNode node = InternalNode.builder(
                             Types.LIST_STRING.get(),
                             rawType,
-                            Nodes.nodeContext().getRootTypeMap())
+                            Nodes.nodeContext().getRootType())
                     .targetClass(targetClass)
                     .build();
 
@@ -126,7 +126,7 @@ class InternalNodeTest {
             final InternalNode node = InternalNode.builder(
                             Types.LIST_STRING.get(),
                             rawType,
-                            Nodes.nodeContext().getRootTypeMap())
+                            Nodes.nodeContext().getRootType())
                     .build();
 
             assertNode(node)
@@ -148,7 +148,7 @@ class InternalNodeTest {
             InternalNode bazIntegerClassNode = InternalNode.builder(
                             typeBazInteger.get(),
                             Baz.class,
-                            Nodes.nodeContext().getRootTypeMap())
+                            Nodes.nodeContext().getRootType())
                     .build();
 
             assertThat(bazString)
@@ -334,7 +334,10 @@ class InternalNodeTest {
     }
 
     private static InternalNode createNode(Class<?> klass, TypeToken<?> type) {
-        return InternalNode.builder(type.get(), klass, Nodes.nodeContext().getRootTypeMap())
+        return InternalNode.builder(
+                        type.get(),
+                        klass,
+                        Nodes.nodeContext().getRootType())
                 .targetClass(klass)
                 .build();
     }

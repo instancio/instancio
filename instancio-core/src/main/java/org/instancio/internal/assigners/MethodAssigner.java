@@ -45,7 +45,7 @@ final class MethodAssigner implements Assigner {
     private final Assigner fieldAssigner;
     private final SetterMethodResolverFacade setterMethodResolverFacade;
 
-    MethodAssigner(final ModelContext<?> context) {
+    MethodAssigner(final ModelContext context) {
         this.settings = context.getSettings();
         this.excludedModifiers = settings.get(Keys.SETTER_EXCLUDE_MODIFIER);
         this.fieldAssigner = new FieldAssigner(settings);

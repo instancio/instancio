@@ -38,7 +38,7 @@ class GeneratedPojoStore {
         // created via static factory method
     }
 
-    static GeneratedPojoStore createStore(final ModelContext<?> context) {
+    static GeneratedPojoStore createStore(final ModelContext context) {
         final boolean backRefsEnabled = context.getSettings().get(Keys.SET_BACK_REFERENCES);
 
         return backRefsEnabled

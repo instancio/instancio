@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 
 public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<T> {
 
-    private final ModelContext.Builder<T> modelContextBuilder;
+    private final ModelContext.Builder modelContextBuilder;
     private final List<CartesianValues> cartesianValues = new ArrayList<>();
 
     public CartesianProductApiImpl(final Type klass) {
@@ -57,7 +57,7 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
 
     public <E> CartesianProductApiImpl(final Model<E> elementModel) {
         final InternalModel<E> model = (InternalModel<E>) elementModel;
-        this.modelContextBuilder = ModelContext.<T>builder(List.class)
+        this.modelContextBuilder = ModelContext.builder(List.class)
                 .useModelAsTypeArgument(model.getModelContext());
     }
 
