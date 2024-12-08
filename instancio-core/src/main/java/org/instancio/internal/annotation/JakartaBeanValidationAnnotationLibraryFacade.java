@@ -15,10 +15,17 @@
  */
 package org.instancio.internal.annotation;
 
-final class JavaxPersistenceAnnotationConsumer extends AbstractAnnotationConsumer {
+import org.instancio.internal.generator.domain.internet.EmailGenerator;
+
+final class JakartaBeanValidationAnnotationLibraryFacade extends AbstractAnnotationLibraryFacade {
+
+    JakartaBeanValidationAnnotationLibraryFacade() {
+        putPrimary(() -> jakarta.validation.constraints.Email.class,
+                ((annotation, context) -> new EmailGenerator(context)));
+    }
 
     @Override
     protected AnnotationHandlerMap getAnnotationHandlerMap() {
-        return JavaxPersistenceHandlerMap.getInstance();
+        return JakartaBeanValidationHandlerMap.getInstance();
     }
 }

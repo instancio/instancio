@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.annotation;
 
-final class JakartaPersistenceAnnotationConsumer extends AbstractAnnotationConsumer {
+final class JakartaPersistenceAnnotationLibraryFacade extends AbstractAnnotationLibraryFacade {
 
     @Override
     protected AnnotationHandlerMap getAnnotationHandlerMap() {

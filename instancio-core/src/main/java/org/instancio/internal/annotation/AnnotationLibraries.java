@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class AnnotationConsumers {
+public final class AnnotationLibraries {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AnnotationConsumers.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AnnotationLibraries.class);
 
     private static final String JAVAX_PERSISTENCE_CLASS = "javax.persistence.Column";
     private static final String JAKARTA_PERSISTENCE_CLASS = "jakarta.persistence.Column";
@@ -36,11 +36,11 @@ public final class AnnotationConsumers {
     private static final String JAKARTA_VALIDATOR_CLASS = "jakarta.validation.Validation";
     private static final String HIBERNATE_VALIDATOR_CLASS = "org.hibernate.validator.HibernateValidator";
 
-    private AnnotationConsumers() {
+    private AnnotationLibraries() {
         // non-instantiable
     }
 
-    public static List<AnnotationConsumer> get(final ModelContext modelContext) {
+    public static List<AnnotationLibraryFacade> discoverOnClasspath(final ModelContext modelContext) {
         final Settings settings = modelContext.getSettings();
         final boolean jpaEnabled = settings.get(Keys.JPA_ENABLED);
         final boolean beanValidationEnabled = settings.get(Keys.BEAN_VALIDATION_ENABLED);
@@ -49,29 +49,29 @@ public final class AnnotationConsumers {
                 beanValidationEnabled, jpaEnabled);
 
         // List order matters - later entry may override earlier one
-        final List<AnnotationConsumer> result = new ArrayList<>();
+        final List<AnnotationLibraryFacade> result = new ArrayList<>();
 
         // In theory, there shouldn't be javax and jakarta on the classpath
         // at the same time. In practice, it can happen, so we add both.
 
         if (jpaEnabled) {
             if (ReflectionUtils.loadClass(JAVAX_PERSISTENCE_CLASS) != null) {
-                result.add(new JavaxPersistenceAnnotationConsumer());
+                result.add(new JavaxPersistenceAnnotationLibraryFacade());
             }
             if (ReflectionUtils.loadClass(JAKARTA_PERSISTENCE_CLASS) != null) {
-                result.add(new JakartaPersistenceAnnotationConsumer());
+                result.add(new JakartaPersistenceAnnotationLibraryFacade());
             }
         }
 
         if (beanValidationEnabled) {
             if (ReflectionUtils.loadClass(HIBERNATE_VALIDATOR_CLASS) != null) {
-                result.add(new HibernateBeanValidationAnnotationConsumer());
+                result.add(new HibernateBeanValidationAnnotationLibraryFacade());
             }
             if (ReflectionUtils.loadClass(JAKARTA_VALIDATOR_CLASS) != null) {
-                result.add(new JakartaBeanValidationAnnotationConsumer());
+                result.add(new JakartaBeanValidationAnnotationLibraryFacade());
             }
             if (ReflectionUtils.loadClass(JAVAX_VALIDATOR_CLASS) != null) {
-                result.add(new JavaxBeanValidationAnnotationConsumer());
+                result.add(new JavaxBeanValidationAnnotationLibraryFacade());
             }
         }
         return Collections.unmodifiableList(result);

@@ -15,38 +15,26 @@
  */
 package org.instancio.internal.generation;
 
-import org.instancio.exception.InstancioException;
-import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
-import org.instancio.internal.annotation.AnnotationConsumer;
-import org.instancio.internal.annotation.AnnotationConsumers;
 import org.instancio.internal.annotation.AnnotationExtractor;
+import org.instancio.internal.annotation.AnnotationLibraries;
+import org.instancio.internal.annotation.AnnotationLibraryFacade;
 import org.instancio.internal.annotation.AnnotationMap;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generation.AnnotationProcessorHelper.AnnotatedMethod;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
-import org.instancio.internal.util.Fail;
-import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
 import org.instancio.spi.InstancioServiceProvider.AnnotationProcessor;
-import org.instancio.spi.InstancioServiceProvider.AnnotationProcessor.AnnotationHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.instancio.internal.util.ErrorMessageUtils.annotationHandlerInvalidNumberOfParameters;
-import static org.instancio.internal.util.ErrorMessageUtils.invalidAnnotationHandlerMethod;
 
 /**
  * Entry point for processing Bean Validation and JPA annotations,
@@ -64,16 +52,15 @@ import static org.instancio.internal.util.ErrorMessageUtils.invalidAnnotationHan
  *
  * @see AnnotationMap
  */
-@SuppressWarnings("PMD.ExcessiveImports")
 final class AnnotationNodeHandler implements NodeHandler {
 
-    private final List<AnnotationConsumer> annotationConsumers;
+    private final List<AnnotationLibraryFacade> annotationLibraryFacades;
     private final AnnotationExtractor annotationExtractor;
     private final ModelContext modelContext;
     private final GeneratorContext generatorContext;
     private final GeneratorResolver generatorResolver;
     private final GeneratedValuePostProcessor stringPostProcessor;
-    private final Map<Class<?>, List<AnnotatedMethod>> annotatedMethodsMap;
+    private final AnnotationProcessorHelper annotationProcessorMethods;
     private final boolean beanValidationOrJpaEnabled;
 
     private AnnotationNodeHandler(
@@ -84,12 +71,12 @@ final class AnnotationNodeHandler implements NodeHandler {
 
         this.modelContext = modelContext;
         this.generatorResolver = generatorResolver;
-        this.annotationConsumers = AnnotationConsumers.get(modelContext);
+        this.annotationLibraryFacades = AnnotationLibraries.discoverOnClasspath(modelContext);
         this.annotationExtractor = new AnnotationExtractor(modelContext);
         this.stringPostProcessor = new StringPrefixingPostProcessor(
                 modelContext.getSettings().get(Keys.STRING_FIELD_PREFIX_ENABLED));
         this.generatorContext = new GeneratorContext(modelContext.getSettings(), modelContext.getRandom());
-        this.annotatedMethodsMap = collectAnnotatedMethods(annotationProcessors);
+        this.annotationProcessorMethods = new AnnotationProcessorHelper(annotationProcessors);
         this.beanValidationOrJpaEnabled = beanValidationOrJpaEnabled;
     }
 
@@ -103,37 +90,6 @@ final class AnnotationNodeHandler implements NodeHandler {
         return bvOrJpaEnabled || !annotationProcessors.isEmpty()
                 ? new AnnotationNodeHandler(context, generatorResolver, annotationProcessors, bvOrJpaEnabled)
                 : NOOP_HANDLER;
-    }
-
-    private static Map<Class<?>, List<AnnotatedMethod>> collectAnnotatedMethods(
-            final List<ProviderEntry<AnnotationProcessor>> annotationProcessors) {
-
-        if (annotationProcessors.isEmpty()) {
-            return Collections.emptyMap();
-        }
-
-        final Map<Class<?>, List<AnnotatedMethod>> results = new LinkedHashMap<>();
-
-        for (ProviderEntry<AnnotationProcessor> entry : annotationProcessors) {
-            final AnnotationProcessor processor = entry.getProvider();
-
-            for (Method method : processor.getClass().getDeclaredMethods()) {
-                ReflectionUtils.setAccessible(method);
-
-                if (method.getDeclaredAnnotation(AnnotationHandler.class) != null) {
-                    final Class<?>[] paramTypes = method.getParameterTypes();
-                    final AnnotatedMethod annotatedMethod = new AnnotatedMethod(processor, method);
-
-                    // Allowed number of args for @AnnotationHandler methods is either 2 or 3.
-                    // The validation is deferred to just before the method is invoked.
-                    if (paramTypes.length > 0) {
-                        final Class<?> annotationType = paramTypes[0];
-                        results.computeIfAbsent(annotationType, v -> new ArrayList<>()).add(annotatedMethod);
-                    }
-                }
-            }
-        }
-        return Collections.unmodifiableMap(results);
     }
 
     @NotNull
@@ -153,8 +109,8 @@ final class AnnotationNodeHandler implements NodeHandler {
             final AnnotationMap annotationMap = new AnnotationMap(annotations);
             generator = getGenerator(node, annotations, annotationMap);
 
-            for (AnnotationConsumer provider : annotationConsumers) {
-                provider.consumeAnnotations(annotationMap, generator, node.getTargetClass());
+            for (AnnotationLibraryFacade lib : annotationLibraryFacades) {
+                lib.consumeAnnotations(annotationMap, generator, node.getTargetClass());
             }
         } else {
             generator = generatorResolver.get(node);
@@ -196,48 +152,14 @@ final class AnnotationNodeHandler implements NodeHandler {
             final Generator<?> generator) {
 
         for (Annotation annotation : annotations) {
-            final List<AnnotatedMethod> annotatedMethods = annotatedMethodsMap.getOrDefault(
-                    annotation.annotationType(), Collections.emptyList());
+            final List<AnnotatedMethod> annotatedMethods =
+                    annotationProcessorMethods.get(annotation.annotationType());
 
             for (AnnotatedMethod method : annotatedMethods) {
                 method.invoke(annotation, generator, node);
             }
         }
     }
-
-    private static final class AnnotatedMethod {
-        private final AnnotationProcessor processor;
-        private final Method method;
-        private final Class<?>[] params;
-
-        AnnotatedMethod(AnnotationProcessor processor, Method method) {
-            this.processor = processor;
-            this.method = method;
-            this.params = method.getParameterTypes();
-        }
-
-        void invoke(final Annotation annotation, final Generator<?> generator, final InternalNode node) {
-            try {
-                if (params.length == 2) {
-                    method.invoke(processor, annotation, generator);
-                } else if (params.length == 3) {
-                    method.invoke(processor, annotation, generator, node);
-                } else {
-                    throw Fail.withUsageError(annotationHandlerInvalidNumberOfParameters(processor.getClass(), method));
-                }
-            } catch (IllegalArgumentException ex) {
-                final String msg = invalidAnnotationHandlerMethod(
-                        processor.getClass(), method, annotation, generator, node);
-
-                throw Fail.withUsageError(msg, ex);
-            } catch (AssertionError | InstancioTerminatingException ex) {
-                throw ex;
-            } catch (Exception ex) {
-                throw new InstancioException("Failed invoking @AnnotationHandler method", ex);
-            }
-        }
-    }
-
 
     private static boolean isObjectAssignableToNode(final InternalNode node, final Object obj) {
         if (obj == null) {
@@ -256,7 +178,7 @@ final class AnnotationNodeHandler implements NodeHandler {
             final Annotation[] annotations,
             final AnnotationMap annotationMap) {
 
-        for (AnnotationConsumer provider : annotationConsumers) {
+        for (AnnotationLibraryFacade provider : annotationLibraryFacades) {
             for (Annotation annotation : annotations) {
                 if (provider.isPrimary(annotation.annotationType())) {
                     annotationMap.setPrimary(annotation);

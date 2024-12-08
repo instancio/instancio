@@ -26,11 +26,12 @@ import java.lang.annotation.Annotation;
 
 /**
  * Provides support for customising generated values based on annotations.
+ * Each annotation library has its own implementation of this class.
  *
  * @since 2.7.0
  */
 @InternalApi
-public interface AnnotationConsumer {
+public interface AnnotationLibraryFacade {
 
     /**
      * Checks if the specified annotation type is marked as
