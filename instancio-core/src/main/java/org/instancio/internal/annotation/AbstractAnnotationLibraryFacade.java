@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-abstract class AbstractAnnotationConsumer implements AnnotationConsumer {
+abstract class AbstractAnnotationLibraryFacade implements AnnotationLibraryFacade {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractAnnotationConsumer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractAnnotationLibraryFacade.class);
 
     /**
      * Maps primary annotation to a function that provides a generator for the given annotation

@@ -17,14 +17,14 @@ package org.instancio.internal.annotation;
 
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 
-final class JavaxBeanValidationAnnotationConsumer extends AbstractAnnotationConsumer {
+final class JavaxBeanValidationAnnotationLibraryFacade extends AbstractAnnotationLibraryFacade {
 
     @Override
     protected AnnotationHandlerMap getAnnotationHandlerMap() {
         return JavaxBeanValidationHandlerMap.getInstance();
     }
 
-    JavaxBeanValidationAnnotationConsumer() {
+    JavaxBeanValidationAnnotationLibraryFacade() {
         putPrimary(() -> javax.validation.constraints.Email.class,
                 (annotation, context) -> new EmailGenerator(context));
     }

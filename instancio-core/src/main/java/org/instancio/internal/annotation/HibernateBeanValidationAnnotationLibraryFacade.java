@@ -36,9 +36,9 @@ import org.instancio.internal.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("PMD.CouplingBetweenObjects")
-final class HibernateBeanValidationAnnotationConsumer extends AbstractAnnotationConsumer {
+final class HibernateBeanValidationAnnotationLibraryFacade extends AbstractAnnotationLibraryFacade {
 
-    HibernateBeanValidationAnnotationConsumer() {
+    HibernateBeanValidationAnnotationLibraryFacade() {
         putPrimary(() -> org.hibernate.validator.constraints.EAN.class,
                 (annotation, context) -> getEanGenerator(
                         (org.hibernate.validator.constraints.EAN) annotation, context)
