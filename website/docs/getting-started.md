@@ -29,7 +29,7 @@ The following dependencies are available from Maven central:
 | `instancio-guava`       | `org.instancio.guava`       | Support for Google Guava           |
 
 
-!!! warning "The `org.instancio:instancio` artifact on Maven central is an older dependency that should no longer be used."
+!!! danger "The `org.instancio:instancio` artifact on Maven central is an older dependency that should no longer be used."
 
 ### **`instancio-junit`**
 

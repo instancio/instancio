@@ -203,6 +203,9 @@ To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
 </dependency>
 ```
 
+> [!CAUTION]
+> The `org.instancio:instancio` artifact on Maven central is an older dependency that should no longer be used.
+
 # Feedback
 
 Feedback and bug reports are greatly appreciated!
