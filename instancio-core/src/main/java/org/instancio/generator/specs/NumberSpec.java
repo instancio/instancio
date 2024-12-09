@@ -24,15 +24,35 @@ import org.instancio.generator.ValueSpec;
  */
 public interface NumberSpec<T extends Number> extends ValueSpec<T>, NumberGeneratorSpec<T> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     NumberSpec<T> min(T min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     NumberSpec<T> max(T max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     NumberSpec<T> range(T min, T max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     NumberSpec<T> nullable();
 }

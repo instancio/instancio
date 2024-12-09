@@ -24,15 +24,35 @@ import java.math.BigInteger;
  */
 public interface BigIntegerSpec extends NumberSpec<BigInteger> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     BigIntegerSpec min(BigInteger min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     BigIntegerSpec max(BigInteger max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     BigIntegerSpec range(BigInteger min, BigInteger max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     BigIntegerSpec nullable();
 }

@@ -22,15 +22,35 @@ package org.instancio.generator.specs;
  */
 public interface FloatSpec extends NumberSpec<Float> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     FloatSpec min(Float min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     FloatSpec max(Float max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     FloatSpec range(Float min, Float max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     FloatSpec nullable();
 }

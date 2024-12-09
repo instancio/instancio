@@ -22,15 +22,35 @@ package org.instancio.generator.specs;
  */
 public interface ShortSpec extends NumberSpec<Short> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     ShortSpec min(Short min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     ShortSpec max(Short max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     ShortSpec range(Short min, Short max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     ShortSpec nullable();
 }

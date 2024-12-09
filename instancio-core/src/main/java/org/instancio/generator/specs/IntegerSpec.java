@@ -22,15 +22,35 @@ package org.instancio.generator.specs;
  */
 public interface IntegerSpec extends NumberSpec<Integer> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     IntegerSpec min(Integer min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     IntegerSpec max(Integer max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     IntegerSpec range(Integer min, Integer max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     IntegerSpec nullable();
 }

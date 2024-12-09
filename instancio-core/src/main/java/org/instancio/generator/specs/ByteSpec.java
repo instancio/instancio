@@ -22,15 +22,35 @@ package org.instancio.generator.specs;
  */
 public interface ByteSpec extends NumberSpec<Byte> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     ByteSpec min(Byte min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     ByteSpec max(Byte max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     ByteSpec range(Byte min, Byte max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     ByteSpec nullable();
 }

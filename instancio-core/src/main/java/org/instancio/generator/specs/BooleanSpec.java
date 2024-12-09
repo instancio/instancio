@@ -32,6 +32,11 @@ public interface BooleanSpec extends ValueSpec<Boolean>, BooleanGeneratorSpec {
     @Override
     BooleanSpec probability(double probability);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     BooleanSpec nullable();
 }

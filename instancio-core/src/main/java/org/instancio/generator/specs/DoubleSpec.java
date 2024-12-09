@@ -22,15 +22,35 @@ package org.instancio.generator.specs;
  */
 public interface DoubleSpec extends NumberSpec<Double> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     DoubleSpec min(Double min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     DoubleSpec max(Double max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     DoubleSpec range(Double min, Double max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     DoubleSpec nullable();
 }

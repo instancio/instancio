@@ -54,9 +54,19 @@ public interface BigDecimalSpec extends ValueSpec<BigDecimal>, BigDecimalGenerat
     @Override
     BigDecimalSpec range(BigDecimal min, BigDecimal max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     BigDecimalSpec nullable();
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     BigDecimalSpec scale(int scale);
 

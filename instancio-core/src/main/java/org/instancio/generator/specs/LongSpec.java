@@ -22,15 +22,35 @@ package org.instancio.generator.specs;
  */
 public interface LongSpec extends NumberSpec<Long> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     LongSpec min(Long min);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     LongSpec max(Long max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     LongSpec range(Long min, Long max);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     */
     @Override
     LongSpec nullable();
 }
