@@ -18,16 +18,25 @@ package org.instancio.internal.generator.lang;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.FloatSpec;
+import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.math.BigDecimalGenerator;
+import org.instancio.internal.generator.specs.InternalFractionalNumberGeneratorSpec;
 import org.instancio.settings.Keys;
 
-public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<Float>
-        implements FloatSpec {
+import java.math.BigDecimal;
+
+public class FloatGenerator extends AbstractGenerator<Float>
+        implements FloatSpec, InternalFractionalNumberGeneratorSpec<Float> {
+
+    private final BigDecimalGenerator delegate;
 
     public FloatGenerator(final GeneratorContext context) {
-        super(context,
-                context.getSettings().get(Keys.FLOAT_MIN),
-                context.getSettings().get(Keys.FLOAT_MAX),
-                context.getSettings().get(Keys.FLOAT_NULLABLE));
+        super(context);
+        delegate = new BigDecimalGenerator(context)
+                .min(new BigDecimal(String.valueOf(context.getSettings().get(Keys.FLOAT_MIN))))
+                .max(new BigDecimal(String.valueOf(context.getSettings().get(Keys.FLOAT_MAX))))
+                .nullable(context.getSettings().get(Keys.FLOAT_NULLABLE));
     }
 
     @Override
@@ -36,37 +45,70 @@ public class FloatGenerator extends AbstractRandomComparableNumberGeneratorSpec<
     }
 
     @Override
+    public Float getMin() {
+        return delegate.getMin().floatValue();
+    }
+
+    @Override
+    public Float getMax() {
+        return delegate.getMax().floatValue();
+    }
+
+    @Override
+    public FloatGenerator scale(final int scale) {
+        delegate.scale(scale);
+        return this;
+    }
+
+    @Override
+    public FloatGenerator precision(final int precision) {
+        delegate.precision(precision);
+        return this;
+    }
+
+    @Override
     public FloatGenerator min(final Float min) {
-        super.min(min);
+        ApiValidator.notNull(min, "'min' must not be null");
+        delegate.min(new BigDecimal(String.valueOf(min)));
         return this;
     }
 
     @Override
     public FloatGenerator max(final Float max) {
-        super.max(max);
+        ApiValidator.notNull(max, "'max' must not be null");
+        delegate.max(new BigDecimal(String.valueOf(max)));
         return this;
     }
 
     @Override
     public FloatGenerator range(final Float min, final Float max) {
-        super.range(min, max);
+        ApiValidator.notNull(min, "'min' must not be null");
+        ApiValidator.notNull(max, "'max' must not be null");
+        delegate.range(
+                new BigDecimal(String.valueOf(min)),
+                new BigDecimal(String.valueOf(max)));
         return this;
     }
 
     @Override
     public FloatGenerator nullable() {
-        super.nullable();
+        delegate.nullable();
         return this;
     }
 
     @Override
     public FloatGenerator nullable(final boolean isNullable) {
-        super.nullable(isNullable);
+        delegate.nullable(isNullable);
         return this;
     }
 
     @Override
+    public boolean isNullable() {
+        return delegate.isNullable();
+    }
+
+    @Override
     protected Float tryGenerateNonNull(final Random random) {
-        return random.floatRange(getMin(), getMax());
+        return delegate.tryGenerateNonNull(random).floatValue();
     }
 }

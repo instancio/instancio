@@ -20,13 +20,14 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
 import org.instancio.internal.util.Range;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
-        extends AbstractGenerator<T> implements NumberGeneratorSpec<T> {
+        extends AbstractGenerator<T> implements InternalNumberGeneratorSpec<T> {
 
     private T min;
     private T max;
@@ -41,11 +42,13 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         this.max = max;
     }
 
-    protected final T getMin() {
+    @Override
+    public final T getMin() {
         return min;
     }
 
-    protected final T getMax() {
+    @Override
+    public final T getMax() {
         return max;
     }
 

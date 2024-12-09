@@ -2659,7 +2659,7 @@ Anything not listed is unsupported, including `*.List` annotations.
 - `@AssertTrue`
 - `@DecimalMax`
 - `@DecimalMin`
-- `@Digits` (`fraction()` is supported by `BigDecimal`, but not `float` or `double`)
+- `@Digits`
 - `@Email`
 - `@Future` (not supported by `MonthDay`)
 - `@FutureOrPresent` (delegates to `Future`)
@@ -2746,8 +2746,8 @@ or
 
 The following `@Column` attributes are supported:
 
-- `precision` -  supported by `BigDecimal` fields (with limitations described below)
-- `scale` - supported by `BigDecimal` fields
+- `precision` - supported by `Float`, `Double`, and `BigDecimal` fields (with limitations described below)
+- `scale` - supported by `Float`, `Double`, and `BigDecimal` fields
 - `length` - supported by `String` fields
 
 #### Limitations

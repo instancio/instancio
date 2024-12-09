@@ -41,15 +41,29 @@ class NumbersDigitsBVTest {
         assertThat(result.getPrimitiveShort()).isBetween((short) 10, (short) 99);
         assertThat(result.getPrimitiveInt()).isBetween(100, 999);
         assertThat(result.getPrimitiveLong()).isBetween(1000L, 9999L);
-        assertThat(result.getPrimitiveFloat()).isBetween(10000f, 99999f);
-        assertThat(result.getPrimitiveDouble()).isBetween(100000d, 999999d);
+        assertThat(result.getPrimitiveFloat())
+                .isBetween(10000f, 99999f)
+                .asString()
+                .matches("\\d{5}.0$");
+
+        assertThat(result.getPrimitiveDouble())
+                .isBetween(100000d, 999999d)
+                .asString()
+                .matches("\\d{6}.0$");
 
         assertThat(result.getByteWrapper()).isBetween((byte) 1, (byte) 9);
         assertThat(result.getShortWrapper()).isBetween((short) 10, (short) 99);
         assertThat(result.getIntegerWrapper()).isBetween(100, 999);
         assertThat(result.getLongWrapper()).isBetween(1000L, 9999L);
-        assertThat(result.getFloatWrapper()).isBetween(10000f, 99999f);
-        assertThat(result.getDoubleWrapper()).isBetween(100000d, 999999d);
+        assertThat(result.getFloatWrapper())
+                .isBetween(10000f, 99999f)
+                .asString()
+                .matches("\\d{5}.0$");
+
+        assertThat(result.getDoubleWrapper())
+                .isBetween(100000d, 999999d)
+                .asString()
+                .matches("\\d{6}.0$");
 
         assertThat(result.getBigInteger()).isBetween(
                 new BigInteger("10000000000"),
@@ -64,11 +78,25 @@ class NumbersDigitsBVTest {
     void withFraction() {
         final NumbersDigitsBV.WithFraction result = Instancio.create(NumbersDigitsBV.WithFraction.class);
 
-        assertThat(result.getPrimitiveFloat()).isBetween(100f, 999.9f);
-        assertThat(result.getPrimitiveDouble()).isBetween(1000d, 9999.99d);
+        assertThat(result.getPrimitiveFloat())
+                .isBetween(100f, 999.9f)
+                .asString()
+                .matches("\\d{3}.\\d$");
 
-        assertThat(result.getFloatWrapper()).isBetween(10000f, 99999.999f);
-        assertThat(result.getDoubleWrapper()).isBetween(100000d, 999999.9999d);
+        assertThat(result.getPrimitiveDouble())
+                .isBetween(1000d, 9999.99d)
+                .asString()
+                .matches("^\\d{4}(\\.\\d{1,2})?$");
+
+        assertThat(result.getFloatWrapper())
+                .isBetween(10000f, 99999.999f)
+                .asString()
+                .matches("^\\d{5}(\\.\\d{1,3})?$");
+
+        assertThat(result.getDoubleWrapper())
+                .isBetween(100000d, 999999.9999d)
+                .asString()
+                .matches("^\\d{6}(\\.\\d{1,4})?$");
 
         assertThat(result.getBigDecimal())
                 .isBetween(
@@ -80,8 +108,16 @@ class NumbersDigitsBVTest {
     @RepeatedTest(SAMPLE_SIZE_DD)
     void withZeroInteger() {
         final NumbersDigitsBV.WithZeroInteger result = Instancio.create(NumbersDigitsBV.WithZeroInteger.class);
-        assertThat(result.getPrimitiveFloat()).isBetween(0f, 0.999999f);
-        assertThat(result.getPrimitiveDouble()).isBetween(0d, 0.999999d);
+
+        assertThat(result.getPrimitiveFloat())
+                .isBetween(0f, 0.9f)
+                .asString()
+                .matches("^0.\\d$");
+
+        assertThat(result.getPrimitiveDouble())
+                .isBetween(0d, 0.99d)
+                .asString()
+                .matches("^0.\\d{1,2}$");
 
         assertThat(result.getBigDecimal())
                 .isBetween(

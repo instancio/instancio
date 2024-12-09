@@ -18,16 +18,15 @@ package org.instancio.internal.annotation;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
-import org.instancio.generator.specs.BigDecimalGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.internal.generator.array.ArrayGenerator;
-import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
+import org.instancio.internal.generator.specs.InternalFractionalNumberGeneratorSpec;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
@@ -90,9 +89,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                 numSpec.max(converter.apply(max));
                 AnnotationUtils.setSpecNullableToFalse(spec);
 
-                // Currently fractions are supported for BigDecimal, but not float/double
-                if (spec instanceof BigDecimalGeneratorSpec) {
-                    ((BigDecimalGeneratorSpec) spec).scale(fraction);
+                if (spec instanceof InternalFractionalNumberGeneratorSpec) {
+                    ((InternalFractionalNumberGeneratorSpec<?>) spec).scale(fraction);
                 }
             }
         }
@@ -145,7 +143,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                 final String value = getValue(annotation);
                 final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(targetClass);
                 final BigDecimal min = new BigDecimal(value);
-                final AbstractRandomNumberGeneratorSpec<Number> numSpec = (AbstractRandomNumberGeneratorSpec<Number>) spec;
+                final NumberGeneratorSpec<Number> numSpec = (NumberGeneratorSpec<Number>) spec;
                 numSpec.min(converter.apply(min));
                 AnnotationUtils.setSpecNullableToFalse(spec);
             }

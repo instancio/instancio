@@ -135,16 +135,6 @@ class NumberGeneratorTest {
     }
 
     @Test
-    void floatGenerator() {
-        new FractionalNumberGeneratorTestTemplate<FloatGenerator>().verifyGenerate(new FloatGenerator(context));
-    }
-
-    @Test
-    void doubleGenerator() {
-        new FractionalNumberGeneratorTestTemplate<DoubleGenerator>().verifyGenerate(new DoubleGenerator(context));
-    }
-
-    @Test
     void bigDecimalGenerator() {
         final BigDecimalGenerator generator = new BigDecimalGenerator(context,
                 BigDecimal.valueOf(MIN), BigDecimal.valueOf(MAX), true);
