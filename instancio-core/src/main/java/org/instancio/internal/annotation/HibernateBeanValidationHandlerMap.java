@@ -20,7 +20,6 @@ import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.generator.specs.DurationGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
-import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.LongGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
@@ -132,7 +131,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(targetClass);
 
-                final AbstractRandomNumberGeneratorSpec<Number> numSpec = (AbstractRandomNumberGeneratorSpec<Number>) spec;
+                final NumberGeneratorSpec<Number> numSpec = (NumberGeneratorSpec<Number>) spec;
                 numSpec
                         .min(fromLongConverter.apply(range.min()))
                         .max(fromLongConverter.apply(range.max()));

@@ -84,7 +84,7 @@ public abstract class AbstractGenerator<T> implements Generator<T>, NullableGene
         return this;
     }
 
-    public final boolean isNullable() {
+    public boolean isNullable() {
         return nullable;
     }
 

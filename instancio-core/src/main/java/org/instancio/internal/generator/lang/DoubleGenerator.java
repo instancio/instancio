@@ -18,16 +18,25 @@ package org.instancio.internal.generator.lang;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.DoubleSpec;
+import org.instancio.internal.ApiValidator;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.math.BigDecimalGenerator;
+import org.instancio.internal.generator.specs.InternalFractionalNumberGeneratorSpec;
 import org.instancio.settings.Keys;
 
-public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec<Double>
-        implements DoubleSpec {
+import java.math.BigDecimal;
+
+public class DoubleGenerator extends AbstractGenerator<Double>
+        implements DoubleSpec, InternalFractionalNumberGeneratorSpec<Double> {
+
+    private final BigDecimalGenerator delegate;
 
     public DoubleGenerator(final GeneratorContext context) {
-        super(context,
-                context.getSettings().get(Keys.DOUBLE_MIN),
-                context.getSettings().get(Keys.DOUBLE_MAX),
-                context.getSettings().get(Keys.DOUBLE_NULLABLE));
+        super(context);
+        delegate = new BigDecimalGenerator(context)
+                .min(new BigDecimal(String.valueOf(context.getSettings().get(Keys.DOUBLE_MIN))))
+                .max(new BigDecimal(String.valueOf(context.getSettings().get(Keys.DOUBLE_MAX))))
+                .nullable(context.getSettings().get(Keys.DOUBLE_NULLABLE));
     }
 
     @Override
@@ -36,37 +45,70 @@ public class DoubleGenerator extends AbstractRandomComparableNumberGeneratorSpec
     }
 
     @Override
+    public Double getMin() {
+        return delegate.getMin().doubleValue();
+    }
+
+    @Override
+    public Double getMax() {
+        return delegate.getMax().doubleValue();
+    }
+
+    @Override
+    public DoubleGenerator scale(final int scale) {
+        delegate.scale(scale);
+        return this;
+    }
+
+    @Override
+    public DoubleGenerator precision(final int precision) {
+        delegate.precision(precision);
+        return this;
+    }
+
+    @Override
     public DoubleGenerator min(final Double min) {
-        super.min(min);
+        ApiValidator.notNull(min, "'min' must not be null");
+        delegate.min(new BigDecimal(String.valueOf(min)));
         return this;
     }
 
     @Override
     public DoubleGenerator max(final Double max) {
-        super.max(max);
+        ApiValidator.notNull(max, "'max' must not be null");
+        delegate.max(new BigDecimal(String.valueOf(max)));
         return this;
     }
 
     @Override
     public DoubleGenerator range(final Double min, final Double max) {
-        super.range(min, max);
+        ApiValidator.notNull(min, "'min' must not be null");
+        ApiValidator.notNull(max, "'max' must not be null");
+        delegate.range(
+                new BigDecimal(String.valueOf(min)),
+                new BigDecimal(String.valueOf(max)));
         return this;
     }
 
     @Override
     public DoubleGenerator nullable() {
-        super.nullable();
+        delegate.nullable();
         return this;
     }
 
     @Override
     public DoubleGenerator nullable(final boolean isNullable) {
-        super.nullable(isNullable);
+        delegate.nullable(isNullable);
         return this;
     }
 
     @Override
+    public boolean isNullable() {
+        return delegate.isNullable();
+    }
+
+    @Override
     protected Double tryGenerateNonNull(final Random random) {
-        return random.doubleRange(getMin(), getMax());
+        return delegate.tryGenerateNonNull(random).doubleValue();
     }
 }

@@ -20,6 +20,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.NumberGeneratorSpecTestTemplate;
+import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.util.Constants;
@@ -59,11 +60,10 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
     })
     @ParameterizedTest
     void rangeWithFractionalValues(final BigDecimal min, final BigDecimal max) {
-        final AbstractRandomNumberGeneratorSpec<BigDecimal> generator = getGenerator();
+        final InternalNumberGeneratorSpec<BigDecimal> generator = getGenerator();
         generator.range(min, max);
 
-        final BigDecimal result = generator.generate(random);
-        assertThat(result)
+        assertThat(generate())
                 .isNotNull()
                 .isGreaterThanOrEqualTo(min)
                 .isLessThanOrEqualTo(max);

@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Nested;
@@ -29,7 +30,7 @@ class NumberGeneratorSpecTest {
     @Nested
     class ByteGeneratorTest extends NumberGeneratorSpecTestTemplate<Byte> {
         @Override
-        protected AbstractRandomNumberGeneratorSpec<Byte> createGenerator() {
+        protected InternalNumberGeneratorSpec<Byte> createGenerator() {
             return new ByteGenerator(context);
         }
 
@@ -42,7 +43,7 @@ class NumberGeneratorSpecTest {
     @Nested
     class ShortGeneratorTest extends NumberGeneratorSpecTestTemplate<Short> {
         @Override
-        protected AbstractRandomNumberGeneratorSpec<Short> createGenerator() {
+        protected InternalNumberGeneratorSpec<Short> createGenerator() {
             return new ShortGenerator(context);
         }
 
@@ -55,7 +56,7 @@ class NumberGeneratorSpecTest {
     @Nested
     class IntegerGeneratorTest extends NumberGeneratorSpecTestTemplate<Integer> {
         @Override
-        protected AbstractRandomNumberGeneratorSpec<Integer> createGenerator() {
+        protected InternalNumberGeneratorSpec<Integer> createGenerator() {
             return new IntegerGenerator(context);
         }
 
@@ -68,7 +69,7 @@ class NumberGeneratorSpecTest {
     @Nested
     class LongGeneratorTest extends NumberGeneratorSpecTestTemplate<Long> {
         @Override
-        protected AbstractRandomNumberGeneratorSpec<Long> createGenerator() {
+        protected InternalNumberGeneratorSpec<Long> createGenerator() {
             return new LongGenerator(context);
         }
 
@@ -81,7 +82,7 @@ class NumberGeneratorSpecTest {
     @Nested
     class FloatGeneratorTest extends NumberGeneratorSpecTestTemplate<Float> {
         @Override
-        protected AbstractRandomNumberGeneratorSpec<Float> createGenerator() {
+        protected InternalNumberGeneratorSpec<Float> createGenerator() {
             return new FloatGenerator(context);
         }
 
@@ -92,18 +93,18 @@ class NumberGeneratorSpecTest {
 
         @Test
         void rangeWithFractionalValues() {
-            final AbstractRandomNumberGeneratorSpec<Float> generator = getGenerator();
+            final InternalNumberGeneratorSpec<Float> generator = getGenerator();
             final Float min = 1.2f;
             final Float max = 1.4f;
             generator.range(min, max);
-            assertThat(generator.generate(new DefaultRandom())).isBetween(min, max);
+            assertThat(generate()).isBetween(min, max);
         }
     }
 
     @Nested
     class DoubleGeneratorTest extends NumberGeneratorSpecTestTemplate<Double> {
         @Override
-        protected AbstractRandomNumberGeneratorSpec<Double> createGenerator() {
+        protected InternalNumberGeneratorSpec<Double> createGenerator() {
             return new DoubleGenerator(context);
         }
 
@@ -114,11 +115,11 @@ class NumberGeneratorSpecTest {
 
         @Test
         void rangeWithFractionalValues() {
-            final AbstractRandomNumberGeneratorSpec<Double> generator = getGenerator();
+            final InternalNumberGeneratorSpec<Double> generator = getGenerator();
             final Double min = 1.2;
             final Double max = 1.4;
             generator.range(min, max);
-            assertThat(generator.generate(new DefaultRandom())).isBetween(min, max);
+            assertThat(generate()).isBetween(min, max);
         }
     }
 }

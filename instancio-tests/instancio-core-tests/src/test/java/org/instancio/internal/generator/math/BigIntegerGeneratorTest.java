@@ -18,6 +18,7 @@ package org.instancio.internal.generator.math;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
 import org.instancio.internal.generator.lang.NumberGeneratorSpecTestTemplate;
+import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -49,12 +50,10 @@ class BigIntegerGeneratorTest extends NumberGeneratorSpecTestTemplate<BigInteger
     })
     @ParameterizedTest
     void bigIntegerRange(final BigInteger min, final BigInteger max) {
-        final AbstractRandomNumberGeneratorSpec<BigInteger> generator = getGenerator();
+        final InternalNumberGeneratorSpec<BigInteger> generator = getGenerator();
         generator.range(min, max);
 
-        final BigInteger result = generator.generate(new DefaultRandom());
-
-        assertThat(result)
+        assertThat(generate())
                 .isNotNull()
                 .isGreaterThanOrEqualTo(min)
                 .isLessThanOrEqualTo(max);

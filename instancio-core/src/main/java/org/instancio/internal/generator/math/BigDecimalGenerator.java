@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.BigDecimalSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.lang.AbstractRandomComparableNumberGeneratorSpec;
+import org.instancio.internal.generator.specs.InternalFractionalNumberGeneratorSpec;
 import org.instancio.settings.Keys;
 
 import java.math.BigDecimal;
@@ -27,7 +28,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 public class BigDecimalGenerator extends AbstractRandomComparableNumberGeneratorSpec<BigDecimal>
-        implements BigDecimalSpec {
+        implements BigDecimalSpec, InternalFractionalNumberGeneratorSpec<BigDecimal> {
 
     private static final BigDecimal DEFAULT_MIN = new BigDecimal("0.01");
     private static final BigDecimal DEFAULT_MAX = new BigDecimal("10000.00");
@@ -107,7 +108,7 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
     }
 
     @Override
-    protected BigDecimal tryGenerateNonNull(final Random random) {
+    public BigDecimal tryGenerateNonNull(final Random random) {
         // If precision is not set, generate a value in the [min, max] range
         if (precision == 0) {
             final BigDecimal delta = getMax().subtract(getMin());

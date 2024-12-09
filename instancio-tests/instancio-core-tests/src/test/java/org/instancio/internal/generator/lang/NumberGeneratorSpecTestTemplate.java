@@ -16,7 +16,10 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.exception.InstancioApiException;
+import org.instancio.generator.Generator;
 import org.instancio.generator.specs.NumberGeneratorSpec;
+import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.TypeUtils;
@@ -44,14 +47,14 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
     private static final long INITIAL_MAX = 50;
     private static final DefaultRandom RANDOM = new DefaultRandom();
 
-    private AbstractRandomNumberGeneratorSpec<T> generator;
+    private InternalNumberGeneratorSpec<T> generator;
 
     private T initialMin, initialMax;
 
     /**
      * @return generator under test
      */
-    protected abstract AbstractRandomNumberGeneratorSpec<T> createGenerator();
+    protected abstract InternalNumberGeneratorSpec<T> createGenerator();
 
     protected abstract String apiMethod();
 
@@ -64,13 +67,17 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
         generator.max(initialMax);
     }
 
-    protected final AbstractRandomNumberGeneratorSpec<T> getGenerator() {
+    protected final InternalNumberGeneratorSpec<T> getGenerator() {
         return generator;
+    }
+
+    protected final T generate() {
+        return ((Generator<T>) generator).generate(RANDOM);
     }
 
     @Test
     final void verifyApiMethod() {
-        assertThat(generator.apiMethod()).isEqualTo(apiMethod());
+        assertThat(((AbstractGenerator<?>) generator).apiMethod()).isEqualTo(apiMethod());
     }
 
     @Test
@@ -113,7 +120,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
                 .isEqualTo(initialMax)
                 .isEqualTo(generator.getMax());
 
-        final T result = generator.generate(RANDOM);
+        final T result = generate();
         // Not using isEqualTo() here because BigDecimal equality check includes the scale field,
         // therefore 50 and 50.0 are not equal, which fails the test
         assertThat(result).isEqualByComparingTo(newMin);
@@ -138,7 +145,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
                 .range(range1, range1)
                 .range(range2, range2);
 
-        final T result = generator.generate(RANDOM);
+        final T result = generate();
 
         assertThat(result.compareTo(range1) == 0 || result.compareTo(range2) == 0)
                 .as("Expected %s to be within %s-%s or %s-%s", result, range1, range1, range2, range2)
@@ -196,7 +203,7 @@ public abstract class NumberGeneratorSpecTestTemplate<T extends Number & Compara
 
         generator.nullable();
         for (int i = 0; i < 1000; i++) {
-            results.add(generator.generate(RANDOM));
+            results.add(generate());
         }
 
         assertThat(results).hasSizeGreaterThan(1).containsNull();

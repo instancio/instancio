@@ -17,6 +17,7 @@ package org.instancio.test.jpa;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.pojo.jpa.ColumnScaleAndPrecisionJPA.FloatAndDoubleWithScaleAndPrecision;
 import org.instancio.test.pojo.jpa.ColumnScaleAndPrecisionJPA.WithDefaultPrecision;
 import org.instancio.test.pojo.jpa.ColumnScaleAndPrecisionJPA.WithPrecision;
 import org.instancio.test.pojo.jpa.ColumnScaleAndPrecisionJPA.WithPrecisionScale;
@@ -38,6 +39,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @FeatureTag(Feature.JPA)
 @ExtendWith(InstancioExtension.class)
 class ColumnScaleAndPrecisionJPATest {
+
+    @RepeatedTest(Constants.SAMPLE_SIZE_DDD)
+    void floatAndDoubleWithScaleAndPrecision() {
+        final FloatAndDoubleWithScaleAndPrecision result = Instancio.create(FloatAndDoubleWithScaleAndPrecision.class);
+
+        assertThat(result.getF())
+                .isBetween(0f, 99.99f)
+                .asString()
+                .matches("^\\d{2}\\.\\d{1,2}$");
+
+        assertThat(result.getD())
+                .isBetween(100d, 999.999d)
+                .asString()
+                .matches("^\\d{3}\\.\\d{1,3}$");
+    }
 
     @RepeatedTest(Constants.SAMPLE_SIZE_D)
     void withDefaultPrecision() {

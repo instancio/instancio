@@ -29,6 +29,15 @@ import java.math.BigDecimal;
 public class ColumnScaleAndPrecisionJPA {
 
     @Data
+    public static class FloatAndDoubleWithScaleAndPrecision {
+        @Column(precision = 4, scale = 2)
+        private Float f;
+
+        @Column(precision = 6, scale = 3)
+        private Double d;
+    }
+
+    @Data
     public static class WithDefaultPrecision {
         @Column
         private BigDecimal d;

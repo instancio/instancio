@@ -16,8 +16,8 @@
 package org.instancio.internal.annotation;
 
 import org.instancio.generator.GeneratorSpec;
-import org.instancio.generator.specs.BigDecimalGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
+import org.instancio.internal.generator.specs.InternalFractionalNumberGeneratorSpec;
 import org.instancio.internal.util.Range;
 import org.instancio.settings.Keys;
 
@@ -52,15 +52,16 @@ class CommonPersistenceAnnotationHandlerMap extends AnnotationHandlerMap {
 
                 final StringGeneratorSpec stringSpec = (StringGeneratorSpec) spec;
                 stringSpec.length(range.min(), range.max());
-            } else if (spec instanceof BigDecimalGeneratorSpec) {
+            } else if (spec instanceof InternalFractionalNumberGeneratorSpec) {
                 final int precision = getPrecision(annotation);
                 final int scale = getScale(annotation);
-                final BigDecimalGeneratorSpec bdSpec = (BigDecimalGeneratorSpec) spec;
+                final InternalFractionalNumberGeneratorSpec<?> fractionalSpec =
+                        (InternalFractionalNumberGeneratorSpec<?>) spec;
 
                 if (precision > 0) {
-                    bdSpec.precision(precision).scale(scale);
+                    fractionalSpec.precision(precision).scale(scale);
                 } else if (scale != 0) {
-                    bdSpec.scale(scale);
+                    fractionalSpec.scale(scale);
                 }
             }
         }
