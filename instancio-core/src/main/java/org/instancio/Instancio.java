@@ -50,6 +50,7 @@ import static org.instancio.internal.util.TypeUtils.cast;
  * Returns an object populated with random data and some specified fields' values customised.
  *
  * <pre>{@code
+ * // Customise specific fields using set(), supply(), or generate()
  * Person person = Instancio.of(Person.class)
  *     .set(field(Person::getFullName), "Homer Simpson")
  *     .supply(all(LocalDateTime.class), () -> LocalDateTime.now())
@@ -58,8 +59,9 @@ import static org.instancio.internal.util.TypeUtils.cast;
  * }</pre>
  *
  * <h3>Allow {@code null} values to be generated</h3>
- * Default behaviour is to populate every field with a non-null value.
- * Specifying nullable will randomly generate either {@code null} or non-null value.
+ * By default, Instancio populates every field with non-null values.
+ * Specifying fields as nullable allows them to be randomly assigned
+ * either {@code null} or non-null values.
  *
  * <pre>{@code
  * Person person = Instancio.of(Person.class)
@@ -81,31 +83,34 @@ import static org.instancio.internal.util.TypeUtils.cast;
  * }</pre>
  *
  * <h3>Creating instances of a class from a {@code Model}</h3>
- * Instancio builder API parameters can be saved as a {@link Model} object using
- * the {@link InstancioApi#toModel()} method. Objects can then be generated based
- * on the model. Models can be useful:
+ * Parameters from the Instancio builder API can be saved
+ * as a {@link Model} object using the {@link InstancioApi#toModel()} method.
+ * Objects can subsequently be generated based on this model.
+ * Models are useful for:
  *
  * <ul>
- *   <li>as a prototype for creating customised instances of a class
- *       by overriding model parameters</li>
- *   <li>reducing code duplication by re-using the same model in different
- *       parts of the code</li>
+ *   <li>Serving as prototypes for creating customised instances of a class,
+ *       allowing model parameters to be overridden.</li>
+ *   <li>Reducing code duplication by reusing models across different
+ *       parts of the codebase.</li>
  * </ul>
  *
  * <pre>{@code
- * // Create a model
+ * // Create a reusable model to standardise certain values
  * Model<Person> simpsons = Instancio.of(Person.class)
  *     .supply(all(Address.class), () -> new Address("742 Evergreen Terrace", "Springfield", "US"))
  *     .supply(field(Person::getPets), () -> List.of(
  *                  new Pet(PetType.CAT, "Snowball"),
  *                  new Pet(PetType.DOG, "Santa's Little Helper"))
- *     //... other specs
+ *     // Additional specifications...
  *     .toModel();
  *
- * // Use the above model as is
+ * // The toModel() method allows you to save the builder configurations inside
+ * // a reusable template. You can then generate objects from the model directly
+ * // or modify it to override certain values, e g. use the above model as is:
  * Person person = Instancio.create(simpsons);
  *
- * // Use the model but override the name
+ * // Use the model but override the name:
  * Person homer = Instancio.of(simpsons).set(field(Person::getName), "Homer").create();
  * Person marge = Instancio.of(simpsons).set(field(Person::getName), "Marge").create();
  *
@@ -120,22 +125,26 @@ import static org.instancio.internal.util.TypeUtils.cast;
  * }</pre>
  *
  * <h3>Creating generic classes</h3>
- * There are two options for creating instances of a generic type.
+ * You can create instances of generic types using two approaches.
  *
  * <h4>Option 1: using a {@link TypeToken}</h4>
  * <pre>{@code
  * Pair<Apple, Banana> pairOfFruits = Instancio.create(new TypeToken<Pair<Apple, Banana>>() {}); // note the empty '{}' braces
  * }</pre>
  *
+ * <p>Creates a {@code Pair} object with specific type arguments
+ * ({@code Apple} and {@code Banana}) using {@code TypeToken}.
+ *
  * <h4>Option 2: using {@code withTypeParameters} to specify the type arguments</h4>
+ *
+ * <p>This approach allows arbitrary type parameters to be specified at runtime.
+ * However, using this method may result in an "unchecked assignment" warning.
+ *
  * <pre>{@code
  * Pair<Apple, Banana> pairOfFruits = Instancio.of(Pair.class)
  *     .withTypeParameters(Apple.class, Banana.class)
  *     .create();
  * }</pre>
- * <p>
- * The second approach allows specifying arbitrary type parameters at runtime,
- * however using this method will produce an "unchecked assignment" warning.
  *
  * @see InstancioApi
  * @see Select
@@ -337,14 +346,19 @@ public final class Instancio {
 
     /**
      * Creates an infinite stream of objects populated using the given model.
-     * <p>
-     * Example:
+     *
+     * <p>For example, given the following model:
+     *
      * <pre>{@code
      * Model<Person> model = Instancio.of(Person.class)
      *     .ignore(field(Person::getId))
      *     .generate(field(Person::dateOfBirth), gen -> gen.temporal().localDate().past())
      *     .toModel();
+     * }</pre>
      *
+     * <p>you can create a stream of objects as follows:
+     *
+     * <pre>{@code
      * List<Person> persons = Instancio.stream(model)
      *     .limit(5)
      *     .collect(Collectors.toList());
