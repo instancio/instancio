@@ -15,7 +15,7 @@
  */
 package org.instancio.test.beanvalidation;
 
-import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.records.PersonRecordBV;
 import org.instancio.test.support.tags.Feature;
@@ -37,15 +37,9 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 class PersonRecordBVTest {
 
     @Test
-    void personRecord() {
-        final int sampleSize = SAMPLE_SIZE_DDD;
-
-        final Stream<PersonRecordBV> results = Instancio.of(PersonRecordBV.class)
-                .stream()
-                .limit(sampleSize);
-
-        assertThat(results)
-                .hasSize(sampleSize)
+    void personRecord(@Given Stream<PersonRecordBV> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD))
+                .hasSize(SAMPLE_SIZE_DDD)
                 .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 }

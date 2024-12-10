@@ -15,7 +15,7 @@
  */
 package org.instancio.test.beanvalidation;
 
-import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.InvalidAnnotationBV;
 import org.instancio.test.support.tags.Feature;
@@ -30,9 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class InvalidAnnotationBVTest {
 
     @Test
-    void create() {
-        final InvalidAnnotationBV result = Instancio.create(InvalidAnnotationBV.class);
-
+    void create(@Given InvalidAnnotationBV result) {
         assertThat(result).hasNoNullFieldsOrProperties();
     }
 }

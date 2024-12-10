@@ -15,7 +15,7 @@
  */
 package org.instancio.test.beanvalidation;
 
-import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.TituloEleitoralBV;
 import org.instancio.test.support.tags.Feature;
@@ -36,12 +36,8 @@ class TituloEleitoralBVTest {
 
     @Test
     @Disabled("There is a bug on Hibernate that some numbers fails, but are correct")
-    void tituloEleitoral() {
-        final Stream<TituloEleitoralBV> results = Instancio.of(TituloEleitoralBV.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results)
+    void tituloEleitoral(@Given Stream<TituloEleitoralBV> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD))
                 .hasSize(SAMPLE_SIZE_DDD)
                 .allSatisfy(HibernateValidatorUtil::assertValid);
     }

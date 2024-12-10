@@ -16,6 +16,7 @@
 package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.LuhnCheckBV.WithDefaults;
 import org.instancio.test.pojo.beanvalidation.LuhnCheckBV.WithEndAndCheckDigitIndicesEqual;
@@ -41,40 +42,32 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 class LuhnCheckBVTest {
 
     @Test
-    void withDefaults() {
-        final Stream<WithDefaults> results = Instancio.of(WithDefaults.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+    void withDefaults(@Given Stream<WithDefaults> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD))
+                .hasSize(SAMPLE_SIZE_DDD)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 
     @Test
-    void withStartEndIndices() {
-        final Stream<WithStartEndIndices> results = Instancio.of(WithStartEndIndices.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+    void withStartEndIndices(@Given Stream<WithStartEndIndices> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD))
+                .hasSize(SAMPLE_SIZE_DDD)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 
     @Test
-    void withStartEndAndCheckDigitIndices() {
-        final Stream<WithStartEndAndCheckDigitIndices> results = Instancio.of(WithStartEndAndCheckDigitIndices.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+    void withStartEndAndCheckDigitIndices(@Given Stream<WithStartEndAndCheckDigitIndices> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD))
+                .hasSize(SAMPLE_SIZE_DDD)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 
     @Disabled("https://hibernate.atlassian.net/browse/HV-1945")
     @Test
-    void withEndAndCheckDigitIndicesEqual() {
-        final Stream<WithEndAndCheckDigitIndicesEqual> results = Instancio.of(WithEndAndCheckDigitIndicesEqual.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(HibernateValidatorUtil::assertValid);
+    void withEndAndCheckDigitIndicesEqual(@Given Stream<WithEndAndCheckDigitIndicesEqual> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD))
+                .hasSize(SAMPLE_SIZE_DDD)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 
     @Nested

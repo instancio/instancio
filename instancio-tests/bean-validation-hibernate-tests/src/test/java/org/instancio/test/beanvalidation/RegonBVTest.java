@@ -16,6 +16,7 @@
 package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.RegonBV;
 import org.instancio.test.support.tags.Feature;
@@ -35,12 +36,8 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 class RegonBVTest {
 
     @Test
-    void regon9() {
-        final Stream<RegonBV> results = Instancio.of(RegonBV.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results)
+    void regon9(@Given Stream<RegonBV> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD))
                 .hasSize(SAMPLE_SIZE_DDD)
                 .allSatisfy(HibernateValidatorUtil::assertValid);
     }

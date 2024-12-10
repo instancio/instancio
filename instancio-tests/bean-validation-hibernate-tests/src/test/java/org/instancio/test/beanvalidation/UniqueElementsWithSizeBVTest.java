@@ -15,7 +15,7 @@
  */
 package org.instancio.test.beanvalidation;
 
-import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.UniqueElementsWithSizeBV;
 import org.instancio.test.support.tags.Feature;
@@ -34,12 +34,8 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 class UniqueElementsWithSizeBVTest {
 
     @Test
-    void uniqueElements() {
-        final Stream<UniqueElementsWithSizeBV> results = Instancio.of(UniqueElementsWithSizeBV.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DD);
-
-        assertThat(results)
+    void uniqueElements(@Given Stream<UniqueElementsWithSizeBV> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DD))
                 .hasSize(SAMPLE_SIZE_DD)
                 .allSatisfy(HibernateValidatorUtil::assertValid);
     }
