@@ -28,18 +28,16 @@ import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.specs.InternalFractionalNumberGeneratorSpec;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
+import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Range;
-import org.instancio.internal.util.StringUtils;
 import org.instancio.settings.Keys;
 
 import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
 import java.util.function.Function;
-
-import static org.instancio.internal.util.NumberUtils.isZero;
 
 /**
  * Base class for {@code javax} and {@code jakarta} validation annotations.
@@ -71,22 +69,12 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                     generator.suffix("." + random.digits(fraction));
                 }
 
-            } else if (spec instanceof NumberGeneratorSpec<?>) {
-                final NumberGeneratorSpec<Number> numSpec = (NumberGeneratorSpec<Number>) spec;
+            } else if (spec instanceof InternalNumberGeneratorSpec<?>) {
+                final InternalNumberGeneratorSpec<Number> numSpec = (InternalNumberGeneratorSpec<Number>) spec;
 
                 final int integer = getInteger(annotation);
+                numSpec.integerMax(integer);
 
-                // min/max integer range: e.g. 1000 - 9999
-                final BigDecimal min = integer == 0 ? BigDecimal.ZERO : BigDecimal.TEN.pow(integer - 1);
-                BigDecimal max = BigDecimal.TEN.pow(integer).subtract(BigDecimal.ONE);
-
-                if (isZero(min) && isZero(max) && fraction > 0) {
-                    max = new BigDecimal("0." + StringUtils.repeat("9", fraction));
-                }
-
-                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(targetClass);
-                numSpec.min(converter.apply(min));
-                numSpec.max(converter.apply(max));
                 AnnotationUtils.setSpecNullableToFalse(spec);
 
                 if (spec instanceof InternalFractionalNumberGeneratorSpec) {
@@ -181,12 +169,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                             final GeneratorSpec<?> spec,
                             final Class<?> targetClass) {
 
-            if (spec instanceof NumberGeneratorSpec<?>) {
-                final NumberGeneratorSpec<Number> numSpec = (NumberGeneratorSpec<Number>) spec;
-                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(targetClass);
-                final Number numberMaxValue = NumberUtils.getMaxValue(targetClass);
-                numSpec.min(converter.apply(min))
-                        .max(converter.apply(new BigDecimal(numberMaxValue.toString())));
+            if (spec instanceof InternalNumberGeneratorSpec<?>) {
+                ((InternalNumberGeneratorSpec<Number>) spec).ensureMinIsGreaterThanOrEqualTo(min);
                 AnnotationUtils.setSpecNullableToFalse(spec);
             }
         }
@@ -204,12 +188,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                             final GeneratorSpec<?> spec,
                             final Class<?> targetClass) {
 
-            if (spec instanceof NumberGeneratorSpec<?>) {
-                final NumberGeneratorSpec<Number> numSpec = (NumberGeneratorSpec<Number>) spec;
-                final Function<BigDecimal, Number> converter = NumberUtils.bigDecimalConverter(targetClass);
-                final Number numberMinValue = NumberUtils.getMinValue(targetClass);
-                numSpec.min(converter.apply(new BigDecimal(numberMinValue.toString())))
-                        .max(converter.apply(max));
+            if (spec instanceof InternalNumberGeneratorSpec<?>) {
+                ((InternalNumberGeneratorSpec<Number>) spec).ensureMaxIsLessThanOrEqualTo(max);
                 AnnotationUtils.setSpecNullableToFalse(spec);
             }
         }

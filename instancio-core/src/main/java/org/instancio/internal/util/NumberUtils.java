@@ -255,8 +255,11 @@ public final class NumberUtils {
         return value.compareTo(BigDecimal.ZERO) == 0;
     }
 
-    private static BigDecimal toBigDecimal(final Number n) {
-        return n == null ? null : new BigDecimal(n.toString());
+    public static BigDecimal toBigDecimal(final Number n) {
+        if (n instanceof BigDecimal) {
+            return (BigDecimal) n;
+        }
+        return n == null ? null : new BigDecimal(String.valueOf(n));
     }
 
     private NumberUtils() {
