@@ -15,47 +15,19 @@
  */
 package org.instancio.internal.generator.math;
 
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
-import org.instancio.internal.generator.lang.NumberGeneratorSpecTestTemplate;
-import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 
 import java.math.BigInteger;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-class BigIntegerGeneratorTest extends NumberGeneratorSpecTestTemplate<BigInteger> {
-
-    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new DefaultRandom());
+class BigIntegerGeneratorTest extends AbstractGeneratorTestTemplate<BigInteger, BigIntegerGenerator> {
 
     @Override
-    protected AbstractRandomNumberGeneratorSpec<BigInteger> createGenerator() {
-        return new BigIntegerGenerator(context);
-    }
-
-    @Override
-    protected String apiMethod() {
+    protected String getApiMethod() {
         return "bigInteger()";
     }
 
-    @CsvSource({
-            "-10000000000001, -10000000000000",
-            "0, 1",
-            "100000000000000, 100000000000001",
-            "111111111111111111111111111111111111111117, 111111111111111111111111111111111111111119"
-    })
-    @ParameterizedTest
-    void bigIntegerRange(final BigInteger min, final BigInteger max) {
-        final InternalNumberGeneratorSpec<BigInteger> generator = getGenerator();
-        generator.range(min, max);
-
-        assertThat(generate())
-                .isNotNull()
-                .isGreaterThanOrEqualTo(min)
-                .isLessThanOrEqualTo(max);
+    @Override
+    protected BigIntegerGenerator generator() {
+        return new BigIntegerGenerator(getGeneratorContext());
     }
 }

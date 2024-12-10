@@ -45,16 +45,6 @@ public class FloatGenerator extends AbstractGenerator<Float>
     }
 
     @Override
-    public Float getMin() {
-        return delegate.getMin().floatValue();
-    }
-
-    @Override
-    public Float getMax() {
-        return delegate.getMax().floatValue();
-    }
-
-    @Override
     public FloatGenerator scale(final int scale) {
         delegate.scale(scale);
         return this;
@@ -110,5 +100,11 @@ public class FloatGenerator extends AbstractGenerator<Float>
     @Override
     protected Float tryGenerateNonNull(final Random random) {
         return delegate.tryGenerateNonNull(random).floatValue();
+    }
+
+    @Override
+    public Float generate(final Random random) {
+        final BigDecimal result = delegate.generate(random);
+        return result == null ? null : result.floatValue();
     }
 }

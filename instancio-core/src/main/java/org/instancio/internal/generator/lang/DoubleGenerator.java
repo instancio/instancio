@@ -45,16 +45,6 @@ public class DoubleGenerator extends AbstractGenerator<Double>
     }
 
     @Override
-    public Double getMin() {
-        return delegate.getMin().doubleValue();
-    }
-
-    @Override
-    public Double getMax() {
-        return delegate.getMax().doubleValue();
-    }
-
-    @Override
     public DoubleGenerator scale(final int scale) {
         delegate.scale(scale);
         return this;
@@ -110,5 +100,11 @@ public class DoubleGenerator extends AbstractGenerator<Double>
     @Override
     protected Double tryGenerateNonNull(final Random random) {
         return delegate.tryGenerateNonNull(random).doubleValue();
+    }
+
+    @Override
+    public Double generate(final Random random) {
+        final BigDecimal result = delegate.generate(random);
+        return result == null ? null : result.doubleValue();
     }
 }
