@@ -15,7 +15,7 @@
  */
 package org.instancio.test.beanvalidation;
 
-import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.DurationBV;
 import org.instancio.test.support.tags.Feature;
@@ -34,12 +34,8 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 class DurationBVTest {
 
     @Test
-    void duration() {
-        final Stream<DurationBV> results = Instancio.of(DurationBV.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results)
+    void duration(@Given Stream<DurationBV> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD))
                 .hasSize(SAMPLE_SIZE_DDD)
                 .allSatisfy(HibernateValidatorUtil::assertValid);
     }

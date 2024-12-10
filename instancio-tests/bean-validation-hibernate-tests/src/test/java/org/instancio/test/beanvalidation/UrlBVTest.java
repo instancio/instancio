@@ -15,7 +15,7 @@
  */
 package org.instancio.test.beanvalidation;
 
-import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.UrlBV;
 import org.instancio.test.support.tags.Feature;
@@ -34,16 +34,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UrlBVTest {
 
     @Test
-    void withDefaults() {
-        final UrlBV.WithDefaults result = Instancio.create(UrlBV.WithDefaults.class);
-
+    void withDefaults(@Given UrlBV.WithDefaults result) {
         HibernateValidatorUtil.assertValid(result);
     }
 
     @Test
-    void withAttributes() throws MalformedURLException {
-        final UrlBV.WithAttributes result = Instancio.create(UrlBV.WithAttributes.class);
-
+    void withAttributes(@Given UrlBV.WithAttributes result) throws MalformedURLException {
         HibernateValidatorUtil.assertValid(result);
 
         final URL url = new URL(result.getValue());

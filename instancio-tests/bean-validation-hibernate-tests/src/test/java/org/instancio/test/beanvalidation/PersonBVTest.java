@@ -16,6 +16,7 @@
 package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.test.pojo.beanvalidation.person.PersonBV;
@@ -26,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
@@ -36,16 +37,9 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 class PersonBVTest {
 
     @Test
-    void person() {
-        final int sampleSize = SAMPLE_SIZE_DD;
-
-        final List<PersonBV> results = Instancio.of(PersonBV.class)
-                .stream()
-                .limit(sampleSize)
-                .collect(Collectors.toList());
-
-        assertThat(results)
-                .hasSize(sampleSize)
+    void person(@Given Stream<PersonBV> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DD))
+                .hasSize(SAMPLE_SIZE_DD)
                 .allSatisfy(HibernateValidatorUtil::assertValid);
     }
 

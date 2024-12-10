@@ -15,7 +15,7 @@
  */
 package org.instancio.test.beanvalidation;
 
-import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.CreditCardNumberBV;
 import org.instancio.test.support.tags.Feature;
@@ -34,12 +34,8 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 class CreditCardNumberBVTest {
 
     @Test
-    void creditCardNumber() {
-        final Stream<CreditCardNumberBV> results = Instancio.of(CreditCardNumberBV.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+    void creditCardNumber(@Given Stream<CreditCardNumberBV> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD)).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
             HibernateValidatorUtil.assertValid(result);
 
             assertThat(result.getValue())

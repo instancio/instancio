@@ -16,6 +16,7 @@
 package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -33,9 +34,7 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 class EmailComboBVTest {
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void emailWithLength() {
-        final EmailComboBV.EmailWithLength result = Instancio.create(EmailComboBV.EmailWithLength.class);
-
+    void emailWithLength(@Given EmailComboBV.EmailWithLength result) {
         HibernateValidatorUtil.assertValid(result);
     }
 

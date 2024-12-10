@@ -16,6 +16,7 @@
 package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -35,45 +36,33 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 class StringLengthBVTest {
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void withMinSize() {
-        final StringLengthBV.WithMinSize result = Instancio.create(StringLengthBV.WithMinSize.class);
-
+    void withMinSize(@Given StringLengthBV.WithMinSize result) {
         HibernateValidatorUtil.assertValid(result);
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void withMinSizeZeo() {
-        final StringLengthBV.WithMinSizeZero result = Instancio.create(StringLengthBV.WithMinSizeZero.class);
-
+    void withMinSizeZeo(@Given StringLengthBV.WithMinSizeZero result) {
         HibernateValidatorUtil.assertValid(result);
         assertThat(result.getValue()).hasSizeBetween(0, Keys.STRING_MAX_LENGTH.defaultValue());
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void withMaxSize() {
-        final StringLengthBV.WithMaxSize result = Instancio.create(StringLengthBV.WithMaxSize.class);
-
+    void withMaxSize(@Given StringLengthBV.WithMaxSize result) {
         HibernateValidatorUtil.assertValid(result);
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void withMaxSizeZero() {
-        final StringLengthBV.WithMaxSizeZero result = Instancio.create(StringLengthBV.WithMaxSizeZero.class);
-
+    void withMaxSizeZero(@Given StringLengthBV.WithMaxSizeZero result) {
         HibernateValidatorUtil.assertValid(result);
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void withMinMaxSize() {
-        final StringLengthBV.WithMinMaxSize result = Instancio.create(StringLengthBV.WithMinMaxSize.class);
-
+    void withMinMaxSize(@Given StringLengthBV.WithMinMaxSize result) {
         HibernateValidatorUtil.assertValid(result);
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void withMinMaxEqual() {
-        final StringLengthBV.WithMinMaxEqual result = Instancio.create(StringLengthBV.WithMinMaxEqual.class);
-
+    void withMinMaxEqual(@Given StringLengthBV.WithMinMaxEqual result) {
         HibernateValidatorUtil.assertValid(result);
     }
 
@@ -95,9 +84,7 @@ class StringLengthBVTest {
     }
 
     @Test
-    void annotationShouldNotAffectFieldsThatAreNotAnnotated() {
-        final StringLengthBV.ThreeFieldsOneMin result = Instancio.create(StringLengthBV.ThreeFieldsOneMin.class);
-
+    void annotationShouldNotAffectFieldsThatAreNotAnnotated(@Given StringLengthBV.ThreeFieldsOneMin result) {
         HibernateValidatorUtil.assertValid(result);
 
         final int maxLengthFromProperties = 1000;

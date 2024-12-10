@@ -17,7 +17,7 @@ package org.instancio.test.beanvalidation;
 
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.CodePointLength;
-import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -38,9 +38,7 @@ class UnsupportedAnnotationTest {
     }
 
     @Test
-    void unsupportedAnnotationsShouldBeIgnored() {
-        final Pojo result = Instancio.create(Pojo.class);
-
+    void unsupportedAnnotationsShouldBeIgnored(@Given Pojo result) {
         assertThat(result).hasNoNullFieldsOrProperties();
     }
 }

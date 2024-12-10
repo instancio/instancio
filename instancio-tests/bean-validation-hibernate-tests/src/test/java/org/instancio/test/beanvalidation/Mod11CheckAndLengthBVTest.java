@@ -15,7 +15,7 @@
  */
 package org.instancio.test.beanvalidation;
 
-import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.pojo.beanvalidation.Mod11CheckAndLengthBV.WithDefaults;
 import org.instancio.test.pojo.beanvalidation.Mod11CheckAndLengthBV.WithEndAndCheckDigitIndicesEqual;
@@ -38,24 +38,16 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 class Mod11CheckAndLengthBVTest {
 
     @Test
-    void withDefaults() {
-        final Stream<WithDefaults> results = Instancio.of(WithDefaults.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+    void withDefaults(@Given Stream<WithDefaults> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD)).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
             HibernateValidatorUtil.assertValid(result);
             assertThat(result.getValue()).hasSizeBetween(10, 16);
         });
     }
 
     @Test
-    void withStartEndIndices() {
-        final Stream<WithStartEndIndices> results = Instancio.of(WithStartEndIndices.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+    void withStartEndIndices(@Given Stream<WithStartEndIndices> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD)).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
             HibernateValidatorUtil.assertValid(result);
             assertThat(result.getValue0()).hasSize(8);
             assertThat(result.getValue1()).hasSizeBetween(20, 22);
@@ -63,12 +55,8 @@ class Mod11CheckAndLengthBVTest {
     }
 
     @Test
-    void withStartEndAndCheckDigitIndices() {
-        final Stream<WithStartEndAndCheckDigitIndices> results = Instancio.of(WithStartEndAndCheckDigitIndices.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+    void withStartEndAndCheckDigitIndices(@Given Stream<WithStartEndAndCheckDigitIndices> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD)).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
             HibernateValidatorUtil.assertValid(result);
             assertThat(result.getValue0()).hasSizeBetween(17, 25);
             assertThat(result.getValue1()).hasSizeBetween(11, 20);
@@ -77,12 +65,8 @@ class Mod11CheckAndLengthBVTest {
 
     @Disabled("https://hibernate.atlassian.net/browse/HV-1945")
     @Test
-    void withEndAndCheckDigitIndicesEqual() {
-        final Stream<WithEndAndCheckDigitIndicesEqual> results = Instancio.of(WithEndAndCheckDigitIndicesEqual.class)
-                .stream()
-                .limit(SAMPLE_SIZE_DDD);
-
-        assertThat(results).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
+    void withEndAndCheckDigitIndicesEqual(@Given Stream<WithEndAndCheckDigitIndicesEqual> results) {
+        assertThat(results.limit(SAMPLE_SIZE_DDD)).hasSize(SAMPLE_SIZE_DDD).allSatisfy(result -> {
             HibernateValidatorUtil.assertValid(result);
             assertThat(result.getValue0()).hasSizeBetween(17, 25);
             assertThat(result.getValue1()).hasSizeBetween(11, 20);
