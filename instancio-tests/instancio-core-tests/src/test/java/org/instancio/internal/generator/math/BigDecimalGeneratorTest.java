@@ -15,18 +15,11 @@
  */
 package org.instancio.internal.generator.math;
 
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.lang.AbstractRandomNumberGeneratorSpec;
-import org.instancio.internal.generator.lang.NumberGeneratorSpecTestTemplate;
-import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
-import org.instancio.settings.Settings;
-import org.instancio.support.DefaultRandom;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
@@ -34,64 +27,21 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal> {
-
-    private final Random random = new DefaultRandom();
-    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), random);
+class BigDecimalGeneratorTest extends AbstractGeneratorTestTemplate<BigDecimal, BigDecimalGenerator> {
 
     @Override
-    protected AbstractRandomNumberGeneratorSpec<BigDecimal> createGenerator() {
-        return new BigDecimalGenerator(context);
-    }
-
-    @Override
-    protected String apiMethod() {
+    protected String getApiMethod() {
         return "bigDecimal()";
     }
 
-    @CsvSource({
-            "-10.12, -10.11",
-            "0.15, 0.19",
-            "0.08, 0.09",
-            "0, 0.01",
-            "-0.01, 0",
-            "9999999999999.55, 9999999999999.57",
-            "9999999999999999999999999999999999999.11, 9999999999999999999999999999999999999.11"
-    })
-    @ParameterizedTest
-    void rangeWithFractionalValues(final BigDecimal min, final BigDecimal max) {
-        final InternalNumberGeneratorSpec<BigDecimal> generator = getGenerator();
-        generator.range(min, max);
-
-        assertThat(generate())
-                .isNotNull()
-                .isGreaterThanOrEqualTo(min)
-                .isLessThanOrEqualTo(max);
-    }
-
-    @CsvSource({
-            "-10.00000000000000000002, -10.00000000000000000001",
-            "0.00000000000000000001, 0.00000000000000000001",
-            "0, 0.00000000000000001234",
-            "-0.00000000000000001234, 0",
-            "9999999999999999999999999999999999999.00000000000000000008, 9999999999999999999999999999999999999.00000000000000000009"
-    })
-    @ParameterizedTest
-    void rangeWithLargeScale(final BigDecimal min, final BigDecimal max) {
-        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
-        generator.range(min, max);
-        generator.scale(20);
-
-        final BigDecimal result = generator.generate(random);
-        assertThat(result)
-                .isNotNull()
-                .isGreaterThanOrEqualTo(min)
-                .isLessThanOrEqualTo(max);
+    @Override
+    protected BigDecimalGenerator generator() {
+        return new BigDecimalGenerator(getGeneratorContext());
     }
 
     @Test
     void nonPositiveScaleWithPrecision() {
-        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
+        final BigDecimalGenerator generator = generator();
 
         for (int precision = 1; precision < 20; precision++) {
             for (int scale = -10; scale <= 20; scale++) {
@@ -114,7 +64,7 @@ class BigDecimalGeneratorTest extends NumberGeneratorSpecTestTemplate<BigDecimal
     @ValueSource(ints = {-1, 0})
     @ParameterizedTest
     void nonPositivePrecisionShouldProduceAnError(final int precision) {
-        final BigDecimalGenerator generator = (BigDecimalGenerator) getGenerator();
+        final BigDecimalGenerator generator = generator();
 
         assertThatThrownBy(() -> generator.precision(precision))
                 .isExactlyInstanceOf(InstancioApiException.class)

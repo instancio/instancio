@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.specs;
 
 import org.instancio.documentation.InternalApi;
+import org.instancio.generator.specs.NumberGeneratorSpec;
 
 /**
  * Internal API for setting the  scale and precision when generating
@@ -26,7 +27,7 @@ import org.instancio.documentation.InternalApi;
  * @since 5.3.0
  */
 @InternalApi
-public interface InternalFractionalNumberGeneratorSpec<T extends Number> extends InternalNumberGeneratorSpec<T> {
+public interface InternalFractionalNumberGeneratorSpec<T extends Number> extends NumberGeneratorSpec<T> {
 
     InternalFractionalNumberGeneratorSpec<T> scale(int scale);
 

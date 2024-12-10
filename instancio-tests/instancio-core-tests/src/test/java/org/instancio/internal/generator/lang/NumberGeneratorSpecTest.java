@@ -16,7 +16,7 @@
 package org.instancio.internal.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Nested;
@@ -28,98 +28,104 @@ class NumberGeneratorSpecTest {
     private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new DefaultRandom());
 
     @Nested
-    class ByteGeneratorTest extends NumberGeneratorSpecTestTemplate<Byte> {
-        @Override
-        protected InternalNumberGeneratorSpec<Byte> createGenerator() {
-            return new ByteGenerator(context);
-        }
+    class ByteGeneratorTest extends AbstractGeneratorTestTemplate<Byte, ByteGenerator> {
 
         @Override
-        protected String apiMethod() {
+        protected String getApiMethod() {
             return "bytes()";
         }
+
+        @Override
+        protected ByteGenerator generator() {
+            return new ByteGenerator(context);
+        }
     }
 
     @Nested
-    class ShortGeneratorTest extends NumberGeneratorSpecTestTemplate<Short> {
-        @Override
-        protected InternalNumberGeneratorSpec<Short> createGenerator() {
-            return new ShortGenerator(context);
-        }
+    class ShortGeneratorTest extends AbstractGeneratorTestTemplate<Short, ShortGenerator> {
 
         @Override
-        protected String apiMethod() {
+        protected String getApiMethod() {
             return "shorts()";
         }
+
+        @Override
+        protected ShortGenerator generator() {
+            return new ShortGenerator(context);
+        }
     }
 
     @Nested
-    class IntegerGeneratorTest extends NumberGeneratorSpecTestTemplate<Integer> {
-        @Override
-        protected InternalNumberGeneratorSpec<Integer> createGenerator() {
-            return new IntegerGenerator(context);
-        }
+    class IntegerGeneratorTest extends AbstractGeneratorTestTemplate<Integer, IntegerGenerator> {
 
         @Override
-        protected String apiMethod() {
+        protected String getApiMethod() {
             return "ints()";
         }
+
+        @Override
+        protected IntegerGenerator generator() {
+            return new IntegerGenerator(context);
+        }
     }
 
     @Nested
-    class LongGeneratorTest extends NumberGeneratorSpecTestTemplate<Long> {
-        @Override
-        protected InternalNumberGeneratorSpec<Long> createGenerator() {
-            return new LongGenerator(context);
-        }
+    class LongGeneratorTest extends AbstractGeneratorTestTemplate<Long, LongGenerator> {
 
         @Override
-        protected String apiMethod() {
+        protected String getApiMethod() {
             return "longs()";
         }
+
+        @Override
+        protected LongGenerator generator() {
+            return new LongGenerator(context);
+        }
     }
 
     @Nested
-    class FloatGeneratorTest extends NumberGeneratorSpecTestTemplate<Float> {
-        @Override
-        protected InternalNumberGeneratorSpec<Float> createGenerator() {
-            return new FloatGenerator(context);
-        }
+    class FloatGeneratorTest extends AbstractGeneratorTestTemplate<Float, FloatGenerator> {
 
         @Override
-        protected String apiMethod() {
+        protected String getApiMethod() {
             return "floats()";
         }
 
+        @Override
+        protected FloatGenerator generator() {
+            return new FloatGenerator(context);
+        }
+
         @Test
         void rangeWithFractionalValues() {
-            final InternalNumberGeneratorSpec<Float> generator = getGenerator();
+            final FloatGenerator generator = generator();
             final Float min = 1.2f;
             final Float max = 1.4f;
             generator.range(min, max);
-            assertThat(generate()).isBetween(min, max);
+            assertThat(generator.generate(random)).isBetween(min, max);
         }
     }
 
     @Nested
-    class DoubleGeneratorTest extends NumberGeneratorSpecTestTemplate<Double> {
+    class DoubleGeneratorTest extends AbstractGeneratorTestTemplate<Double, DoubleGenerator> {
+
         @Override
-        protected InternalNumberGeneratorSpec<Double> createGenerator() {
-            return new DoubleGenerator(context);
+        protected String getApiMethod() {
+            return "doubles()";
         }
 
         @Override
-        protected String apiMethod() {
-            return "doubles()";
+        protected DoubleGenerator generator() {
+            return new DoubleGenerator(context);
         }
 
         @Test
         void rangeWithFractionalValues() {
-            final InternalNumberGeneratorSpec<Double> generator = getGenerator();
+            final DoubleGenerator generator = generator();
             final Double min = 1.2;
             final Double max = 1.4;
             generator.range(min, max);
-            assertThat(generate()).isBetween(min, max);
+            assertThat(generator.generate(random)).isBetween(min, max);
         }
     }
 }
