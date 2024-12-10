@@ -152,7 +152,7 @@ class ColumnScaleAndPrecisionJPATest {
                 .isNegative()
                 .hasScaleOf(10);
 
-        assertThat(result.getD().precision()).isNotEqualTo(10);
+        assertThat(result.getD().precision()).isGreaterThanOrEqualTo(10);
     }
 
     /**
@@ -167,6 +167,6 @@ class ColumnScaleAndPrecisionJPATest {
                 .isPositive()
                 .hasScaleOf(10);
 
-        assertThat(result.getD().precision()).isNotEqualTo(10);
+        assertThat(result.getD().precision()).isGreaterThanOrEqualTo(10);
     }
 }

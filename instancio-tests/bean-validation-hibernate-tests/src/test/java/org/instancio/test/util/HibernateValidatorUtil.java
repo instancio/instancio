@@ -19,12 +19,24 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.instancio.Instancio;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public final class HibernateValidatorUtil {
+
+    public static void assertValid(final Class<?> targetClass, final int sampleSize) {
+        final Stream<?> results = Instancio.of(targetClass)
+                .stream()
+                .limit(sampleSize);
+
+        assertThat(results)
+                .hasSize(sampleSize)
+                .allSatisfy(HibernateValidatorUtil::assertValid);
+    }
 
     public static void assertValid(final Object obj) {
         try (final ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {

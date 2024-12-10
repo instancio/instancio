@@ -81,6 +81,21 @@ public class DoubleGenerator extends AbstractGenerator<Double>
     }
 
     @Override
+    public void ensureMinIsGreaterThanOrEqualTo(final BigDecimal otherMin) {
+        delegate.ensureMinIsGreaterThanOrEqualTo(otherMin);
+    }
+
+    @Override
+    public void ensureMaxIsLessThanOrEqualTo(final BigDecimal otherMax) {
+        delegate.ensureMaxIsLessThanOrEqualTo(otherMax);
+    }
+
+    @Override
+    public void integerMax(final int integerMax) {
+        delegate.integerMax(integerMax);
+    }
+
+    @Override
     public DoubleGenerator nullable() {
         delegate.nullable();
         return this;
