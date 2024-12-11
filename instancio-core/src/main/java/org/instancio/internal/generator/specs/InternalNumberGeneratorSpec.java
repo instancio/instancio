@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 /**
  * Internal API for generating numbers.
  *
- * @since 5.3.0
+ * @since 5.2.1
  */
 @InternalApi
 public interface InternalNumberGeneratorSpec<T extends Number> extends NumberGeneratorSpec<T> {

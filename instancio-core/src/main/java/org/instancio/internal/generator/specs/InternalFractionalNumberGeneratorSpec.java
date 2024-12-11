@@ -23,7 +23,7 @@ import org.instancio.documentation.InternalApi;
  *
  * <p>Currently, only {@code BigDecimal} spec exposes this method via public API.
  *
- * @since 5.3.0
+ * @since 5.2.1
  */
 @InternalApi
 public interface InternalFractionalNumberGeneratorSpec<T extends Number> extends InternalNumberGeneratorSpec<T> {
