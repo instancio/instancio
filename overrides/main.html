@@ -1,0 +1,35 @@
+<!-- Elements added to main will be displayed on all pages -->
+{% extends "base.html" %}
+
+{% block extrahead %}
+<meta name="description" content="Instancio is a test data generation library for Java. Its goals are to automate data setup, make tests more concise, and reduce test maintenance effort.">
+{% endblock %}
+
+<!-- Google Tag Manager -->
+{% block libs %}
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MYZQVSS3LL"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-MYZQVSS3LL');
+</script>
+{% endblock %}
+
+<!-- Announcement bar -->
+{% block announce %}
+Follow <strong>@instancio_java</strong> on
+<span class="twemoji twitter">
+    <a href="https://x.com/instancio_java">
+        {% include ".icons/fontawesome/brands/x-twitter.svg" %}
+    </a>
+</span>
+and star on
+<a rel="me" href="https://github.com/instancio/instancio">
+<span class="twemoji github">
+    {% include ".icons/fontawesome/brands/github.svg" %}
+</span>
+<strong>Github</strong>
+</a>
+
+{% endblock %}
