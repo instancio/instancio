@@ -53,17 +53,17 @@ class FeedWithStringMapperTest {
         FeedSpec<byte[]> a();
 
         @WithStringMapper(ToByteArrayMapper.class)
-        @DataSpec("b")
+        @AliasSpec("b")
         FeedSpec<byte[]> b();
 
         @WithStringMapper(ToSingletonSetMapper.class)
-        @DataSpec("c")
+        @AliasSpec("c")
         FeedSpec<Set<String>> cAsSingletonSet();
 
         // The post-processor should be applied after the converter
         @WithPostProcessor(ToEmptyStringPostProcessor.class)
         @WithStringMapper(ToByteArrayMapper.class)
-        @DataSpec("c")
+        @AliasSpec("c")
         FeedSpec<byte[]> cAsEmptyByteArray();
 
         class ToEmptyStringPostProcessor implements PostProcessor<byte[]> {

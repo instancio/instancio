@@ -34,19 +34,25 @@ import java.util.function.Function;
 public interface FeedSpecAnnotations {
 
     /**
-     * Allows mapping a property name from an external
-     * data source to a spec method in a {@link Feed}.
+     * Annotation used to specify the mapping between a method in
+     * a {@link Feed} and a property in an external data source.
+     * This allows methods in a feed interface to be explicitly
+     * associated with properties by name.
+     *
+     * <p>The {@link AliasSpec} annotation should be placed on methods
+     * within a {@link Feed} interface that return {@link FeedSpec}, enabling
+     * explicit binding of the method to a named data source property.
      *
      * @since 5.0.0
      */
     @ExperimentalApi
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
-    @interface DataSpec {
+    @interface AliasSpec {
 
         /**
-         * Specifies the name of a property that a spec method
-         * in a {@link Feed} should map to.
+         * Specifies the name of the property in the external data source
+         * to which the annotated method is explicitly mapped.
          *
          * @return property name defined in an external data source
          * @since 5.0.0

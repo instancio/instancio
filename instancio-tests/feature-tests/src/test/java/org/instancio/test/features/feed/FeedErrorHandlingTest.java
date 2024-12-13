@@ -46,7 +46,7 @@ class FeedErrorHandlingTest {
         FeedSpec<Item<String>> value();
 
         @SuppressWarnings("UnusedReturnValue")
-        @DataSpec("value")
+        @AliasSpec("value")
         FeedSpec<byte[]> unmappableType();
     }
 

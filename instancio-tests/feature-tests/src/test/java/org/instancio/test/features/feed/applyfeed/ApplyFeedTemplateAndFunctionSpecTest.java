@@ -44,11 +44,11 @@ class ApplyFeedTemplateAndFunctionSpecTest {
     @Feed.Source(string = "a,b\na1,b1\na2,b2\na3,b3\na4,b4")
     private interface StringFieldsFeed extends Feed {
 
-        @DataSpec("a")
+        @AliasSpec("a")
         @WithPostProcessor(UnderscoreAppender.class)
         FeedSpec<String> one();
 
-        @DataSpec("b")
+        @AliasSpec("b")
         @WithPostProcessor(UnderscoreAppender.class)
         FeedSpec<String> two();
 

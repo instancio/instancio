@@ -49,7 +49,7 @@ class FeedWithPostProcessorTest {
     private interface SampleFeed extends Feed {
 
         @WithPostProcessor({MultiplyBy10.class, IncrementBy1.class})
-        @DataSpec("number")
+        @AliasSpec("number")
         FeedSpec<Integer> number();
     }
 

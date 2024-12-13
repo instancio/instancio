@@ -2959,7 +2959,7 @@ int yearOfBirth = personFeed.dateOfBirth().map(LocalDate::getYear);
 
 In addition, feed spec methods support the following annotations:
 
-- [`@DataSpec`](#dataspec)
+- [`@AliasSpec`](#aliasspec)
 - [`@TemplateSpec`](#templatespec)
 - [`@GeneratedSpec`](#generatedspec)
 - [`@FunctionSpec`](#functionspec)
@@ -2967,7 +2967,7 @@ In addition, feed spec methods support the following annotations:
 - [`@WithPostProcessor`](#withpostprocessor)
 - [`@NullableSpec`](#nullablespec)
 
-### `@DataSpec`
+### `@AliasSpec`
 
 This annotation allows mapping a data property using the annotation attribute instead
 of the spec method name. This decouples method names from specific data properties:
@@ -2975,7 +2975,7 @@ of the spec method name. This decouples method names from specific data properti
 ```java linenums="1" hl_lines="3"
 @Feed.Source(resource = "persons.csv")
 interface PersonFeed extends Feed {
-    @DataSpec("lastName")
+    @AliasSpec("lastName")
     FeedSpec<String> surname();
 }
 ```
@@ -2991,7 +2991,7 @@ The `@TemplateSpec` annotation enables the definition of spec methods using stri
 ```java linenums="1" hl_lines="6"
 @Feed.Source(resource = "persons.csv")
 interface PersonFeed extends Feed {
-    @DataSpec("lastName")
+    @AliasSpec("lastName")
     FeedSpec<String> surname();
 
     @TemplateSpec("Hello ${firstName} ${surname}")
@@ -3112,7 +3112,7 @@ interface PersonFeed extends Feed {
     <lnum>4</lnum> Specifies the function class for the mapping.<br/>
     <lnum>5</lnum> The type `byte[]` is the type returned by the mapping function.<br/>
 
-`@WithStringMapper` can also be used with methods annotated with `@DataSpec`:
+`@WithStringMapper` can also be used with methods annotated with `@AliasSpec`:
 
 ```java linenums="1" hl_lines="4 8"
 @Feed.Source(resource = "persons.csv")
@@ -3121,7 +3121,7 @@ interface PersonFeed extends Feed {
     FeedSpec<String> firstName();
 
     @WithStringMapper(StringByteArrayMapper.class)
-    @DataSpec("firstName")
+    @AliasSpec("firstName")
     FeedSpec<byte[]> firstNameAsBytes();
 }
 ```

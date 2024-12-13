@@ -28,12 +28,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.FEED)
 @ExtendWith(InstancioExtension.class)
-class FeedDataSpecNameTest {
+class FeedAliasSpecNameTest {
 
     @Feed.Source(string = "number\n123")
     private interface SampleFeed extends Feed {
 
-        @DataSpec("number")
+        @AliasSpec("number")
         FeedSpec<Integer> someOtherNameThatDoesNotMatchCsvColumnName();
     }
 

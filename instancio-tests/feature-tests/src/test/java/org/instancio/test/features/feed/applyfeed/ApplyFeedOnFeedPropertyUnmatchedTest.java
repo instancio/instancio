@@ -45,7 +45,7 @@ class ApplyFeedOnFeedPropertyUnmatchedTest {
 
         void unrelated2();
 
-        @DataSpec("value")
+        @AliasSpec("value")
         FeedSpec<Integer> unmatchedProperty2();
 
         @GeneratedSpec(SomeIntegerGenerator.class)

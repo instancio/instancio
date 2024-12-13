@@ -19,7 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.feed.Feed;
 import org.instancio.feed.FeedSpec;
-import org.instancio.feed.FeedSpecAnnotations.DataSpec;
+import org.instancio.feed.FeedSpecAnnotations.AliasSpec;
 import org.instancio.feed.FeedSpecAnnotations.WithPostProcessor;
 import org.instancio.feed.PostProcessor;
 import org.instancio.junit.InstancioExtension;
@@ -43,7 +43,7 @@ import static org.instancio.Select.field;
 
 @FeatureTag({Feature.FEED, Feature.APPLY_FEED})
 @ExtendWith(InstancioExtension.class)
-class ApplyFeedDataSpecAndWithPostProcessorTest {
+class ApplyFeedAliasSpecAndWithPostProcessorTest {
 
     @SuppressWarnings("unused")
     @Feed.Source(string = "countryCode,_number_\nc1,n1\nc2,n2\nc3,n3\n")
@@ -54,7 +54,7 @@ class ApplyFeedDataSpecAndWithPostProcessorTest {
 
         // The mapping should be done based on the FeedSpec method name,
         // which takes precedence over the data property key.
-        @DataSpec("_number_")
+        @AliasSpec("_number_")
         @WithPostProcessor(ZeroAppender.class)
         FeedSpec<String> number();
 
@@ -75,7 +75,7 @@ class ApplyFeedDataSpecAndWithPostProcessorTest {
      * </ul>
      *
      * <p>methods when populating the objects, taking into account
-     * {@link DataSpec} and {@link WithPostProcessor} annotations.
+     * {@link AliasSpec} and {@link WithPostProcessor} annotations.
      */
     @RepeatedTest(5)
     void shouldPopulateObjectsUsingDeclaredFeedSpecMethods() {

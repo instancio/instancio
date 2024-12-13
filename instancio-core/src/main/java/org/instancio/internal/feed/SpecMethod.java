@@ -17,7 +17,7 @@ package org.instancio.internal.feed;
 
 import org.instancio.feed.Feed;
 import org.instancio.feed.FeedSpec;
-import org.instancio.feed.FeedSpecAnnotations.DataSpec;
+import org.instancio.feed.FeedSpecAnnotations.AliasSpec;
 import org.instancio.feed.FeedSpecAnnotations.FunctionSpec;
 import org.instancio.feed.FeedSpecAnnotations.GeneratedSpec;
 import org.instancio.feed.FeedSpecAnnotations.NullableSpec;
@@ -51,8 +51,8 @@ public final class SpecMethod {
         this.generatedSpec = getAnnotation(GeneratedSpec.class);
         this.functionSpec = getAnnotation(FunctionSpec.class);
         this.templateSpec = getAnnotation(TemplateSpec.class);
-        final DataSpec dataSpec = getAnnotation(DataSpec.class);
-        this.dataPropertyName = dataSpec == null ? method.getName() : dataSpec.value();
+        final AliasSpec aliasSpec = getAnnotation(AliasSpec.class);
+        this.dataPropertyName = aliasSpec == null ? method.getName() : aliasSpec.value();
     }
 
     public Method getMethod() {
@@ -75,7 +75,7 @@ public final class SpecMethod {
      * Returns the name of the property key in the data file
      * that maps to this spec method.
      *
-     * <p>If {@link DataSpec} annotation is defined, the mapping is done
+     * <p>If {@link AliasSpec} annotation is defined, the mapping is done
      * using the annotation's attributed, otherwise the mapping is done
      * using the name of the method that returns the {@link FeedSpec}.
      */
