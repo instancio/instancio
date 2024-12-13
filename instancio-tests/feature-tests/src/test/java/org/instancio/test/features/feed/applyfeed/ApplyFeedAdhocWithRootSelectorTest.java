@@ -41,10 +41,10 @@ class ApplyFeedAdhocWithRootSelectorTest {
     @Feed.Source(string = "givenName,surname,age,username,heightCm\nJohn,Doe,99,jdoe,178")
     private interface PersonFeed extends Feed {
 
-        @DataSpec("givenName")
+        @AliasSpec("givenName")
         FeedSpec<String> firstName();
 
-        @DataSpec("surname")
+        @AliasSpec("surname")
         FeedSpec<String> lastName();
 
         @TemplateSpec("${firstName} ${lastName}")
@@ -53,7 +53,7 @@ class ApplyFeedAdhocWithRootSelectorTest {
         @WithPostProcessor(IntegerNegator.class)
         FeedSpec<Integer> age();
 
-        @DataSpec("heightCm")
+        @AliasSpec("heightCm")
         @WithPostProcessor(IntegerNegator.class)
         FeedSpec<Integer> height();
 

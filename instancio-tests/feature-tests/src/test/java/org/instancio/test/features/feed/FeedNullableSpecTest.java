@@ -47,7 +47,7 @@ class FeedNullableSpecTest {
     private interface SampleFeed extends Feed {
 
         @NullableSpec
-        @DataSpec("number")
+        @AliasSpec("number")
         FeedSpec<Integer> number();
     }
 
