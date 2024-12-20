@@ -97,7 +97,7 @@ class ReflectionAssertTest {
 
         assertThatThrownBy(() -> assertThatObject(address).isFullyPopulated())
                 .isInstanceOf(AssertionError.class)
-                .hasMessageContaining("error: [Field 'Phone.number' is null]");
+                .hasMessageContaining("[Field 'Phone.number' is null]");
     }
 
     @Test
