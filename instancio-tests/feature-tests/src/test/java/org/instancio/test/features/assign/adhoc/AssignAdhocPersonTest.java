@@ -36,12 +36,11 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.FieldSource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -56,19 +55,16 @@ import static org.instancio.When.isIn;
 @ExtendWith(InstancioExtension.class)
 class AssignAdhocPersonTest {
 
-    private static Stream<Arguments> addressCountryToPhoneCountryCode() {
-        return Stream.of(
-                Arguments.of(given(field(Address::getCountry))
-                        .satisfies("Canada"::equals)
-                        .set(field(Phone::getCountryCode), "+1")),
+    private static final List<Assignment> addressCountryToPhoneCountryCode = Arrays.asList(
+            given(field(Address::getCountry))
+                    .satisfies("Canada"::equals)
+                    .set(field(Phone::getCountryCode), "+1"),
 
-                Arguments.of(valueOf(Address::getCountry)
-                        .to(Phone::getCountryCode)
-                        .as((Function<String, String>) s -> s.equals("Canada") ? "+1" : s))
-        );
-    }
+            valueOf(Address::getCountry)
+                    .to(Phone::getCountryCode)
+                    .as((Function<String, String>) s -> s.equals("Canada") ? "+1" : s));
 
-    @MethodSource("addressCountryToPhoneCountryCode")
+    @FieldSource("addressCountryToPhoneCountryCode")
     @ParameterizedTest
     void givenCountryThenPhone(final Assignment assignment) {
         final List<Address> result = Instancio.ofList(Address.class)

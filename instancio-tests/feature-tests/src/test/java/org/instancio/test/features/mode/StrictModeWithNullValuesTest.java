@@ -29,11 +29,11 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.FieldSource;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -62,39 +62,36 @@ class StrictModeWithNullValuesTest {
         return Instancio.of(Person.class).set(all(Address.class), null);
     }
 
-    private static Stream<Arguments> phoneNumberSelectors() {
-        return Stream.of(
-                Arguments.of(field(Phone.class, "number")),
-                Arguments.of(fields().ofType(String.class).named("number"))
-        );
-    }
+    private static final List<TargetSelector> phoneNumberSelectors = Arrays.asList(
+            field(Phone.class, "number"),
+            fields().ofType(String.class).named("number"));
 
     @ParameterizedTest
-    @MethodSource("phoneNumberSelectors")
+    @FieldSource("phoneNumberSelectors")
     void withNullable(final TargetSelector selector) {
         personWithNullAddress().withNullable(selector).create();
     }
 
     @ParameterizedTest
-    @MethodSource("phoneNumberSelectors")
+    @FieldSource("phoneNumberSelectors")
     void ignore(final TargetSelector selector) {
         personWithNullAddress().ignore(selector).create();
     }
 
     @ParameterizedTest
-    @MethodSource("phoneNumberSelectors")
+    @FieldSource("phoneNumberSelectors")
     void set(final TargetSelector selector) {
         personWithNullAddress().set(selector, "foo").create();
     }
 
     @ParameterizedTest
-    @MethodSource("phoneNumberSelectors")
+    @FieldSource("phoneNumberSelectors")
     void generate(final TargetSelector selector) {
         personWithNullAddress().generate(selector, gen -> gen.string().digits()).create();
     }
 
     @ParameterizedTest
-    @MethodSource("phoneNumberSelectors")
+    @FieldSource("phoneNumberSelectors")
     void onComplete(final TargetSelector selector) {
         final AtomicInteger callbackCount = new AtomicInteger();
         personWithNullAddress()

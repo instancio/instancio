@@ -25,11 +25,11 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.FieldSource;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
@@ -59,7 +59,7 @@ class AssignWithOnCompleteTest {
         assertThat(result.b).isEqualTo(EXPECTED);
     }
 
-    @MethodSource("args")
+    @FieldSource("args")
     @ParameterizedTest
     void callbackNotInvokedOnSupply(final Assignment assignment) {
         final StringsAbc result = Instancio.of(StringsAbc.class)
@@ -72,10 +72,8 @@ class AssignWithOnCompleteTest {
         assertThat(result.a).isEqualTo(EXPECTED);
     }
 
-    private static Stream<Arguments> args() {
-        return Stream.of(
-                Arguments.of(Assign.valueOf(field(StringsAbc::getA)).set(EXPECTED)),
-                Arguments.of(Assign.valueOf(field(StringsAbc::getA)).supply(() -> EXPECTED))
-        );
-    }
+    private static final List<Assignment> args = Arrays.asList(
+            Assign.valueOf(field(StringsAbc::getA)).set(EXPECTED),
+            Assign.valueOf(field(StringsAbc::getA)).supply(() -> EXPECTED));
+
 }

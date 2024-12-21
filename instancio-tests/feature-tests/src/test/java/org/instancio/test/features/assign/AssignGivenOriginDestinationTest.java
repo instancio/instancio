@@ -28,10 +28,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.FieldSource;
 
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
@@ -48,17 +48,14 @@ class AssignGivenOriginDestinationTest {
                 .set((String s) -> s.length() % 2 == 0, EVEN);
     }
 
-    private static Stream<Arguments> args() {
-        return Stream.of(
-                Arguments.of(assignGiven().elseSet(ODD)),
-                Arguments.of(assignGiven().elseSupply(() -> ODD)),
-                Arguments.of(assignGiven().elseSupply(random -> random.oneOf(ODD))),
-                Arguments.of(assignGiven().elseGenerate(Instancio.gen().text().pattern(ODD))),
-                Arguments.of(assignGiven().elseGenerate(gen -> gen.text().pattern(ODD)))
-        );
-    }
+    private static final List<Assignment> args = Arrays.asList(
+            assignGiven().elseSet(ODD),
+            assignGiven().elseSupply(() -> ODD),
+            assignGiven().elseSupply(random -> random.oneOf(ODD)),
+            assignGiven().elseGenerate(Instancio.gen().text().pattern(ODD)),
+            assignGiven().elseGenerate(gen -> gen.text().pattern(ODD)));
 
-    @MethodSource("args")
+    @FieldSource("args")
     @ParameterizedTest()
     void verifyAssignment(final Assignment assignment) {
         final StringsGhi result = Instancio.of(StringsGhi.class)

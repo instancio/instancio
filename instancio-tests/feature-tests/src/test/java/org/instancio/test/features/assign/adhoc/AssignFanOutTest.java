@@ -24,9 +24,10 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.FieldSource;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.instancio.Select.allInts;
@@ -39,13 +40,11 @@ class AssignFanOutTest {
 
     private static final String EXPECTED_VALUE = "1";
 
-    private static Stream<Arguments> assignments() {
-        return Stream.of(
-                Arguments.of(Assign.given(int.class).is(1).set(allStrings(), EXPECTED_VALUE)),
-                Arguments.of(Assign.valueOf(int.class).to(allStrings()).as(Object::toString)));
-    }
+    private static final List<Assignment> assignments = Arrays.asList(
+            Assign.given(int.class).is(1).set(allStrings(), EXPECTED_VALUE),
+            Assign.valueOf(int.class).to(allStrings()).as(Object::toString));
 
-    @MethodSource("assignments")
+    @FieldSource("assignments")
     @ParameterizedTest
     void bottomUp(final Assignment assignment) {
         //@formatter:off
@@ -65,7 +64,7 @@ class AssignFanOutTest {
                 .forEach(obj -> assertThatObject(obj).hasAllFieldsOfTypeEqualTo(String.class, EXPECTED_VALUE));
     }
 
-    @MethodSource("assignments")
+    @FieldSource("assignments")
     @ParameterizedTest
     void centreOut(final Assignment assignment) {
         //@formatter:off

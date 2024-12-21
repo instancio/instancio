@@ -29,13 +29,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.FieldSource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Assign.valueOf;
@@ -52,11 +51,9 @@ class AssignBackReferenceTest {
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class AssignBackReferenceToMainPojoTest {
 
-        private Stream<Arguments> rootSelector() {
-            return Stream.of(Arguments.of(root()), Arguments.of(all(MainPojo.class)));
-        }
+        private final List<TargetSelector> rootSelector = Arrays.asList(root(), all(MainPojo.class));
 
-        @MethodSource("rootSelector")
+        @FieldSource("rootSelector")
         @ParameterizedTest
         void withRoot(final TargetSelector rootObjectSelector) {
             final MainPojo result = Instancio.of(MainPojo.class)
@@ -90,11 +87,9 @@ class AssignBackReferenceTest {
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class AssignBackReferenceToDetailPojoTest {
 
-        private Stream<Arguments> rootSelector() {
-            return Stream.of(Arguments.of(root()), Arguments.of(all(DetailPojo.class)));
-        }
+        private final List<TargetSelector> rootSelector = Arrays.asList(root(), all(DetailPojo.class));
 
-        @MethodSource("rootSelector")
+        @FieldSource("rootSelector")
         @ParameterizedTest
         void withRoot(final TargetSelector selector) {
             final DetailPojo result = Instancio.of(DetailPojo.class)
@@ -108,14 +103,11 @@ class AssignBackReferenceTest {
             });
         }
 
+        private List<TargetSelector> rootListElementSelector = Arrays.asList(
+                all(DetailPojo.class),
+                all(DetailPojo.class).atDepth(1));
 
-        private Stream<Arguments> rootListElementSelector() {
-            return Stream.of(
-                    Arguments.of(all(DetailPojo.class)),
-                    Arguments.of(all(DetailPojo.class).atDepth(1)));
-        }
-
-        @MethodSource("rootListElementSelector")
+        @FieldSource("rootListElementSelector")
         @ParameterizedTest
         void createList(final TargetSelector rootListElementSelector) {
             final List<DetailPojo> results = Instancio.ofList(DetailPojo.class)

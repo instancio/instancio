@@ -24,10 +24,10 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.FieldSource;
 
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -41,23 +41,20 @@ import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObje
 @ExtendWith(InstancioExtension.class)
 class PredicateSelectorWithinScopeTest {
 
-    private static Stream<Arguments> selectors() {
-        return Stream.of(
-                // types
-                Arguments.of(types(t -> t == String.class).within(scope(StringsDef.class))),
-                Arguments.of(types(t -> t == String.class).within(all(StringsDef.class).toScope())),
-                Arguments.of(types(t -> t == String.class).within(scope(StringsAbc::getDef))),
-                Arguments.of(types(t -> t == String.class).within(scope(StringsAbc.class), scope(StringsAbc::getDef))),
-                Arguments.of(types(t -> t == String.class).within(scope(StringsAbc.class), scope(StringsDef.class))),
-                // fields
-                Arguments.of(fields(f -> f.getType() == String.class).within(scope(StringsAbc::getDef))),
-                Arguments.of(fields(f -> f.getType() == String.class).within(all(StringsDef.class).toScope())),
-                Arguments.of(fields(f -> f.getType() == String.class).within(field("def").toScope())),
-                Arguments.of(fields(f -> f.getType() == String.class).within(field(StringsAbc::getDef).toScope()))
-        );
-    }
+    private static final List<TargetSelector> selectors = Arrays.asList(
+            // types
+            types(t -> t == String.class).within(scope(StringsDef.class)),
+            types(t -> t == String.class).within(all(StringsDef.class).toScope()),
+            types(t -> t == String.class).within(scope(StringsAbc::getDef)),
+            types(t -> t == String.class).within(scope(StringsAbc.class), scope(StringsAbc::getDef)),
+            types(t -> t == String.class).within(scope(StringsAbc.class), scope(StringsDef.class)),
+            // fields
+            fields(f -> f.getType() == String.class).within(scope(StringsAbc::getDef)),
+            fields(f -> f.getType() == String.class).within(all(StringsDef.class).toScope()),
+            fields(f -> f.getType() == String.class).within(field("def").toScope()),
+            fields(f -> f.getType() == String.class).within(field(StringsAbc::getDef).toScope()));
 
-    @MethodSource("selectors")
+    @FieldSource("selectors")
     @ParameterizedTest
     void withinScope(final TargetSelector selector) {
         final StringsAbc result = Instancio.of(StringsAbc.class)
