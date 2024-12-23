@@ -21,7 +21,7 @@ import org.assertj.core.api.SoftAssertions;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Set;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -47,7 +47,7 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
     }
 
     public ClassAssert hasNoMethods() {
-        assertThat(actual.getMethods()).isEmpty();
+        assertThat(getMethodNamesFromActual()).isEmpty();
         return this;
     }
 
@@ -62,20 +62,12 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
     }
 
     public ClassAssert hasNoMethodsNamed(final String... methodNames) {
-        assertThat(actual.getMethods())
-                .extracting(Method::getName)
-                .doesNotContain(methodNames);
-
+        assertThat(getMethodNamesFromActual()).doesNotContain(methodNames);
         return this;
     }
 
     public ClassAssert hasOnlyMethodsNamed(final String... methodNames) {
-        final Set<String> actualMethods = Arrays.stream(actual.getMethods())
-                .map(Method::getName)
-                .collect(Collectors.toSet());
-
-        assertThat(actualMethods).containsOnly(methodNames);
-
+        assertThat(getMethodNamesFromActual()).containsOnly(methodNames);
         return this;
     }
 
@@ -105,6 +97,15 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
 
     public MethodsAssert withMethodNameMatching(final String methodName) {
         return withMethodsMatching(m -> m.getName().equals(methodName));
+    }
+
+    private List<String> getMethodNamesFromActual() {
+        return Arrays.stream(actual.getMethods())
+                .map(Method::getName)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
     }
 
     private static Class<?> getSuperInterface(final Class<?> klass, final String interfaceSimpleName) {
