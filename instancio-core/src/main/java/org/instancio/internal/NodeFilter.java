@@ -69,7 +69,7 @@ final class NodeFilter implements NodePopulationFilter {
 
         // For APPLY_SELECTORS and remaining actions, if there is at least
         // one matching selector for this node, then it should not be skipped
-        if (context.getGenerator(node).isPresent()) {
+        if (context.getGenerator(node).isPresent() || !context.getAssignments(node).isEmpty()) {
             return NodeFilterResult.GENERATE;
         }
 
