@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Fail.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Select.all;
 import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
 

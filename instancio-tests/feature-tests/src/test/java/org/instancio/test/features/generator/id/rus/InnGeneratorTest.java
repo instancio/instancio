@@ -31,7 +31,7 @@ import static org.instancio.Select.root;
 
 @FeatureTag(Feature.GENERATOR)
 @ExtendWith(InstancioExtension.class)
-public class InnGeneratorTest {
+class InnGeneratorTest {
 
     private static String create(final GeneratorSpecProvider<String> spec) {
         return Instancio.of(String.class)

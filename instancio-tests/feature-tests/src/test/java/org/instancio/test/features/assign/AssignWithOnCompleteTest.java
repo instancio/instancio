@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Fail.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Select.field;
 
 @FeatureTag({Feature.ASSIGN, Feature.ON_COMPLETE})

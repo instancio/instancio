@@ -33,7 +33,7 @@ import static org.instancio.Select.root;
 
 @FeatureTag(Feature.GENERATOR)
 @ExtendWith(InstancioExtension.class)
-public class CoordinateGeneratorTest {
+class CoordinateGeneratorTest {
     private static Double create(final GeneratorSpecProvider<Double> spec) {
         return Instancio.of(Double.class)
                 .generate(root(), spec)

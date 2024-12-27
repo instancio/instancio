@@ -32,7 +32,7 @@ import static java.lang.Character.UnicodeBlock.GENERAL_PUNCTUATION;
 import static java.lang.Character.UnicodeBlock.SUPPLEMENTAL_PUNCTUATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Fail.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Instancio.gen;
 
 @FeatureTag(Feature.FEED)

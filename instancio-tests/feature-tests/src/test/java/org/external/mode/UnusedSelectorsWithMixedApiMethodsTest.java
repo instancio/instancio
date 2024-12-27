@@ -31,12 +31,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.LinkedList;
 import java.util.SortedSet;
 
+import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.UnusedSelectorsAssert.assertThrowsUnusedSelectorException;
 import static org.instancio.test.support.UnusedSelectorsAssert.line;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Verify unused selectors by using various combinations
