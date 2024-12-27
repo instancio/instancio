@@ -40,10 +40,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @FeatureTag(Feature.ON_COMPLETE)
 @ExtendWith(InstancioExtension.class)

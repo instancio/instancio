@@ -15,7 +15,6 @@
  */
 package org.instancio.test.features.values;
 
-import org.assertj.core.api.Assertions;
 import org.instancio.generator.ValueSpec;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @FeatureTag(Feature.VALUE_SPEC)
 public abstract class AbstractValueSpecTestTemplate<T> {
@@ -71,7 +71,7 @@ public abstract class AbstractValueSpecTestTemplate<T> {
             }
         }
 
-        Assertions.fail("%s.nullable() did not generate null after %s attempts",
+        fail("%s.nullable() did not generate null after %s attempts",
                 spec().getClass().getSimpleName(), Constants.SAMPLE_SIZE_DDD);
     }
 

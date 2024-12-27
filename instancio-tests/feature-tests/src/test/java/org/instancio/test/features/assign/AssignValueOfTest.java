@@ -53,7 +53,6 @@ class AssignValueOfTest {
 
     private static final String EXPECTED = "foo";
 
-    @MethodSource
     private static Stream<Arguments> args() {
         final Supplier<String> supplier = () -> EXPECTED;
         final Generator<String> generator = random -> EXPECTED;
