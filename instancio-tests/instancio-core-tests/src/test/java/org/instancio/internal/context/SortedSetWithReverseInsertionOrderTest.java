@@ -67,9 +67,7 @@ class SortedSetWithReverseInsertionOrderTest {
 
     @Test
     void sizeAndIsEmpty() {
-        assertThat(set)
-                .hasSize(0) // NOSONAR
-                .isEmpty();
+        assertThat(set).isEmpty();
 
         set.add(ITEM);
 

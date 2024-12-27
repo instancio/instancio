@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CpfGeneratorTest extends AbstractGeneratorTestTemplate<String, CpfGenerator> {
+class CpfGeneratorTest extends AbstractGeneratorTestTemplate<String, CpfGenerator> {
 
     private final CpfGenerator generator = new CpfGenerator(getGeneratorContext());
 
@@ -39,14 +39,14 @@ public class CpfGeneratorTest extends AbstractGeneratorTestTemplate<String, CpfG
 
     @Test
     @DisplayName("Test the default CPF generation, without formatting")
-    void testCpfDefaultGeneration() {
+    void cpfDefaultGeneration() {
         String result = generator.generate(random);
         assertThat(result).containsOnlyDigits().hasSize(11);
     }
 
     @Test
     @DisplayName("Test the custom CPF generation, with formatting")
-    void testCpfCustomGeneration() {
+    void cpfCustomGeneration() {
         String result = generator.formatted().generate(random);
         assertThat(result).containsPattern(Pattern.compile("^(\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2})$")).hasSize(14);
     }

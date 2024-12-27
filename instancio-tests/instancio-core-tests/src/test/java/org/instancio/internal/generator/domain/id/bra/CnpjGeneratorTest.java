@@ -39,14 +39,14 @@ class CnpjGeneratorTest extends AbstractGeneratorTestTemplate<String, CnpjGenera
 
     @Test
     @DisplayName("Test the default CNPJ generation, without formatting")
-    void testCnpjDefaultGeneration() {
+    void cnpjDefaultGeneration() {
         String result = generator.generate(random);
         assertThat(result).containsOnlyDigits().hasSize(14);
     }
 
     @Test
     @DisplayName("Test the custom CNPJ generation, with formatting")
-    void testCnpjCustomGeneration() {
+    void cnpjCustomGeneration() {
         String result = generator.formatted().generate(random);
         assertThat(result).containsPattern(Pattern.compile("^(\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2})$")).hasSize(18);
     }
