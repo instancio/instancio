@@ -22,7 +22,7 @@ import java.util.OptionalDouble;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OptionalDoubleGeneratorTest extends AbstractGeneratorTestTemplate<OptionalDouble, OptionalDoubleGenerator> {
+class OptionalDoubleGeneratorTest extends AbstractGeneratorTestTemplate<OptionalDouble, OptionalDoubleGenerator> {
 
     @Override
     protected String getApiMethod() {

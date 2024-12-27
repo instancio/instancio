@@ -22,7 +22,7 @@ import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OptionalIntGeneratorTest extends AbstractGeneratorTestTemplate<OptionalInt, OptionalIntGenerator> {
+class OptionalIntGeneratorTest extends AbstractGeneratorTestTemplate<OptionalInt, OptionalIntGenerator> {
 
     @Override
     protected String getApiMethod() {

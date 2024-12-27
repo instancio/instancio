@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class InnGeneratorTest extends AbstractGeneratorTestTemplate<String, InnGenerator> {
+class InnGeneratorTest extends AbstractGeneratorTestTemplate<String, InnGenerator> {
 
     private final InnGenerator generator = new InnGenerator(getGeneratorContext());
 
@@ -37,21 +37,21 @@ public class InnGeneratorTest extends AbstractGeneratorTestTemplate<String, InnG
 
     @Test
     @DisplayName("Test the default INN generation")
-    void testInnDefaultGeneration() {
+    void innDefaultGeneration() {
         String result = generator.generate(random);
         assertThat(result).hasSizeBetween(10, 12).containsOnlyDigits();
     }
 
     @Test
     @DisplayName("Test the INN generation of type individual")
-    void testInnIndividualGeneration() {
+    void innIndividualGeneration() {
         String result = generator.individual().generate(random);
         assertThat(result).hasSize(12).containsOnlyDigits();
     }
 
     @Test
     @DisplayName("Test the INN generation of type juridical")
-    void testInnJuridicalGeneration() {
+    void innJuridicalGeneration() {
         String result = generator.juridical().generate(random);
         assertThat(result).hasSize(10).containsOnlyDigits();
     }

@@ -37,7 +37,7 @@ class TituloEleitoralGeneratorTest extends AbstractGeneratorTestTemplate<String,
 
     @Test
     @DisplayName("Test the default Titulo Eleitoral generation")
-    void testCnpjDefaultGeneration() {
+    void cnpjDefaultGeneration() {
         assertThat(generator.generate(random)).containsOnlyDigits().hasSize(12);
     }
 

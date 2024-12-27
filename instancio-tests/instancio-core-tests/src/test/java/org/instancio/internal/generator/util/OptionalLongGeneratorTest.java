@@ -22,7 +22,7 @@ import java.util.OptionalLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OptionalLongGeneratorTest extends AbstractGeneratorTestTemplate<OptionalLong, OptionalLongGenerator> {
+class OptionalLongGeneratorTest extends AbstractGeneratorTestTemplate<OptionalLong, OptionalLongGenerator> {
 
     @Override
     protected String getApiMethod() {
