@@ -16,6 +16,13 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.GetMethodSelector;
+import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.util.ErrorMessageUtils;
+import org.instancio.internal.util.Fail;
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Field;
+import java.util.List;
 
 public final class TargetGetterReference implements Target {
 
@@ -30,9 +37,40 @@ public final class TargetGetterReference implements Target {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T, R> GetMethodSelector<T, R> getSelector() {
-        return (GetMethodSelector<T, R>) selector;
+    @Override
+    public Target withRootClass(final TargetContext targetContext) {
+        final MethodRef mr = MethodRef.from(selector);
+        final Field field = resolveFieldFromGetterMethodReference(
+                targetContext.getInternalServiceProviders(), mr.getTargetClass(), mr.getMethodName());
+        return new TargetField(field);
+    }
+
+    /**
+     * Resolves the field from the method reference selector.
+     *
+     * <p>For example, given {@code field(Person::getAge)},
+     * the {@code declaringClass} would be {@code Person}
+     * and {@code methodName} would be {@code getAge}.
+     */
+    @NotNull
+    private Field resolveFieldFromGetterMethodReference(
+            final List<InternalServiceProvider> internalServiceProviders,
+            final Class<?> declaringClass,
+            final String methodName) {
+
+        for (InternalServiceProvider provider : internalServiceProviders) {
+            final InternalServiceProvider.InternalGetterMethodFieldResolver resolver = provider.getGetterMethodFieldResolver();
+            if (resolver == null) {
+                continue;
+            }
+
+            final Field field = resolver.resolveField(declaringClass, methodName);
+            if (field != null) {
+                return field;
+            }
+        }
+
+        throw Fail.withUsageError(ErrorMessageUtils.unableToResolveFieldFromMethodRef(declaringClass, methodName));
     }
 
     @Override

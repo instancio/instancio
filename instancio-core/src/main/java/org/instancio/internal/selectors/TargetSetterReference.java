@@ -16,6 +16,9 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.SetMethodSelector;
+import org.instancio.internal.util.ReflectionUtils;
+
+import java.lang.reflect.Method;
 
 public final class TargetSetterReference implements Target {
 
@@ -30,9 +33,16 @@ public final class TargetSetterReference implements Target {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T, U> SetMethodSelector<T, U> getSelector() {
-        return (SetMethodSelector<T, U>) selector;
+    @Override
+    public Target withRootClass(final TargetContext targetContext) {
+        final MethodRef mr = MethodRef.from(selector);
+
+        // Match method by name only since we can't extract
+        // the parameter type from the method reference
+        final Method method = ReflectionUtils.getSetterMethod(
+                mr.getTargetClass(), mr.getMethodName(), null);
+
+        return new TargetSetter(method);
     }
 
     @Override

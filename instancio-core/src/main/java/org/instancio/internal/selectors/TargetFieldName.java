@@ -15,9 +15,13 @@
  */
 package org.instancio.internal.selectors;
 
+import org.instancio.internal.util.Fail;
+import org.instancio.internal.util.ObjectUtils;
+import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 public final class TargetFieldName implements Target {
@@ -40,6 +44,20 @@ public final class TargetFieldName implements Target {
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    @Override
+    public Target withRootClass(final TargetContext targetContext) {
+        final Class<?> resolvedTargetClass = ObjectUtils.defaultIfNull(
+                targetClass, targetContext.getRootClass());
+
+        final Field field = ReflectionUtils.getFieldOrNull(resolvedTargetClass, fieldName);
+
+        if (field != null) {
+            return new TargetField(field);
+        }
+
+        throw Fail.withUsageError("invalid field '%s' for %s", fieldName, resolvedTargetClass);
     }
 
     @Override

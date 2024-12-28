@@ -16,7 +16,10 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.documentation.InternalApi;
+import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.util.Fail;
+
+import java.util.List;
 
 /**
  * Represents the target of a {@link org.instancio.Selector}
@@ -31,5 +34,39 @@ public interface Target {
 
     default ScopelessSelector toScopelessSelector() {
         throw Fail.withFataInternalError("Unhandled selector target: %s", getTargetClass());
+    }
+
+    /**
+     * Creates a new {@link Target} by associating the root class from
+     * the given {@link TargetContext} with this instance, if applicable.
+     *
+     * <p>If this instance already contains the root class,
+     * the current instance is returned unchanged.
+     *
+     * @param targetContext the context containing the root class to apply
+     * @return a new {@code Target} instance with the root class applied, or the current instance
+     * if no changes are necessary
+     */
+    default Target withRootClass(TargetContext targetContext) {
+        return this;
+    }
+
+    class TargetContext {
+
+        private final Class<?> rootClass;
+        private final List<InternalServiceProvider> internalServiceProviders;
+
+        TargetContext(final Class<?> rootClass, final List<InternalServiceProvider> internalServiceProviders) {
+            this.rootClass = rootClass;
+            this.internalServiceProviders = internalServiceProviders;
+        }
+
+        Class<?> getRootClass() {
+            return rootClass;
+        }
+
+        List<InternalServiceProvider> getInternalServiceProviders() {
+            return internalServiceProviders;
+        }
     }
 }

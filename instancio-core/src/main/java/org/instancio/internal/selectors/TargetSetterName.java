@@ -15,9 +15,12 @@
  */
 package org.instancio.internal.selectors;
 
+import org.instancio.internal.util.ObjectUtils;
+import org.instancio.internal.util.ReflectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 public final class TargetSetterName implements Target {
@@ -48,6 +51,18 @@ public final class TargetSetterName implements Target {
     public Class<?> getParameterType() {
         return parameterType;
     }
+
+    @Override
+    public Target withRootClass(final TargetContext targetContext) {
+        final Class<?> resolvedTargetClass = ObjectUtils.defaultIfNull(
+                targetClass, targetContext.getRootClass());
+
+        final Method method = ReflectionUtils.getSetterMethod(
+                resolvedTargetClass, methodName, parameterType);
+
+        return new TargetSetter(method);
+    }
+
 
     @Override
     public boolean equals(final Object o) {
