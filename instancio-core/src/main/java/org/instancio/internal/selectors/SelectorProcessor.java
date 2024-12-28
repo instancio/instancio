@@ -21,16 +21,9 @@ import org.instancio.SetMethodSelector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.spi.InternalServiceProvider;
-import org.instancio.internal.spi.InternalServiceProvider.InternalGetterMethodFieldResolver;
-import org.instancio.internal.util.ErrorMessageUtils;
-import org.instancio.internal.util.Fail;
-import org.instancio.internal.util.ObjectUtils;
-import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Verify;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,18 +31,16 @@ import java.util.List;
 
 public final class SelectorProcessor {
 
-    private final Class<?> rootClass;
-    private final List<InternalServiceProvider> internalServiceProviders;
     private final SetterSelectorHolder setMethodSelectorHolder;
+    private final Target.TargetContext targetContext;
 
     public SelectorProcessor(
             final Class<?> rootClass,
             final List<InternalServiceProvider> internalServiceProviders,
             final SetterSelectorHolder setMethodSelectorHolder) {
 
-        this.rootClass = rootClass;
-        this.internalServiceProviders = internalServiceProviders;
         this.setMethodSelectorHolder = setMethodSelectorHolder;
+        this.targetContext = new Target.TargetContext(rootClass, internalServiceProviders);
     }
 
     /**
@@ -131,7 +122,7 @@ public final class SelectorProcessor {
         }
 
         final List<Scope> processedScopes = createScopeWithRootClass(selector.getScopes());
-        final Target target = createTargetWithRootClass(selector.getTarget());
+        final Target target = selector.getTarget().withRootClass(targetContext);
 
         final SelectorImpl result = selector.toBuilder()
                 .apiMethodSelector(apiMethodSelector)
@@ -146,79 +137,6 @@ public final class SelectorProcessor {
         return result;
     }
 
-    @NotNull
-    private Target createTargetWithRootClass(final Target target) {
-        final Target result;
-
-        if (target instanceof TargetFieldName) {
-            final TargetFieldName t = (TargetFieldName) target;
-            final Class<?> targetClass = ObjectUtils.defaultIfNull(t.getTargetClass(), rootClass);
-            final Field field = ReflectionUtils.getFieldOrNull(targetClass, t.getFieldName());
-
-            if (field == null) {
-                throw Fail.withUsageError(String.format("invalid field '%s' for %s", t.getFieldName(), targetClass));
-            }
-
-            result = new TargetField(field);
-        } else if (target instanceof TargetGetterReference) {
-            final TargetGetterReference t = (TargetGetterReference) target;
-            final MethodRef mr = MethodRef.from(t.getSelector());
-            final Field field = resolveFieldFromGetterMethodReference(mr.getTargetClass(), mr.getMethodName());
-
-            result = new TargetField(field);
-        } else if (target instanceof TargetSetterReference) {
-            final TargetSetterReference t = (TargetSetterReference) target;
-            final MethodRef mr = MethodRef.from(t.getSelector());
-
-            // Match method by name only since we can't extract
-            // the parameter type from the method reference
-            final Method method = ReflectionUtils.getSetterMethod(
-                    mr.getTargetClass(), mr.getMethodName(), null);
-
-            result = new TargetSetter(method);
-        } else if (target instanceof TargetSetterName) {
-            final TargetSetterName t = (TargetSetterName) target;
-            final Class<?> targetClass = ObjectUtils.defaultIfNull(t.getTargetClass(), rootClass);
-
-            final Method method = ReflectionUtils.getSetterMethod(
-                    targetClass, t.getMethodName(), t.getParameterType());
-
-            result = new TargetSetter(method);
-        } else if (target instanceof TargetClass) {
-            // only remaining option is TargetClass
-            final TargetClass t = (TargetClass) target;
-            result = new TargetClass(t.getTargetClass());
-        } else {
-            result = target; // given target doesn't need to be processed
-        }
-
-        return result;
-    }
-
-    /**
-     * Resolves the field from the method reference selector.
-     *
-     * <p>For example, given {@code field(Person::getAge)},
-     * the {@code declaringClass} would be {@code Person}
-     * and {@code methodName} would be {@code getAge}.
-     */
-    @NotNull
-    private Field resolveFieldFromGetterMethodReference(final Class<?> declaringClass, final String methodName) {
-        for (InternalServiceProvider provider : internalServiceProviders) {
-            final InternalGetterMethodFieldResolver resolver = provider.getGetterMethodFieldResolver();
-            if (resolver == null) {
-                continue;
-            }
-
-            final Field field = resolver.resolveField(declaringClass, methodName);
-            if (field != null) {
-                return field;
-            }
-        }
-
-        throw Fail.withUsageError(ErrorMessageUtils.unableToResolveFieldFromMethodRef(declaringClass, methodName));
-    }
-
     private List<Scope> createScopeWithRootClass(final List<Scope> scopes) {
         if (scopes.isEmpty()) {
             return Collections.emptyList();
@@ -229,7 +147,7 @@ public final class SelectorProcessor {
             if (s instanceof ScopeImpl) {
                 final ScopeImpl scope = (ScopeImpl) s;
                 final Target unprocessed = scope.getTarget();
-                final Target processed = createTargetWithRootClass(unprocessed);
+                final Target processed = unprocessed.withRootClass(targetContext);
                 results.add(new ScopeImpl(processed, scope.getDepth()));
             } else {
                 Verify.isTrue(s instanceof PredicateScopeImpl, "expected predicate scope");
