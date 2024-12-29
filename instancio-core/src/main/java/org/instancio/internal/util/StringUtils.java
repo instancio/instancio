@@ -106,13 +106,16 @@ public final class StringUtils {
         return val.getClass().getSimpleName() + "." + val.name();
     }
 
-    public static String quoteToString(final Object value) {
+    /**
+     * Wraps the given {@code value} in quotes if it's a String,
+     * otherwise returns a {@code toString()} representation.
+     */
+    public static String quoteStringValue(final Object value) {
         if (value == null) return null;
-        final String str = value.toString();
         if (value instanceof String) {
-            return '"' + str + '"';
+            return '"' + value.toString() + '"';
         }
-        return str;
+        return value.toString();
     }
 
     /**

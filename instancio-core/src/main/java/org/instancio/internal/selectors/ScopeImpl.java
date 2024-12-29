@@ -83,11 +83,11 @@ public final class ScopeImpl implements Scope {
         }
         if (target instanceof TargetField) {
             TargetField t = (TargetField) target;
-            elements.add(StringUtils.quoteToString(t.getField().getName()));
+            elements.add(StringUtils.quoteStringValue(t.getField().getName()));
         }
         if (target instanceof TargetFieldName) {
             TargetFieldName t = (TargetFieldName) target;
-            elements.add(StringUtils.quoteToString(t.getFieldName()));
+            elements.add(StringUtils.quoteStringValue(t.getFieldName()));
         }
         if (target instanceof TargetSetter) {
             TargetSetter t = (TargetSetter) target;
