@@ -28,7 +28,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.FieldSource;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,6 +59,20 @@ class AssignWithOnCompleteTest {
 
         assertThat(callbackInvoked).isTrue();
         assertThat(result.b).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    void assignValueOfTo_withOnCompleteDestination() {
+        final Set<String> onCompleteValues = new HashSet<>();
+
+        final StringsAbc result = Instancio.of(StringsAbc.class)
+                .assign(Assign.valueOf(StringsAbc.class)
+                        .to(StringsAbc::getA)
+                        .as((StringsAbc abc) -> abc.getB() + " " + abc.getC()))
+                .onComplete(field(StringsAbc::getA), onCompleteValues::add)
+                .create();
+
+        assertThat(onCompleteValues).containsOnly(result.getB() + " " + result.getC());
     }
 
     @FieldSource("args")
