@@ -102,11 +102,11 @@ class StringUtilsTest {
     }
 
     @Test
-    void quoteToString() {
-        assertThat(StringUtils.quoteToString(null)).isNull();
-        assertThat(StringUtils.quoteToString("")).isEqualTo("\"\"");
-        assertThat(StringUtils.quoteToString("123")).isEqualTo("\"123\"");
-        assertThat(StringUtils.quoteToString(123)).isEqualTo("123");
+    void quoteStringValue() {
+        assertThat(StringUtils.quoteStringValue(null)).isNull();
+        assertThat(StringUtils.quoteStringValue("")).isEqualTo("\"\"");
+        assertThat(StringUtils.quoteStringValue("123")).isEqualTo("\"123\"");
+        assertThat(StringUtils.quoteStringValue(123)).isEqualTo("123");
     }
 
     @Test

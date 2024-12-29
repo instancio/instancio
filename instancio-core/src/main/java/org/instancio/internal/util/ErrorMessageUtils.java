@@ -87,7 +87,7 @@ public final class ErrorMessageUtils {
     }
 
     public static String filterPredicateErrorMessage(final Object value, final InternalNode node, final Throwable ex) {
-        final String argValue = StringUtils.quoteToString(value);
+        final String argValue = StringUtils.quoteStringValue(value);
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append("filter() predicate threw an exception").append(NL)
                 .append(" -> Value provided to predicate: ").append(argValue).append(NL)
@@ -367,7 +367,7 @@ public final class ErrorMessageUtils {
 
         final String nodeDescription = formatNode(node);
         final String argType = withoutPackage(value.getClass());
-        final String argValue = StringUtils.quoteToString(value);
+        final String argValue = StringUtils.quoteStringValue(value);
 
         sb.append("Type mismatch:").append(NL).append(NL);
         if (node.getField() == null) {
@@ -390,7 +390,7 @@ public final class ErrorMessageUtils {
         final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
         final String fieldName = formatField(field);
         final String argType = withoutPackage(value.getClass());
-        final String argValue = StringUtils.quoteToString(value);
+        final String argValue = StringUtils.quoteStringValue(value);
 
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append(NL)
@@ -444,7 +444,7 @@ public final class ErrorMessageUtils {
 
         final OnSetMethodError onSetMethodError = settings.get(Keys.ON_SET_METHOD_ERROR);
         final String argType = value == null ? "n/a" : withoutPackage(value.getClass());
-        final String argValue = StringUtils.quoteToString(value);
+        final String argValue = StringUtils.quoteStringValue(value);
 
         return new StringBuilder(INITIAL_SB_SIZE)
                 .append(NL)
