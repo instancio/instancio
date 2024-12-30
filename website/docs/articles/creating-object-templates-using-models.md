@@ -146,7 +146,7 @@ We will look at how to implement such a test fairly easily using Instancio.
 Let's start by testing a valid applicant. Typically, it will be implemented as follows:
 
 
-```java hl_lines="35 36"
+```java hl_lines="37 38"
 @Test
 @DisplayName("Valid applicant should be successfully converted to Avro")
 void verifyValidApplicantAvro() {
