@@ -4713,7 +4713,7 @@ Once the test is passing, the `@Seed` annotation can be removed so that new data
 ## Built-in Generators
 
 The list of generators provided below is available via the [`generate()`](#using-generate) method.
-Most of these generators are also available through the standalone [`Gen`](#creating-simple-values) class.
+Most of these generators are also available via [`Instancio.gen()`](#creating-simple-values) class.
 Each one offers customisation options relevant to the class it generates, for example `bigDecimal().scale(5)`.
 
 !!! tip
