@@ -13,7 +13,7 @@
     <properties>
         <maven.enforcer.require.java.version>[17,)</maven.enforcer.require.java.version>
         <animal.sniffer.skip>true</animal.sniffer.skip>
-        <version.jooq>3.19.16</version.jooq>
+        <version.jooq>3.19.17</version.jooq>
     </properties>
 
     <build>
