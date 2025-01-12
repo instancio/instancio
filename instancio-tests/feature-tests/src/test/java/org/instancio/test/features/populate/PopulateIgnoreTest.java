@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.features.generator.custom.populate;
+package org.instancio.test.features.populate;
 
 import org.instancio.Instancio;
-import org.instancio.Model;
-import org.instancio.generator.AfterGenerate;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.PopulationStrategy;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.misc.StringsAbc;
 import org.instancio.test.support.pojo.misc.StringsDef;
 import org.instancio.test.support.pojo.misc.StringsGhi;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -32,19 +33,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
-@FeatureTag({
-        Feature.AFTER_GENERATE,
-        Feature.GENERATOR,
-        Feature.IGNORE,
-        Feature.MODEL
-})
+@FeatureTag({Feature.IGNORE, Feature.POPULATE})
 @ExtendWith(InstancioExtension.class)
 class PopulateIgnoreTest {
 
-    @EnumSource(value = AfterGenerate.class, names = {"POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES"})
+    @EnumSource(PopulationStrategy.class)
     @ParameterizedTest
-    void shouldIgnoreSpecifiedTarget(final AfterGenerate afterGenerate) {
-        final StringsAbc objToPopulate = StringsAbc.builder()
+    void shouldIgnoreSpecifiedTarget(final PopulationStrategy populationStrategy) {
+        final StringsAbc object = StringsAbc.builder()
                 .a("A")
                 .def(StringsDef.builder()
                         .d("D")
@@ -52,24 +48,33 @@ class PopulateIgnoreTest {
                         .build())
                 .build();
 
-        final Model<StringsAbc> model = PopulateHelper.populate(objToPopulate, afterGenerate);
-
-        final StringsAbc result = Instancio.of(model)
+        Instancio.ofObject(object)
+                .withPopulationStrategy(populationStrategy)
                 .ignore(all(StringsGhi.class))
                 .set(field(StringsAbc::getB), "B")
                 .set(field(StringsDef::getE), "E")
-                .create();
+                .populate();
 
-        assertThat(result).isSameAs(objToPopulate);
-        assertThat(result.getA()).isEqualTo("A");
-        assertThat(result.getB()).isEqualTo("B");
-        assertThat(result.getDef().getD()).isEqualTo("D");
-        assertThat(result.getDef().getE()).isEqualTo("E");
+        assertThat(object.getA()).isEqualTo("A");
+        assertThat(object.getB()).isEqualTo("B");
+        assertThat(object.getDef().getD()).isEqualTo("D");
+        assertThat(object.getDef().getE()).isEqualTo("E");
         // value that was set manually
-        assertThat(result.getDef().getGhi().getI()).isEqualTo("I");
+        assertThat(object.getDef().getGhi().getI()).isEqualTo("I");
         // the remaining fields are null since the class is ignored
-        assertThat(result.getDef().getGhi().getG()).isNull();
-        assertThat(result.getDef().getGhi().getH()).isNull();
+        assertThat(object.getDef().getGhi().getG()).isNull();
+        assertThat(object.getDef().getGhi().getH()).isNull();
     }
 
+    @Test
+    void ignoreInitialisedField() {
+        final String initialValue = "foo";
+        final StringHolder object = new StringHolder(initialValue);
+
+        Instancio.ofObject(object)
+                .ignore(field(StringHolder::getValue))
+                .populate();
+
+        assertThat(object.getValue()).isEqualTo(initialValue);
+    }
 }

@@ -38,6 +38,7 @@ import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.feed.InternalFeedContext;
 import org.instancio.internal.feed.InternalFeedProxy;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
+import org.instancio.internal.generator.misc.ObjectPopulatingGenerator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.BlankSelectors;
 import org.instancio.internal.selectors.InternalSelector;
@@ -58,6 +59,7 @@ import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
+import org.instancio.settings.PopulationStrategy;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
@@ -108,8 +110,18 @@ public final class ModelContext {
         verbose = builder.verbose;
         settings = createSettings(builder);
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
-        selectorMaps = new SelectorMaps(contextSource, new GeneratorContext(settings, random));
+
+        final GeneratorContext generatorContext = new GeneratorContext(settings, random);
+        selectorMaps = new SelectorMaps(contextSource, generatorContext);
         providers = new Providers(new InternalServiceProviderContext(settings, random));
+
+        if (builder.populateObject != null) {
+            final Generator<?> generator = new ObjectPopulatingGenerator(
+                    generatorContext, builder.populateObject, builder.populationStrategy);
+
+            selectorMaps.getGeneratorSelectorMap()
+                    .putGenerator(Select.root(), generator);
+        }
     }
 
     private static Settings createSettings(final Builder builder) {
@@ -281,10 +293,12 @@ public final class ModelContext {
         return new Builder(rootType);
     }
 
-    @SuppressWarnings({"PMD.GodClass", "PMD.TooManyFields"})
+    @SuppressWarnings({"PMD.GodClass", "PMD.TooManyFields", "UnusedReturnValue"})
     public static final class Builder {
         private final Type rootType;
         private List<Type> withTypeParametersList;
+        private Object populateObject;
+        private PopulationStrategy populationStrategy;
         private Map<TargetSelector, Class<?>> subtypeMap;
         private Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap;
         private Map<TargetSelector, Generator<?>> generatorMap;
@@ -308,6 +322,19 @@ public final class ModelContext {
             this.rootType = rootType;
             this.selectorProcessor = new SelectorProcessor(
                     TypeUtils.getRawType(rootType), INTERNAL_SERVICE_PROVIDERS, setMethodSelectorHolder);
+        }
+
+        public Builder withPopulateObject(final Object populateObject) {
+            this.populateObject = populateObject;
+            final List<Type> typeArgs = PopulateObjectHelper.getTypeArgs(populateObject);
+            withRootTypeParameters(typeArgs);
+            return this;
+        }
+
+        public Builder withPopulationStrategy(final PopulationStrategy populationStrategy) {
+            ApiValidator.notNull(populationStrategy, "Population strategy must not be null");
+            this.populationStrategy = populationStrategy;
+            return this;
         }
 
         public Builder withRootTypeParameters(final List<Type> rootTypeParameters) {

@@ -161,6 +161,18 @@ public final class Format {
         return String.format("%s(%s)", method.getName(), params);
     }
 
+    public static String simpleNameWithTypeParameters(final Class<?> type) {
+        final TypeVariable<?>[] typeParams = type.getTypeParameters();
+        if (typeParams.length == 0) {
+            return type.getSimpleName();
+        }
+        final String typeVariablesCsv = Arrays.stream(typeParams)
+                .map(TypeVariable::getName)
+                .collect(joining(", "));
+
+        return String.format("%s<%s>", type.getSimpleName(), typeVariablesCsv);
+    }
+
     public static String withoutPackage(final Type type) {
         return PACKAGE_PATTERN.matcher(type.getTypeName()).replaceAll("");
     }
@@ -168,12 +180,6 @@ public final class Format {
     public static String formatScopes(final List<Scope> scopes) {
         return scopes.stream()
                 .map(Object::toString)
-                .collect(joining(", "));
-    }
-
-    public static String getTypeVariablesCsv(final Class<?> klass) {
-        return Arrays.stream(klass.getTypeParameters())
-                .map(TypeVariable::getName)
                 .collect(joining(", "));
     }
 

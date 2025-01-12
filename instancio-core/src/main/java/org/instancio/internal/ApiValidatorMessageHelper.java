@@ -39,8 +39,7 @@ final class ApiValidatorMessageHelper {
     }
 
     static String ofCollectionElementType(final Class<?> elementType, final String method) {
-        final String classWithTypeParams = String.format("%s<%s>",
-                elementType.getSimpleName(), Format.getTypeVariablesCsv(elementType));
+        final String classWithTypeParams = Format.simpleNameWithTypeParameters(elementType);
 
         return new StringBuilder()
                 .append("invalid usage of ").append(method).append(" method").append(NL)
@@ -66,8 +65,7 @@ final class ApiValidatorMessageHelper {
     }
 
     static String ofMapKeyOrValueType(final Class<?> keyOrValue) {
-        final String classWithTypeParams = String.format("%s<%s>",
-                keyOrValue.getSimpleName(), Format.getTypeVariablesCsv(keyOrValue));
+        final String classWithTypeParams = Format.simpleNameWithTypeParameters(keyOrValue);
 
         return new StringBuilder()
                 .append("invalid usage of ofMap() method").append(NL)

@@ -17,6 +17,7 @@ package org.instancio.settings;
 
 import org.instancio.FilterPredicate;
 import org.instancio.InstancioApi;
+import org.instancio.InstancioObjectApi;
 import org.instancio.TargetSelector;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.feed.Feed;
@@ -585,6 +586,20 @@ public final class Keys {
     @ExperimentalApi
     public static final SettingKey<String> FEED_TAG_VALUE = register(
             "feed.tag.value", String.class, null, null, true, false);
+
+    /**
+     * Specifies the default value for {@link PopulationStrategy} which is used when
+     * populating objects via the {@link InstancioObjectApi#populate()} method;
+     * default is {@link PopulationStrategy#POPULATE_NULLS_AND_DEFAULT_PRIMITIVES};
+     * property name {@code population.strategy}.
+     *
+     * @see PopulationStrategy
+     * @see InstancioObjectApi#withPopulationStrategy(PopulationStrategy)
+     * @since 5.3.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<PopulationStrategy> POPULATION_STRATEGY = registerRequiredNonAdjustable(
+            "population.strategy", PopulationStrategy.class, PopulationStrategy.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
     /**
      * Specifies the seed value;

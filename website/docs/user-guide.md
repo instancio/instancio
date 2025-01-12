@@ -255,6 +255,110 @@ List<String> uuids = Instancio.gen().text().uuid().upperCase().withoutDashes().l
 
 !!! info "See [Built-in Generators](#built-in-generators) for a list of available generators"
 
+## Populating Existing Objects
+
+!!! info "Experimental API `@since 5.3.0`"
+
+Instancio allows populating existing object instances with randomly generated values using the following method:
+
+```java title="Shorthand method"
+Instancio.populate(Object)
+```
+
+This is a `void` method that modifies the provided object instance.
+Additionally, the following method offers a builder API for customising how the object is populated:
+
+```java title="Builder API"
+Instancio.ofObject(Object).populate()
+```
+
+By default, only fields that are `null` or primitive fields with default values are populated.
+Existing non-null fields and primitive fields with non-default values remain unchanged.
+
+Consider the following example class (getters and setters omitted for brevity):
+
+```java linenums="1"
+class Person {
+    private String name;
+    private String email;
+    private LocalDate dateOfBirth;
+}
+```
+
+Suppose we have a `Person` instance with some fields already initialized.
+The remaining fields can be populated as follows:
+
+```java linenums="1" hl_lines="4 7"
+Person person = new Person();
+person.setDateOfBirth(LocalDate.of(1980, 12, 31));
+
+Instancio.populate(person);
+
+// Sample output:
+// Person[name=VCNSOU email=ONVERFS, dateOfBirth=1980-12-31]
+```
+!!! attention ""
+    <lnum>4,7</lnum> The `populate()` method fills the object with random data while preserving the initialized `dateOfBirth` field.<br/>
+
+Similarly, you can use the builder API to customise the generated data:
+
+```java linenums="1" hl_lines="4-6"
+Person person = new Person();
+person.setDateOfBirth(LocalDate.of(1980, 12, 31));
+
+Instancio.ofObject(person)
+    .generate(field(Person::getEmail), gen -> gen.net().email())
+    .populate();
+
+// Sample output:
+// Person[name=VCNSOU, email=fphna@mph.org, dateOfBirth=1980-12-31]
+```
+!!! attention ""
+    <lnum>4</lnum> Use the builder API for populating objects.<br/>
+    <lnum>5</lnum> Customise the `email` field.<br/>
+    <lnum>6</lnum> Invoke the `populate()` to fill the object with data.<br/>
+
+The object being populated must meet the following requirements:
+
+- It must not be a parameterized type, except for `java.util.Collection` or `java.util.Map`.
+- Collections and maps must not be empty.
+
+While this method can populate fields within elements of a collection, it does **not**:
+
+- Add new elements to the collection.
+- Replace `null` elements with non-null values.
+
+As a result, initialised collections retain their original size
+unless explicitly replaced with a new collection instance using a selector.
+
+### Population Strategies
+
+Instancio supports three population strategies, represented by the {{PopulationStrategy}} enum:
+
+- `APPLY_SELECTORS`
+
+    Populates the object only based on specified selectors.
+    This strategy ensures that only the fields explicitly targeted
+    by selectors are modified. Other fields remain unchanged.
+
+- `POPULATE_NULLS`
+
+    Populates all `null` fields with random values and applies any
+    specified selectors. This strategy includes the behaviour of
+    `APPLY_SELECTORS` and adds population of `null` fields
+
+- `POPULATE_NULLS_AND_DEFAULT_PRIMITIVES` (default behaviour)
+
+    Populates both `null` fields and primitive fields containing default values.
+    This strategy combines the behaviour of `POPULATE_NULLS`
+    with additional handling for default primitive values.
+
+The default population strategy can be customised in the following ways:
+
+- By using the {{withPopulationStrategy}} method.
+- Via {{Settings}}, using the `Keys.POPULATION_STRATEGY` key.
+
+
 ## Selectors
 
 Selectors are used to target fields and classes, for example in order to customise generated values.
@@ -3515,7 +3619,7 @@ Instancio will automatically load this file from the root of the classpath.
 The following listing shows all the property keys that can be configured.
 
 
-```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 30 31 37 47 59"
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 30 31 37 48 60"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -3561,6 +3665,7 @@ on.set.field.error=IGNORE
 on.set.method.error=ASSIGN_FIELD
 on.set.method.not.found=ASSIGN_FIELD
 on.set.method.unmatched=IGNORE
+population.strategy=POPULATE_NULLS_AND_DEFAULT_PRIMITIVES
 setter.style=SET
 seed=12345
 set.back.references=false
@@ -3584,8 +3689,8 @@ subtype.java.util.SortedMap=java.util.TreeMap
     <lnum>1,11,30-31</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
     <lnum>37</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
-    <lnum>47</lnum> Specifies a global seed value.<br/>
-    <lnum>59</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
+    <lnum>48</lnum> Specifies a global seed value.<br/>
+    <lnum>60</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
 
 
