@@ -19,6 +19,7 @@ import org.instancio.Assignment;
 import org.instancio.FilterPredicate;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.InstancioApi;
+import org.instancio.InstancioObjectApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
@@ -30,6 +31,7 @@ import org.instancio.feed.FeedProvider;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.settings.FillType;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 
@@ -40,7 +42,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class ApiImpl<T> implements InstancioApi<T> {
+public class ApiImpl<T> implements InstancioApi<T>, InstancioObjectApi<T> {
 
     private final ModelContext.Builder modelContextBuilder;
 
@@ -59,18 +61,23 @@ public class ApiImpl<T> implements InstancioApi<T> {
         this.modelContextBuilder = suppliedContext.toBuilder();
     }
 
+    public ApiImpl(final T object) {
+        this(object.getClass());
+        this.modelContextBuilder.withFillObject(object);
+    }
+
     protected final void addTypeParameters(final Type... types) {
         modelContextBuilder.withRootTypeParameters(Arrays.asList(types));
     }
 
     @Override
-    public InstancioApi<T> ignore(final TargetSelector selector) {
+    public ApiImpl<T> ignore(final TargetSelector selector) {
         modelContextBuilder.withIgnored(selector);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> generate(
+    public <V> ApiImpl<T> generate(
             final TargetSelector selector,
             final GeneratorSpecProvider<V> gen) {
 
@@ -79,7 +86,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public <V> InstancioApi<T> generate(
+    public <V> ApiImpl<T> generate(
             final TargetSelector selector,
             final GeneratorSpec<V> spec) {
 
@@ -88,7 +95,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public <V> InstancioApi<T> onComplete(
+    public <V> ApiImpl<T> onComplete(
             final TargetSelector selector,
             final OnCompleteCallback<V> callback) {
 
@@ -97,25 +104,25 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public <V> InstancioApi<T> filter(final TargetSelector selector, final FilterPredicate<V> predicate) {
+    public <V> ApiImpl<T> filter(final TargetSelector selector, final FilterPredicate<V> predicate) {
         modelContextBuilder.filter(selector, predicate);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> set(final TargetSelector selector, final V value) {
+    public <V> ApiImpl<T> set(final TargetSelector selector, final V value) {
         modelContextBuilder.withSet(selector, value);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> setModel(final TargetSelector selector, final Model<V> model) {
+    public <V> ApiImpl<T> setModel(final TargetSelector selector, final Model<V> model) {
         modelContextBuilder.setModel(selector, model);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> supply(
+    public <V> ApiImpl<T> supply(
             final TargetSelector selector,
             final Generator<V> generator) {
 
@@ -124,7 +131,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public <V> InstancioApi<T> supply(
+    public <V> ApiImpl<T> supply(
             final TargetSelector selector,
             final Supplier<V> supplier) {
 
@@ -133,7 +140,7 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> subtype(
+    public ApiImpl<T> subtype(
             final TargetSelector selector,
             final Class<?> subtype) {
 
@@ -142,74 +149,80 @@ public class ApiImpl<T> implements InstancioApi<T> {
     }
 
     @Override
-    public InstancioApi<T> assign(final Assignment... assignments) {
+    public ApiImpl<T> assign(final Assignment... assignments) {
         modelContextBuilder.withAssignments(assignments);
         return this;
     }
 
     @Override
-    public InstancioApi<T> setBlank(final TargetSelector selector) {
+    public ApiImpl<T> setBlank(final TargetSelector selector) {
         modelContextBuilder.setBlank(selector);
         return this;
     }
 
     @Override
-    public InstancioApi<T> withUnique(final TargetSelector selector) {
+    public ApiImpl<T> withUnique(final TargetSelector selector) {
         modelContextBuilder.withUnique(selector);
         return this;
     }
 
     @Override
-    public InstancioApi<T> applyFeed(final TargetSelector selector, final Feed feed) {
+    public ApiImpl<T> applyFeed(final TargetSelector selector, final Feed feed) {
         modelContextBuilder.applyFeed(selector, feed);
         return this;
     }
 
     @Override
-    public InstancioApi<T> applyFeed(final TargetSelector selector, final FeedProvider provider) {
+    public ApiImpl<T> applyFeed(final TargetSelector selector, final FeedProvider provider) {
         modelContextBuilder.applyFeed(selector, provider);
         return this;
     }
 
     @Override
-    public InstancioApi<T> withSeed(final long seed) {
+    public ApiImpl<T> withSeed(final long seed) {
         modelContextBuilder.withSeed(seed);
         return this;
     }
 
     @Override
-    public InstancioApi<T> withMaxDepth(final int maxDepth) {
+    public ApiImpl<T> withMaxDepth(final int maxDepth) {
         modelContextBuilder.withMaxDepth(maxDepth);
         return this;
     }
 
     @Override
-    public InstancioApi<T> withNullable(final TargetSelector selector) {
+    public ApiImpl<T> withNullable(final TargetSelector selector) {
         modelContextBuilder.withNullable(selector);
         return this;
     }
 
     @Override
-    public <V> InstancioApi<T> withSetting(final SettingKey<V> key, final V value) {
+    public <V> ApiImpl<T> withSetting(final SettingKey<V> key, final V value) {
         modelContextBuilder.withSetting(key, value);
         return this;
     }
 
     @Override
-    public InstancioApi<T> withSettings(final Settings settings) {
+    public ApiImpl<T> withSettings(final Settings settings) {
         modelContextBuilder.withSettings(settings);
         return this;
     }
 
     @Override
-    public InstancioApi<T> lenient() {
+    public ApiImpl<T> lenient() {
         modelContextBuilder.lenient();
         return this;
     }
 
     @Override
-    public InstancioApi<T> verbose() {
+    public ApiImpl<T> verbose() {
         modelContextBuilder.verbose();
+        return this;
+    }
+
+    @Override
+    public ApiImpl<T> withFillType(final FillType fillType) {
+        this.modelContextBuilder.withFillType(fillType);
         return this;
     }
 
@@ -228,6 +241,11 @@ public class ApiImpl<T> implements InstancioApi<T> {
         final InternalModel<T> model = createModel();
         final long seed = model.getModelContext().getRandom().getSeed();
         return new InternalResult<>(createRootObject(model), seed);
+    }
+
+    @Override
+    public void fill() {
+        create();
     }
 
     @Override

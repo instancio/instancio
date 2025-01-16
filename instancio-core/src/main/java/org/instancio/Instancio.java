@@ -25,8 +25,10 @@ import org.instancio.internal.CollectionsApiImpl;
 import org.instancio.internal.FeedApiImpl;
 import org.instancio.internal.GenApiImpl;
 import org.instancio.internal.MapApiImpl;
+import org.instancio.settings.FillType;
 import org.instancio.settings.Keys;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -488,6 +490,127 @@ public final class Instancio {
      */
     public static <T> InstancioApi<T> of(final Model<T> model) {
         return new ApiImpl<>(model);
+    }
+
+    /**
+     * Fills the fields of the given object with randomly generated values,
+     * preserving existing non-null and non-default values.
+     *
+     * <p>For more details, including customisation options and usage constraints,
+     * refer to the {@link #ofObject(Object)} method.
+     *
+     * @param object the object whose fields should be populated with random values.
+     * @param <T>    the type of the object
+     * @see #ofObject(Object)
+     * @see FillType
+     * @since 5.3.0
+     */
+    @ExperimentalApi
+    public static <T> void fill(final T object) {
+        ofObject(object).fill();
+    }
+
+    /**
+     * A builder API for populating fields of the given object with randomly
+     * generated values.
+     *
+     * <p>By default, only fields that are {@code null} or primitive fields
+     * with default values will be populated, while existing non-null
+     * and non-default primitive values will remain unchanged.
+     *
+     * <p>For example, given the following class:
+     *
+     * <pre>{@code
+     * class Person {
+     *     private String name;
+     *     private String email;
+     *     private LocalDate dateOfBirth;
+     *     // getters and setters
+     * }
+     * }</pre>
+     *
+     * <p>A {@code Person} instance can be populated as follows:
+     *
+     * <pre>{@code
+     * // Given a person with some initialised fields
+     * Person person = new Person();
+     * person.setDateOfBirth(LocalDate.of(1980, 12, 31));
+     *
+     * // Populate the rest of the object
+     * Instancio.ofObject(person)
+     *     .generate(field(Person::getEmail), gen -> gen.net().email())
+     *     .fill();
+     *
+     * // Sample output:
+     * // Person[name=VCNSOU, email=fphna@mph.org, dateOfBirth=1980-12-31]
+     * }</pre>
+     *
+     * <ul>
+     *   <li>The {@code name} field which was {@code null}
+     *       was populated with a random value.</li>
+     *   <li>The {@code email} field was generated using
+     *       the specified email generator.</li>
+     *   <li>The {@code dateOfBirth} field retained the initialised value.</li>
+     * </ul>
+     *
+     * <p>Note that by default, Instancio uses the
+     * {@link FillType#POPULATE_NULLS_AND_DEFAULT_PRIMITIVES}
+     * when populating objects.
+     * The default fill type can be customised in two ways:
+     *
+     * <ul>
+     *   <li>Using {@link InstancioObjectApi#withFillType(FillType)} method</li>
+     *   <li>Via {@code Settings}, using the {@link Keys#FILL_TYPE} key</li>
+     * </ul>
+     *
+     * <p>For example, when using {@link FillType#APPLY_SELECTORS},
+     * the object will be modified only via selectors:
+     *
+     * <pre>{@code
+     * Person person = new Person();
+     * person.setDateOfBirth(LocalDate.of(1980, 12, 31));
+     *
+     * Instancio.ofObject(person)
+     *     .withFillType(FillType.APPLY_SELECTORS)
+     *     .generate(field(Person::getEmail), gen -> gen.net().email())
+     *     .fill();
+     *
+     * // Sample output (note: the name field remains null):
+     * // Person[name=null, email=xnb@mfk4.org, dateOfBirth=1980-12-31]
+     * }</pre>
+     *
+     * <h4>Limitations</h4>
+     *
+     * <p>The input object must satisfy the following requirements:
+     *
+     * <ul>
+     *   <li>Must not be a parameterized type except for
+     *       {@link Collection} or {@link Map}</li>
+     *   <li>Must not be an empty collection or map</li>
+     * </ul>
+     *
+     * <p>Note: While this method can populate fields within elements
+     * of a collection, it does not:
+     *
+     * <ul>
+     *   <li>Add new elements to the collection.</li>
+     *   <li>Replace {@code null} elements with non-null values.</li>
+     * </ul>
+     *
+     * <p>As a result, initialised collections will retain their original size
+     * unless overwritten with a new collection instance via a selector.
+     *
+     * @param object the object whose fields should be populated with random values
+     * @param <T>    the type of the object
+     * @return API builder reference
+     * @see #fill(Object)
+     * @see FillType
+     * @since 5.3.0
+     */
+    @ExperimentalApi
+    public static <T> InstancioObjectApi<T> ofObject(final T object) {
+        ApiValidator.notNull(object, "object to populate must not be null");
+        return new ApiImpl<>(object);
     }
 
     /**
