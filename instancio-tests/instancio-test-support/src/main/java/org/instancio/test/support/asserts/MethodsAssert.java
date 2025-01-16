@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("UnusedReturnValue")
 public class MethodsAssert extends AbstractAssert<MethodsAssert, Method[]> {
 
     private MethodsAssert(final Method... methods) {
@@ -39,6 +40,10 @@ public class MethodsAssert extends AbstractAssert<MethodsAssert, Method[]> {
                         .isEqualTo(returnType));
 
         return this;
+    }
+
+    public MethodsAssert haveVoidReturnType() {
+        return haveReturnType(Void.TYPE);
     }
 
     public MethodsAssert hasSize(final int expected) {

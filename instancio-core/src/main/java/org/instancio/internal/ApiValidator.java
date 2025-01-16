@@ -128,8 +128,7 @@ public final class ApiValidator {
                 final Class<?> rawType = (Class<?>) param;
 
                 if (rawType.getTypeParameters().length > 0) {
-                    final String classWithTypeParams = String.format("%s<%s>",
-                            rawType.getSimpleName(), Format.getTypeVariablesCsv(rawType));
+                    final String classWithTypeParams = Format.simpleNameWithTypeParameters(rawType);
 
                     throw Fail.withUsageError(withTypeParametersNestedGenerics(classWithTypeParams));
                 }

@@ -92,10 +92,10 @@ class FormatTest {
     }
 
     @Test
-    void getTypeVariablesCsv() {
-        assertThat(Format.getTypeVariablesCsv(Object.class)).isEmpty();
-        assertThat(Format.getTypeVariablesCsv(List.class)).isEqualTo("E");
-        assertThat(Format.getTypeVariablesCsv(Map.class)).isEqualTo("K, V");
+    void simpleNameWithTypeParameters() {
+        assertThat(Format.simpleNameWithTypeParameters(Object.class)).isEqualTo("Object");
+        assertThat(Format.simpleNameWithTypeParameters(List.class)).isEqualTo("List<E>");
+        assertThat(Format.simpleNameWithTypeParameters(Map.class)).isEqualTo("Map<K, V>");
     }
 
     @Test

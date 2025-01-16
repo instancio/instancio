@@ -24,8 +24,10 @@ import org.instancio.GivenOriginDestinationAction;
 import org.instancio.GivenOriginPredicate;
 import org.instancio.GivenOriginPredicateAction;
 import org.instancio.GroupableSelector;
+import org.instancio.Instancio;
 import org.instancio.InstancioCartesianProductApi;
 import org.instancio.InstancioCollectionsApi;
+import org.instancio.InstancioObjectApi;
 import org.instancio.LenientSelector;
 import org.instancio.PredicateSelector;
 import org.instancio.Scope;
@@ -52,6 +54,7 @@ import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ClassAssert.assertThatClass;
+import static org.instancio.test.support.asserts.MethodsAssert.assertMethods;
 
 /**
  * Tests for things that should not be allowed using selector public APIs.
@@ -243,6 +246,24 @@ class ApiContractTest {
     void methodsNotSupportedByCartesianProductApi() {
         assertThatClass(InstancioCartesianProductApi.class)
                 .hasNoMethodsNamed("asResult", "toModel");
+    }
+
+    @Nested
+    class FillApiTest {
+
+        @Test
+        void methodsNotSupportedByFillApi() {
+            assertThatClass(InstancioObjectApi.class).hasNoMethodsNamed(
+                    "as", "asResult", "create", "stream", "toModel", "withTypeParameters");
+        }
+
+        @Test
+        void fillShouldBeVoid() throws NoSuchMethodException {
+            assertMethods(
+                    InstancioObjectApi.class.getDeclaredMethod("fill"),
+                    Instancio.class.getDeclaredMethod("fill", Object.class)
+            ).haveVoidReturnType();
+        }
     }
 
     /**

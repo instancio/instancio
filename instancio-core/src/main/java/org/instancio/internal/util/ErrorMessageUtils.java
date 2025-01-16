@@ -197,6 +197,21 @@ public final class ErrorMessageUtils {
         return sb.toString();
     }
 
+    public static String fillParameterizedType(final Class<?> type) {
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("cannot fill() parameterized types").append(NL)
+                .append(NL)
+                .append("The following methods do not support populating parameterized types, except List<E> and Map<K, V>:").append(NL)
+                .append(NL)
+                .append(" -> Instancio.fill(Object)").append(NL)
+                .append(" -> Instancio.ofObject(Object).fill()").append(NL)
+                .append(NL)
+                .append("The provided argument is of type:").append(NL)
+                .append(NL)
+                .append(" -> ").append(Format.simpleNameWithTypeParameters(type))
+                .toString();
+    }
+
     public static String getContainerElementMismatchMessage(
             final String errorMsg,
             final Object value,

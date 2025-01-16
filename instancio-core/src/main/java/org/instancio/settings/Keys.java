@@ -17,6 +17,7 @@ package org.instancio.settings;
 
 import org.instancio.FilterPredicate;
 import org.instancio.InstancioApi;
+import org.instancio.InstancioObjectApi;
 import org.instancio.TargetSelector;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.feed.Feed;
@@ -585,6 +586,20 @@ public final class Keys {
     @ExperimentalApi
     public static final SettingKey<String> FEED_TAG_VALUE = register(
             "feed.tag.value", String.class, null, null, true, false);
+
+    /**
+     * Specifies the default value for {@link FillType} which is used when
+     * populating objects via the {@link InstancioObjectApi#fill()} method;
+     * default is {@link FillType#POPULATE_NULLS_AND_DEFAULT_PRIMITIVES};
+     * property name {@code fill.type}.
+     *
+     * @see FillType
+     * @see InstancioObjectApi#withFillType(FillType)
+     * @since 5.3.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<FillType> FILL_TYPE = registerRequiredNonAdjustable(
+            "fill.type", FillType.class, FillType.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
     /**
      * Specifies the seed value;
