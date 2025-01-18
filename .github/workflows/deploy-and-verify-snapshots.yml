@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: 21
+          java-version: 23
           server-id: sonatype-snapshots
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
@@ -26,7 +26,7 @@ jobs:
     needs: deploy
     strategy:
       matrix:
-        java: [ 8, 11, 17, 21 ]
+        java: [ 8, 11, 17, 21, 23 ]
     runs-on: ubuntu-latest
     name: "Verify snapshots JDK ${{ matrix.java }}"
     steps:

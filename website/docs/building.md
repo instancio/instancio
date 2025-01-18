@@ -8,7 +8,7 @@ hide:
 
 Instancio is packaged as a [multi-release JAR](https://openjdk.java.net/jeps/238).
 It can be used with Java 8 or higher.
-Building Instancio from sources requires JDK 21 or higher:
+Building Instancio from sources requires JDK 23 or higher:
 
 ```sh
 git clone https://github.com/instancio/instancio.git
