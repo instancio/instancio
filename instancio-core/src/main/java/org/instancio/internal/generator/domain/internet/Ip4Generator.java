@@ -55,8 +55,8 @@ public class Ip4Generator extends AbstractGenerator<String> implements Ip4Spec {
         try {
             return generateFromCidr(random);
         } catch (Exception ex) {
-            throw Fail.withUsageError(String.format(
-                    "error generating IPv4 address from: '%s'", cidr), ex);
+            throw Fail.withUsageError(
+                    "error generating IPv4 address from: '%s'", cidr, ex);
         }
     }
 
