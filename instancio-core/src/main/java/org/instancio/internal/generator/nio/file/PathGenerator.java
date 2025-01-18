@@ -133,9 +133,8 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathSpec {
         try {
             return createPath(directoryPath, completePath);
         } catch (IOException ex) {
-            throw Fail.withUsageError(String.format(
-                    "error generating %s: %s",
-                    createPathType.name().toLowerCase(Locale.ENGLISH), completePath), ex);
+            throw Fail.withUsageError("error generating %s: %s",
+                    createPathType.name().toLowerCase(Locale.ENGLISH), completePath, ex);
         }
     }
 

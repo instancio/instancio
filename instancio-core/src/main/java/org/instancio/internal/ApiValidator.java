@@ -239,7 +239,7 @@ public final class ApiValidator {
     }
 
     public static void isTrue(final boolean condition, final String message, final Object... values) {
-        if (!condition) throw Fail.withUsageError(String.format(message, values));
+        if (!condition) throw Fail.withUsageError(message, values);
     }
 
     public static void isTrue(final boolean condition, final Supplier<String> message) {
@@ -247,7 +247,7 @@ public final class ApiValidator {
     }
 
     public static void isFalse(final boolean condition, final String message, final Object... values) {
-        if (condition) throw Fail.withUsageError(String.format(message, values));
+        if (condition) throw Fail.withUsageError(message, values);
     }
 
     public static void isFalse(final boolean condition, final Supplier<String> message) {

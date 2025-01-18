@@ -97,7 +97,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
 
     @Override
     public Scope toScope() {
-        throw Fail.withUsageError(String.format("method 'toScope()' is not supported for selector '%s'", this));
+        throw Fail.withUsageError("method 'toScope()' is not supported for selector '%s'", this);
     }
 
     @Override

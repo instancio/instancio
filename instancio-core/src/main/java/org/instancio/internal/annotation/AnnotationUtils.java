@@ -48,8 +48,8 @@ final class AnnotationUtils {
      */
     static Range<Integer> calculateRange(final int min, final int max, final int maxLimit) {
         if (min > max) {
-            throw Fail.withUsageError(String.format("invalid bean validation annotation: " +
-                    "min must be less than or equal to max: min=%s, max=%s", min, max));
+            throw Fail.withUsageError("invalid bean validation annotation: " +
+                    "min must be less than or equal to max: min=%s, max=%s", min, max);
         }
 
         final int minSize;

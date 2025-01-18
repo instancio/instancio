@@ -210,11 +210,9 @@ public final class InternalSettings implements Settings {
         try {
             return fn.apply(value.toString());
         } catch (NumberFormatException ex) {
-            throw Fail.withUsageError(String.format(
-                    "invalid value %s (of type %s) for setting key %s",
-                    value, value.getClass().getSimpleName(), key), ex);
+            throw Fail.withUsageError("invalid value %s (of type %s) for setting key %s",
+                    value, value.getClass().getSimpleName(), key, ex);
         }
-
     }
 
     // a hack to workaround generics... we know the type is valid since it's a numeric settings
