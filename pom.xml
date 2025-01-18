@@ -53,7 +53,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.enforcer.require.java.version>[21,)</maven.enforcer.require.java.version>
+        <maven.enforcer.require.java.version>[23,)</maven.enforcer.require.java.version>
         <sonar.organization>instancio</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <!--suppress UnresolvedMavenProperty -->
