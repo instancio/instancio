@@ -333,7 +333,7 @@ unless explicitly replaced with a new collection instance using a selector.
 
 ### Fill Types
 
-Instancio supports three fill types, represented by the {{PopulationType}} enum:
+Instancio supports three fill types, represented by the {{FillType}} enum:
 
 - `APPLY_SELECTORS`
 
