@@ -262,7 +262,7 @@ List<String> uuids = Instancio.gen().text().uuid().upperCase().withoutDashes().l
 Instancio allows populating existing object instances with randomly generated values using the following method:
 
 ```java title="Shorthand method"
-Instancio.populate(Object)
+Instancio.fill(Object)
 ```
 
 This is a `void` method that modifies the provided object instance.
@@ -292,7 +292,7 @@ The remaining fields can be populated as follows:
 Person person = new Person();
 person.setDateOfBirth(LocalDate.of(1980, 12, 31));
 
-Instancio.populate(person);
+Instancio.fill(person);
 
 // Sample output:
 // Person[name=VCNSOU email=ONVERFS, dateOfBirth=1980-12-31]
