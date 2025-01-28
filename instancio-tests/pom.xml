@@ -40,6 +40,7 @@
         <module>instancio-guava-tests</module>
         <module>default-package-tests</module>
         <module>global-seed-tests</module>
+        <module>groovy-tests</module>
         <module>kotlin-tests</module>
         <module>jpa-javax-tests</module>
         <module>jpa-jakarta-tests</module>
