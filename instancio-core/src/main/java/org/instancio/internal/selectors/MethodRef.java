@@ -15,6 +15,8 @@
  */
 package org.instancio.internal.selectors;
 
+import org.codehaus.groovy.runtime.ConvertedClosure;
+import org.codehaus.groovy.runtime.MethodClosure;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
@@ -23,6 +25,7 @@ import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 final class MethodRef {
     private final Class<?> targetClass;
@@ -36,6 +39,12 @@ final class MethodRef {
     @SuppressWarnings("PMD.UseProperClassLoader")
     static MethodRef from(final Serializable methodRef) {
         try {
+            if (GroovySupport.isGroovyPresent()) {
+                final MethodRef groovyMethodRef = GroovySupport.methodRef(methodRef);
+                if (groovyMethodRef != null) {
+                    return groovyMethodRef;
+                }
+            }
             final Class<?> methodRefClass = methodRef.getClass();
             final Method replaceMethod = methodRefClass.getDeclaredMethod("writeReplace");
             ReflectionUtils.setAccessible(replaceMethod);
@@ -63,5 +72,34 @@ final class MethodRef {
 
     String getMethodName() {
         return methodName;
+    }
+
+    private static final class GroovySupport {
+        private static final boolean IS_GROOVY_PRESENT = ReflectionUtils.loadClass("groovy.lang.Closure") != null;
+
+        static boolean isGroovyPresent() {
+            return IS_GROOVY_PRESENT;
+        }
+
+        static MethodRef methodRef(final Object methodRef) {
+            if (!(methodRef instanceof Proxy)) {
+                return null;
+            }
+
+            final Object invocationHandler = Proxy.getInvocationHandler(methodRef);
+            if (invocationHandler instanceof ConvertedClosure) {
+                final ConvertedClosure convertedClosure = (ConvertedClosure) invocationHandler;
+                final Object maybeMethodClosure = convertedClosure.getDelegate();
+
+                if (maybeMethodClosure instanceof MethodClosure) {
+                    final MethodClosure methodClosure = (MethodClosure) maybeMethodClosure;
+                    final Class<?> delegate = (Class<?>) methodClosure.getDelegate();
+
+                    return new MethodRef(delegate, methodClosure.getMethod());
+                }
+            }
+
+            return null;
+        }
     }
 }
