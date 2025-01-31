@@ -110,7 +110,7 @@ final class AnnotationNodeHandler implements NodeHandler {
             generator = getGenerator(node, annotations, annotationMap);
 
             for (AnnotationLibraryFacade lib : annotationLibraryFacades) {
-                lib.consumeAnnotations(annotationMap, generator, node.getTargetClass());
+                lib.consumeAnnotations(annotationMap, generator, node.getTargetClass(), generatorContext);
             }
         } else {
             generator = generatorResolver.get(node);

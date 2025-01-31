@@ -37,7 +37,8 @@ class CollectionBVTest {
     @WithSettings
     private final Settings settings = Settings.create()
             .set(Keys.STRING_NULLABLE, false)
-            .set(Keys.STRING_MAX_LENGTH, 10);
+            .set(Keys.STRING_MAX_LENGTH, 10)
+            .set(Keys.COLLECTION_MAX_SIZE, 3);
 
     @RepeatedTest(SAMPLE_SIZE_DD)
     void withMinSize() {
@@ -46,9 +47,9 @@ class CollectionBVTest {
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void withMinSizeZeo() {
+    void withMinSizeZero() {
         final CollectionBV.WithMinSizeZero result = Instancio.create(CollectionBV.WithMinSizeZero.class);
-        assertThat(result.getValue()).hasSizeBetween(0, Keys.COLLECTION_MAX_SIZE.defaultValue());
+        assertThat(result.getValue()).hasSizeBetween(0, settings.get(Keys.COLLECTION_MAX_SIZE));
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)

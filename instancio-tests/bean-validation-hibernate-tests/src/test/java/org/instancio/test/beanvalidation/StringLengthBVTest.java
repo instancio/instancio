@@ -18,6 +18,7 @@ package org.instancio.test.beanvalidation;
 import org.instancio.Instancio;
 import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.pojo.beanvalidation.StringLengthBV;
@@ -35,15 +36,19 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 @ExtendWith(InstancioExtension.class)
 class StringLengthBVTest {
 
+    @WithSettings
+    private final Settings settings = Settings.create()
+            .set(Keys.STRING_MAX_LENGTH, 3);
+
     @RepeatedTest(SAMPLE_SIZE_DD)
     void withMinSize(@Given StringLengthBV.WithMinSize result) {
         HibernateValidatorUtil.assertValid(result);
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void withMinSizeZeo(@Given StringLengthBV.WithMinSizeZero result) {
+    void withMinSizeZero(@Given StringLengthBV.WithMinSizeZero result) {
         HibernateValidatorUtil.assertValid(result);
-        assertThat(result.getValue()).hasSizeBetween(0, Keys.STRING_MAX_LENGTH.defaultValue());
+        assertThat(result.getValue()).hasSizeBetween(0, settings.get(Keys.STRING_MAX_LENGTH));
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)

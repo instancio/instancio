@@ -41,7 +41,8 @@ class MapBVTest {
             .set(Keys.LONG_NULLABLE, false)
             .set(Keys.CHARACTER_NULLABLE, false)
             .set(Keys.DOUBLE_NULLABLE, false)
-            .set(Keys.STRING_MAX_LENGTH, 10);
+            .set(Keys.STRING_MAX_LENGTH, 10)
+            .set(Keys.MAP_MAX_SIZE, 3);
 
     @Test
     void withMinSize() {
@@ -50,9 +51,9 @@ class MapBVTest {
     }
 
     @Test
-    void withMinSizeZeo() {
+    void withMinSizeZero() {
         final MapBV.WithMinSizeZero result = Instancio.create(MapBV.WithMinSizeZero.class);
-        assertThat(result.getValue()).hasSizeBetween(0, Keys.MAP_MAX_SIZE.defaultValue());
+        assertThat(result.getValue()).hasSizeBetween(0, settings.get(Keys.MAP_MAX_SIZE));
     }
 
     @Test

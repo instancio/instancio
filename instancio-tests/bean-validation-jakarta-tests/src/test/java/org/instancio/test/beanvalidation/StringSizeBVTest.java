@@ -47,7 +47,7 @@ class StringSizeBVTest {
     }
 
     @RepeatedTest(SAMPLE_SIZE_D)
-    void withMinSizeZeo() {
+    void withMinSizeZero() {
         final StringSizeBV.WithMinSizeZero result = Instancio.create(StringSizeBV.WithMinSizeZero.class);
         assertThat(result.getValue()).hasSizeBetween(0, Keys.STRING_MAX_LENGTH.defaultValue());
     }

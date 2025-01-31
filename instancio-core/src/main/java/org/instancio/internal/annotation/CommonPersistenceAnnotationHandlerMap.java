@@ -15,11 +15,13 @@
  */
 package org.instancio.internal.annotation;
 
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.internal.generator.specs.InternalFractionalNumberGeneratorSpec;
 import org.instancio.internal.util.Range;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 
 import java.lang.annotation.Annotation;
 
@@ -39,16 +41,18 @@ class CommonPersistenceAnnotationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Class<?> targetClass) {
+                                  final Class<?> targetClass,
+                                  final GeneratorContext generatorContext) {
 
             if (spec instanceof StringGeneratorSpec) {
+                final Settings settings = generatorContext.getSettings();
                 final int maxLength = getLength(annotation);
-                final int minLength = Math.min(maxLength, Keys.STRING_MIN_LENGTH.defaultValue());
+                final int minLength = Math.min(maxLength, settings.get(Keys.STRING_MIN_LENGTH));
 
                 // The default value of Column.length is 255. For this reason,
                 // use STRING_MAX_LENGTH as the limit to avoid generating large strings.
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        minLength, maxLength, Keys.STRING_MAX_LENGTH.defaultValue());
+                        minLength, maxLength, settings.get(Keys.STRING_MAX_LENGTH));
 
                 final StringGeneratorSpec stringSpec = (StringGeneratorSpec) spec;
                 stringSpec.length(range.min(), range.max());
