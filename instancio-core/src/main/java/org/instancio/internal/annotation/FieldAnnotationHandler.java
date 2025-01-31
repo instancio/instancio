@@ -16,6 +16,7 @@
 package org.instancio.internal.annotation;
 
 import org.instancio.documentation.InternalApi;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 
 import java.lang.annotation.Annotation;
@@ -32,12 +33,17 @@ interface FieldAnnotationHandler {
     /**
      * Processes the specified annotation.
      *
-     * @param annotation  annotation to process
-     * @param spec        for customising generated values
-     * @param targetClass actual type that will be generated; provided for cases
-     *                    where field is declared as a {@link java.lang.reflect.TypeVariable},
-     *                    which would result in {@code Object} being returned by {@link Field#getType()}.
+     * @param annotation       annotation to process
+     * @param spec             for customising generated values
+     * @param targetClass      actual type that will be generated; provided for cases
+     *                         where field is declared as a {@link java.lang.reflect.TypeVariable},
+     *                         which would result in {@code Object} being returned by {@link Field#getType()}.
+     * @param generatorContext the generator context containing current settings
      * @since 2.7.0
      */
-    void process(Annotation annotation, GeneratorSpec<?> spec, Class<?> targetClass);
+    void process(
+            Annotation annotation,
+            GeneratorSpec<?> spec,
+            Class<?> targetClass,
+            GeneratorContext generatorContext);
 }

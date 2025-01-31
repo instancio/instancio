@@ -16,6 +16,7 @@
 package org.instancio.internal.annotation;
 
 import org.instancio.Random;
+import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
@@ -34,6 +35,7 @@ import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Range;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 
 import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
@@ -53,7 +55,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Class<?> targetClass) {
+                                  final Class<?> targetClass,
+                                  final GeneratorContext generatorContext) {
 
             final int fraction = getFraction(annotation);
 
@@ -91,7 +94,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Class<?> targetClass) {
+                                  final Class<?> targetClass,
+                                  final GeneratorContext generatorContext) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(targetClass);
@@ -108,7 +112,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Class<?> targetClass) {
+                                  final Class<?> targetClass,
+                                  final GeneratorContext generatorContext) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final Function<Long, Number> fromLongConverter = NumberUtils.longConverter(targetClass);
@@ -125,7 +130,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Class<?> targetClass) {
+                                  final Class<?> targetClass,
+                                  final GeneratorContext generatorContext) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final String value = getValue(annotation);
@@ -145,7 +151,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Class<?> targetClass) {
+                                  final Class<?> targetClass,
+                                  final GeneratorContext generatorContext) {
 
             if (spec instanceof NumberGeneratorSpec<?>) {
                 final String value = getValue(annotation);
@@ -167,7 +174,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Class<?> targetClass) {
+                            final Class<?> targetClass,
+                            final GeneratorContext generatorContext) {
 
             if (spec instanceof InternalNumberGeneratorSpec<?>) {
                 ((InternalNumberGeneratorSpec<Number>) spec).ensureMinIsGreaterThanOrEqualTo(min);
@@ -186,7 +194,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Class<?> targetClass) {
+                            final Class<?> targetClass,
+                            final GeneratorContext generatorContext) {
 
             if (spec instanceof InternalNumberGeneratorSpec<?>) {
                 ((InternalNumberGeneratorSpec<Number>) spec).ensureMaxIsLessThanOrEqualTo(max);
@@ -199,7 +208,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Class<?> targetClass) {
+                            final Class<?> targetClass,
+                            final GeneratorContext generatorContext) {
 
             if (spec instanceof TemporalGeneratorSpec<?>) {
                 ((TemporalGeneratorSpec<?>) spec).past();
@@ -211,7 +221,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Class<?> targetClass) {
+                            final Class<?> targetClass,
+                            final GeneratorContext generatorContext) {
 
             if (spec instanceof TemporalGeneratorSpec<?>) {
                 ((TemporalGeneratorSpec<?>) spec).future();
@@ -228,11 +239,14 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
-                                  final Class<?> targetClass) {
+                                  final Class<?> targetClass,
+                                  final GeneratorContext generatorContext) {
+
+            final Settings settings = generatorContext.getSettings();
 
             if (spec instanceof InternalLengthGeneratorSpec<?>) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), Keys.STRING_MAX_LENGTH.defaultValue());
+                        getMin(annotation), getMax(annotation), settings.get(Keys.STRING_MAX_LENGTH));
 
                 ((InternalLengthGeneratorSpec<?>) spec).length(range.min(), range.max());
 
@@ -241,17 +255,17 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                 }
             } else if (spec instanceof CollectionGeneratorSpec<?>) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), Keys.COLLECTION_MAX_SIZE.defaultValue());
+                        getMin(annotation), getMax(annotation), settings.get(Keys.COLLECTION_MAX_SIZE));
 
                 ((CollectionGeneratorSpec<?>) spec).minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof MapGeneratorSpec<?, ?>) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), Keys.MAP_MAX_SIZE.defaultValue());
+                        getMin(annotation), getMax(annotation), settings.get(Keys.MAP_MAX_SIZE));
 
                 ((MapGeneratorSpec<?, ?>) spec).minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof ArrayGeneratorSpec<?>) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), Keys.ARRAY_MAX_LENGTH.defaultValue());
+                        getMin(annotation), getMax(annotation), settings.get(Keys.ARRAY_MAX_LENGTH));
 
                 ((ArrayGeneratorSpec<?>) spec).minLength(range.min()).maxLength(range.max());
             }
@@ -262,7 +276,10 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Class<?> targetClass) {
+                            final Class<?> targetClass,
+                            final GeneratorContext generatorContext) {
+
+            final Settings settings = generatorContext.getSettings();
 
             if (spec instanceof StringGenerator) {
                 final StringGenerator generator = (StringGenerator) spec;
@@ -273,17 +290,17 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
             } else if (spec instanceof ArrayGenerator<?>) {
                 ((ArrayGenerator<?>) spec)
                         .nullable(false)
-                        .minLength(Keys.ARRAY_MIN_LENGTH.defaultValue());
+                        .minLength(settings.get(Keys.ARRAY_MIN_LENGTH));
 
             } else if (spec instanceof CollectionGenerator<?>) {
                 ((CollectionGenerator<?>) spec)
                         .nullable(false)
-                        .minSize(Keys.COLLECTION_MIN_SIZE.defaultValue());
+                        .minSize(settings.get(Keys.COLLECTION_MIN_SIZE));
 
             } else if (spec instanceof MapGenerator<?, ?>) {
                 ((MapGenerator<?, ?>) spec)
                         .nullable(false)
-                        .minSize(Keys.MAP_MIN_SIZE.defaultValue());
+                        .minSize(settings.get(Keys.MAP_MIN_SIZE));
             }
         }
     }
@@ -292,7 +309,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Class<?> targetClass) {
+                            final Class<?> targetClass,
+                            final GeneratorContext generatorContext) {
 
             AnnotationUtils.setSpecNullableToFalse(spec);
         }
@@ -308,7 +326,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
-                            final Class<?> targetClass) {
+                            final Class<?> targetClass,
+                            final GeneratorContext generatorContext) {
 
             if (spec instanceof BooleanGenerator) {
                 ((BooleanGenerator) spec).probability(generatedValue ? 1 : 0);

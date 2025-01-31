@@ -17,7 +17,9 @@ package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.pojo.beanvalidation.ArraySizeBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -31,6 +33,10 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 @ExtendWith(InstancioExtension.class)
 class ArraySizeBVTest {
 
+    @WithSettings
+    private final Settings settings = Settings.create()
+            .set(Keys.ARRAY_MAX_LENGTH, 3);
+
     @RepeatedTest(SAMPLE_SIZE_DD)
     void withMinSize() {
         final ArraySizeBV.WithMinSize result = Instancio.create(ArraySizeBV.WithMinSize.class);
@@ -38,9 +44,9 @@ class ArraySizeBVTest {
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)
-    void withMinSizeZeo() {
+    void withMinSizeZero() {
         final ArraySizeBV.WithMinSizeZero result = Instancio.create(ArraySizeBV.WithMinSizeZero.class);
-        assertThat(result.getValue()).hasSizeBetween(0, Keys.ARRAY_MAX_LENGTH.defaultValue());
+        assertThat(result.getValue()).hasSizeBetween(0, settings.get(Keys.ARRAY_MAX_LENGTH));
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)

@@ -55,14 +55,16 @@ public interface AnnotationLibraryFacade {
      * starting with the primary annotation. Consumed annotations are removed
      * from the map.
      *
-     * @param map         from which annotations will be consumed
-     * @param spec        generator spec for the given field
-     * @param targetClass type being generated
+     * @param map              from which annotations will be consumed
+     * @param spec             generator spec for the given field
+     * @param targetClass      type being generated
+     * @param generatorContext the generator context containing current settings
      * @since 2.7.0
      */
     void consumeAnnotations(AnnotationMap map,
                             GeneratorSpec<?> spec,
-                            Class<?> targetClass);
+                            Class<?> targetClass,
+                            GeneratorContext generatorContext);
 
     /**
      * Resolves a generator for the given primary annotation.

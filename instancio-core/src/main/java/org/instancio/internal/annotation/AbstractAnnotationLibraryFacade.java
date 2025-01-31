@@ -57,7 +57,8 @@ abstract class AbstractAnnotationLibraryFacade implements AnnotationLibraryFacad
     @Override
     public final void consumeAnnotations(final AnnotationMap annotationMap,
                                          final GeneratorSpec<?> spec,
-                                         final Class<?> targetClass) {
+                                         final Class<?> targetClass,
+                                         final GeneratorContext generatorContext) {
 
         final AnnotationHandlerMap annotationHandlerMap = getAnnotationHandlerMap();
         final Collection<Annotation> annotations = annotationMap.getAnnotations();
@@ -65,7 +66,7 @@ abstract class AbstractAnnotationLibraryFacade implements AnnotationLibraryFacad
         for (Annotation annotation : annotations) {
             final FieldAnnotationHandler handler = annotationHandlerMap.get(annotation);
             if (handler != null) {
-                handler.process(annotation, spec, targetClass);
+                handler.process(annotation, spec, targetClass, generatorContext);
                 annotationMap.remove(annotation.annotationType());
             }
         }
