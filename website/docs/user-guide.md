@@ -1147,7 +1147,7 @@ By default, the hint is set to `POPULATE_NULLS_AND_DEFAULT_PRIMITIVES`, which im
 The default value of the `AfterGenerate` hint can be overridden using `instancio.properties` and {{Settings}}.
 
 !!! info
-Callbacks are always invoked on objects created by generators regardless of `AfterGenerate` value.
+    Callbacks are always invoked on objects created by generators regardless of `AfterGenerate` value.
 
 **Method** `generate(TargetSelector, GeneratorSpecProvider)` is for customising objects created by internal generators.
 Such objects include value types (numbers, strings, dates) and data structures (collections, arrays).
