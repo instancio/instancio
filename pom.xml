@@ -67,7 +67,7 @@
         <version.jackson>2.18.2</version.jackson>
         <version.groovy>4.0.25</version.groovy>
         <version.jakarta.persistence>3.0.0</version.jakarta.persistence>
-        <version.jakarta.validation>3.1.0</version.jakarta.validation>
+        <version.jakarta.validation>3.1.1</version.jakarta.validation>
         <version.javax.persistence>2.2</version.javax.persistence>
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.jetbrains.annotations>26.0.2</version.jetbrains.annotations>
