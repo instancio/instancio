@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 import java.util.Collection;
 
 /**
@@ -36,5 +34,21 @@ public interface OneOfCollectionGeneratorSpec<T> extends
      * @return spec builder
      * @since 1.0.1
      */
-    GeneratorSpec<T> oneOf(Collection<T> values);
+    OneOfCollectionGeneratorSpec<T> oneOf(Collection<T> values);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    OneOfCollectionGeneratorSpec<T> nullable();
+
+    /**
+     * Allows the generator to produce either one of the preset values defined
+     * via {@link #oneOf(Collection)} or a random value of the target type.
+     *
+     * @return spec builder
+     * @since 5.4.0
+     */
+    NullableGeneratorSpec<T> orRandom();
+
 }

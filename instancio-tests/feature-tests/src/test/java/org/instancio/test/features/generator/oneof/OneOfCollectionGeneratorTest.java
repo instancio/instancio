@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,5 +94,35 @@ class OneOfCollectionGeneratorTest {
                 .create();
 
         assertThat(result.getOptional()).contains("one");
+    }
+
+    @Test
+    void oneOfAllowRandom() {
+        final Set<String> results = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen
+                        .oneOf(Collections.singleton("one"))
+                        .orRandom())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DD)
+                .collect(Collectors.toSet());
+
+        assertThat(results)
+                .doesNotContainNull()
+                .hasSizeGreaterThan(1);
+    }
+
+    @Test
+    void oneOfAllowNullableRandom() {
+        final Set<String> results = Instancio.of(String.class)
+                .generate(allStrings(), gen -> gen
+                        .oneOf(Collections.singleton("one"))
+                        .orRandom().nullable())
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DD)
+                .collect(Collectors.toSet());
+
+        assertThat(results)
+                .contains(null, "one")
+                .hasSizeGreaterThan(2);
     }
 }

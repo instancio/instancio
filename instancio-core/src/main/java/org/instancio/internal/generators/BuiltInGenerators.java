@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.generators;
 
+import org.instancio.documentation.InternalApi;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ArrayGeneratorSpec;
 import org.instancio.generator.specs.BooleanSpec;
@@ -32,8 +33,6 @@ import org.instancio.generator.specs.IntervalSpec;
 import org.instancio.generator.specs.LongSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.generator.specs.NumericSequenceSpec;
-import org.instancio.generator.specs.OneOfArraySpec;
-import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.generator.specs.OptionalGeneratorSpec;
 import org.instancio.generator.specs.ShortSpec;
 import org.instancio.generator.specs.ShuffleSpec;
@@ -79,6 +78,7 @@ import org.instancio.internal.generator.util.UUIDGenerator;
 
 import java.util.Collection;
 
+@InternalApi
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
 public final class BuiltInGenerators implements Generators, ValueSpecs {
 
@@ -160,12 +160,12 @@ public final class BuiltInGenerators implements Generators, ValueSpecs {
 
     @SafeVarargs
     @Override
-    public final <T> OneOfArraySpec<T> oneOf(T... choices) { // NOPMD
+    public final <T> OneOfArrayGenerator<T> oneOf(T... choices) { // NOPMD
         return new OneOfArrayGenerator<T>(context).oneOf(choices);
     }
 
     @Override
-    public <T> OneOfCollectionSpec<T> oneOf(Collection<T> choices) {
+    public <T> OneOfCollectionGenerator<T> oneOf(Collection<T> choices) {
         return new OneOfCollectionGenerator<T>(context).oneOf(choices);
     }
 

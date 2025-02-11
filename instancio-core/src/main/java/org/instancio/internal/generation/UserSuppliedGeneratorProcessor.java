@@ -71,6 +71,10 @@ public final class UserSuppliedGeneratorProcessor {
             return GeneratorResult.nullResult();
         }
 
+        if (internalHint != null && internalHint.emptyResult()) {
+            return GeneratorResult.emptyResult();
+        }
+
         final Object value = generator.generate(context.getRandom());
         return GeneratorResult.create(value, hints);
     }

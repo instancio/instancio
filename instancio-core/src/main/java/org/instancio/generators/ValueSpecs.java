@@ -144,20 +144,24 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
     <E extends Enum<E>> EnumSpec<E> enumOf(Class<E> enumClass);
 
     /**
-     * {@inheritDoc}
+     * Picks a random value from the given choices.
      *
+     * @param choices to choose from
+     * @param <T>     element type
+     * @return API builder reference
      * @since 5.0.0
      */
-    @Override
     @SuppressWarnings("unchecked")
     <T> OneOfArraySpec<T> oneOf(T... choices);
 
     /**
-     * {@inheritDoc}
+     * Picks a random value from the given choices.
      *
+     * @param choices to choose from
+     * @param <T>     element type
+     * @return API builder reference
      * @since 5.0.0
      */
-    @Override
     <T> OneOfCollectionSpec<T> oneOf(Collection<T> choices);
 
     /**

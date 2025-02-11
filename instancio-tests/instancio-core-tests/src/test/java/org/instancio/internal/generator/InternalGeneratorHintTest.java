@@ -27,16 +27,17 @@ class InternalGeneratorHintTest {
     void verifyToString() {
         assertThat(InternalGeneratorHint.builder().build())
                 .hasToString("GeneratorHint[targetClass=null, isDelegating=false, " +
-                        "nullableResult=false, emitNull=false, excludeFromCallbacks=false]");
+                        "nullableResult=false, emptyResult=false, emitNull=false, excludeFromCallbacks=false]");
 
         assertThat(InternalGeneratorHint.builder()
                 .targetClass(Map.class)
                 .delegating(true)
                 .nullableResult(true)
+                .emptyResult(true)
                 .emitNull(true)
                 .excludeFromCallbacks(true)
                 .build())
                 .hasToString("GeneratorHint[targetClass=java.util.Map, isDelegating=true, " +
-                        "nullableResult=true, emitNull=true, excludeFromCallbacks=true]");
+                        "nullableResult=true, emptyResult=true, emitNull=true, excludeFromCallbacks=true]");
     }
 }

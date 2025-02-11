@@ -17,13 +17,25 @@ package org.instancio.internal.generator.array;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.Hints;
+import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.InternalGeneratorHint;
 
-public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneOfArraySpec<T> {
+public class OneOfArrayGenerator<T> extends AbstractGenerator<T>
+        implements OneOfArrayGeneratorSpec<T>, OneOfArraySpec<T> {
+
+    // Delegates generating a value (not from one of the choices) to the engine
+    private static final Hints ALLOW_EMPTY_HINT = Hints.builder()
+            .with(InternalGeneratorHint.builder()
+                    .emptyResult(true)
+                    .build())
+            .build();
 
     private T[] values;
+    private boolean allowRandomValues;
 
     public OneOfArrayGenerator(final GeneratorContext context) {
         super(context);
@@ -34,9 +46,16 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
         return "oneOf()";
     }
 
+    @SafeVarargs
     @Override
-    public OneOfArrayGenerator<T> oneOf(final T... values) {
+    public final OneOfArrayGenerator<T> oneOf(final T... values) {
         this.values = ApiValidator.notEmpty(values, "Array must have at least one element");
+        return this;
+    }
+
+    @Override
+    public OneOfArrayGenerator<T> orRandom() {
+        this.allowRandomValues = true;
         return this;
     }
 
@@ -47,7 +66,14 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T> implements OneO
     }
 
     @Override
-    protected T tryGenerateNonNull(final Random random) {
+    public T tryGenerateNonNull(final Random random) {
         return random.oneOf(values);
+    }
+
+    @Override
+    public Hints hints() {
+        return getContext().random().diceRoll(allowRandomValues)
+                ? ALLOW_EMPTY_HINT
+                : super.hints();
     }
 }
