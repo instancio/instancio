@@ -158,7 +158,6 @@ public interface Generators extends CommonGeneratorSpecs {
      *
      * @since 1.0.1
      */
-    @Override
     @SuppressWarnings("unchecked")
     <T> OneOfArrayGeneratorSpec<T> oneOf(T... choices);
 
@@ -167,7 +166,6 @@ public interface Generators extends CommonGeneratorSpecs {
      *
      * @since 1.0.1
      */
-    @Override
     <T> OneOfCollectionGeneratorSpec<T> oneOf(Collection<T> choices);
 
     /**

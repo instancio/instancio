@@ -41,6 +41,8 @@ import org.instancio.ValueOf;
 import org.instancio.ValueOfOriginDestination;
 import org.instancio.When;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.specs.OneOfArraySpec;
+import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.internal.util.Sonar;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.junit.jupiter.api.DisplayName;
@@ -427,6 +429,25 @@ class ApiContractTest {
                 final ValueOf valueOf = valueOf(origin);
                 final Assignment assignment = valueOf.set("foo");
             }
+        }
+    }
+
+    /**
+     * Since value specs don't support {@link org.instancio.generator.Hints}
+     * when invoked via {@link Instancio#gen()}, they do not support
+     * the {@code orRandom()} method.
+     */
+    @Nested
+    class OneOfSpecsApiTest {
+
+        @Test
+        void oneOfArraySpecShouldNotExposeOrRandomMethod() {
+            assertThatClass(OneOfArraySpec.class).hasNoMethodsNamed("orRandom");
+        }
+
+        @Test
+        void oneOfCollectionSpecShouldNotExposeOrRandomMethod() {
+            assertThatClass(OneOfCollectionSpec.class).hasNoMethodsNamed("orRandom");
         }
     }
 }

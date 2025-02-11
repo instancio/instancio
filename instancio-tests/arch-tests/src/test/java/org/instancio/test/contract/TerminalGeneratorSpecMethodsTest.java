@@ -20,9 +20,7 @@ import org.instancio.generator.ValueSpec;
 import org.instancio.generator.specs.AsGeneratorSpec;
 import org.instancio.generator.specs.Ip4GeneratorSpec;
 import org.instancio.generator.specs.NullableGeneratorSpec;
-import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.generator.specs.OneOfArraySpec;
-import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.generator.specs.PathGeneratorSpec;
 import org.junit.jupiter.api.Test;
@@ -70,14 +68,6 @@ class TerminalGeneratorSpecMethodsTest {
     void oneOfValueSpec(final Class<?> specClass) {
         assertThatClass(specClass)
                 .withMethodsMatching(m -> m.getName().equals("oneOf") && m.getReturnType() == ValueSpec.class)
-                .hasSize(1);
-    }
-
-    @ValueSource(classes = {OneOfArrayGeneratorSpec.class, OneOfCollectionGeneratorSpec.class})
-    @ParameterizedTest
-    void oneOfGeneratorSpec(final Class<?> specClass) {
-        assertThatClass(specClass)
-                .withMethodsMatching(m -> m.getName().equals("oneOf") && m.getReturnType() == GeneratorSpec.class)
                 .hasSize(1);
     }
 }

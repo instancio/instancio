@@ -17,15 +17,27 @@ package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.Hints;
+import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.InternalGeneratorHint;
 
 import java.util.Collection;
 
-public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements OneOfCollectionSpec<T> {
+public class OneOfCollectionGenerator<T> extends AbstractGenerator<T>
+        implements OneOfCollectionGeneratorSpec<T>, OneOfCollectionSpec<T> {
+
+    // Delegates generating a value (not from one of the choices) to the engine
+    private static final Hints ALLOW_EMPTY_HINT = Hints.builder()
+            .with(InternalGeneratorHint.builder()
+                    .emptyResult(true)
+                    .build())
+            .build();
 
     private Collection<T> values;
+    private boolean allowRandomValues;
 
     public OneOfCollectionGenerator(final GeneratorContext context) {
         super(context);
@@ -43,6 +55,12 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements
     }
 
     @Override
+    public OneOfCollectionGenerator<T> orRandom() {
+        this.allowRandomValues = true;
+        return this;
+    }
+
+    @Override
     public OneOfCollectionGenerator<T> nullable() {
         super.nullable();
         return this;
@@ -51,5 +69,12 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T> implements
     @Override
     public T tryGenerateNonNull(final Random random) {
         return random.oneOf(values);
+    }
+
+    @Override
+    public Hints hints() {
+        return getContext().random().diceRoll(allowRandomValues)
+                ? ALLOW_EMPTY_HINT
+                : super.hints();
     }
 }

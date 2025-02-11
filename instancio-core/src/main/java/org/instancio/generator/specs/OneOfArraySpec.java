@@ -23,9 +23,15 @@ import org.instancio.generator.ValueSpec;
  * @param <T> type of value
  * @since 2.6.0
  */
-public interface OneOfArraySpec<T> extends ValueSpec<T>, OneOfArrayGeneratorSpec<T> {
+public interface OneOfArraySpec<T> extends ValueSpec<T> {
 
-    @Override
+    /**
+     * Selects a random value from the given choices.
+     *
+     * @param values from which a random value will be selected
+     * @return spec builder
+     * @since 2.6.0
+     */
     @SuppressWarnings("unchecked")
     ValueSpec<T> oneOf(T... values);
 }

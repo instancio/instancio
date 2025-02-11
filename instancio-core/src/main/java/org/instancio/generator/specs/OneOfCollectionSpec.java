@@ -25,8 +25,14 @@ import java.util.Collection;
  * @param <T> type of value
  * @since 2.6.0
  */
-public interface OneOfCollectionSpec<T> extends ValueSpec<T>, OneOfCollectionGeneratorSpec<T> {
+public interface OneOfCollectionSpec<T> extends ValueSpec<T> {
 
-    @Override
+    /**
+     * Selects a random value from the given choices.
+     *
+     * @param values from which a random value will be selected
+     * @return spec builder
+     * @since 2.6.0
+     */
     ValueSpec<T> oneOf(Collection<T> values);
 }

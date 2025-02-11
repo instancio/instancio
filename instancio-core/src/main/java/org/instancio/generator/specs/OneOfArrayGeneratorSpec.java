@@ -15,8 +15,6 @@
  */
 package org.instancio.generator.specs;
 
-import org.instancio.generator.GeneratorSpec;
-
 /**
  * Generator spec for selecting a random value from an array.
  *
@@ -34,5 +32,21 @@ public interface OneOfArrayGeneratorSpec<T> extends
      * @return spec builder
      * @since 1.0.1
      */
-    GeneratorSpec<T> oneOf(T... values);
+    OneOfArrayGeneratorSpec<T> oneOf(T... values);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    OneOfArrayGeneratorSpec<T> nullable();
+
+    /**
+     * Allows the generator to produce either one of the preset values defined
+     * via {@link #oneOf(Object...)} or a random value of the target type.
+     *
+     * @return spec builder
+     * @since 5.4.0
+     */
+    NullableGeneratorSpec<T> orRandom();
+
 }

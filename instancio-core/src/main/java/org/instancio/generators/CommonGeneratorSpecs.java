@@ -25,11 +25,7 @@ import org.instancio.generator.specs.EnumGeneratorSpec;
 import org.instancio.generator.specs.HashGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generator.specs.NumericSequenceGeneratorSpec;
-import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
-import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
-
-import java.util.Collection;
 
 /**
  * Defines specs that are available via both:
@@ -156,27 +152,6 @@ interface CommonGeneratorSpecs {
      * @since 5.0.0
      */
     NetGenerators net();
-
-    /**
-     * Picks a random value from the given choices.
-     *
-     * @param choices to choose from
-     * @param <T>     element type
-     * @return API builder reference
-     * @since 5.0.0
-     */
-    @SuppressWarnings("unchecked")
-    <T> OneOfArrayGeneratorSpec<T> oneOf(T... choices);
-
-    /**
-     * Picks a random value from the given choices.
-     *
-     * @param choices to choose from
-     * @param <T>     element type
-     * @return API builder reference
-     * @since 5.0.0
-     */
-    <T> OneOfCollectionGeneratorSpec<T> oneOf(Collection<T> choices);
 
     /**
      * Provides access to checksum generators.
