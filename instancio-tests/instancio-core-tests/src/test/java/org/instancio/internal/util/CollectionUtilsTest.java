@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CollectionUtilsTest {
     private static final int SAMPLE_SIZE = 100;
@@ -85,6 +86,26 @@ class CollectionUtilsTest {
     void asLinkedHashMapShouldReturnEmptyMapIfGivenEmptyOrNullArray() {
         assertThat(CollectionUtils.asLinkedHashMap(Person::getUuid, (Person[]) null)).isEmpty();
         assertThat(CollectionUtils.asLinkedHashMap(Person::getUuid)).isEmpty();
+    }
+
+    @Test
+    void asUnmodifiableLinkedHashMapOfLists() {
+        final Map<String, List<Integer>> map = new HashMap<>();
+        map.put("foo", Arrays.asList(42, 43));
+
+        final Map<String, List<Integer>> mapCopy = CollectionUtils.asUnmodifiableLinkedHashMapOfLists(map);
+
+        assertThat(mapCopy)
+                .hasSize(1)
+                .containsValue(List.of(42, 43));
+
+        assertThatThrownBy(() -> mapCopy.put("bar", List.of(123)))
+                .isInstanceOf(UnsupportedOperationException.class);
+
+        final List<Integer> listCopy = mapCopy.get("foo");
+
+        assertThatThrownBy(() -> listCopy.add(123))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test

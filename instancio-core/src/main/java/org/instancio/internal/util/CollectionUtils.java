@@ -64,6 +64,28 @@ public final class CollectionUtils {
         return map == null ? Collections.emptyMap() : Collections.unmodifiableMap(map);
     }
 
+    public static <K, E> Map<K, List<E>> asUnmodifiableLinkedHashMapOfLists(final Map<K, List<E>> map) {
+        if (map == null) {
+            return Collections.emptyMap();
+        }
+        final Map<K, List<E>> copy = new LinkedHashMap<>(map.size());
+        for (Map.Entry<K, List<E>> entry : map.entrySet()) {
+            copy.put(entry.getKey(), asUnmodifiableList(entry.getValue()));
+        }
+        return Collections.unmodifiableMap(copy);
+    }
+
+    public static <K, E> Map<K, List<E>> copyAsLinkedHashMap(final Map<K, List<E>> map) {
+        if (map == null) {
+            return new LinkedHashMap<>(0);
+        }
+        final Map<K, List<E>> copy = new LinkedHashMap<>(map.size());
+        for (Map.Entry<K, List<E>> entry : map.entrySet()) {
+            copy.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+        }
+        return copy;
+    }
+
     public static <K, V> Map<K, V> newLinkedHashMapIfNull(final Map<K, V> map) {
         return map != null ? map : new LinkedHashMap<>(DEFAULT_INITIAL_CAPACITY);
     }

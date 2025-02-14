@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableList;
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableMap;
+import static org.instancio.internal.util.CollectionUtils.asUnmodifiableLinkedHashMapOfLists;
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableSet;
 
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
@@ -70,7 +71,7 @@ final class ModelContextSource {
         this.generatorMap = asUnmodifiableMap(generatorMap);
         this.onCompleteMap = asUnmodifiableMap(onCompleteMap);
         this.filterMap = asUnmodifiableMap(filterMap);
-        this.assignmentMap = asUnmodifiableMap(assignmentMap);
+        this.assignmentMap = asUnmodifiableLinkedHashMapOfLists(assignmentMap);
         this.setModelMap = asUnmodifiableMap(setModelMap);
         this.feedMap = asUnmodifiableMap(feedMap);
         this.ignoreSet = asUnmodifiableSet(ignoreSet);
