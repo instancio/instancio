@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CollectionUtilsTest {
     private static final int SAMPLE_SIZE = 100;
@@ -85,6 +86,64 @@ class CollectionUtilsTest {
     void asLinkedHashMapShouldReturnEmptyMapIfGivenEmptyOrNullArray() {
         assertThat(CollectionUtils.asLinkedHashMap(Person::getUuid, (Person[]) null)).isEmpty();
         assertThat(CollectionUtils.asLinkedHashMap(Person::getUuid)).isEmpty();
+    }
+
+    @Test
+    void copyAsLinkedHashMap() {
+        final Map<String, List<Integer>> map = new HashMap<>();
+        map.put("foo", List.of(42, 43));
+
+        final Map<String, List<Integer>> mutableMapCopy = CollectionUtils.copyAsLinkedHashMap(
+                Collections.unmodifiableMap(map));
+
+        mutableMapCopy.get("foo").add(123);
+        assertThat(mutableMapCopy).containsValue(List.of(42, 43, 123));
+
+        mutableMapCopy.put("bar", Arrays.asList(567));
+        assertThat(mutableMapCopy)
+                .hasSize(2)
+                .containsEntry("bar", List.of(567));
+    }
+
+    @Test
+    void copyAsLinkedHashMap_nullShouldReturnEmptyMap() {
+        final Map<String, List<Integer>> mutableMapCopy = CollectionUtils.copyAsLinkedHashMap(null);
+
+        final List<Integer> newValue = Arrays.asList(123);
+
+        mutableMapCopy.put("bar", newValue);
+        assertThat(mutableMapCopy).containsValue(List.of(123));
+    }
+
+    @Test
+    void asUnmodifiableLinkedHashMapOfLists() {
+        final Map<String, List<Integer>> map = new HashMap<>();
+        map.put("foo", Arrays.asList(42, 43));
+
+        final Map<String, List<Integer>> mapCopy = CollectionUtils.asUnmodifiableLinkedHashMapOfLists(map);
+
+        assertThat(mapCopy)
+                .hasSize(1)
+                .containsValue(List.of(42, 43));
+
+        assertThatThrownBy(() -> mapCopy.put("bar", List.of(123)))
+                .isInstanceOf(UnsupportedOperationException.class);
+
+        final List<Integer> listCopy = mapCopy.get("foo");
+
+        assertThatThrownBy(() -> listCopy.add(123))
+                .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void asUnmodifiableLinkedHashMapOfLists_nullShouldReturnUnmodifiableEmptyMap() {
+        final Map<String, List<Integer>> mapCopy =
+                CollectionUtils.asUnmodifiableLinkedHashMapOfLists(null);
+
+        final List<Integer> newValue = List.of(123);
+
+        assertThatThrownBy(() -> mapCopy.put("bar", newValue))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test

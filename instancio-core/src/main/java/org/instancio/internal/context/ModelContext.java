@@ -81,6 +81,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static org.instancio.internal.util.CollectionUtils.copyAsLinkedHashMap;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
@@ -283,7 +284,7 @@ public final class ModelContext {
         builder.subtypeMap = new LinkedHashMap<>(this.contextSource.getSubtypeMap());
         builder.onCompleteMap = new LinkedHashMap<>(this.contextSource.getOnCompleteMap());
         builder.filterMap = new LinkedHashMap<>(this.contextSource.getFilterMap());
-        builder.assignmentMap = new LinkedHashMap<>(this.contextSource.getAssignmentMap());
+        builder.assignmentMap = new LinkedHashMap<>(copyAsLinkedHashMap(this.contextSource.getAssignmentMap()));
         builder.setModelMap = new LinkedHashMap<>(this.contextSource.getSetModelMap());
         builder.feedMap = new LinkedHashMap<>(this.contextSource.getFeedMap());
         return builder;
