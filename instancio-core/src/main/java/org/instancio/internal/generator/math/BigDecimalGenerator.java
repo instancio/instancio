@@ -112,8 +112,21 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
         // If precision is not set, generate a value in the [min, max] range
         if (precision == 0) {
             final BigDecimal delta = getMax().subtract(getMin());
-            final BigDecimal rndDelta = delta.multiply(BigDecimal.valueOf(random.doubleRange(0.01, 1)));
-            return getMin().add(rndDelta).setScale(scale, RoundingMode.HALF_UP);
+            final BigDecimal rndDelta = delta.multiply(BigDecimal.valueOf(random.doubleRange(0, 1)));
+            final BigDecimal generated = setScaleAndRoundHalfUp(getMin().add(rndDelta), scale);
+
+            // given the differences between configured scale and those inherent to min and max
+            // then the generated number might be less than minimum or greater than max. If that
+            // is the case we return either min or max with the configured scale applied.
+            if (generated.compareTo(getMin()) < 0) {
+                return setScaleAndRoundHalfUp(getMin(), scale);
+            }
+
+            if (generated.compareTo(getMax()) > 0) {
+                return setScaleAndRoundHalfUp(getMax(), scale);
+            }
+
+            return generated;
         }
 
         // Generate value based on specified precision
@@ -139,6 +152,10 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
         return new BigDecimal(
                 new String(result),
                 new MathContext(precision, RoundingMode.UNNECESSARY));
+    }
+
+    private static BigDecimal setScaleAndRoundHalfUp(BigDecimal bd, int newScale) {
+        return bd.setScale(newScale, RoundingMode.HALF_UP);
     }
 
     private char[] generateFractionalWithPrecisionGreaterThanScale(final Random random) {

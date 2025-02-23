@@ -15,18 +15,23 @@
  */
 package org.instancio.test.features.generator.math;
 
+import org.assertj.core.api.SoftAssertions;
 import org.instancio.Instancio;
+import org.instancio.generator.specs.BigDecimalSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.BaseNumericGeneratorTest;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.util.Constants;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.root;
@@ -82,4 +87,39 @@ class BigDecimalGeneratorTest extends BaseNumericGeneratorTest<BigDecimal> {
                 .isGreaterThanOrEqualTo(min)
                 .isLessThanOrEqualTo(max);
     }
+
+    public static void main(String[] args) {
+        System.out.println(new BigDecimal("10000.07").setScale(1, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void rangeWithScaleSmallerThanThoseOfMinAndMax() {
+        final BigDecimal min = new BigDecimal("0.01");
+        final BigDecimal max = new BigDecimal("0.99");
+
+        final int scale = 1;
+
+        final BigDecimal minWithScale1 = new BigDecimal("0.0");
+        final BigDecimal maxWithScale1 = new BigDecimal("1.0");
+
+        final BigDecimalSpec rangedSpec = Instancio.gen().math().bigDecimal().range(min, max).scale(scale);
+
+        BigDecimal minGenerated = rangedSpec.get();
+        BigDecimal maxGenerated = rangedSpec.get();
+        for (int i = 1; i < Constants.SAMPLE_SIZE_DDD; i++) {
+            final BigDecimal generated = rangedSpec.get();
+            if (generated.compareTo(minGenerated) < 0) {
+                minGenerated = generated;
+            } else if (generated.compareTo(maxGenerated) > 0) {
+                maxGenerated = generated;
+            }
+        }
+
+        final SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(minGenerated).isEqualByComparingTo(minWithScale1);
+        softAssertions.assertThat(maxGenerated).isEqualByComparingTo(maxWithScale1);
+
+        softAssertions.assertAll();
+    }
+
 }
