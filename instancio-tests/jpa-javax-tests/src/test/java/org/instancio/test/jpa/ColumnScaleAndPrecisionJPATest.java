@@ -32,6 +32,7 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,21 +67,24 @@ class ColumnScaleAndPrecisionJPATest {
         assertThat(result.getD3()).hasScaleOf(0);
     }
 
-    @RepeatedTest(Constants.SAMPLE_SIZE_DD)
+    @RepeatedTest(Constants.SAMPLE_SIZE_DDD)
     void withScale() {
+        final BigDecimal defaultMin = new BigDecimal("0.01");
+        final BigDecimal defaultMax = new BigDecimal("10000");
+
         final WithScale result = Instancio.create(WithScale.class);
 
+        final BigDecimal scaledMinD1 = defaultMin.setScale(-2, RoundingMode.HALF_UP);
+        final BigDecimal scaledMaxD1 = defaultMax.setScale(-2, RoundingMode.HALF_UP);
         assertThat(result.getD1())
                 .hasScaleOf(-2)
-                .isBetween(
-                        new BigDecimal("10"),
-                        new BigDecimal("10000"));
+                .isBetween(scaledMinD1, scaledMaxD1);
 
+        final BigDecimal scaledMinD2 = defaultMin.setScale(9, RoundingMode.HALF_UP);
+        final BigDecimal scaledMaxD2 = defaultMax.setScale(9, RoundingMode.HALF_UP);
         assertThat(result.getD2())
                 .hasScaleOf(9)
-                .isBetween(
-                        new BigDecimal("1"),
-                        new BigDecimal("10000"));
+                .isBetween(scaledMinD2, scaledMaxD2);
     }
 
     @RepeatedTest(Constants.SAMPLE_SIZE_DD)
