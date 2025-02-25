@@ -31,7 +31,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.root;
@@ -86,10 +85,6 @@ class BigDecimalGeneratorTest extends BaseNumericGeneratorTest<BigDecimal> {
         assertThat(result)
                 .isGreaterThanOrEqualTo(min)
                 .isLessThanOrEqualTo(max);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new BigDecimal("10000.07").setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
