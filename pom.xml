@@ -71,7 +71,7 @@
         <version.javax.persistence>2.2</version.javax.persistence>
         <version.javax.validation>2.0.1.Final</version.javax.validation>
         <version.jetbrains.annotations>26.0.2</version.jetbrains.annotations>
-        <version.junit>5.12.0</version.junit>
+        <version.junit>5.12.1</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
         <!-- plugins -->
         <version.animal-sniffer-maven-plugin>1.24</version.animal-sniffer-maven-plugin>
