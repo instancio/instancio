@@ -131,7 +131,7 @@ final class AnnotationNodeHandler implements NodeHandler {
         // There might be other types that need to be handled as well,
         // but so far string seems to be sufficient
         if (node.getTargetClass() == String.class) {
-            obj = obj.toString();
+            obj = obj == null ? null : obj.toString(); //NOPMD
         }
         // It's possible an annotation is placed on a field that
         // doesn't support it. To avoid an error in such cases,
