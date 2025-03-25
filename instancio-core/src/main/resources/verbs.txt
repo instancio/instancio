@@ -152,7 +152,6 @@ bin
 bind
 bird
 birth
-bitch
 bite
 black
 blackberry
@@ -342,7 +341,6 @@ coach
 coal
 coast
 coat
-cock
 cod
 code
 coin
@@ -1828,7 +1826,6 @@ whale
 wheel
 white
 wholesale
-whore
 will
 win
 wind
