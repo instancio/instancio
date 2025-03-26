@@ -38,9 +38,9 @@ import static org.instancio.Select.allStrings;
 @ExtendWith(InstancioExtension.class)
 class WordGeneratorTest {
 
-    private static final int NUM_NOUNS = 5227;
-    private static final int NUM_VERBS = 1863;
-    private static final int NUM_ADJECTIVES = 1881;
+    private static final int NUM_NOUNS = 5215;
+    private static final int NUM_VERBS = 1860;
+    private static final int NUM_ADJECTIVES = 1879;
     private static final int NUM_ADVERBS = 2927;
 
     @WithSettings
