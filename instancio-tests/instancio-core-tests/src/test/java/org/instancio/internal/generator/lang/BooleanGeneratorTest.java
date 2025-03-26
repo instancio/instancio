@@ -60,7 +60,7 @@ class BooleanGeneratorTest extends AbstractGeneratorTestTemplate<Boolean, Boolea
     @Test
     @NonDeterministicTag
     void withProbability() {
-        final int sampleSize = 10_000;
+        final int sampleSize = 100_000;
         final double probabilityOfTrue = 0.3;
 
         final int[] counts = new int[2];
