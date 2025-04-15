@@ -49,6 +49,7 @@ final class DefaultSetterMethodResolver {
         return null;
     }
 
+    @SuppressWarnings("PMD.ExhaustiveSwitchHasDefault")
     private static MethodNameResolver getMethodNameResolver(final SetterStyle style) {
         switch (style) {
             case SET:
