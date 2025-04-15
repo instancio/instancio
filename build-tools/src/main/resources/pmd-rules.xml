@@ -29,6 +29,7 @@
         <exclude name="AvoidStringBufferField"/>
         <exclude name="ForLoopVariableCount"/>
         <exclude name="GuardLogStatement"/>
+        <exclude name="ImplicitFunctionalInterface"/>
     </rule>
 
     <rule ref="category/java/codestyle.xml">

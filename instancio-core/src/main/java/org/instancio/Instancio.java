@@ -152,6 +152,7 @@ import static org.instancio.internal.util.TypeUtils.cast;
  * @see Select
  * @since 1.0.1
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public final class Instancio {
 
     private Instancio() {
