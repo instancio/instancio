@@ -222,8 +222,8 @@ by becoming a [sponsor](https://github.com/sponsors/instancio).
 
 A big thank you to the current project sponsors:
 
-- [@bit-dot](https://github.com/bit-dot)
 - [@darthblonderss](https://github.com/darthblonderss)
+- [@mauravan](https://github.com/mauravan)
 - [@mevlana14](https://github.com/mevlana14)
 - [@zalabbad](https://github.com/zalabbad)
 
