@@ -14,11 +14,11 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 24
-          server-id: sonatype-snapshots
+          server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: "Deploy snapshots"
-        run: mvn -Pdeploy-test-dependencies -B deploy --no-transfer-progress
+        run: mvn -Dsnapshot -B deploy --no-transfer-progress
         env:
           MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
