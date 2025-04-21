@@ -29,6 +29,12 @@
             <email>instancio@pm.me</email>
             <url>https://github.com/armandino</url>
         </developer>
+        <developer>
+            <id>evaristegalois11</id>
+            <name>Claudio Nave</name>
+            <email>evaristegalois11@proton.me</email>
+            <url>https://github.com/evaristegalois11</url>
+        </developer>
     </developers>
 
     <scm child.scm.url.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.connection.inherit.append.path="false">
@@ -545,7 +551,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
-                    <version>${version.maven-ant-plugin}</version>
+                    <version>${version.maven-antrun-plugin}</version>
                 </plugin>
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
