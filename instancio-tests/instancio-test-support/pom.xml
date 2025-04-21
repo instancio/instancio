@@ -19,7 +19,7 @@
         <profile>
             <id>deploy-test-dependencies</id>
             <properties>
-                <maven.deploy.skip>false</maven.deploy.skip>
+                <skipPublishing>false</skipPublishing>
             </properties>
         </profile>
     </profiles>
