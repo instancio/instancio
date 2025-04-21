@@ -15,15 +15,6 @@
         <jacoco.skip>true</jacoco.skip>
     </properties>
 
-    <profiles>
-        <profile>
-            <id>deploy-test-dependencies</id>
-            <properties>
-                <skipPublishing>false</skipPublishing>
-            </properties>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
             <plugin>
