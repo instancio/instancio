@@ -22,8 +22,8 @@ javadoc:
 
 release:
     mvn release:clean release:prepare -Darguments="-Dmaven.test.skip=true -DskipITs -DskipTests"
-    mvn -Prelease,sign release:perform -Darguments="-Dmaven.test.skip=true -DskipITs -DskipTests"
-    echo "Close, Release: https://s01.oss.sonatype.org/"
+    mvn release:perform -Darguments="-Dmaven.test.skip=true -DskipITs -DskipTests"
+    echo "Close, Release: https://central.sonatype.com/publishing/deployments"
 
 pip-install-mkdocs:
     pip install mkdocs
