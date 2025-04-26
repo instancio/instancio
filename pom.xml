@@ -139,21 +139,6 @@
             </build>
         </profile>
         <profile>
-            <id>update-latest-release-version</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>versions-maven-plugin</artifactId>
-                        <configuration>
-                            <property>latest.release.version</property>
-                            <newVersion>${project.version}</newVersion>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>instancio-library</id>
             <activation>
                 <file>
@@ -321,6 +306,11 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>${version.versions-maven-plugin}</version>
+                    <configuration>
+                        <property>latest.release.version</property>
+                        <newVersion>${project.version}</newVersion>
+                        <generateBackupPoms>false</generateBackupPoms>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -518,10 +508,10 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>${version.maven-release-plugin}</version>
                     <configuration>
-                        <preparationGoals>versions:set-property versions:commit verify</preparationGoals>
+                        <preparationGoals>versions:set-property verify</preparationGoals>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <localCheckout>true</localCheckout>
-                        <arguments>-Pupdate-latest-release-version</arguments>
+                        <releaseProfiles>release,sign</releaseProfiles>
                     </configuration>
                 </plugin>
                 <plugin>
