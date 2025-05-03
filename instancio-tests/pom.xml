@@ -30,43 +30,30 @@
         <version.maven-surefire-plugin>3.5.3</version.maven-surefire-plugin>
     </properties>
 
+    <!-- These test modules are run against Java 8 and higher.
+      Other test modules require Java 16 or higher (see profiles).
+    -->
     <modules>
         <module>instancio-test-support</module>
+        <module>feature-tests</module>
+        <module>instancio-guava-tests</module>
+        <module>default-package-tests</module>
+        <module>global-seed-tests</module>
+        <module>groovy-tests</module>
+        <module>kotlin-tests</module>
+        <module>jpa-javax-tests</module>
+        <module>jpa-jakarta-tests</module>
+        <module>bean-validation-javax-tests</module>
+        <module>bean-validation-jakarta-tests</module>
+        <module>bean-validation-hibernate5-tests</module>
+        <module>packaging-tests</module>
+        <module>report-aggregate</module>
     </modules>
 
     <profiles>
         <profile>
-            <id>java-8</id>
-            <!-- These test modules are run against Java 8 and higher.
-                 Other test modules require Java 16 or higher (see other profiles).
-            -->
-            <activation>
-                <property>
-                    <name>!snapshot</name>
-                </property>
-            </activation>
-            <modules>
-                <module>feature-tests</module>
-                <module>instancio-guava-tests</module>
-                <module>default-package-tests</module>
-                <module>global-seed-tests</module>
-                <module>groovy-tests</module>
-                <module>kotlin-tests</module>
-                <module>jpa-javax-tests</module>
-                <module>jpa-jakarta-tests</module>
-                <module>bean-validation-javax-tests</module>
-                <module>bean-validation-jakarta-tests</module>
-                <module>bean-validation-hibernate5-tests</module>
-                <module>packaging-tests</module>
-                <module>report-aggregate</module>
-            </modules>
-        </profile>
-        <profile>
             <id>java-16</id>
             <activation>
-                <property>
-                    <name>!snapshot</name>
-                </property>
                 <jdk>[16,)</jdk>
             </activation>
             <modules>
@@ -76,9 +63,6 @@
         <profile>
             <id>java-17</id>
             <activation>
-                <property>
-                    <name>!snapshot</name>
-                </property>
                 <jdk>[17,)</jdk>
             </activation>
             <modules>
@@ -93,9 +77,6 @@
         <profile>
             <id>java-21</id>
             <activation>
-                <property>
-                    <name>!snapshot</name>
-                </property>
                 <jdk>[21,)</jdk>
             </activation>
             <modules>

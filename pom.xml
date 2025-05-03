@@ -82,12 +82,13 @@
         <version.maven-javadoc-plugin>3.11.2</version.maven-javadoc-plugin>
         <version.maven-pmd-plugin>3.26.0</version.maven-pmd-plugin>
         <pmdVersion>7.13.0</pmdVersion>
-        <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
+        <version.maven-release-plugin>3.1.1</version.maven-release-plugin>
         <version.maven-site-plugin>3.21.0</version.maven-site-plugin>
         <version.maven-source-plugin>3.3.1</version.maven-source-plugin>
         <version.sonar-maven-plugin>5.1.0.4751</version.sonar-maven-plugin>
         <version.spotbugs-maven-plugin>4.9.3.0</version.spotbugs-maven-plugin>
         <version.versions-maven-plugin>2.18.0</version.versions-maven-plugin>
+        <version.maven-toolchains-plugin>3.2.0</version.maven-toolchains-plugin>
     </properties>
 
     <issueManagement>
@@ -508,9 +509,10 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>${version.maven-release-plugin}</version>
                     <configuration>
-                        <preparationGoals>versions:set-property verify</preparationGoals>
+                        <preparationGoals>clean versions:set-property verify</preparationGoals>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <localCheckout>true</localCheckout>
+                        <preparationProfiles>!tests</preparationProfiles>
                         <releaseProfiles>release,sign</releaseProfiles>
                     </configuration>
                 </plugin>
@@ -557,6 +559,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>${version.maven-site-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-toolchains-plugin</artifactId>
+                    <version>${version.maven-toolchains-plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
