@@ -227,11 +227,10 @@ A big thank you to the current project sponsors:
 - [@mevlana14](https://github.com/mevlana14)
 - [@zalabbad](https://github.com/zalabbad)
 
-Thanks to [JetBrains](https://www.jetbrains.com/opensource) and [YourKit](https://www.yourkit.com)
+Thanks to [JetBrains](https://jb.gg/OpenSource) and [YourKit](https://www.yourkit.com)
 for supporting this project with their open source licenses.
 
-<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="100px" alt="JetBrains logo">
-
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width="150px" alt="JetBrains logo">
 <img src="https://www.yourkit.com/images/yklogo.png" width="140px" alt="YourKit logo">
 
 ## For Enterprise
