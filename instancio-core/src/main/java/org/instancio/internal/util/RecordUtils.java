@@ -30,7 +30,7 @@ public final class RecordUtils {
         throw new IllegalStateException("Should not be invoked");
     }
 
-    @SuppressWarnings({"PMD.ReturnEmptyCollectionRatherThanNull", "unused"})
+    @SuppressWarnings("unused")
     public static Class<?>[] getComponentTypes(final Class<?> recordClass) {
         throw new IllegalStateException("Should not be invoked");
     }

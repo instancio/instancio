@@ -46,7 +46,6 @@ import static org.instancio.internal.util.Constants.NUMERIC_MIN;
  * @see Settings
  * @since 1.1.10
  */
-@SuppressWarnings("PMD.CouplingBetweenObjects")
 public final class Keys {
 
     private static final RangeAdjuster MIN_ADJUSTER = RangeAdjuster.MIN_ADJUSTER;

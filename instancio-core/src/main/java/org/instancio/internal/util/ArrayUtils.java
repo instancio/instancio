@@ -19,7 +19,6 @@ import org.instancio.Random;
 
 public final class ArrayUtils {
 
-    @SuppressWarnings("PMD.CyclomaticComplexity")
     public static void shuffle(final Object arr, final Random random) {
         if (arr instanceof Object[]) {
             shuffleArray((Object[]) arr, random);

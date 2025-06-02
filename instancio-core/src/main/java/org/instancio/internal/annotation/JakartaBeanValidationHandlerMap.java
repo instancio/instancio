@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 /**
  * Handler map for {@code jakarta.validation.constraints.*}.
  */
-@SuppressWarnings("PMD.CouplingBetweenObjects")
 final class JakartaBeanValidationHandlerMap extends CommonBeanValidationHandlerMap {
 
     JakartaBeanValidationHandlerMap() {

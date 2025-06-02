@@ -31,7 +31,7 @@ public final class ObjectUtils {
     private static final Byte DEFAULT_BYTE = (byte) 0;
     private static final Short DEFAULT_SHORT = (short) 0;
 
-    @SuppressWarnings({"unchecked", "PMD.NPathComplexity", Sonar.COGNITIVE_COMPLEXITY_OF_METHOD})
+    @SuppressWarnings({"unchecked", Sonar.COGNITIVE_COMPLEXITY_OF_METHOD})
     public static <T> T defaultValue(final Class<T> type) {
         if (type.isPrimitive()) {
             if (type == int.class) return (T) DEFAULT_INT;

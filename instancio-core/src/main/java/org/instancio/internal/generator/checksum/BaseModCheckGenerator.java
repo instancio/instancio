@@ -115,7 +115,6 @@ public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
         return Direction.RIGHT_TO_LEFT;
     }
 
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected int base() {
         return 10;
     }

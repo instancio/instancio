@@ -67,7 +67,6 @@ public class GeneratorFacade {
         addHandler(new InstantiatingHandler(context));
     }
 
-    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     private void addHandler(final NodeHandler handler) {
         if (handler != NodeHandler.NOOP_HANDLER) {
             nodeHandlers.add(handler);

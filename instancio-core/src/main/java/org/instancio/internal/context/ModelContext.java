@@ -84,7 +84,7 @@ import java.util.function.Supplier;
 import static org.instancio.internal.util.CollectionUtils.copyAsLinkedHashMap;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports", "PMD.ExcessivePublicCount"})
+@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
 public final class ModelContext {
     private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
