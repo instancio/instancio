@@ -32,7 +32,6 @@ final class FillObjectHelper {
         // non-instantiable
     }
 
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     static List<Type> getTypeArgs(final Object object) {
         if (object.getClass().getTypeParameters().length == 0) {
             return Collections.emptyList();

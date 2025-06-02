@@ -43,7 +43,7 @@ final class NodeFilter implements NodePopulationFilter {
     }
 
     @Override
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
     public NodeFilterResult filter(
             final InternalNode node,
             final AfterGenerate afterGenerate,

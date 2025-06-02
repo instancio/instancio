@@ -65,7 +65,7 @@ import org.instancio.spi.ServiceProviderContext;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
+@SuppressWarnings("PMD.ExcessiveImports")
 public class GuavaProvider implements InstancioServiceProvider {
 
     private GeneratorContext generatorContext;

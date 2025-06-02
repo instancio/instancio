@@ -38,7 +38,7 @@ final class SelectorDepth {
 
     SelectorDepth(final Predicate<Integer> depthPredicate) {
         ApiValidator.notNull(depthPredicate, "Selector depth predicate must not be null");
-        this.depth = null; // NOPMD
+        this.depth = null;
         this.depthPredicate = toNodePredicate(depthPredicate);
     }
 

@@ -55,7 +55,6 @@ abstract class WeightsModCheckGenerator extends BaseModCheckGenerator {
     }
 
     @Override
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected int base() {
         return 11;
     }

@@ -59,7 +59,7 @@ import static org.instancio.guava.internal.util.GuavaFunctions.fromMap;
 import static org.instancio.guava.internal.util.GuavaFunctions.fromMultimap;
 import static org.instancio.guava.internal.util.GuavaFunctions.fromTable;
 
-@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
+@SuppressWarnings("PMD.ExcessiveImports")
 public class GuavaInternalServiceProvider implements InternalServiceProvider {
     private static final Map<Class<?>, Function<?, ?>> MAPPING_FUNCTIONS = getMappingFunctions();
     private static final Set<Class<?>> CONTAINER_CLASSES = getContainerClasses();

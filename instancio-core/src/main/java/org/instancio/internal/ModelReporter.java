@@ -41,14 +41,12 @@ final class ModelReporter {
         this.consumer = consumer;
     }
 
-    @SuppressWarnings("PMD.SystemPrintln")
     static void report(final InternalModel<?> model) {
         final Random random = model.getModelContext().getRandom();
         Seeds.logSeed(random, model.getRootNode().getType());
         printVerbose(model);
     }
 
-    @SuppressWarnings("PMD.SystemPrintln")
     static void printVerbose(final InternalModel<?> model) {
         ModelReporter modelDump = new ModelReporter(System.out::println); // NOSONAR
         modelDump.consume(model);
