@@ -35,7 +35,6 @@ import org.instancio.internal.generator.util.UUIDGenerator;
 import org.instancio.internal.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("PMD.CouplingBetweenObjects")
 final class HibernateBeanValidationAnnotationLibraryFacade extends AbstractAnnotationLibraryFacade {
 
     HibernateBeanValidationAnnotationLibraryFacade() {

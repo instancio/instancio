@@ -59,7 +59,7 @@ public class SpiGeneratorResolver {
         this.afterGenerate = modelContext.getSettings().get(Keys.AFTER_GENERATE_HINT);
     }
 
-    @SuppressWarnings({"PMD.AvoidBranchingStatementAsLastInLoop", Sonar.GENERIC_WILDCARD_IN_RETURN})
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public Generator<?> getSpiGenerator(final InternalNode node) {
         for (ProviderEntry<GeneratorProvider> entry : providerEntries) {
             final GeneratorSpec<?> spec = entry.getProvider().getGenerator(node, generators);

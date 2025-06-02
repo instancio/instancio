@@ -54,7 +54,7 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<Set<E
 
     public EnumSetGenerator(final GeneratorContext context) {
         super(context);
-        this.enumClass = null; // NOPMD
+        this.enumClass = null;
         // Without knowing the enum class size cannot be determined, so just default to 1
         this.generateEntriesHint = 1;
     }

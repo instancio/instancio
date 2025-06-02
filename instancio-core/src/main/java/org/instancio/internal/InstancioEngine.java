@@ -117,7 +117,7 @@ class InstancioEngine {
 
     @Nullable
     private Object createRootObjectInternal() {
-        final GeneratorResult generatorResult = createObject(rootNode); // NOPMD
+        final GeneratorResult generatorResult = createObject(rootNode);
         callbackHandler.invokeCallbacks();
         processDelayedNodes(true);
         context.reportWarnings();
@@ -549,7 +549,6 @@ class InstancioEngine {
         return containerFactoriesHandler.substituteResult(node, generatorResult);
     }
 
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
     private GeneratorResult generateRecord(final InternalNode node) {
         // Handle the case where user supplies a generator for creating a record,
         final GeneratorResult customRecord = generateValue(node);

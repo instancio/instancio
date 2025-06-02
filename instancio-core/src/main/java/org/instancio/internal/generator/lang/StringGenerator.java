@@ -296,7 +296,6 @@ public class StringGenerator extends AbstractGenerator<String>
         LOWER, UPPER, MIXED
     }
 
-    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
     private enum StringType {
         ALPHABETIC(
                 Chars.LC_ALPHABETIC,

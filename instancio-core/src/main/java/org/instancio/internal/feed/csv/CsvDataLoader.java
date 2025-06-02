@@ -42,7 +42,6 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
     }
 
     @Override
-    @SuppressWarnings("PMD.CyclomaticComplexity")
     public List<String[]> load(final DataSource dataSource) throws Exception {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(getInputStream(dataSource)))) {

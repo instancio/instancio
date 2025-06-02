@@ -131,7 +131,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports", "PMD.LooseCoupling", "PMD.NcssCount"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.NcssCount"})
 final class GeneratorResolverMaps {
     private static final Map<Class<?>, Class<?>> SUBTYPES = initSubtypes();
     private static final Map<Class<?>, Class<?>> GENERATORS = initGeneratorMap();
