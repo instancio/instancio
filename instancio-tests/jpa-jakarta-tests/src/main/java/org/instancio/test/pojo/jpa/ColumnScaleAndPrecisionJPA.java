@@ -38,7 +38,7 @@ public class ColumnScaleAndPrecisionJPA {
     }
 
     @Data
-    public static class WithDefaultPrecision {
+    public static class WithDefaultScaleAndPrecision {
         @Column
         private BigDecimal d;
     }

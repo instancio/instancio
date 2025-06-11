@@ -17,7 +17,7 @@ package org.instancio.test.jpa;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.pojo.jpa.ColumnScaleAndPrecisionJPA.WithDefaultPrecision;
+import org.instancio.test.pojo.jpa.ColumnScaleAndPrecisionJPA.WithDefaultScaleAndPrecision;
 import org.instancio.test.pojo.jpa.ColumnScaleAndPrecisionJPA.WithPrecision;
 import org.instancio.test.pojo.jpa.ColumnScaleAndPrecisionJPA.WithPrecisionScale;
 import org.instancio.test.pojo.jpa.ColumnScaleAndPrecisionJPA.WithPrecisionScaleAndDecimalMinMax;
@@ -41,12 +41,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ColumnScaleAndPrecisionJPATest {
 
     @RepeatedTest(Constants.SAMPLE_SIZE_D)
-    void withDefaultPrecision() {
-        final WithDefaultPrecision result = Instancio.create(WithDefaultPrecision.class);
+    void withDefaultScaleAndPrecision() {
+        final WithDefaultScaleAndPrecision result = Instancio.create(WithDefaultScaleAndPrecision.class);
 
-        // default precision of zero should be ignored
         assertThat(result.getD()).isBetween(
-                new BigDecimal("1"),
+                new BigDecimal("0.01"),
                 new BigDecimal("10000"));
     }
 
