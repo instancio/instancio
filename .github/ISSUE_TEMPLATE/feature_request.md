@@ -1,10 +1,8 @@
 ---
 name: Feature request
-about: Suggest a new feature for this project
+about: Suggest a new feature
 title: ''
 labels: 'type: enhancement'
-assignees: 'armandino'
-
 ---
 
 ### Feature description
