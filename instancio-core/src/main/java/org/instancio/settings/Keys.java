@@ -260,6 +260,17 @@ public final class Keys {
             "float.nullable", Boolean.class, false);
 
     /**
+     * Specifies a comma-separated list of prefixes for field names that
+     * should be ignored; default is an empty string (no fields ignored);
+     * property name {@code ignore.field.name.prefixes}.
+     *
+     * @since 5.4.2
+     */
+    @ExperimentalApi
+    public static final SettingKey<String> IGNORE_FIELD_NAME_PREFIXES = registerRequiredNonAdjustable(
+            "ignore.field.name.prefixes", String.class, "");
+
+    /**
      * Specifies the number of samples for the {@code @InstancioSource}
      * annotation from the {@code instancio-junit} module;
      * default is 100; property name {@code instancio.source.samples}.

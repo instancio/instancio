@@ -120,6 +120,19 @@ class StringUtilsTest {
         assertThat(StringUtils.startsWithAny("foo", "x", "foo")).isTrue();
     }
 
+    @Test
+    void split() {
+        assertThat(StringUtils.split(null)).isEmpty();
+        assertThat(StringUtils.split("")).isEmpty();
+        assertThat(StringUtils.split("\n , \r\n  \t  ,, ,")).isEmpty();
+        assertThat(StringUtils.split("\n \r\n  \t  ")).isEmpty();
+
+        assertThat(StringUtils.split("foo")).containsExactly("foo");
+        assertThat(StringUtils.split("foo,bar")).containsExactly("foo", "bar");
+        assertThat(StringUtils.split(" foo , bar ")).containsExactly("foo", "bar");
+        assertThat(StringUtils.split(" , bar , , , ")).containsExactly("bar");
+    }
+
     @Nested
     class GetTemplatePropertiesTest {
 
