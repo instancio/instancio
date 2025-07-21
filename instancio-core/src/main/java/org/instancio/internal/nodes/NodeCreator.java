@@ -20,9 +20,12 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.instancio.internal.util.Format;
+import org.instancio.internal.util.StringUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -36,7 +39,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Helper class for creating nodes.
@@ -51,6 +58,7 @@ class NodeCreator {
     private final TypeHelper typeHelper;
     private final NodeKindResolverFacade nodeKindResolverFacade;
     private final SubtypeResolver subtypeResolver;
+    private final List<Pattern> ignorePatterns;
 
     NodeCreator(final ModelContext modelContext) {
         this.modelContext = modelContext;
@@ -58,7 +66,22 @@ class NodeCreator {
         this.nodeKindResolverFacade = new NodeKindResolverFacade(modelContext.getInternalServiceProviders());
         this.predefinedNodeCreator = new PredefinedNodeCreator(modelContext.getRootType(), nodeKindResolverFacade);
         this.subtypeResolver = new SubtypeResolver(modelContext);
+        this.ignorePatterns = getIgnorePatterns(modelContext.getSettings());
     }
+
+    private List<Pattern> getIgnorePatterns(final Settings settings) {
+        final List<String> regexes = StringUtils.split(settings.get(Keys.IGNORE_FIELD_NAME_REGEXES));
+        if (regexes.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        final List<Pattern> patterns = new ArrayList<>(regexes.size());
+        for (String regex : regexes) {
+            patterns.add(Pattern.compile(regex));
+        }
+        return Collections.unmodifiableList(patterns);
+    }
+
 
     @Nullable
     InternalNode createNode(@NotNull final Type type,
@@ -118,6 +141,10 @@ class NodeCreator {
 
         if (parent != null && parent.getDepth() >= modelContext.getMaxDepth()) {
             LOG.trace("Maximum depth ({}) reached {}", modelContext.getMaxDepth(), parent);
+            return null;
+        }
+
+        if (shouldIgnoreMember(member)) {
             return null;
         }
 
@@ -287,8 +314,8 @@ class NodeCreator {
         final Class<?> targetClassComponentType = targetClass.getComponentType();
 
         if (!rawComponentType.isPrimitive()
-                && targetClassComponentType != null
-                && rawComponentType != targetClassComponentType) {
+            && targetClassComponentType != null
+            && rawComponentType != targetClassComponentType) {
 
             ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
 
@@ -311,4 +338,16 @@ class NodeCreator {
         return node;
     }
 
+    private boolean shouldIgnoreMember(final @Nullable Member member) {
+        if (!ignorePatterns.isEmpty() && member instanceof Field) {
+            final String fieldName = member.getName();
+            for (Pattern p : ignorePatterns) {
+                if (p.matcher(fieldName).matches()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
