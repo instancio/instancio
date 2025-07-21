@@ -19,11 +19,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import static org.instancio.internal.util.ErrorMessageUtils.invalidStringTemplate;
 
+@SuppressWarnings("PMD.GodClass")
 public final class StringUtils {
 
     public static boolean isEmpty(@Nullable final String s) {
@@ -148,6 +150,46 @@ public final class StringUtils {
             }
         }
         return results;
+    }
+
+    /**
+     * Splits given string using {@code ','} as the separator.
+     * Trims whitespace from the split tokens.
+     *
+     * <p>This is a slightly modified version of the {@code split()}
+     * method copied from {@code org.apache.commons.lang3.StringUtils}.
+     *
+     * @param str to split
+     * @return an immutable list of tokens or an empty list if none
+     */
+    public static List<String> split(@Nullable String str) {
+        if (isBlank(str)) {
+            return Collections.emptyList();
+        }
+
+        final char separatorChar = ',';
+        final int len = str.length();
+        final List<String> tokens = new ArrayList<>();
+
+        int i = 0;
+        int start = 0;
+        while (i < len) {
+            if (str.charAt(i) == separatorChar) {
+                final String token = str.substring(start, i).trim();
+                if (!token.isEmpty()) {
+                    tokens.add(token);
+                }
+                start = ++i;
+                continue;
+            }
+            i++;
+        }
+
+        final String token = str.substring(start, i).trim();
+        if (!token.isEmpty()) {
+            tokens.add(token);
+        }
+        return Collections.unmodifiableList(tokens);
     }
 
     private StringUtils() {
