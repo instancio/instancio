@@ -20,24 +20,25 @@ public final class Sonar {
     public static final String ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED = "java:S3011";
     public static final String ADD_ASSERTION = "java:S2699";
     public static final String CATCH_EXCEPTION_INSTEAD_OF_THROWABLE = "java:S1181";
-    public static final String DEFINE_DEDICATED_EXCEPTION = "java:S112";
     public static final String COGNITIVE_COMPLEXITY_OF_METHOD = "java:S3776";
+    public static final String DEFINE_DEDICATED_EXCEPTION = "java:S112";
     public static final String DISABLED_TEST = "java:S1607";
+    public static final String FIELD_NAMING_CONVENTION =  "java:S116";
+    public static final String FUNCTIONAL_INTERFACES_SHOULD_BE_SPECIALISED = "java:S4276";
     public static final String GENERIC_WILDCARD_IN_RETURN = "java:S1452";
+    // avoid computeIfAbsent() in hot paths as it has a minor performance hit
+    public static final String MAP_COMPUTE_IF_ABSENT = "java:S3824";
     public static final String METHODS_RETURNS_SHOULD_NOT_BE_INVARIANT = "java:S3516";
     public static final String NULL_OPTIONAL = "java:S2789";
     public static final String NUMBER_OF_PARENTS = "java:S110";
+    public static final String ONE_METHOD_WHEN_TESTING_EXCEPTIONS = "java:S5778";
+    public static final String OVERRIDE_EQUALS = "java:S2160";
     public static final String RAW_USE_OF_PARAMETERIZED_CLASS = "java:S3740";
     public static final String RETURN_EMPTY_COLLECTION = "java:S1168";
-    public static final String ONE_METHOD_WHEN_TESTING_EXCEPTIONS = "java:S5778";
     public static final String STRING_LITERALS_DUPLICATED = "java:S1192";
-    public static final String USE_INSTANCEOF = "java:S1872";
-    public static final String FUNCTIONAL_INTERFACES_SHOULD_BE_SPECIALISED = "java:S4276";
-    public static final String USING_SLOW_REGEX = "java:S5852";
-    public static final String OVERRIDE_EQUALS = "java:S2160";
     public static final String TOO_MANY_PARAMETERS = "java:S107";
-    // avoid computeIfAbsent() in hot paths as it has a minor performance hit
-    public static final String MAP_COMPUTE_IF_ABSENT = "java:S3824";
+    public static final String USE_INSTANCEOF = "java:S1872";
+    public static final String USING_SLOW_REGEX = "java:S5852";
 
     private Sonar() {
         // non-instantiable
