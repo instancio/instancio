@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>jpms-tests</artifactId>
-        <version>5.4.2-SNAPSHOT</version>
+        <version>5.5.0</version>
     </parent>
     <artifactId>jpms-guava-tests</artifactId>
     <name>Instancio tests: JPMS instancio-guava Tests</name>
