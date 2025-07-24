@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>jpms-tests</artifactId>
-        <version>5.5.0</version>
+        <version>5.5.1-SNAPSHOT</version>
     </parent>
     <artifactId>jpms-bean-validation-jakarta-tests</artifactId>
     <name>Instancio tests: JPMS Bean Validation Jakarta Tests</name>
