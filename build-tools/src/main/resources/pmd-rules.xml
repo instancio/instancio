@@ -94,6 +94,8 @@
         <exclude name="AvoidFieldNameMatchingTypeName"/>
         <exclude name="ConstructorCallsOverridableMethod"/>
         <exclude name="MissingSerialVersionUID"/>
+        <exclude name="ReplaceJavaUtilCalendar"/>
+        <exclude name="ReplaceJavaUtilDate"/>
     </rule>
     <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
         <properties>
