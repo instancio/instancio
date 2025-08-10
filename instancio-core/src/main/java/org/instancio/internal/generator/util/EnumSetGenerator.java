@@ -47,16 +47,17 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<Set<E
         this.generateEntriesHint = 0;
     }
 
-    @Override
-    public String apiMethod() {
-        return "enumSet()";
-    }
-
+    @SuppressWarnings("unused") // used via reflection
     public EnumSetGenerator(final GeneratorContext context) {
         super(context);
         this.enumClass = null;
         // Without knowing the enum class size cannot be determined, so just default to 1
         this.generateEntriesHint = 1;
+    }
+
+    @Override
+    public String apiMethod() {
+        return "enumSet()";
     }
 
     @Override
@@ -159,10 +160,12 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<Set<E
         return Hints.builder()
                 .with(InternalContainerHint.builder()
                         .generateEntries(generateEntriesHint)
-                        .createFunction(args -> EnumSet.noneOf((Class<E>) args[0].getClass()))
+                        .createFunction(args -> {
+                            final Class<E> klass = ((E) args[0]).getDeclaringClass();
+                            return EnumSet.noneOf(klass);
+                        })
                         .addFunction((Set<E> enumSet, Object... args) -> enumSet.add((E) args[0]))
                         .build())
                 .build();
     }
-
 }
