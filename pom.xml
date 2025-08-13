@@ -512,6 +512,7 @@
                         <preparationGoals>clean versions:set-property verify</preparationGoals>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <localCheckout>true</localCheckout>
+                        <scmCommentPrefix>[skip ci][maven-release-plugin]</scmCommentPrefix>
                         <preparationProfiles>!tests</preparationProfiles>
                         <releaseProfiles>release,sign</releaseProfiles>
                     </configuration>
