@@ -44,7 +44,6 @@
         <module>bean-validation-jakarta-tests</module>
         <module>packaging-tests</module>
         <module>report-aggregate</module>
-        <module>java16-tests</module>
         <module>java17-tests</module>
         <module>instancio-core-tests</module>
         <module>instancio-junit-tests</module>
