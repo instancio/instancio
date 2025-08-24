@@ -102,8 +102,6 @@
                         <Import-Package>
                             jakarta.persistence;version=!;resolution:=optional,
                             jakarta.validation.constraints;version=!;resolution:=optional,
-                            javax.persistence;version=!;resolution:=optional,
-                            javax.validation.constraints;version=!;resolution:=optional,
                             javax.xml.datatype;resolution:=optional,
                             org.hibernate.validator.constraints.pl;version=!;resolution:=optional,
                             org.hibernate.validator.constraints.time;version=!;resolution:=optional,
@@ -151,18 +149,6 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>

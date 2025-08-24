@@ -38,7 +38,6 @@ import static org.assertj.core.api.Assertions.assertThatObject;
 class BeanValidationEnabledWithNoProvidersTest {
 
     private static final String[] BEAN_VALIDATION_CLASSES = {
-            "javax.validation.Validation",
             "jakarta.validation.Validation",
             "org.hibernate.validator.HibernateValidator"
     };

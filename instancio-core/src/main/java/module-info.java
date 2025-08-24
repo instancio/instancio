@@ -4,8 +4,6 @@ module org.instancio.core {
     requires static com.fasterxml.jackson.databind;
     requires static jakarta.persistence;
     requires static jakarta.validation;
-    requires static java.persistence;
-    requires static java.validation;
     requires static java.sql;
     requires static java.xml;
     requires static jdk.unsupported;
