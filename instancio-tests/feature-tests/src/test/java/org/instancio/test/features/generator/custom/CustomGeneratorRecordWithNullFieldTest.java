@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.java17.generator;
+package org.instancio.test.features.generator.custom;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
@@ -48,7 +48,7 @@ import static org.instancio.Select.allBooleans;
  */
 @FeatureTag(Feature.AFTER_GENERATE)
 @ExtendWith(InstancioExtension.class)
-class CustomerGeneratorRecordWithNullFieldTest {
+class CustomGeneratorRecordWithNullFieldTest {
 
     private record Container(
             StringHolder stringHolder,

@@ -20,7 +20,7 @@ import org.instancio.Instancio;
 import org.instancio.TargetSelector;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.record.GenericPairRecord;
+import org.instancio.test.support.pojo.record.GenericPairRecord;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;

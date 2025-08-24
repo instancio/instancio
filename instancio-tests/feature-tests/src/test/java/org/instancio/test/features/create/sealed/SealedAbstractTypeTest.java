@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.java17;
+package org.instancio.test.features.create.sealed;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;

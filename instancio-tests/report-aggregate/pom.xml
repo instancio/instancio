@@ -106,12 +106,6 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>java17-tests</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.instancio</groupId>
             <artifactId>spi-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

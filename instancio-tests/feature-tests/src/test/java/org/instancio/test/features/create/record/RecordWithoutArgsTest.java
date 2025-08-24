@@ -16,7 +16,7 @@
 package org.instancio.test.features.create.record;
 
 import org.instancio.Instancio;
-import org.instancio.test.support.record.RecordWithoutArgs;
+import org.instancio.test.support.pojo.record.RecordWithoutArgs;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

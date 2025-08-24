@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.java17;
+package org.instancio.test.features.create.sealed;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.java17.classes.FooRecord;
-import org.instancio.test.java17.classes.SealedFoo;
-import org.instancio.test.java17.classes.SealedFooSubclass;
+import org.instancio.test.support.pojo.sealed.FooRecord;
+import org.instancio.test.support.pojo.sealed.SealedFoo;
+import org.instancio.test.support.pojo.sealed.SealedFooSubclass;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;

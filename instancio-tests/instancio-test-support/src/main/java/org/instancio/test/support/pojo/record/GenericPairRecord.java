@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.record;
+package org.instancio.test.support.pojo.record;
 
-public record StringsAbcRecord(String a, String b, String c, StringsDefRecord def) {
+public record GenericPairRecord<L, R>(L left, R right) {
 }

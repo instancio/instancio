@@ -17,9 +17,9 @@ package org.instancio.internal.reflect;
 
 import org.instancio.internal.util.RecordUtils;
 import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
-import org.instancio.test.support.record.AddressRecord;
-import org.instancio.test.support.record.PersonRecord;
-import org.instancio.test.support.record.PhoneRecord;
+import org.instancio.test.support.pojo.record.AddressRecord;
+import org.instancio.test.support.pojo.record.PersonRecord;
+import org.instancio.test.support.pojo.record.PhoneRecord;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

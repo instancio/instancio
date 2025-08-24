@@ -13,23 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.java17.classes;
+package org.instancio.test.support.pojo.record;
 
-import java.time.LocalDate;
-
-public final class SealedFooSubclass extends SealedFoo {
-    private LocalDate fooDate;
-    private String fooString;
-
-    public LocalDate getFooDate() {
-        return fooDate;
-    }
-
-    public String getFooString() {
-        return fooString;
-    }
-
-    public void setFooString(final String fooString) {
-        this.fooString = fooString;
-    }
+public record StringsDefRecord(String d, String e, String f, StringsGhiRecord ghi) {
 }
