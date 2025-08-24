@@ -38,6 +38,8 @@ open module org.instancio.test.support {
     exports org.instancio.test.support.pojo.performance;
     exports org.instancio.test.support.pojo.performance.onetomany;
     exports org.instancio.test.support.pojo.person;
+    exports org.instancio.test.support.record;
+    exports org.instancio.test.support.record.cyclic;
     exports org.instancio.test.support.tags;
     exports org.instancio.test.support.util;
 }
