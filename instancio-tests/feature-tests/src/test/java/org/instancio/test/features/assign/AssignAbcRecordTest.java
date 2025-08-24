@@ -23,7 +23,7 @@ import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnresolvedAssignmentException;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.record.StringsAbcRecord;
+import org.instancio.test.support.pojo.record.StringsAbcRecord;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;

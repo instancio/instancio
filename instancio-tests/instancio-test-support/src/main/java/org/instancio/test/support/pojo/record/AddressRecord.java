@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.java17.classes;
+package org.instancio.test.support.pojo.record;
 
-public record FooRecord(Integer fooId, String fooValue) {
+import java.util.List;
+
+public record AddressRecord(
+        String street,
+        String city,
+        List<PhoneRecord> phoneNumbers) {
 }

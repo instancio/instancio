@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.record;
+package org.instancio.test.support.pojo.sealed;
 
-public record StringsDefRecord(String d, String e, String f, StringsGhiRecord ghi) {
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
+
+@Getter
+public final class SealedFooSubclass extends SealedFoo {
+    private LocalDate fooDate;
+    @Setter
+    private String fooString;
 }

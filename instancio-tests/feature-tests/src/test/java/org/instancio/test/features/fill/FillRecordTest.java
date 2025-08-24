@@ -19,7 +19,7 @@ import lombok.Data;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.conditions.Conditions;
-import org.instancio.test.support.record.PhoneRecord;
+import org.instancio.test.support.pojo.record.PhoneRecord;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;

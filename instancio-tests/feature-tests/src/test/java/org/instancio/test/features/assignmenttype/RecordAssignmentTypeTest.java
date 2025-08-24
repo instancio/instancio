@@ -22,7 +22,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.Settings;
-import org.instancio.test.support.record.PhoneRecord;
+import org.instancio.test.support.pojo.record.PhoneRecord;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;

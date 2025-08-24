@@ -17,7 +17,7 @@ package org.instancio.test.features.feed.applyfeedprovider;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.record.PhoneRecord;
+import org.instancio.test.support.pojo.record.PhoneRecord;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

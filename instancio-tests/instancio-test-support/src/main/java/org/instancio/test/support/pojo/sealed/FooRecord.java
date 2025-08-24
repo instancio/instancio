@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.java17.classes;
+package org.instancio.test.support.pojo.sealed;
 
-public sealed class SealedFoo permits SealedFooSubclass {
-    private FooRecord fooRecord;
-
-    public FooRecord getFooRecord() {
-        return fooRecord;
-    }
+public record FooRecord(Integer fooId, String fooValue) {
 }

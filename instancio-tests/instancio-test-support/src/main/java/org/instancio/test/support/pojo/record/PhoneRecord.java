@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.record.cyclic;
+package org.instancio.test.support.pojo.record;
 
-public record NodeRecord<T>(NodeRecord<T> prev, NodeRecord<T> next, T value) {
-
+public record PhoneRecord(
+        String countryCode,
+        String number) {
 }

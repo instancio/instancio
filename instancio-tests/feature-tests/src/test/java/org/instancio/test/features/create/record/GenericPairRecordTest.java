@@ -18,7 +18,7 @@ package org.instancio.test.features.create.record;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.record.GenericPairRecord;
+import org.instancio.test.support.pojo.record.GenericPairRecord;
 import org.instancio.test.support.tags.GenericsTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

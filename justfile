@@ -14,9 +14,6 @@ core-tests:
 feature-tests:
     mvn verify -f instancio-tests/feature-tests/pom.xml
 
-java17-tests:
-    mvn test -f instancio-tests/java17-tests/pom.xml
-
 javadoc:
     mvn javadoc:javadoc
 

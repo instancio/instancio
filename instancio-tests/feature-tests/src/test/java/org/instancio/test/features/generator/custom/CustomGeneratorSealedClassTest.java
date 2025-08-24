@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.java17.generator;
+package org.instancio.test.features.generator.custom;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
@@ -21,8 +21,8 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.java17.classes.FooRecord;
-import org.instancio.test.java17.classes.SealedFooSubclass;
+import org.instancio.test.support.pojo.sealed.FooRecord;
+import org.instancio.test.support.pojo.sealed.SealedFooSubclass;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -34,7 +34,7 @@ import static org.instancio.Select.fields;
  * NOTE: this test fails in IntelliJ, run it using Maven
  */
 @ExtendWith(InstancioExtension.class)
-class CustomSealedClassGeneratorTest {
+class CustomGeneratorSealedClassTest {
 
     private final Generator<SealedFooSubclass> sealedFooSubclassGenerator = new Generator<SealedFooSubclass>() {
         @Override

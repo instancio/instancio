@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.record;
+package org.instancio.test.support.pojo.record;
 
-public record PhoneRecord(
-        String countryCode,
-        String number) {
+public record PrimitivesRecord(
+        boolean booleanValue,
+        byte byteValue,
+        short shortValue,
+        char charValue,
+        int intValue,
+        long longValue,
+        float floatValue,
+        double doubleValue,
+        Object objectValue) {
+
 }
+

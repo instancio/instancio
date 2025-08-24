@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.java17.generator;
+package org.instancio.test.features.generator.custom;
 
 import org.assertj.core.api.ThrowingConsumer;
 import org.instancio.Instancio;
@@ -25,6 +25,8 @@ import org.instancio.generator.Hints;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.test.support.pojo.record.PersonRecord;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +39,7 @@ import static org.instancio.test.support.conditions.Conditions.RANDOM_INTEGER;
 import static org.instancio.test.support.conditions.Conditions.RANDOM_STRING;
 
 @ExtendWith(InstancioExtension.class)
-class CustomerGeneratorRecordTest {
+class CustomGeneratorRecordTest {
 
     /**
      * Field names starting with "_initial" prefix should be added to {@code ignore()}
@@ -99,6 +101,33 @@ class CustomerGeneratorRecordTest {
                     }
                 })
                 .toModel();
+    }
+
+    @Test
+    @DisplayName("POPULATE_NULLS does not apply records since they are read-only")
+    void customRecordGenerator() {
+        final String name = "John";
+        final int age = 25;
+
+        final PersonRecord result = Instancio.of(PersonRecord.class)
+                .supply(all(PersonRecord.class), new Generator<PersonRecord>() {
+                    @Override
+                    public PersonRecord generate(final Random random) {
+                        return new PersonRecord(name, age, null);
+                    }
+
+                    @Override
+                    public Hints hints() {
+                        return Hints.afterGenerate(AfterGenerate.POPULATE_NULLS);
+                    }
+                })
+                .create();
+
+        assertThat(result.name()).isEqualTo(name);
+        assertThat(result.age()).isEqualTo(age);
+        assertThat(result.address())
+                .as("NULLS is ignored since records cannot be modified")
+                .isNull();
     }
 
     @Nested
