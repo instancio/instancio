@@ -11,7 +11,7 @@
     <name>Instancio Tests: JPMS Tests Parent</name>
 
     <properties>
-        <animal.sniffer.skip>true</animal.sniffer.skip>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
 
     <modules>
@@ -41,21 +41,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <release>21</release>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

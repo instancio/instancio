@@ -12,19 +12,11 @@
 
     <properties>
         <maven.enforcer.require.java.version>[17,)</maven.enforcer.require.java.version>
-        <animal.sniffer.skip>true</animal.sniffer.skip>
         <version.jooq>3.20.4</version.jooq>
     </properties>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <release>17</release>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>

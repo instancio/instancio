@@ -10,15 +10,6 @@
     <packaging>jar</packaging>
     <name>Instancio tests: Default Package Tests</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>org.instancio</groupId>

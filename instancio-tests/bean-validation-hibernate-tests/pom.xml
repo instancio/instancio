@@ -12,7 +12,6 @@
 
     <properties>
         <sonar.exclusions>**/test/pojo/beanvalidation/**/*</sonar.exclusions>
-        <animal.sniffer.skip>true</animal.sniffer.skip>
     </properties>
 
     <build>
@@ -21,7 +20,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <release>17</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -46,15 +44,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.mortbay.jasper</groupId>
-            <artifactId>apache-el</artifactId>
-            <version>10.1.7</version>
-        </dependency>
-        <!-- validation-api is also needed because Hibernate declares it as 'provided' -->
-        <dependency>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-            <scope>compile</scope>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>6.0.0</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
