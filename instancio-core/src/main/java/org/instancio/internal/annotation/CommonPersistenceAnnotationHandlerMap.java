@@ -26,7 +26,7 @@ import org.instancio.settings.Settings;
 import java.lang.annotation.Annotation;
 
 /**
- * Base class for {@code javax} and {@code jakarta} persistence annotations.
+ * Base class for {@code jakarta} persistence annotations.
  */
 class CommonPersistenceAnnotationHandlerMap extends AnnotationHandlerMap {
 
