@@ -12,6 +12,7 @@
 
     <properties>
         <maven.enforcer.require.java.version>17</maven.enforcer.require.java.version>
+        <maven.compiler.release>17</maven.compiler.release>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <maven.source.skip>true</maven.source.skip>
         <gpg.skip>true</gpg.skip>
@@ -20,8 +21,8 @@
         <version.archunit>1.4.1</version.archunit>
         <version.assertj>3.27.4</version.assertj>
         <version.equalsverifier>4.0.9</version.equalsverifier>
-        <version.junit.pioneer>1.9.1</version.junit.pioneer>
-        <version.logback>1.3.12</version.logback>
+        <version.junit.pioneer>2.3.0</version.junit.pioneer>
+        <version.logback>1.5.18</version.logback>
         <version.lombok>1.18.38</version.lombok>
         <version.mockito>5.18.0</version.mockito>
         <!-- plugins -->
@@ -76,19 +77,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <release>17</release>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-        </plugins>
     </build>
 
     <dependencyManagement>
