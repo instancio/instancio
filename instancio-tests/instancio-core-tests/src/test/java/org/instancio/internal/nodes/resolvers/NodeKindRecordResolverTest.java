@@ -15,8 +15,12 @@
  */
 package org.instancio.internal.nodes.resolvers;
 
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.NodeKindResolver;
 import org.instancio.test.support.pojo.person.Person;
+import org.instancio.test.support.pojo.record.AddressRecord;
+import org.instancio.test.support.pojo.record.PersonRecord;
+import org.instancio.test.support.pojo.record.PrimitivesRecord;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -30,5 +34,11 @@ class NodeKindRecordResolverTest {
     @ParameterizedTest
     void verifyNonMatches(final Class<?> klass) {
         assertThat(resolver.resolve(klass)).isEmpty();
+    }
+
+    @ValueSource(classes = {AddressRecord.class, PersonRecord.class, PrimitivesRecord.class})
+    @ParameterizedTest
+    void resolveRecord(final Class<?> klass) {
+        assertThat(resolver.resolve(klass)).contains(NodeKind.RECORD);
     }
 }

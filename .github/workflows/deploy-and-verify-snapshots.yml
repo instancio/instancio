@@ -26,7 +26,7 @@ jobs:
     needs: deploy
     strategy:
       matrix:
-        java: [ 8, 11, 17, 21, 24 ]
+        java: [ 17, 21, 24 ]
     runs-on: ubuntu-latest
     name: "Verify snapshots JDK ${{ matrix.java }}"
     steps:
@@ -35,9 +35,6 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: "temurin"
-          java-version: |
-            24
-            ${{ matrix.java }}
+          java-version: ${{ matrix.java }}
       - name: "Test"
-        # Java 8 will use Java 24 through the maven-toolchains-plugin to compile instancio-test-support
         run: cd instancio-tests && mvn -B verify
