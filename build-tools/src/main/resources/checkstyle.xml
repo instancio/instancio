@@ -31,8 +31,6 @@
             <property name="illegalPkgs" value="
               jakarta.persistence,
               jakarta.validation,
-              javax.persistence,
-              javax.validation,
               org.hibernate,
               sun.misc"/>
         </module>

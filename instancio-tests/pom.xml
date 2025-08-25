@@ -39,11 +39,8 @@
         <module>global-seed-tests</module>
         <module>groovy-tests</module>
         <module>kotlin-tests</module>
-        <module>jpa-javax-tests</module>
         <module>jpa-jakarta-tests</module>
-        <module>bean-validation-javax-tests</module>
         <module>bean-validation-jakarta-tests</module>
-        <module>bean-validation-hibernate5-tests</module>
         <module>packaging-tests</module>
         <module>report-aggregate</module>
     </modules>

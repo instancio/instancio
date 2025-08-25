@@ -42,7 +42,7 @@ import java.math.BigDecimal;
 import java.util.function.Function;
 
 /**
- * Base class for {@code javax} and {@code jakarta} validation annotations.
+ * Base class for {@code jakarta} validation annotations.
  */
 class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
 

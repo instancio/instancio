@@ -43,8 +43,6 @@ class ManifestFileTest {
     private static final String[] INSTANCIO_CORE_EXPECTED_IMPORTS = {
             "jakarta.persistence;resolution:=optional",
             "jakarta.validation.constraints;resolution:=optional",
-            "javax.persistence;resolution:=optional",
-            "javax.validation.constraints;resolution:=optional",
             "javax.xml.datatype;resolution:=optional",
             "org.hibernate.validator.constraints.pl;resolution:=optional",
             "org.hibernate.validator.constraints.time;resolution:=optional",

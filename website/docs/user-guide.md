@@ -2714,7 +2714,6 @@ bean.validation.enabled=true
 Instancio supports annotations from:
 
 - `jakarta.validation.constraints`
-- `javax.validation.constraints`
 - `org.hibernate.validator.constraints`
 
 It will generate data based on the constraints, depending on what is available on the classpath.
@@ -2726,14 +2725,6 @@ Instancio does not provide the dependencies transitively.
         <groupId>jakarta.validation</groupId>
         <artifactId>jakarta.validation-api</artifactId>
         <version>${jakarta-validation-api-version}</version>
-    </dependency>
-    ```
-=== "`javax.validation`"
-    ```xml
-    <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${javax-validation-api-version}</version>
     </dependency>
     ```
 === "`hibernate`"
@@ -2757,7 +2748,7 @@ bean.validation.target=GETTER
 The list of supported annotations is provided below.
 Anything not listed is unsupported, including `*.List` annotations.
 
-### Jakarta or Javax
+### Jakarta
 
 - `@AssertFalse`
 - `@AssertTrue`
@@ -2825,7 +2816,7 @@ or globally, using `instancio.properties`:
 jpa.enabled=true
 ```
 
-In addition, `jakarta` or `javax` API must be present on the classpath for the feature to be activated.
+In addition, `jakarta` API must be present on the classpath for the feature to be activated.
 Instancio does not provide the dependency transitively:
 
 ```xml
@@ -2833,16 +2824,6 @@ Instancio does not provide the dependency transitively:
     <groupId>jakarta.persistence</groupId>
     <artifactId>jakarta.persistence-api</artifactId>
     <version>${jakarta-persistence-api-version}</version>
-</dependency>
-```
-
-or
-
-```xml
-<dependency>
-    <groupId>javax.persistence</groupId>
-    <artifactId>javax.persistence-api</artifactId>
-    <version>${javax-persistence-api-version}</version>
 </dependency>
 ```
 
@@ -3759,7 +3740,7 @@ of the JPA `@Column` annotation.
     From version `3.3.0` Instancio supports this functionality out-of-the-box. See the [JPA section](#jpa) for more details.
 
 ```java linenums="1" hl_lines="13 16"
-import javax.persistence.Column;
+import jakarta.persistence.Column;
 
 public class GeneratorProviderImpl implements GeneratorProvider {
 

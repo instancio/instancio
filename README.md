@@ -163,7 +163,7 @@ class ExampleTest {
 
 - Fully reproducible data in case of test failures.
 - Support for generics, `record` and `sealed` classes, Java 21 sequenced collections.
-- Data generation based on JPA and Bean Validation annotations (Hibernate, jakarta, javax).
+- Data generation based on JPA and Bean Validation annotations (Hibernate, jakarta).
 - Flexible configuration options and SPIs.
 - Support for defining custom generators.
 - `InstancioExtension` for Junit 5 `@ExtendWith`.

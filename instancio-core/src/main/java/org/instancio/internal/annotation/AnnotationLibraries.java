@@ -30,9 +30,7 @@ public final class AnnotationLibraries {
 
     private static final Logger LOG = LoggerFactory.getLogger(AnnotationLibraries.class);
 
-    private static final String JAVAX_PERSISTENCE_CLASS = "javax.persistence.Column";
     private static final String JAKARTA_PERSISTENCE_CLASS = "jakarta.persistence.Column";
-    private static final String JAVAX_VALIDATOR_CLASS = "javax.validation.Validation";
     private static final String JAKARTA_VALIDATOR_CLASS = "jakarta.validation.Validation";
     private static final String HIBERNATE_VALIDATOR_CLASS = "org.hibernate.validator.HibernateValidator";
 
@@ -51,16 +49,8 @@ public final class AnnotationLibraries {
         // List order matters - later entry may override earlier one
         final List<AnnotationLibraryFacade> result = new ArrayList<>();
 
-        // In theory, there shouldn't be javax and jakarta on the classpath
-        // at the same time. In practice, it can happen, so we add both.
-
-        if (jpaEnabled) {
-            if (ReflectionUtils.loadClass(JAVAX_PERSISTENCE_CLASS) != null) {
-                result.add(new JavaxPersistenceAnnotationLibraryFacade());
-            }
-            if (ReflectionUtils.loadClass(JAKARTA_PERSISTENCE_CLASS) != null) {
-                result.add(new JakartaPersistenceAnnotationLibraryFacade());
-            }
+        if (jpaEnabled && ReflectionUtils.loadClass(JAKARTA_PERSISTENCE_CLASS) != null) {
+            result.add(new JakartaPersistenceAnnotationLibraryFacade());
         }
 
         if (beanValidationEnabled) {
@@ -69,9 +59,6 @@ public final class AnnotationLibraries {
             }
             if (ReflectionUtils.loadClass(JAKARTA_VALIDATOR_CLASS) != null) {
                 result.add(new JakartaBeanValidationAnnotationLibraryFacade());
-            }
-            if (ReflectionUtils.loadClass(JAVAX_VALIDATOR_CLASS) != null) {
-                result.add(new JavaxBeanValidationAnnotationLibraryFacade());
             }
         }
         return Collections.unmodifiableList(result);
