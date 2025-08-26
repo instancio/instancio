@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.create.sealed;
 
+import lombok.Setter;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.junit.jupiter.api.Test;
@@ -27,25 +28,15 @@ class GenericSealedInterfaceTest {
 
     private non-sealed interface BaseNonSealedInterface<T> extends BaseSealedInterface<T> {}
 
+    @Setter
     private static class Holder<S, T extends BaseSealedInterface<S>> {
         private S valueOne;
         private T valueTwo;
-
-        private void setValueOne(final S valueOne) {
-            this.valueOne = valueOne;
-        }
-
-        private void setValueTwo(final T valueTwo) {
-            this.valueTwo = valueTwo;
-        }
     }
 
+    @Setter
     private static class Foo implements BaseNonSealedInterface<String> {
         private String fooValue;
-
-        private void setFooValue(final String fooValue) {
-            this.fooValue = fooValue;
-        }
     }
 
     @Test

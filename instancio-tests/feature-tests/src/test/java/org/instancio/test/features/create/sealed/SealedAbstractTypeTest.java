@@ -40,7 +40,7 @@ class SealedAbstractTypeTest {
     //@formatter:off
     private sealed interface SealedInterfaceA permits SealedInterfaceB, SealedInterfaceImpl1 {}
     private sealed interface SealedInterfaceB extends SealedInterfaceA permits SealedAbstractClassB {}
-    private static sealed abstract class SealedAbstractClassB implements SealedInterfaceB permits SealedInterfaceImpl2 {}
+    private abstract static sealed class SealedAbstractClassB implements SealedInterfaceB permits SealedInterfaceImpl2 {}
     private static final class SealedInterfaceImpl1 implements SealedInterfaceA { UUID uuid; }
     private static final class SealedInterfaceImpl2 extends SealedAbstractClassB { String string; Long num; }
     //@formatter:on
