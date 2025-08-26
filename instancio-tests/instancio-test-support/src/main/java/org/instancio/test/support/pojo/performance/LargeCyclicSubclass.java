@@ -16,11 +16,10 @@
 package org.instancio.test.support.pojo.performance;
 
 import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import lombok.EqualsAndHashCode;
 
 @Data
-@SuppressWarnings("unused")
+@EqualsAndHashCode(callSuper = true)
 public class LargeCyclicSubclass extends LargeClass {
 
     private LargeCyclicSubclass largeCyclicClass1;
@@ -31,6 +30,6 @@ public class LargeCyclicSubclass extends LargeClass {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+        return super.toString();
     }
 }

@@ -16,8 +16,10 @@
 package org.instancio.test.support.pojo.person;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AddressExtension extends Address {
     private String additionalInfo;
 }
