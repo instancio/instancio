@@ -19,13 +19,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Test for {@link Conditions} from the {@code instancio-test-support} module.
- *
- * <p>This test was moved here after converting {@code instancio-test-support}
- * to a Java (JPMS) module. Was having problems getting the test to work there.
- * TODO: move this test back to instancio-test-support where it belongs
- */
 class ConditionsTest {
 
     @Test

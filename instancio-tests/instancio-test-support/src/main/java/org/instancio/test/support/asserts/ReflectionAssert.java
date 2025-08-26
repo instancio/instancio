@@ -15,7 +15,7 @@
  */
 package org.instancio.test.support.asserts;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.SoftAssertions;
 import org.instancio.test.support.util.Constants;
@@ -231,6 +231,6 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         return next != null
                 && !next.isArray()
                 && next.getPackage() != null
-                && !StringUtils.startsWithAny(next.getPackage().getName(), "java.", "javax.", "com.sun.", "sun.");
+                && !Strings.CI.startsWithAny(next.getPackage().getName(), "java.", "javax.", "com.sun.", "sun.");
     }
 }
