@@ -10,17 +10,12 @@
     <packaging>jar</packaging>
     <name>Instancio tests: Instancio SPI Tests</name>
 
-    <properties>
-        <animal.sniffer.skip>true</animal.sniffer.skip>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <release>17</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

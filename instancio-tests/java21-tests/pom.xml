@@ -12,20 +12,8 @@
 
     <properties>
         <maven.enforcer.require.java.version>[21,)</maven.enforcer.require.java.version>
-        <animal.sniffer.skip>true</animal.sniffer.skip>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <release>21</release>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>

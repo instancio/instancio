@@ -11,16 +11,18 @@
     <name>Instancio Tests: Tests Parent</name>
 
     <properties>
-        <maven.enforcer.require.java.version>8</maven.enforcer.require.java.version>
+        <maven.enforcer.require.java.version>17</maven.enforcer.require.java.version>
+        <maven.compiler.release>17</maven.compiler.release>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <maven.source.skip>true</maven.source.skip>
         <gpg.skip>true</gpg.skip>
+        <animal.sniffer.skip>true</animal.sniffer.skip>
         <version.apache.commons>3.18.0</version.apache.commons>
         <version.archunit>1.4.1</version.archunit>
         <version.assertj>3.27.4</version.assertj>
         <version.equalsverifier>4.0.9</version.equalsverifier>
-        <version.junit.pioneer>1.9.1</version.junit.pioneer>
-        <version.logback>1.3.12</version.logback>
+        <version.junit.pioneer>2.3.0</version.junit.pioneer>
+        <version.logback>1.5.18</version.logback>
         <version.lombok>1.18.38</version.lombok>
         <version.mockito>5.18.0</version.mockito>
         <!-- plugins -->
@@ -28,8 +30,8 @@
         <version.maven-surefire-plugin>3.5.3</version.maven-surefire-plugin>
     </properties>
 
-    <!-- These test modules are run against Java 8 and higher.
-      Other test modules require Java 16 or higher (see profiles).
+    <!-- These test modules are run against Java 17 and higher.
+      Other test modules require Java 21 or higher (see profiles).
     -->
     <modules>
         <module>instancio-test-support</module>
@@ -43,31 +45,13 @@
         <module>bean-validation-jakarta-tests</module>
         <module>packaging-tests</module>
         <module>report-aggregate</module>
+        <module>instancio-core-tests</module>
+        <module>instancio-junit-tests</module>
+        <module>bean-validation-hibernate-tests</module>
+        <module>spi-tests</module>
     </modules>
 
     <profiles>
-        <profile>
-            <id>java-16</id>
-            <activation>
-                <jdk>[16,)</jdk>
-            </activation>
-            <modules>
-                <module>java16-tests</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>java-17</id>
-            <activation>
-                <jdk>[17,)</jdk>
-            </activation>
-            <modules>
-                <module>instancio-core-tests</module>
-                <module>instancio-junit-tests</module>
-                <module>java17-tests</module>
-                <module>bean-validation-hibernate-tests</module>
-                <module>spi-tests</module>
-            </modules>
-        </profile>
         <profile>
             <id>java-21</id>
             <activation>
@@ -93,16 +77,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-        </plugins>
     </build>
 
     <dependencyManagement>
