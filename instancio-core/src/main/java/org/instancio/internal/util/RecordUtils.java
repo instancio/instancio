@@ -15,23 +15,51 @@
  */
 package org.instancio.internal.util;
 
-/**
- * Helper class for working with {@code java.lang.Record} classes.
- * This class has different implementations depending on Java version.
- */
+import org.instancio.exception.InstancioException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.RecordComponent;
+
 public final class RecordUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(RecordUtils.class);
+
+    public static <T> T instantiate(final Class<T> recordClass, final Object... args) {
+        Verify.isTrue(recordClass.isRecord(), "Class '%s' is not a record!", recordClass.getName());
+
+        try {
+            final Constructor<T> ctor = getCanonicalConstructor(recordClass);
+            if (ctor == null) {
+                return null;
+            }
+            ReflectionUtils.setAccessible(ctor);
+            return ctor.newInstance(args);
+        } catch (Exception ex) {
+            throw new InstancioException("Error creating a record: " + recordClass, ex);
+        }
+    }
+
+    public static Class<?>[] getComponentTypes(final Class<?> recordClass) {
+        final RecordComponent[] components = recordClass.getRecordComponents();
+        final Class<?>[] args = new Class<?>[components.length];
+        for (int i = 0; i < args.length; i++) {
+            args[i] = components[i].getType();
+        }
+        return args;
+    }
+
+    private static <T> Constructor<T> getCanonicalConstructor(final Class<T> recordClass) {
+        final Class<?>[] componentTypes = getComponentTypes(recordClass);
+        try {
+            return recordClass.getDeclaredConstructor(componentTypes);
+        } catch (NoSuchMethodException ex) {
+            LOG.debug("Unable to resolve canonical constructor for record {}", recordClass);
+            return null;
+        }
+    }
 
     private RecordUtils() {
         // non-instantiable
-    }
-
-    @SuppressWarnings("unused")
-    public static <T> T instantiate(final Class<T> recordClass, final Object... args) {
-        throw new IllegalStateException("Should not be invoked");
-    }
-
-    @SuppressWarnings("unused")
-    public static Class<?>[] getComponentTypes(final Class<?> recordClass) {
-        throw new IllegalStateException("Should not be invoked");
     }
 }

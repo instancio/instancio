@@ -12,11 +12,6 @@
 
     <properties>
         <maven.enforcer.require.java.version>17</maven.enforcer.require.java.version>
-        <maven.compiler.release>17</maven.compiler.release>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
-        <maven.source.skip>true</maven.source.skip>
-        <gpg.skip>true</gpg.skip>
-        <animal.sniffer.skip>true</animal.sniffer.skip>
         <argLine/>
         <version.apache.commons>3.18.0</version.apache.commons>
         <version.archunit>1.4.1</version.archunit>

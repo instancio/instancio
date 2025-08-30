@@ -24,6 +24,8 @@ class NodeKindRecordResolver implements NodeKindResolver {
 
     @Override
     public Optional<NodeKind> resolve(final Class<?> targetClass) {
-        return Optional.empty();
+        return targetClass.isRecord()
+                ? Optional.of(NodeKind.RECORD)
+                : Optional.empty();
     }
 }

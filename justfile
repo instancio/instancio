@@ -6,7 +6,7 @@ core:
     mvn install -f instancio-core/pom.xml
 
 skip-plugins:
-    mvn clean install -Dpmd.skip -Dcpd.skip -Dcheckstyle.skip -Danimal.sniffer.skip -Djavadoc.skip -Dmaven.javadoc.skip
+    mvn clean install -Dpmd.skip -Dcpd.skip -Dcheckstyle.skip -Djavadoc.skip -Dmaven.javadoc.skip
 
 core-tests:
     mvn test -f instancio-tests/instancio-core-tests/pom.xml
