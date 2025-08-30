@@ -17,14 +17,12 @@ package org.instancio.internal.generator;
 
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
-import org.instancio.internal.util.IgnoreJRERequirement;
 
 import java.util.*;
 
 /**
  * Support for generating Java 21 sequenced collections.
  */
-@IgnoreJRERequirement
 public final class Java21GeneratorResolvers {
 
     private Java21GeneratorResolvers() {

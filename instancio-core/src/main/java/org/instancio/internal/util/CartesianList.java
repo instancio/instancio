@@ -136,7 +136,7 @@ public final class CartesianList<E> extends AbstractList<List<E>> implements Ran
 
     @Override
     public List<E> get(int index) {
-        return new ArrayList<E>() {
+        return new ArrayList<>() {
             @Override
             public int size() {
                 return axes.size();

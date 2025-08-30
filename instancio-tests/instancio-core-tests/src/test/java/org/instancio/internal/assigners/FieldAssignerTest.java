@@ -42,7 +42,7 @@ class FieldAssignerTest {
         doReturn(Person.class).when(mockField).getDeclaringClass();
         doReturn(String.class).when(mockField).getType();
         doReturn("name").when(mockField).getName();
-        doThrow(EXPECTED_ERROR).when(mockField).setAccessible(true);
+        doThrow(EXPECTED_ERROR).when(mockField).trySetAccessible();
         return when(mock(InternalNode.class).getField()).thenReturn(mockField).getMock();
     }
 
@@ -57,7 +57,7 @@ class FieldAssignerTest {
         final FieldAssigner assigner = createAssigner(OnSetFieldError.IGNORE);
         assigner.assign(mockNode, "any-target", "any-value");
 
-        verify(mockNode.getField()).setAccessible(true);
+        verify(mockNode.getField()).trySetAccessible();
         verify(mockNode.getField(), never()).set(anyString(), anyString());
     }
 

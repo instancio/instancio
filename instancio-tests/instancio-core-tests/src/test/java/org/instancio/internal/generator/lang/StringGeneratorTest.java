@@ -60,7 +60,7 @@ class StringGeneratorTest extends AbstractGeneratorTestTemplate<String, StringGe
 
     @Test
     void generate() {
-        final Set<Object> results = new HashSet<>();
+        final Set<String> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             results.add(generator.generate(random));
         }
