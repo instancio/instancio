@@ -92,7 +92,7 @@ class StringGeneratorTest extends AbstractGeneratorTestTemplate<String, StringGe
         }
     }
 
-    private static String[] upperCaseLettersAtoZ() {
+    private static Object[] upperCaseLettersAtoZ() {
         String[] expected = new String[26];
         for (int i = 0; i < expected.length; i++) {
             expected[i] = String.valueOf((char) ('A' + i));

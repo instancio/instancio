@@ -46,8 +46,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
         <maven.enforcer.require.java.version>[24,)</maven.enforcer.require.java.version>
         <sonar.organization>instancio</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -67,7 +66,6 @@
         <version.junit>5.13.4</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
         <!-- plugins -->
-        <version.animal-sniffer-maven-plugin>1.24</version.animal-sniffer-maven-plugin>
         <version.central-publishing-maven-plugin>0.8.0</version.central-publishing-maven-plugin>
         <version.jacoco-maven-plugin>0.8.13</version.jacoco-maven-plugin>
         <version.maven-antrun-plugin>3.1.0</version.maven-antrun-plugin>
@@ -151,53 +149,6 @@
                             <artifactId>maven-compiler-plugin</artifactId>
                             <version>${version.maven-compiler-plugin}</version>
                             <executions>
-                                <execution>
-                                    <id>default-compile</id>
-                                    <configuration>
-                                        <release>9</release>
-                                    </configuration>
-                                </execution>
-                                <execution>
-                                    <id>base-compile</id>
-                                    <goals>
-                                        <goal>compile</goal>
-                                    </goals>
-                                    <configuration>
-                                        <excludes>
-                                            <exclude>module-info.java</exclude>
-                                        </excludes>
-                                    </configuration>
-                                </execution>
-                                <execution>
-                                    <id>java-16</id>
-                                    <phase>compile</phase>
-                                    <goals>
-                                        <goal>compile</goal>
-                                    </goals>
-                                    <configuration>
-                                        <release>16</release>
-                                        <compileSourceRoots>
-                                            <compileSourceRoot>${project.basedir}/src/main/java16
-                                            </compileSourceRoot>
-                                        </compileSourceRoots>
-                                        <multiReleaseOutput>true</multiReleaseOutput>
-                                    </configuration>
-                                </execution>
-                                <execution>
-                                    <id>java-17</id>
-                                    <phase>compile</phase>
-                                    <goals>
-                                        <goal>compile</goal>
-                                    </goals>
-                                    <configuration>
-                                        <release>17</release>
-                                        <compileSourceRoots>
-                                            <compileSourceRoot>${project.basedir}/src/main/java17
-                                            </compileSourceRoot>
-                                        </compileSourceRoots>
-                                        <multiReleaseOutput>true</multiReleaseOutput>
-                                    </configuration>
-                                </execution>
                                 <execution>
                                     <id>java-21</id>
                                     <phase>compile</phase>
@@ -515,30 +466,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>animal-sniffer-maven-plugin</artifactId>
-                    <version>${version.animal-sniffer-maven-plugin}</version>
-                    <configuration>
-                        <signature>
-                            <groupId>org.codehaus.mojo.signature</groupId>
-                            <artifactId>java18</artifactId>
-                            <version>1.0</version>
-                        </signature>
-                        <annotations>
-                            <annotation>org.instancio.internal.util.IgnoreJRERequirement</annotation>
-                        </annotations>
-                        <checkTestClasses>true</checkTestClasses>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>animal-sniffer</id>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>${version.maven-antrun-plugin}</version>
@@ -576,10 +503,6 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>animal-sniffer-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

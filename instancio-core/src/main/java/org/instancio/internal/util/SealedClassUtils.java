@@ -15,22 +15,26 @@
  */
 package org.instancio.internal.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Helper class for working with {@code sealed} classes.
- * This class has different implementations depending on Java version.
- */
 public final class SealedClassUtils {
 
-    @SuppressWarnings("unused")
     public static List<Class<?>> getSealedClassImplementations(final Class<?> sealedClass) {
-        throw new IllegalStateException("Should not be invoked");
+        final List<Class<?>> results = new ArrayList<>();
+
+        for (Class<?> subclass : sealedClass.getPermittedSubclasses()) {
+            if (subclass.isSealed()) {
+                results.addAll(getSealedClassImplementations(subclass));
+            } else {
+                results.add(subclass);
+            }
+        }
+        return results;
     }
 
-    @SuppressWarnings("all")
     public static boolean isSealedAbstractType(final Class<?> klass) {
-        return false; // always false for java versions < 17
+        return klass.isSealed() && ReflectionUtils.isInterfaceOrAbstract(klass);
     }
 
     private SealedClassUtils() {

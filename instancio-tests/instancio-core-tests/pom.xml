@@ -10,6 +10,22 @@
     <packaging>jar</packaging>
     <name>Instancio tests: instancio-core Tests</name>
 
+    <properties>
+        <mdep.skip>false</mdep.skip>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <!-- Note: core tests should NOT import any optional dependencies,
          such as JPA, Bean Validation, or Jackson. This module contains
          tests that verify the absence of class-not-found errors when

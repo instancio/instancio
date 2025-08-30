@@ -403,7 +403,7 @@ public final class ModelContext {
         }
 
         public Builder withUnique(final TargetSelector selector) {
-            final FilterPredicate<Object> predicate = new FilterPredicate<Object>() {
+            final FilterPredicate<Object> predicate = new FilterPredicate<>() {
                 final Set<Object> generatedValues = new HashSet<>();
 
                 @Override

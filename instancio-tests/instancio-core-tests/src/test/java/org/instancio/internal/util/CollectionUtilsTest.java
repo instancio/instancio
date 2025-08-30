@@ -68,7 +68,8 @@ class CollectionUtilsTest {
 
     @Test
     void asSet() {
-        assertThat(CollectionUtils.asSet(null)).isEmpty();
+        assertThat(CollectionUtils.asSet()).isEmpty();
+        assertThat(CollectionUtils.asSet((Object[]) null)).isEmpty();
         assertThat(CollectionUtils.asSet("foo", "bar")).containsExactlyInAnyOrder("foo", "bar");
     }
 

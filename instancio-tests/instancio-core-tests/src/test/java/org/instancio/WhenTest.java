@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class WhenTest {
-    private static final String[] NULL_ELEMENT = {null};
+    private static final Object[] NULL_ELEMENT = {null};
 
     @Test
     void is() {
