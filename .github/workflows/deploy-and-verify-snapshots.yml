@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+env:
+  MAVEN_ARGS: "-B -ntp"
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,7 +20,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: "Deploy snapshots"
-        run: mvn -Prelease -B deploy --no-transfer-progress
+        run: mvn -Prelease deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
@@ -37,4 +39,4 @@ jobs:
           distribution: "temurin"
           java-version: ${{ matrix.java }}
       - name: "Test"
-        run: cd instancio-tests && mvn -B verify
+        run: cd instancio-tests && mvn verify
