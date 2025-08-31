@@ -5,6 +5,8 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+env:
+  MAVEN_ARGS: "-B -ntp"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,7 +22,7 @@ jobs:
           cache: maven
 
       - name: 'Build project'
-        run: mvn -v && mvn -B clean install
+        run: mvn clean install
 
       - name: 'Prepare Sonar analysis'
         uses: evaristegalois11/sonar-fork-analysis@v1
