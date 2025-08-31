@@ -11,6 +11,12 @@
     <name>Instancio Core</name>
     <description>The standalone module of Instancio</description>
 
+    <properties>
+        <excludePackageNames>
+            org.instancio.internal:org.instancio.internal.*:org.instancio.support:org.instancio.support.*
+        </excludePackageNames>
+    </properties>
+
     <profiles>
         <profile>
             <id>japicmp</id>
@@ -63,15 +69,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>
-                        org.instancio.internal:org.instancio.internal.*:org.instancio.support:org.instancio.support.*
-                    </excludePackageNames>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>

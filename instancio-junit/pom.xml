@@ -11,6 +11,12 @@
     <name>Instancio JUnit 5 Support</name>
     <description>Instancio integration with JUnit 5</description>
 
+    <properties>
+        <excludePackageNames>
+            org.instancio.junit.internal:org.instancio.junit.internal.*
+        </excludePackageNames>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -20,15 +26,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>
-                        org.instancio.junit.internal:org.instancio.junit.internal.*
-                    </excludePackageNames>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>

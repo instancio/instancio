@@ -68,7 +68,6 @@
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.8.0</version.central-publishing-maven-plugin>
         <version.jacoco-maven-plugin>0.8.13</version.jacoco-maven-plugin>
-        <version.maven-antrun-plugin>3.1.0</version.maven-antrun-plugin>
         <version.maven-bundle-plugin>6.0.0</version.maven-bundle-plugin>
         <version.maven-checkstyle-plugin>3.6.0</version.maven-checkstyle-plugin>
         <version.maven-compiler-plugin>3.14.0</version.maven-compiler-plugin>
@@ -158,52 +157,15 @@
                                     <configuration>
                                         <release>21</release>
                                         <compileSourceRoots>
-                                            <compileSourceRoot>${project.basedir}/src/main/java21
-                                            </compileSourceRoot>
+                                            <compileSourceRoot>${project.basedir}/src/main/java21</compileSourceRoot>
                                         </compileSourceRoots>
                                         <multiReleaseOutput>true</multiReleaseOutput>
                                     </configuration>
                                 </execution>
                             </executions>
                         </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-antrun-plugin</artifactId>
-                            <version>${version.maven-antrun-plugin}</version>
-                            <executions>
-                                <execution>
-                                    <id>move-module-info</id>
-                                    <phase>prepare-package</phase>
-                                    <goals>
-                                        <goal>run</goal>
-                                    </goals>
-                                    <configuration>
-                                        <target>
-                                            <move file="${project.basedir}/target/classes/module-info.class" todir="${project.basedir}/target/classes/META-INF/versions/9" failonerror="false" quiet="true" />
-                                        </target>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
                     </plugins>
                 </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <configuration>
-                            <archive>
-                                <manifestEntries>
-                                    <Multi-Release>true</Multi-Release>
-                                </manifestEntries>
-                            </archive>
-                        </configuration>
-                    </plugin>
-                </plugins>
             </build>
         </profile>
     </profiles>
@@ -376,7 +338,6 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${version.maven-javadoc-plugin}</version>
                     <configuration>
-                        <source>8</source>
                         <!-- Some public APIs extend package-private classes.
                              This ensures {@inheritDoc} works in such cases. -->
                         <show>package</show>
@@ -461,14 +422,9 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <localCheckout>true</localCheckout>
                         <scmCommentPrefix>[skip ci][maven-release-plugin]</scmCommentPrefix>
-                        <preparationProfiles>!tests</preparationProfiles>
+                        <preparationProfiles>release</preparationProfiles>
                         <releaseProfiles>release,sign</releaseProfiles>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>${version.maven-antrun-plugin}</version>
                 </plugin>
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>

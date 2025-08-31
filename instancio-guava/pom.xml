@@ -11,6 +11,12 @@
     <name>Instancio Guava Support</name>
     <description>Instancio support for Guava classes</description>
 
+    <properties>
+        <excludePackageNames>
+            org.instancio.guava.internal:org.instancio.guava.internal.*
+        </excludePackageNames>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -20,15 +26,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>
-                        org.instancio.guava.internal:org.instancio.guava.internal.*
-                    </excludePackageNames>
-                </configuration>
             </plugin>
         </plugins>
     </build>
