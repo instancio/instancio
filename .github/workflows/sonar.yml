@@ -4,6 +4,8 @@ on:
     workflows: [ Build ]
     types:
       - completed
+env:
+  MAVEN_ARGS: "-B -ntp"
 jobs:
   sonar:
     runs-on: ubuntu-latest
