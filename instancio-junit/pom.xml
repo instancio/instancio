@@ -11,13 +11,21 @@
     <name>Instancio JUnit 5 Support</name>
     <description>Instancio integration with JUnit 5</description>
 
-    <properties>
-        <excludePackageNames>
-            org.instancio.junit.internal:org.instancio.junit.internal.*
-        </excludePackageNames>
-    </properties>
-
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <excludePackageNames>
+                            org.instancio.junit.internal:org.instancio.junit.internal.*
+                        </excludePackageNames>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

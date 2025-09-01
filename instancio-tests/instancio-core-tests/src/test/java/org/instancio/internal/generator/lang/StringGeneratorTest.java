@@ -60,7 +60,7 @@ class StringGeneratorTest extends AbstractGeneratorTestTemplate<String, StringGe
 
     @Test
     void generate() {
-        final Set<Object> results = new HashSet<>();
+        final Set<String> results = new HashSet<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             results.add(generator.generate(random));
         }
@@ -92,7 +92,7 @@ class StringGeneratorTest extends AbstractGeneratorTestTemplate<String, StringGe
         }
     }
 
-    private static Object[] upperCaseLettersAtoZ() {
+    private static String[] upperCaseLettersAtoZ() {
         String[] expected = new String[26];
         for (int i = 0; i < expected.length; i++) {
             expected[i] = String.valueOf((char) ('A' + i));

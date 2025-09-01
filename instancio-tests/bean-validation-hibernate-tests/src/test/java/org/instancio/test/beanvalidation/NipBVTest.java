@@ -21,6 +21,7 @@ import org.instancio.test.pojo.beanvalidation.NipBV;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.util.HibernateValidatorUtil;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -33,6 +34,8 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 @ExtendWith(InstancioExtension.class)
 class NipBVTest {
 
+    // TODO Fix https://github.com/hibernate/hibernate-validator/pull/1650/files
+    @Disabled
     @Test
     void nip(@Given Stream<NipBV> results) {
         assertThat(results.limit(SAMPLE_SIZE_DDD))

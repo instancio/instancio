@@ -32,8 +32,11 @@ import org.instancio.internal.generator.domain.id.rus.InnGenerator;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.annotation.Annotation;
 
 final class HibernateBeanValidationAnnotationLibraryFacade extends AbstractAnnotationLibraryFacade {
 
@@ -42,9 +45,8 @@ final class HibernateBeanValidationAnnotationLibraryFacade extends AbstractAnnot
                 (annotation, context) -> getEanGenerator(
                         (org.hibernate.validator.constraints.EAN) annotation, context)
         );
-        // Instancio aims to support Hibernate validator 5.x, in which Email is not deprecated
-        //noinspection deprecation
-        putPrimary(() -> org.hibernate.validator.constraints.Email.class, // NOSONAR
+
+        putPrimary(() -> (Class<Annotation>) ReflectionUtils.loadClass("org.hibernate.validator.constraints.Email"),
                 (annotation, context) -> new EmailGenerator(context));
 
         putPrimary(() -> org.hibernate.validator.constraints.LuhnCheck.class,
