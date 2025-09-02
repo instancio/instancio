@@ -530,7 +530,7 @@ public final class ModelContext {
         }
 
         public Builder setBlank(final TargetSelector selector) {
-            if (selector instanceof InternalSelector && ((InternalSelector) selector).isRootSelector()) {
+            if (selector instanceof InternalSelector internalSelector && internalSelector.isRootSelector()) {
                 setBlankTargets(); // special case for root selector (no scopes)
             } else {
                 final List<TargetSelector> processedSelectors = selectorProcessor.process(
@@ -596,7 +596,7 @@ public final class ModelContext {
         public Builder setModel(final TargetSelector modelSelector, final Model<?> model) {
             final TargetSelector actualModelSelector;
 
-            if (modelSelector instanceof InternalSelector && ((InternalSelector) modelSelector).isRootSelector()) {
+            if (modelSelector instanceof InternalSelector internalSelector && internalSelector.isRootSelector()) {
                 actualModelSelector = Select.all(TypeUtils.getRawType(rootType)).atDepth(0);
             } else {
                 actualModelSelector = modelSelector;

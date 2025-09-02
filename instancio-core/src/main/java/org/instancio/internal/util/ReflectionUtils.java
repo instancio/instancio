@@ -33,7 +33,6 @@ import java.util.Optional;
 
 import static org.instancio.internal.util.ErrorMessageUtils.unableToGetValueFromField;
 
-@SuppressWarnings("PMD.GodClass")
 public final class ReflectionUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
 
@@ -52,10 +51,7 @@ public final class ReflectionUtils {
 
     @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public static <T extends AccessibleObject> T setAccessible(final T object) {
-        // ignore deprecation warning since we must be java 8 compatible
-        if (!object.isAccessible()) {
-            object.setAccessible(true);
-        }
+        object.trySetAccessible();
         return object;
     }
 

@@ -43,10 +43,7 @@ abstract class AbstractAnnotationLibraryFacade implements AnnotationLibraryFacad
             final AnnotationGeneratorFn annotationGeneratorFn) {
 
         try {
-            Class<A> annotationType = annotationTypeSupplier.get();
-            if (annotationType != null) {
-                primaryAnnotations.put(annotationTypeSupplier.get(), annotationGeneratorFn);
-            }
+            primaryAnnotations.put(annotationTypeSupplier.get(), annotationGeneratorFn);
         } catch (NoClassDefFoundError error) {
             LOG.trace("Annotation not available on classpath: {}", error.toString());
         }
