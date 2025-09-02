@@ -12,7 +12,6 @@
 
     <properties>
         <maven.enforcer.require.java.version>17</maven.enforcer.require.java.version>
-        <maven.install.skip>true</maven.install.skip>
         <mdep.skip>true</mdep.skip>
         <argLine/>
         <version.apache.commons>3.18.0</version.apache.commons>
@@ -97,13 +96,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <skipIfEmpty>true</skipIfEmpty>
-                </configuration>
             </plugin>
         </plugins>
     </build>
