@@ -45,6 +45,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <instancio.assignmentType>FIELD</instancio.assignmentType>
+                                <net.bytebuddy.safe>true</net.bytebuddy.safe>
                             </systemPropertyVariables>
                             <summaryFile>target/failsafe-reports/failsafe-summary-assignment-field.xml</summaryFile>
                         </configuration>
@@ -57,6 +58,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <instancio.assignmentType>METHOD</instancio.assignmentType>
+                                <net.bytebuddy.safe>true</net.bytebuddy.safe>
                             </systemPropertyVariables>
                             <summaryFile>target/failsafe-reports/failsafe-summary-assignment-method.xml</summaryFile>
                         </configuration>
