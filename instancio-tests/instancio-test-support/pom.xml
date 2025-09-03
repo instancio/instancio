@@ -13,11 +13,6 @@
     <properties>
         <sonar.skip>true</sonar.skip>
         <jacoco.skip>true</jacoco.skip>
-        <!-- This is necessary because of https://github.com/apache/maven-surefire/issues/2757 -->
-        <argLine>
-            --add-opens org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
-            --add-opens org.junit.platform.commons/org.junit.platform.commons.logging=ALL-UNNAMED
-        </argLine>
     </properties>
 
     <build>
@@ -33,6 +28,18 @@
                             <version>${version.lombok}</version>
                         </path>
                     </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- This is necessary because of https://github.com/apache/maven-surefire/issues/2757 -->
+                    <argLine>
+                        @{argLine}
+                        --add-opens org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
+                        --add-opens org.junit.platform.commons/org.junit.platform.commons.logging=ALL-UNNAMED
+                    </argLine>
                 </configuration>
             </plugin>
         </plugins>
