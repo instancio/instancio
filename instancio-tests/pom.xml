@@ -24,7 +24,7 @@
         <version.equalsverifier>4.1</version.equalsverifier>
         <version.junit.pioneer>2.3.0</version.junit.pioneer>
         <version.logback>1.5.18</version.logback>
-        <version.lombok>1.18.38</version.lombok>
+        <version.lombok>1.18.40</version.lombok>
         <version.mockito>5.18.0</version.mockito>
         <!-- plugins -->
         <version.maven-failsafe-plugin>3.5.3</version.maven-failsafe-plugin>
