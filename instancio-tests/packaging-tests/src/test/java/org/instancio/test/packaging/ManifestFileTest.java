@@ -80,7 +80,7 @@ class ManifestFileTest {
         assertThat(attrs.getValue(BUNDLE_DESCRIPTION))
                 .isEqualTo("The standalone module of Instancio");
 
-        assertThat(attrs.getValue(MULTI_RELEASE)).isEqualTo("true");
+        assertThat(attrs.getOrDefault(MULTI_RELEASE, "false")).isEqualTo("false");
 
         assertImports(attrs, INSTANCIO_CORE_EXPECTED_IMPORTS);
 

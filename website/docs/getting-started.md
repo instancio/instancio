@@ -8,7 +8,7 @@ hide:
 
 **Requirements**:
 
-Instancio is packaged as a multi-release JAR and can be used with **Java 8** or higher.
+Instancio can be used with **Java 17** or higher.
 
 It has a single `compile` dependency on `org.slf4j:slf4j-api`.
 

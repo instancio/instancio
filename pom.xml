@@ -209,12 +209,6 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${version.jacoco-maven-plugin}</version>
-                    <configuration>
-                        <!-- jacoco does not support multi-release jars -->
-                        <excludes>
-                            <exclude>META-INF/**</exclude>
-                        </excludes>
-                    </configuration>
                     <executions>
                         <execution>
                             <goals>

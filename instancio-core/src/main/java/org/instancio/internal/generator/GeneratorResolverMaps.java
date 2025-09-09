@@ -64,6 +64,7 @@ import org.instancio.internal.generator.util.UUIDGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicBooleanGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerator;
+import org.instancio.internal.util.ReflectionUtils;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -164,8 +165,11 @@ final class GeneratorResolverMaps {
         map.put(Map.class, HashMap.class);
         map.put(NavigableMap.class, TreeMap.class);
         map.put(SortedMap.class, TreeMap.class);
-
-        Java21GeneratorResolvers.putSubtypes(map);
+        // Sequenced collections
+        if (Runtime.version().feature() >= 21) {
+            map.put(ReflectionUtils.loadClass("java.util.SequencedSet"), TreeSet.class);
+            map.put(ReflectionUtils.loadClass("java.util.SequencedMap"), TreeMap.class);
+        }
         return Collections.unmodifiableMap(map);
     }
 
@@ -284,7 +288,12 @@ final class GeneratorResolverMaps {
         map.put(java.util.concurrent.atomic.AtomicReferenceArray.class, NullGenerator.class);
         map.put(java.util.concurrent.atomic.AtomicStampedReference.class, NullGenerator.class);
 
-        Java21GeneratorResolvers.putGenerators(map);
+        // Sequenced collections
+        if (Runtime.version().feature() >= 21) {
+            map.put(ReflectionUtils.loadClass("java.util.SequencedCollection"), CollectionGenerator.class);
+            map.put(ReflectionUtils.loadClass("java.util.SequencedSet"), CollectionGenerator.class);
+            map.put(ReflectionUtils.loadClass("java.util.SequencedMap"), MapGenerator.class);
+        }
         return Collections.unmodifiableMap(map);
     }
 
