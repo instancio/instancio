@@ -25,6 +25,7 @@
         <version.maven-failsafe-plugin>3.5.3</version.maven-failsafe-plugin>
         <version.maven-surefire-plugin>3.5.3</version.maven-surefire-plugin>
         <version.maven-dependency-plugin>3.8.1</version.maven-dependency-plugin>
+        <version.byte.buddy>1.17.7</version.byte.buddy>
     </properties>
 
     <!-- These test modules are run against Java 17 and higher.
@@ -135,6 +136,12 @@
                 <groupId>org.junit-pioneer</groupId>
                 <artifactId>junit-pioneer</artifactId>
                 <version>${version.junit.pioneer}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${version.byte.buddy}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

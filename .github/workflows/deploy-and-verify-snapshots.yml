@@ -4,7 +4,7 @@ on:
     branches:
       - main
 env:
-  MAVEN_ARGS: "-B -ntp"
+  MAVEN_ARGS: "-B -ntp -U"
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,6 +16,7 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 24
+          cache: maven
           server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
@@ -24,13 +25,13 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
-  verify:
+  jdk:
     needs: deploy
     strategy:
       matrix:
         java: [ 17, 21, 24 ]
     runs-on: ubuntu-latest
-    name: "Verify snapshots JDK ${{ matrix.java }}"
+    name: "Verify snapshots with JDK ${{ matrix.java }}"
     steps:
       - uses: actions/checkout@v5
       - name: "Set up JDK"
@@ -38,5 +39,37 @@ jobs:
         with:
           distribution: "temurin"
           java-version: ${{ matrix.java }}
+          cache: maven
+      - name: "Test"
+        run: cd instancio-tests && mvn verify
+  junit:
+    needs: deploy
+    strategy:
+      matrix:
+        junit: [ 5.11.4, 5.12.2, 6.0.0-RC2 ]
+    runs-on: ubuntu-latest
+    name: "Verify snapshots with Junit ${{ matrix.junit }}"
+    steps:
+      - uses: actions/checkout@v5
+      - name: "Set up JDK"
+        uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: 21
+          cache: maven
+      - name: "Test"
+        run: cd instancio-tests && mvn verify -Dversion.junit=${{ matrix.junit }}
+  experimental:
+    needs: deploy
+    runs-on: ubuntu-latest
+    name: "Verify snapshots with early access JDK"
+    steps:
+      - uses: actions/checkout@v5
+      - name: "Set up JDK"
+        uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: 25-ea
+          cache: maven
       - name: "Test"
         run: cd instancio-tests && mvn verify
