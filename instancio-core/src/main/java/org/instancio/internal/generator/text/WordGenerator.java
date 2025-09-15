@@ -25,6 +25,7 @@ import org.instancio.internal.util.ObjectUtils;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -130,7 +131,7 @@ public class WordGenerator extends AbstractGenerator<String> implements WordSpec
         try {
             final InputStream in = WordGenerator.class.getResourceAsStream(file);
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) { //NOPMD
                     results.add(line);

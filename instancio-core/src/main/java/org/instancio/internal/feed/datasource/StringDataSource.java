@@ -20,13 +20,14 @@ import org.instancio.feed.DataSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @InternalApi
 public class StringDataSource implements DataSource {
     private final byte[] data;
 
     public StringDataSource(final String s) {
-        this.data = s.getBytes();
+        this.data = s.getBytes(StandardCharsets.UTF_8);
     }
 
     @Override

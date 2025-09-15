@@ -97,6 +97,12 @@
         <exclude name="ReplaceJavaUtilCalendar"/>
         <exclude name="ReplaceJavaUtilDate"/>
     </rule>
+    <rule ref="category/java/errorprone.xml/AssignmentInOperand">
+        <properties>
+            <property name="allowIncrementDecrement" value="true"/>
+        </properties>
+    </rule>
+
     <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
         <properties>
             <property name="maxDuplicateLiterals" value="8"/>
