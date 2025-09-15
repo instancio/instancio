@@ -165,7 +165,7 @@ class InstancioEngine {
         int retryCount = 0;
 
         while (!context.isAccepted(node, generatorResult.getValue())) {
-            if (++retryCount > maxGenerationAttempts) { // NOPMD
+            if (++retryCount > maxGenerationAttempts) {
                 throw Fail.withUsageError(ErrorMessageUtils.maxGenerationAttemptsExceeded(
                         node, maxGenerationAttempts));
             }

@@ -21,6 +21,7 @@ import org.instancio.settings.FeedDataTrim;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
     @Override
     public List<String[]> load(final DataSource dataSource) throws Exception {
         try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(getInputStream(dataSource)))) {
+                new InputStreamReader(getInputStream(dataSource), StandardCharsets.UTF_8))) {
 
             final List<String[]> results = new ArrayList<>();
 
