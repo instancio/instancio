@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.TestInstances;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -39,6 +40,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +72,9 @@ class InstancioExtensionTest {
     @Mock
     private ExtensionContext context;
 
+    @Mock
+    private TestInstances testInstances;
+
     @Captor
     private ArgumentCaptor<Random> randomCaptor;
 
@@ -99,13 +104,14 @@ class InstancioExtensionTest {
     void beforeEachWithSeedAnnotation() throws Exception {
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
         doReturn(Optional.of(method)).when(context).getTestMethod();
-        doReturn(DummyTest.class).when(context).getRequiredTestClass();
+        doReturn(testInstances).when(context).getRequiredTestInstances();
+        doReturn(List.of(new DummyTest())).when(testInstances).getAllInstances();
 
         final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
         doReturn(store).when(context).getStore(create("org.instancio"));
         doReturn(new FieldAnnotationMap(DummyTest.class))
                 .when(store)
-                .get("annotationMap", FieldAnnotationMap.class);
+                .get(DummyTest.class, FieldAnnotationMap.class);
 
         // Method under test
         extension.beforeEach(context);
@@ -121,13 +127,14 @@ class InstancioExtensionTest {
     void beforeEachWithSettingsAnnotation() throws IllegalAccessException {
         doReturn(Optional.of(DummyTest.class)).when(context).getTestClass();
         doReturn(Optional.of(new DummyTest())).when(context).getTestInstance();
-        doReturn(DummyTest.class).when(context).getRequiredTestClass();
+        doReturn(testInstances).when(context).getRequiredTestInstances();
+        doReturn(List.of(new DummyTest())).when(testInstances).getAllInstances();
 
         final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
         doReturn(store).when(context).getStore(create("org.instancio"));
         doReturn(new FieldAnnotationMap(DummyTest.class))
                 .when(store)
-                .get("annotationMap", FieldAnnotationMap.class);
+                .get(DummyTest.class, FieldAnnotationMap.class);
 
         // Method under test
         extension.beforeEach(context);
