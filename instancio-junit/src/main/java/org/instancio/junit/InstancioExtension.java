@@ -45,6 +45,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.instancio.junit.internal.Constants.INSTANCIO_NAMESPACE;
@@ -116,7 +117,6 @@ public class InstancioExtension implements
 
     private static final Logger LOG = LoggerFactory.getLogger(InstancioExtension.class);
     private static final String ELEMENT_ANNOTATIONS = "elementAnnotations";
-    private static final String ANNOTATION_MAP = "annotationMap";
 
     private final ThreadLocalRandom threadLocalRandom;
     private final ThreadLocalSettings threadLocalSettings;
@@ -139,21 +139,29 @@ public class InstancioExtension implements
 
     @Override
     public void beforeAll(final ExtensionContext context) {
-        final Class<?> testClass = context.getRequiredTestClass();
-
-        context.getStore(INSTANCIO_NAMESPACE)
-                .put(ANNOTATION_MAP, new FieldAnnotationMap(testClass));
+        final List<Class<?>> testClasses = new ArrayList<>(context.getEnclosingTestClasses());
+        testClasses.add(context.getRequiredTestClass());
+        testClasses.forEach(testClass ->
+                context.getStore(INSTANCIO_NAMESPACE).put(testClass, new FieldAnnotationMap(testClass))
+        );
     }
 
     @Override
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
     public void beforeEach(final ExtensionContext context) throws IllegalAccessException {
         ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
 
-        final FieldAnnotationMap annotationMap = context.getStore(INSTANCIO_NAMESPACE)
-                .get(ANNOTATION_MAP, FieldAnnotationMap.class);
+        for (Object testInstance : context.getRequiredTestInstances().getAllInstances()) {
+            populateTestInstanceFields(testInstance, context);
+        }
+    }
 
-        for (Field field : context.getRequiredTestClass().getDeclaredFields()) {
+    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
+    private void populateTestInstanceFields(final Object testInstance, final ExtensionContext context) throws IllegalAccessException {
+        final Class<?> testClass = testInstance.getClass();
+        final FieldAnnotationMap annotationMap = context.getStore(INSTANCIO_NAMESPACE)
+                .get(testClass, FieldAnnotationMap.class);
+
+        for (Field field : testClass.getDeclaredFields()) {
             final List<Annotation> annotations = annotationMap.get(field);
 
             if (!containsAnnotation(annotations, Given.class)) {
@@ -163,7 +171,6 @@ public class InstancioExtension implements
                 throw Fail.withUsageError("@Given annotation is not supported for static fields");
             }
 
-            final Object testInstance = context.getRequiredTestInstance();
             final ElementAnnotations elementAnnotations = new ElementAnnotations(annotations);
             final Object fieldValue = new ObjectCreator(threadLocalSettings.get(), threadLocalRandom.get())
                     .createObject(field, field.getGenericType(), elementAnnotations);
@@ -174,7 +181,11 @@ public class InstancioExtension implements
 
     @Override
     public void afterAll(final ExtensionContext context) {
-        context.getStore(INSTANCIO_NAMESPACE).remove(ANNOTATION_MAP, FieldAnnotationMap.class);
+        final List<Class<?>> testClasses = new ArrayList<>(context.getEnclosingTestClasses());
+        testClasses.add(context.getRequiredTestClass());
+        testClasses.forEach(testClass ->
+                context.getStore(INSTANCIO_NAMESPACE).remove(testClass, FieldAnnotationMap.class)
+        );
     }
 
     @Override
