@@ -28,6 +28,7 @@ jobs:
   jdk:
     needs: deploy
     strategy:
+      fail-fast: false
       matrix:
         java: [ 17, 21, 24 ]
     runs-on: ubuntu-latest
@@ -45,6 +46,7 @@ jobs:
   junit:
     needs: deploy
     strategy:
+      fail-fast: false
       matrix:
         junit: [ 5.11.4, 5.12.2, 6.0.0-RC2 ]
     runs-on: ubuntu-latest
