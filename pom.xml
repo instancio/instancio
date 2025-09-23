@@ -81,7 +81,7 @@
         <version.maven-source-plugin>3.3.1</version.maven-source-plugin>
         <version.sonar-maven-plugin>5.2.0.4988</version.sonar-maven-plugin>
         <version.spotbugs-maven-plugin>4.9.6.0</version.spotbugs-maven-plugin>
-        <version.versions-maven-plugin>2.19.0</version.versions-maven-plugin>
+        <version.versions-maven-plugin>2.19.1</version.versions-maven-plugin>
         <version.maven-resources-plugin>3.3.1</version.maven-resources-plugin>
         <version.maven-install-plugin>3.1.4</version.maven-install-plugin>
         <version.maven-deploy-plugin>3.1.4</version.maven-deploy-plugin>
