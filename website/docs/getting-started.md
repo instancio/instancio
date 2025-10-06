@@ -12,11 +12,6 @@ Instancio can be used with **Java 17** or higher.
 
 It has a single `compile` dependency on `org.slf4j:slf4j-api`.
 
-Since version `1.5.0` Instancio supports creating:
-
-- `java.lang.Record` classes on Java 16
-- `sealed` classes on Java 17
-
 ## Dependencies
 
 The following dependencies are available from Maven central:
@@ -33,7 +28,10 @@ The following dependencies are available from Maven central:
 
 ### **`instancio-junit`**
 
-If you have JUnit 5 on the classpath, then use `instancio-junit`.
+Use the `instancio-junit` dependency that matches your JUnit version:
+
+- For JUnit 5, use `instancio-junit:5.x`
+- For JUnit 6, use `instancio-junit:6.x`
 
 It includes a transitive dependency on `instancio-core`, therefore it is not necessary to import both.
 
