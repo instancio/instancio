@@ -58,7 +58,7 @@ jobs:
           java-version: 21
           cache: maven
       - name: "Test"
-        run: cd instancio-tests && mvn verify -Dversion.junit=${{ matrix.junit }}
+        run: cd instancio-tests && mvn verify -pl instancio-junit-tests -am -Dversion.junit=${{ matrix.junit }}
   experimental:
     needs: deploy
     runs-on: ubuntu-latest
