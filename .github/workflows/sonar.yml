@@ -17,7 +17,7 @@ jobs:
         uses: evaristegalois11/sonar-fork-analysis@v1
         with:
           distribution: temurin
-          java-version: 24
+          java-version: 25
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           project-key: instancio_instancio

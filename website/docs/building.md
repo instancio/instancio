@@ -7,7 +7,7 @@ hide:
 # Building From Sources
 
 Instancio can be used with Java 17 or higher.
-Building Instancio from sources requires JDK 24 or higher:
+Building Instancio from sources requires JDK 17 or higher:
 
 ```sh
 git clone https://github.com/instancio/instancio.git
