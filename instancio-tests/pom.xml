@@ -11,7 +11,6 @@
     <name>Instancio Tests: Tests Parent</name>
 
     <properties>
-        <maven.enforcer.require.java.version>17</maven.enforcer.require.java.version>
         <argLine/>
         <version.apache.commons>3.19.0</version.apache.commons>
         <version.archunit>1.4.1</version.archunit>

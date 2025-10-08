@@ -11,6 +11,7 @@
     <name>Instancio Tests: JPMS Tests Parent</name>
 
     <properties>
+        <maven.enforcer.require.java.version>[21,)</maven.enforcer.require.java.version>
         <maven.compiler.release>21</maven.compiler.release>
     </properties>
 
