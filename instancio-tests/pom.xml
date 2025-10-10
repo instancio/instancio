@@ -127,7 +127,7 @@
             </dependency>
             <dependency>
                 <groupId>nl.jqno.equalsverifier</groupId>
-                <artifactId>equalsverifier-nodep</artifactId>
+                <artifactId>equalsverifier</artifactId>
                 <version>${version.equalsverifier}</version>
                 <scope>test</scope>
             </dependency>
@@ -139,9 +139,10 @@
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
-                <artifactId>byte-buddy</artifactId>
+                <artifactId>byte-buddy-parent</artifactId>
                 <version>${version.byte.buddy}</version>
-                <scope>test</scope>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
