@@ -26,11 +26,12 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.AnnotationConsumer;
+import org.junit.jupiter.params.support.ParameterDeclaration;
+import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -51,7 +52,7 @@ public class InstancioSourceArgumentsProvider
     }
 
     @Override
-    public Stream<? extends Arguments> provideArguments(final ExtensionContext context) {
+    public Stream<? extends Arguments> provideArguments(final ParameterDeclarations parameters, final ExtensionContext context) {
         final ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.getInstance();
         final ThreadLocalSettings threadLocalSettings = ThreadLocalSettings.getInstance();
 
@@ -59,7 +60,6 @@ public class InstancioSourceArgumentsProvider
 
         final Random random = threadLocalRandom.get();
         final Settings settings = threadLocalSettings.get();
-        final Parameter[] parameters = context.getRequiredTestMethod().getParameters();
         final int samples = getNumberOfSamples(settings);
 
         final InstancioSourceState state = new InstancioSourceState(threadLocalRandom.get().getSeed(), samples);
@@ -86,8 +86,10 @@ public class InstancioSourceArgumentsProvider
         return Global.getPropertiesFileSettings().get(Keys.INSTANCIO_SOURCE_SAMPLES);
     }
 
-    private static Object[] createObjects(final Parameter[] parameters, final Random random, final Settings settings) {
-        return Arrays.stream(parameters)
+    private static Object[] createObjects(final ParameterDeclarations parameters, final Random random, final Settings settings) {
+        return parameters.getAll().stream()
+                .map(ParameterDeclaration::getAnnotatedElement)
+                .map(Parameter.class::cast)
                 .map(param -> {
                     final Type targetType = param.getParameterizedType();
                     final List<Annotation> annotations = ReflectionUtils.collectionAnnotations(param);
