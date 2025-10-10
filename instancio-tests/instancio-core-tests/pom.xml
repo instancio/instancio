@@ -55,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
-            <artifactId>equalsverifier-nodep</artifactId>
+            <artifactId>equalsverifier</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
