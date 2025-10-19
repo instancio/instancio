@@ -26,6 +26,7 @@ import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnFeedPropertyUnmatched;
+import org.instancio.settings.OnMaxDepthReached;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
@@ -60,6 +61,29 @@ public final class ErrorMessageUtils {
     private ErrorMessageUtils() {
         // non-instantiable
     }
+
+    public static String maxDepthReached(final InternalNode node, final Integer maxDepth) {
+        return new StringBuilder(INITIAL_SB_SIZE)
+                .append("max depth reached while generating object graph").append(NL)
+                .append(NL)
+                .append(nodePathToRootBlock(node)).append(NL)
+                .append(NL)
+                .append(" -> Generation stopped at depth ").append(maxDepth).append(NL)
+                .append("    (configured using the ").append(keyDesc(Keys.MAX_DEPTH)).append(" setting)").append(NL)
+                .append(NL)
+                .append("This error was thrown because:").append(NL)
+                .append(NL)
+                .append(" -> ").append(keyDesc(Keys.ON_MAX_DEPTH_REACHED)).append(" = ").append(OnMaxDepthReached.FAIL).append(NL)
+                .append(NL)
+                .append("To resolve this error:").append(NL)
+                .append(NL)
+                .append(" -> Increase the value of the ").append(keyDesc(Keys.MAX_DEPTH)).append(" setting").append(NL)
+                .append(" -> Use withMaxDepth() to override the depth for this model").append(NL)
+                .append(" -> Set ").append(keyDesc(Keys.ON_MAX_DEPTH_REACHED))
+                .append(" to ").append(OnMaxDepthReached.IGNORE).append(" to skip creating deeper objects")
+                .toString();
+    }
+
 
     public static String maxGenerationAttemptsExceeded(final InternalNode node, final int maxGenerationAttempts) {
         return new StringBuilder(INITIAL_SB_SIZE)

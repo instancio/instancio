@@ -17,9 +17,13 @@ package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.util.ErrorMessageUtils;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnMaxDepthReached;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,8 +104,17 @@ public final class NodeFactory {
         }
 
         if (node.getDepth() >= modelContext.getMaxDepth()) {
-            LOG.trace("Maximum depth ({}) reached {}", modelContext.getMaxDepth(), node);
-            return Collections.emptyList();
+            final OnMaxDepthReached onMaxDepthReached = modelContext.getSettings()
+                    .get(Keys.ON_MAX_DEPTH_REACHED);
+
+            if (onMaxDepthReached == OnMaxDepthReached.IGNORE) {
+                LOG.trace("Maximum depth ({}) reached {}", modelContext.getMaxDepth(), node);
+                return Collections.emptyList();
+            }
+            if (onMaxDepthReached == OnMaxDepthReached.FAIL) {
+                throw Fail.withUsageError(ErrorMessageUtils.maxDepthReached(
+                        node, modelContext.getMaxDepth()));
+            }
         }
 
         final List<InternalNode> children;
