@@ -26,6 +26,8 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,9 +37,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class OnMaxDepthReachedTest {
 
     @Test
-    void onMaxDepthReachedIgnoreByDefault() {
+    void onMaxDepthReachedWarnByDefault() {
         final StringHolder result = Instancio.of(StringHolder.class)
                 .withSetting(Keys.MAX_DEPTH, 0)
+                .create();
+
+        // Message should be logged at `warn` level, though we have no assertion for it
+        assertThat(result).isNotNull().hasAllNullFieldsOrProperties();
+    }
+
+    @EnumSource(value = OnMaxDepthReached.class, names = {"IGNORE", "WARN"})
+    @ParameterizedTest
+    void onMaxDepthReachedIgnoreAndWarn(final OnMaxDepthReached onMaxDepthReached) {
+        final StringHolder result = Instancio.of(StringHolder.class)
+                .withSetting(Keys.MAX_DEPTH, 0)
+                .withSetting(Keys.ON_MAX_DEPTH_REACHED, onMaxDepthReached)
                 .create();
 
         assertThat(result).isNotNull().hasAllNullFieldsOrProperties();

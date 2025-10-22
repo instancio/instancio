@@ -17,8 +17,6 @@ package org.instancio.support;
 
 import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.math.BigInteger;
@@ -31,8 +29,6 @@ import java.security.SecureRandom;
  */
 @InternalApi
 public final class Seeds {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Seeds.class);
 
     public enum Source {
         MANUAL(".withSeed()"),
@@ -74,9 +70,7 @@ public final class Seeds {
     }
 
     public static void logSeed(final Random random, final Type rootType) {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("Generating {} with seed {} (seed source: {})",
-                    rootType.getTypeName(), random.getSeed(), ((DefaultRandom) random).getSource());
-        }
+        Log.msg(Log.Category.SEED, "Generating {} with seed {} (seed source: {})",
+                rootType, random.getSeed(), ((DefaultRandom) random).getSource());
     }
 }

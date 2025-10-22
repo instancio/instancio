@@ -43,7 +43,14 @@ public enum OnMaxDepthReached {
      *
      * @since 6.0.0
      */
-    IGNORE;
+    IGNORE,
+
+    /**
+     * Log a warning and continue without creating deeper objects.
+     *
+     * @since 6.0.0
+     */
+    WARN;
 
     @Override
     public String toString() {

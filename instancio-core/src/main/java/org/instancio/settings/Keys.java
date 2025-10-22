@@ -417,14 +417,14 @@ public final class Keys {
 
     /**
      * Specifies what should happen if the configured {@link #MAX_DEPTH} is reached;
-     * default is {@link OnMaxDepthReached#IGNORE}; property name {@code on.max.depth.reached}.
+     * default is {@link OnMaxDepthReached#WARN}; property name {@code on.max.depth.reached}.
      *
      * @see OnMaxDepthReached
      * @since 6.0.0
      */
     @ExperimentalApi
     public static final SettingKey<OnMaxDepthReached> ON_MAX_DEPTH_REACHED = registerRequiredNonAdjustable(
-            "on.max.depth.reached", OnMaxDepthReached.class, OnMaxDepthReached.IGNORE);
+            "on.max.depth.reached", OnMaxDepthReached.class, OnMaxDepthReached.WARN);
 
     /**
      * Specifies what should happen if an error occurs setting a field's value;
