@@ -239,6 +239,16 @@ public final class Keys {
             "fail.on.error", Boolean.class, false);
 
     /**
+     * Specifies what should happen if the configured {@link #MAX_DEPTH} is reached;
+     * default is {@code false}; property name {@code fail.on.max.depth.reached}.
+     *
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Boolean> FAIL_ON_MAX_DEPTH_REACHED = registerRequiredNonAdjustable(
+            "fail.on.max.depth.reached", Boolean.class, false);
+
+    /**
      * Specifies minimum value for floats;
      * default is 1; property name {@code float.min}.
      */
@@ -414,17 +424,6 @@ public final class Keys {
     @ExperimentalApi
     public static final SettingKey<OnFeedPropertyUnmatched> ON_FEED_PROPERTY_UNMATCHED = registerRequiredNonAdjustable(
             "on.feed.property.unmatched", OnFeedPropertyUnmatched.class, OnFeedPropertyUnmatched.FAIL);
-
-    /**
-     * Specifies what should happen if the configured {@link #MAX_DEPTH} is reached;
-     * default is {@link OnMaxDepthReached#IGNORE}; property name {@code on.max.depth.reached}.
-     *
-     * @see OnMaxDepthReached
-     * @since 6.0.0
-     */
-    @ExperimentalApi
-    public static final SettingKey<OnMaxDepthReached> ON_MAX_DEPTH_REACHED = registerRequiredNonAdjustable(
-            "on.max.depth.reached", OnMaxDepthReached.class, OnMaxDepthReached.IGNORE);
 
     /**
      * Specifies what should happen if an error occurs setting a field's value;

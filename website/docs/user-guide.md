@@ -3604,7 +3604,7 @@ Instancio will automatically load this file from the root of the classpath.
 The following listing shows all the property keys that can be configured.
 
 
-```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 31 32 39 50 62"
+```properties linenums="1" title="Sample configuration properties" hl_lines="1 4 11 32 33 40 50 62"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -3623,6 +3623,7 @@ double.max=10000
 double.min=1
 double.nullable=false
 fail.on.error=false
+fail.on.max.depth.reached=false
 fill.type=POPULATE_NULLS_AND_DEFAULT_PRIMITIVES
 float.max=10000
 float.min=1
@@ -3648,7 +3649,6 @@ hint.after.generate=POPULATE_NULLS_AND_DEFAULT_PRIMITIVES
 overwrite.existing.values=true
 assignment.type=FIELD
 on.feed.property.unmatched=FAIL
-on.max.depth.reached=IGNORE
 on.set.field.error=IGNORE
 on.set.method.error=ASSIGN_FIELD
 on.set.method.not.found=ASSIGN_FIELD
@@ -3673,9 +3673,9 @@ subtype.java.util.SortedMap=java.util.TreeMap
 ```
 
 !!! attention ""
-    <lnum>1,11,31-32</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
+    <lnum>1,11,32-33</lnum> The `*.elements.nullable`, `map.keys.nullable`, `map.values.nullable` specify whether Instancio can generate `null` values for array/collection elements and map keys and values.<br/>
     <lnum>4</lnum> The other `*.nullable` properties specifies whether Instancio can generate `null` values for a given type.<br/>
-    <lnum>39</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
+    <lnum>40</lnum> Specifies the mode, either `STRICT` (default) or `LENIENT`. See [Selector Strictness](#selector-strictness).<br/>
     <lnum>50</lnum> Specifies a global seed value.<br/>
     <lnum>62</lnum> Properties prefixed with `subtype` are used to specify default implementations for abstract types, or map types to subtypes in general.
     This is the same mechanism as [subtype mapping](#subtype-mapping), but configured via properties.
@@ -4056,6 +4056,20 @@ being generated. Using `TypeInstantiator` allows plugging in custom instantiatio
 Instancio uses [SLF4J](https://www.slf4j.org) for logging. Most of the messages are logged
 at `DEBUG` or `TRACE` level. Logging information can be useful when Instancio produces an error
 or does not generate expected values.
+
+In addition to internal logs under the `org.instancio.internal` package,
+Instancio provides several user-facing logging categories.
+The table below summarises these categories and their corresponding log levels:
+
+| Level   | Category                                                                                                                                                     |
+|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `WARN`  | **`org.instancio.log.max.depth.reached`**{ title="Logs a message when the maximum object graph depth limit is reached." }                                    |
+| `DEBUG` | **`org.instancio.log.properties`**{ title="Logs whether the instancio.properties file was found on the classpath or if default properties are being used." } |
+| `TRACE` | **`org.instancio.log.seed`**{ title="Logs the effective seed value and its source." }                                                                        |
+| `TRACE` | **`org.instancio.log.settings`**{ title="Logs the current Settings configuration." }                                                                         |
+| `WARN`  | **`org.instancio.log.suppressed.error`**{ title="Logs exceptions that were suppressed instead of thrown, typically when Keys.FAIL_ON_ERROR is disabled." }   |
+
+
 
 In addition to logging, the builder API provides the `verbose()` method that outputs
 current settings as well as the internal model containing the node hierarchy to

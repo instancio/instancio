@@ -35,6 +35,7 @@
     <logger name="org.instancio.internal.instantiation" level="debug"/>
     <logger name="org.instancio.internal.assigners" level="debug"/>
     <logger name="org.instancio.internal.generator" level="debug"/>
+    <logger name="org.instancio.log.error" level="warn"/>
 
     <logger name="org.instancio" level="debug" additivity="false">
         <appender-ref ref="CONSOLE"/>

@@ -51,6 +51,7 @@ plugins:
       minify_css: true
 
 markdown_extensions:
+  - abbr
   - attr_list
   - toc:
       permalink: True

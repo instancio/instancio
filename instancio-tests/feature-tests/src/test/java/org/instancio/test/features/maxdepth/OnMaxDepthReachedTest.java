@@ -20,7 +20,6 @@ import org.instancio.InstancioApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
-import org.instancio.settings.OnMaxDepthReached;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
@@ -40,6 +39,7 @@ class OnMaxDepthReachedTest {
                 .withSetting(Keys.MAX_DEPTH, 0)
                 .create();
 
+        // Message should be logged at `warn` level, though we have no assertion for it
         assertThat(result).isNotNull().hasAllNullFieldsOrProperties();
     }
 
@@ -47,7 +47,7 @@ class OnMaxDepthReachedTest {
     void onMaxDepthReachedFail() {
         final InstancioApi<StringHolder> api = Instancio.of(StringHolder.class)
                 .withSetting(Keys.MAX_DEPTH, 0)
-                .withSetting(Keys.ON_MAX_DEPTH_REACHED, OnMaxDepthReached.FAIL);
+                .withSetting(Keys.FAIL_ON_MAX_DEPTH_REACHED, true);
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)

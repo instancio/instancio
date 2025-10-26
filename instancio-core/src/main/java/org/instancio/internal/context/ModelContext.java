@@ -63,9 +63,8 @@ import org.instancio.settings.Mode;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
+import org.instancio.support.Log;
 import org.instancio.support.ThreadLocalSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -86,7 +85,6 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
 public final class ModelContext {
-    private static final Logger LOG = LoggerFactory.getLogger(ModelContext.class);
 
     private static final List<InternalServiceProvider> INTERNAL_SERVICE_PROVIDERS =
             CollectionUtils.combine(
@@ -141,7 +139,7 @@ public final class ModelContext {
             settings.set(Keys.ASSIGNMENT_TYPE, assignmentTypeOverride);
         }
 
-        LOG.trace("Resolved settings: {}", settings);
+        Log.msg(Log.Category.SETTINGS, "Resolved settings: {}", settings);
 
         final SetterSelectorHolder holder = builder.setMethodSelectorHolder;
 

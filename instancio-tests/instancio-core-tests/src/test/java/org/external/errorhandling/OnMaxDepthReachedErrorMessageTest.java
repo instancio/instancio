@@ -17,7 +17,6 @@ package org.external.errorhandling;
 
 import org.instancio.Instancio;
 import org.instancio.settings.Keys;
-import org.instancio.settings.OnMaxDepthReached;
 import org.instancio.test.support.pojo.person.Person;
 
 class OnMaxDepthReachedErrorMessageTest extends AbstractErrorMessageTestTemplate {
@@ -26,7 +25,7 @@ class OnMaxDepthReachedErrorMessageTest extends AbstractErrorMessageTestTemplate
     void methodUnderTest() {
         Instancio.of(Person.class)
                 .withMaxDepth(1)
-                .withSetting(Keys.ON_MAX_DEPTH_REACHED, OnMaxDepthReached.FAIL)
+                .withSetting(Keys.FAIL_ON_MAX_DEPTH_REACHED, true)
                 .create();
     }
 
@@ -36,7 +35,7 @@ class OnMaxDepthReachedErrorMessageTest extends AbstractErrorMessageTestTemplate
 
 
                 Error creating an object
-                 -> at org.external.errorhandling.OnMaxDepthReachedErrorMessageTest.methodUnderTest(OnMaxDepthReachedErrorMessageTest.java:30)
+                 -> at org.external.errorhandling.OnMaxDepthReachedErrorMessageTest.methodUnderTest(OnMaxDepthReachedErrorMessageTest.java:29)
 
                 Reason: max depth reached while generating object graph
 
@@ -53,13 +52,13 @@ class OnMaxDepthReachedErrorMessageTest extends AbstractErrorMessageTestTemplate
 
                 This error was thrown because:
 
-                 -> Keys.ON_MAX_DEPTH_REACHED = OnMaxDepthReached.FAIL
+                 -> Keys.FAIL_ON_MAX_DEPTH_REACHED = true
 
                 To resolve this error:
 
                  -> Increase the value of the Keys.MAX_DEPTH setting
                  -> Use withMaxDepth() to override the depth for this model
-                 -> Set Keys.ON_MAX_DEPTH_REACHED to OnMaxDepthReached.IGNORE to skip creating deeper objects
+                 -> Set Keys.FAIL_ON_MAX_DEPTH_REACHED to false to skip creating deeper objects
 
                 """;
     }

@@ -23,6 +23,7 @@ import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.instancio.support.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +34,11 @@ import java.util.function.Supplier;
 public final class ErrorHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ErrorHandler.class);
 
-    private static final String SUPPRESSION_REASON = String.format("" +
-            "Suppressed error because Keys.FAIL_ON_ERROR (%s) is disabled." +
-            "%n -> To propagate the error, set Keys.FAIL_ON_ERROR setting to true. " +
-            "%n -> To display the stack trace, run in verbose() mode or with TRACE logging." +
-            "%n", Keys.FAIL_ON_ERROR.propertyKey());
+    private static final String SUPPRESSION_REASON = String.format("""
+            Suppressed error because Keys.FAIL_ON_ERROR (%s) is disabled.
+             -> To propagate the error, set Keys.FAIL_ON_ERROR setting to true.
+             -> To display the stack trace, run in verbose() mode or with TRACE logging.
+            """, Keys.FAIL_ON_ERROR.propertyKey());
 
     private final ModelContext context;
     private final boolean isFailOnErrorSettingEnabled;
@@ -98,7 +99,7 @@ public final class ErrorHandler {
             if (LOG.isTraceEnabled()) {
                 LOG.trace(SUPPRESSION_REASON, t);
             } else {
-                LOG.debug("{}\n{}: {}", SUPPRESSION_REASON, t.getClass().getName(), t.getMessage());
+                Log.msg(Log.Category.SUPPRESSED_ERROR, SUPPRESSION_REASON, t);
             }
         }
     }
