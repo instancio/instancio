@@ -53,6 +53,7 @@ class CreateClassBulkAutoVerificationTest {
     void verifyFullyPopulated(final TypeToCreate typeToCreate) {
         final Object result = Instancio.of(typeToCreate.targetClass)
                 .withTypeParameters(typeToCreate.typeArgs)
+                .withMaxDepth(100)
                 .create();
 
         assertThatObject(result)
