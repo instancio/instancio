@@ -89,7 +89,6 @@ class ScopeWithCyclicIObjectTest {
     @Test
     void selectorScopeWithCyclicObject() {
         final ClassesWithCrossReferences r = Instancio.of(ClassesWithCrossReferences.class)
-                .withMaxDepth(6)
                 .set(allStrings().within(scope(ObjectA.class), scope(ObjectB.class)), "B-within-A")
                 // B-within-B would form a cycle, therefore, the second B is null and the
                 // following line is omitted as it would result in an unused selector error:

@@ -22,6 +22,9 @@ import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
 import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.basic.SupportedTemporalTypes;
@@ -45,6 +48,10 @@ import static org.instancio.Select.field;
 @FeatureTag(Feature.ASSIGN)
 @ExtendWith(InstancioExtension.class)
 class AssignAdhocRecordsTest {
+
+    @WithSettings
+    private static final Settings SETTINGS = Settings.create()
+            .set(Keys.MAX_DEPTH, 100);
 
     @Test
     void listOfPairsWhereLeftDependsOnRight() {

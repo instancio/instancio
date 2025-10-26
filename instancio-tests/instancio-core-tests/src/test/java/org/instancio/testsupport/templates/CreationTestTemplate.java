@@ -61,6 +61,8 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @TestInstance(PER_CLASS)
 public abstract class CreationTestTemplate<T> {
 
+    private static final int MAX_DEPTH = 100;
+
     private final TypeContext typeContext = new TypeContext(this.getClass());
     private Type genericType;
     private Class<?> typeClass;
@@ -110,12 +112,16 @@ public abstract class CreationTestTemplate<T> {
     }
 
     private Object createUsingModel() {
-        final Model<?> model = Instancio.of((TypeTokenSupplier<Type>) () -> genericType).toModel();
+        final Model<?> model = Instancio.of((TypeTokenSupplier<Type>) () -> genericType)
+                .withMaxDepth(MAX_DEPTH)
+                .toModel();
         return Instancio.create(model);
     }
 
     private Object createUsingTypeToken() {
-        return Instancio.create((TypeTokenSupplier<Type>) () -> genericType);
+        return Instancio.of((TypeTokenSupplier<Type>) () -> genericType)
+                .withMaxDepth(MAX_DEPTH)
+                .create();
     }
 
     private String getDisplayName(final String apiMethod) {
