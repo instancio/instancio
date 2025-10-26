@@ -15,15 +15,15 @@
  */
 package org.instancio.internal.context;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.instancio.support.Log;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public final class PropertiesLoader {
-    private static final Logger LOG = LoggerFactory.getLogger(PropertiesLoader.class);
+
     private static final String DEFAULT_PROPERTIES_FILE = "instancio.properties";
 
     private PropertiesLoader() {
@@ -34,18 +34,22 @@ public final class PropertiesLoader {
         return load(DEFAULT_PROPERTIES_FILE);
     }
 
+    @VisibleForTesting
     static Properties load(final String file) {
         final Properties properties = new Properties();
         try (InputStream inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(file)) {
             if (inStream == null) {
-                LOG.debug("No custom '{}' found on classpath. Using default settings.", file);
+                Log.msg(Log.Category.PROPERTIES,
+                        "No custom '{}' found on classpath. Using default settings.", file);
+
                 return properties;
             }
-            LOG.info("Found '{}' on classpath", file);
+
+            Log.msg(Log.Category.PROPERTIES, "Found '{}' on classpath", file);
             properties.load(inStream);
             return properties;
         } catch (IOException ex) {
-            LOG.debug("Failed loading {}", file);
+            Log.msg(Log.Category.SUPPRESSED_ERROR, "Failed loading {}", file, ex);
         }
         return properties;
     }

@@ -17,16 +17,13 @@ package org.instancio.internal.nodes;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.Keys;
-import org.instancio.settings.OnMaxDepthReached;
+import org.instancio.support.Log;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -37,16 +34,16 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+
+import static org.instancio.internal.util.ErrorMessageUtils.maxDepthReached;
 
 /**
  * Class for creating a node hierarchy for a given {@link Type}.
  */
 public final class NodeFactory {
-    private static final Logger LOG = LoggerFactory.getLogger(NodeFactory.class);
 
     private final DeclaredAndInheritedMemberCollector memberCollector;
     private final ModelContext modelContext;
@@ -100,20 +97,21 @@ public final class NodeFactory {
     @NotNull
     private List<InternalNode> createChildren(@NotNull final InternalNode node) {
         if (node.isIgnored()) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         if (node.getDepth() >= modelContext.getMaxDepth()) {
-            final OnMaxDepthReached onMaxDepthReached = modelContext.getSettings()
-                    .get(Keys.ON_MAX_DEPTH_REACHED);
+            final boolean failOnMaxDepthReached = modelContext.getSettings()
+                    .get(Keys.FAIL_ON_MAX_DEPTH_REACHED);
 
-            if (onMaxDepthReached == OnMaxDepthReached.IGNORE) {
-                LOG.trace("Maximum depth ({}) reached {}", modelContext.getMaxDepth(), node);
-                return Collections.emptyList();
-            }
-            if (onMaxDepthReached == OnMaxDepthReached.FAIL) {
-                throw Fail.withUsageError(ErrorMessageUtils.maxDepthReached(
-                        node, modelContext.getMaxDepth()));
+            if (failOnMaxDepthReached) {
+                throw Fail.withUsageError(maxDepthReached(node, modelContext.getMaxDepth()));
+            } else {
+                Log.msg(Log.Category.MAX_DEPTH_REACHED,
+                        "Maximum depth of {} reached at {}. Ignoring further child nodes.",
+                        modelContext.getMaxDepth(), node);
+
+                return List.of();
             }
         }
 
@@ -123,7 +121,7 @@ public final class NodeFactory {
         if (type instanceof Class) {
             // do not reflect on JDK classes
             children = node.is(NodeKind.JDK)
-                    ? Collections.emptyList()
+                    ? List.of()
                     : createChildrenOfClass(node);
         } else if (type instanceof ParameterizedType) {
             children = createChildrenOfParameterizedType(node);

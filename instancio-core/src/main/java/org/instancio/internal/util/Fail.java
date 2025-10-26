@@ -20,18 +20,16 @@ import org.instancio.exception.InstancioException;
 import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.exception.UnresolvedAssignmentException;
 
-import java.util.List;
-
 /**
  * Utility class for constructing exceptions.
  */
 public final class Fail {
 
-    static final String SUBMIT_BUG_REPORT_MSG = String.format("" +
-            "Instancio encountered an error.%n" +
-            "Please submit a bug report including the stacktrace:%n" +
-            "https://github.com/instancio/instancio/issues");
-
+    static final String SUBMIT_BUG_REPORT_MSG = """
+            Instancio encountered an error.
+            Please submit a bug report including the stacktrace:
+            https://github.com/instancio/instancio/issues
+            """;
 
     /**
      * Wraps given exception in an {@link InstancioException},
@@ -44,16 +42,15 @@ public final class Fail {
      * @return a wrapped exception with a message requesting a bug report
      */
     public static InstancioException withInternalError(final Throwable cause) {
-        if (cause instanceof InstancioException) {
-            return (InstancioException) cause;
-        }
-        return new InstancioException(SUBMIT_BUG_REPORT_MSG, cause);
+        return cause instanceof InstancioException ex
+                ? ex
+                : new InstancioException(SUBMIT_BUG_REPORT_MSG, cause);
     }
 
     public static InstancioException withInternalError(final String msg, final Object... args) {
-        final ErrorArgs errorArgs = unpackArgs(args);
+        final ErrorArgs errorArgs = ErrorArgs.unpackArgs(args);
         final String fullErrorMsg = createInternalErrorMessage(msg, errorArgs);
-        return new InstancioException(fullErrorMsg, errorArgs.throwable);
+        return new InstancioException(fullErrorMsg, errorArgs.getThrowable());
     }
 
     /**
@@ -68,42 +65,44 @@ public final class Fail {
      * @return an exception to be propagated to the user
      */
     public static InstancioApiException withUsageError(final String msg, final Object... args) {
-        final ErrorArgs errorArgs = unpackArgs(args);
+        final ErrorArgs errorArgs = ErrorArgs.unpackArgs(args);
         final String fullErrorMsg = createUsageErrorMessage(msg, errorArgs);
-        return new InstancioApiException(fullErrorMsg, errorArgs.throwable);
+        return new InstancioApiException(fullErrorMsg, errorArgs.getThrowable());
     }
 
     public static UnresolvedAssignmentException withUnresolvedAssignment(final String msg, final Object... args) {
-        final ErrorArgs errorArgs = unpackArgs(args);
+        final ErrorArgs errorArgs = ErrorArgs.unpackArgs(args);
         final String fullErrorMsg = createUsageErrorMessage(msg, errorArgs);
-        return new UnresolvedAssignmentException(fullErrorMsg, errorArgs.throwable);
+        return new UnresolvedAssignmentException(fullErrorMsg, errorArgs.getThrowable());
     }
 
     private static String createUsageErrorMessage(final String msg, final ErrorArgs errorArgs) {
         final String location = Format.firstNonInstancioStackTraceLine(new Throwable());
-        final String msgWithArgs = String.format(msg, errorArgs.args);
-        return String.format("" +
-                "%n" +
-                "%nError creating an object" +
-                "%n -> at %s" +
-                "%n" +
-                "%nReason: %s" +
-                "%n" +
-                "%n", location, msgWithArgs);
+        final String msgWithArgs = String.format(msg, errorArgs.getArgs());
+        return String.format("""
+
+
+                Error creating an object
+                 -> at %s
+
+                Reason: %s
+
+                """, location, msgWithArgs);
     }
 
     private static String createInternalErrorMessage(final String msg, final ErrorArgs errorArgs) {
         final String location = Format.firstNonInstancioStackTraceLine(new Throwable());
-        final String msgWithArgs = String.format(msg, errorArgs.args);
-        return String.format("Internal error occurred creating an object." +
-                "%n" +
-                "%nInternal errors are suppressed by default and" +
-                "%ncan be ignored if not applicable to the current test" +
-                "%n -> at %s" +
-                "%n" +
-                "%nReason: %s" +
-                "%n" +
-                "%n", location, msgWithArgs);
+        final String msgWithArgs = String.format(msg, errorArgs.getArgs());
+        return String.format("""
+                Internal error occurred creating an object.
+
+                Internal errors are suppressed by default and
+                can be ignored if not applicable to the current test
+                 -> at %s
+
+                Reason: %s
+
+                """, location, msgWithArgs);
     }
 
     /**
@@ -118,39 +117,15 @@ public final class Fail {
      * @return an exception to be propagated to the user
      */
     public static InstancioTerminatingException withFataInternalError(final String msg, final Object... args) {
-        final ErrorArgs errorArgs = unpackArgs(args);
-        final String msgWithArgs = String.format(msg, errorArgs.args);
-        final String fullErrorMsg = String.format("" +
-                "%n" +
-                "%s" +
-                "%n" +
-                "%n -> %s" +
-                "%n", SUBMIT_BUG_REPORT_MSG, msgWithArgs);
-        return new InstancioTerminatingException(fullErrorMsg, errorArgs.throwable);
-    }
+        final ErrorArgs errorArgs = ErrorArgs.unpackArgs(args);
+        final String msgWithArgs = String.format(msg, errorArgs.getArgs());
+        final String fullErrorMsg = String.format("""
 
-    private static ErrorArgs unpackArgs(final Object... args) {
-        final int len = args.length;
-        if (len > 0 && args[len - 1] instanceof Throwable) {
-            return new ErrorArgs(copyWithoutLastElement(args), (Throwable) args[len - 1]);
-        }
-        return new ErrorArgs(args, null);
-    }
+                %s
 
-    private static Object[] copyWithoutLastElement(final Object... args) {
-        final List<Object> list = CollectionUtils.asArrayList(args);
-        list.remove(args.length - 1);
-        return list.toArray();
-    }
-
-    private static final class ErrorArgs {
-        private final Object[] args;
-        private final Throwable throwable;
-
-        private ErrorArgs(final Object[] args, final Throwable throwable) {
-            this.args = args;
-            this.throwable = throwable;
-        }
+                 -> %s
+                """, SUBMIT_BUG_REPORT_MSG, msgWithArgs);
+        return new InstancioTerminatingException(fullErrorMsg, errorArgs.getThrowable());
     }
 
     private Fail() {

@@ -26,7 +26,6 @@ import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnFeedPropertyUnmatched;
-import org.instancio.settings.OnMaxDepthReached;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
@@ -73,14 +72,14 @@ public final class ErrorMessageUtils {
                 .append(NL)
                 .append("This error was thrown because:").append(NL)
                 .append(NL)
-                .append(" -> ").append(keyDesc(Keys.ON_MAX_DEPTH_REACHED)).append(" = ").append(OnMaxDepthReached.FAIL).append(NL)
+                .append(" -> ").append(keyDesc(Keys.FAIL_ON_MAX_DEPTH_REACHED)).append(" = true").append(NL)
                 .append(NL)
                 .append("To resolve this error:").append(NL)
                 .append(NL)
                 .append(" -> Increase the value of the ").append(keyDesc(Keys.MAX_DEPTH)).append(" setting").append(NL)
                 .append(" -> Use withMaxDepth() to override the depth for this model").append(NL)
-                .append(" -> Set ").append(keyDesc(Keys.ON_MAX_DEPTH_REACHED))
-                .append(" to ").append(OnMaxDepthReached.IGNORE).append(" to skip creating deeper objects")
+                .append(" -> Set ").append(keyDesc(Keys.FAIL_ON_MAX_DEPTH_REACHED))
+                .append(" to false to skip creating deeper objects")
                 .toString();
     }
 
