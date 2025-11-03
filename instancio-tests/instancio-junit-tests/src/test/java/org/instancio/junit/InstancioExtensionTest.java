@@ -126,9 +126,10 @@ class InstancioExtensionTest {
     @DisplayName("Verify annotated Settings are passed to thread local")
     void beforeEachWithSettingsAnnotation() throws IllegalAccessException {
         doReturn(Optional.of(DummyTest.class)).when(context).getTestClass();
-        doReturn(Optional.of(new DummyTest())).when(context).getTestInstance();
         doReturn(testInstances).when(context).getRequiredTestInstances();
+        doReturn(Optional.of(testInstances)).when(context).getTestInstances();
         doReturn(List.of(new DummyTest())).when(testInstances).getAllInstances();
+        doReturn(Optional.of(new DummyTest())).when(testInstances).findInstance(DummyTest.class);
 
         final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
         doReturn(store).when(context).getStore(create("org.instancio"));
@@ -167,7 +168,10 @@ class InstancioExtensionTest {
     @DisplayName("Verify exception is thrown if @WithSettings is not on Settings field")
     void withSettingsOnWrongFieldType() {
         doReturn(Optional.of(DummyWithSettingsOnWrongFieldTypeTest.class)).when(context).getTestClass();
-        doReturn(Optional.of(new DummyWithSettingsOnWrongFieldTypeTest())).when(context).getTestInstance();
+        doReturn(Optional.of(testInstances)).when(context).getTestInstances();
+        doReturn(Optional.of(new DummyWithSettingsOnWrongFieldTypeTest()))
+                .when(testInstances)
+                .findInstance(DummyWithSettingsOnWrongFieldTypeTest.class);
 
         final String expectedMsg = """
                 Error running test
@@ -186,7 +190,10 @@ class InstancioExtensionTest {
     @DisplayName("Verify exception is thrown if @WithSettings is on a field with null value")
     void withSettingsOnNullField() {
         doReturn(Optional.of(DummyWithNullSettingsTest.class)).when(context).getTestClass();
-        doReturn(Optional.of(new DummyWithNullSettingsTest())).when(context).getTestInstance();
+        doReturn(Optional.of(testInstances)).when(context).getTestInstances();
+        doReturn(Optional.of(new DummyWithNullSettingsTest()))
+                .when(testInstances)
+                .findInstance(DummyWithNullSettingsTest.class);
 
         final String expectedMsg = """
                 Error running test
@@ -208,7 +215,6 @@ class InstancioExtensionTest {
     @DisplayName("Verify exception is thrown if @WithSettings is on a non-static field")
     void withNonStaticSettingsField() {
         doReturn(Optional.of(DummyWithNonStaticSettingsTest.class)).when(context).getTestClass();
-        doReturn(Optional.empty()).when(context).getTestInstance();
 
         final String expectedMsg = """
                 Error running test

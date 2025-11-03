@@ -27,6 +27,7 @@ import org.instancio.support.ThreadLocalSettings;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,40 +80,46 @@ public final class ExtensionSupport {
         threadLocalRandom.set(new DefaultRandom(seed, source));
     }
 
-    @SuppressWarnings({"java:S3011", "PMD.CyclomaticComplexity"})
+    @SuppressWarnings("java:S3011")
     private static void processWithSettingsAnnotation(
             final ExtensionContext context,
             final ThreadLocalSettings threadLocalSettings) {
+        final List<Class<?>> testClasses = new ArrayList<>(context.getEnclosingTestClasses());
+        context.getTestClass().ifPresent(testClasses::add);
 
-        final Optional<Class<?>> testClass = context.getTestClass();
-        if (!testClass.isPresent()) {
-            return;
-        }
+        testClasses.stream()
+                .map(t -> findSettings(t, context))
+                .flatMap(Optional::stream)
+                .reduce(Settings::merge)
+                .ifPresent(threadLocalSettings::set);
+    }
 
-        final List<Field> fields = ReflectionUtils.getAnnotatedFields(testClass.get(), WithSettings.class);
+    private static Optional<Settings> findSettings(Class<?> testClass, ExtensionContext context) {
+        final List<Field> fields = ReflectionUtils.getAnnotatedFields(testClass, WithSettings.class);
 
         if (fields.size() > 1) {
             throw Fail.multipleAnnotatedFields(fields);
-
-        } else if (fields.size() == 1) {
-            final Field field = fields.get(0);
-
-            // Test instance is not present for parameterized tests, in which case
-            // we expect the settings annotation to be on a static field
-            final Optional<Object> testInstance = context.getTestInstance();
-            final Object settings = ReflectionUtils.getFieldValue(field, testInstance.orElse(null));
-
-            if (testInstance.isPresent() && settings == null) {
-                throw Fail.withSettingsOnNullField();
-            }
-            if (settings == null) {
-                throw Fail.withSettingsOnNullOrNonStaticField();
-            }
-            if (!(settings instanceof Settings)) {
-                throw Fail.withSettingsOnWrongFieldType(field);
-            }
-            threadLocalSettings.set((Settings) settings);
+        } else if (fields.isEmpty()) {
+            return Optional.empty();
         }
+
+        final Field field = fields.get(0);
+
+        // Test instance is not present for parameterized tests, in which case
+        // we expect the settings annotation to be on a static field
+        final Optional<Object> testInstance = context.getTestInstances().flatMap(testInstances -> testInstances.findInstance(testClass));
+        final Object settings = ReflectionUtils.getFieldValue(field, testInstance.orElse(null));
+
+        if (testInstance.isPresent() && settings == null) {
+            throw Fail.withSettingsOnNullField();
+        }
+        if (settings == null) {
+            throw Fail.withSettingsOnNullOrNonStaticField();
+        }
+        if (!(settings instanceof Settings)) {
+            throw Fail.withSettingsOnWrongFieldType(field);
+        }
+        return Optional.of((Settings) settings);
     }
 
     private ExtensionSupport() {

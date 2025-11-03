@@ -25,18 +25,18 @@ import java.lang.annotation.Target;
  * Specifies the seed for the random number generator.
  * <p>
  * Example:
- * <pre class="code"><code class="java">
+ * <pre>{@code
  *
- * &#064;ExtendWith(InstancioExtension.class)
+ * @ExtendWith(InstancioExtension.class)
  * class ExampleTest {
  *
- *     &#064;Test
- *     <b>&#064;Seed(12345)</b>
+ *     @Test
+ *     @Seed(12345)
  *     void someTestMethod() {
  *         Person person = Instancio.create(Person.class); // will use the specified seed
  *     }
  * }
- * </code></pre>
+ * }</pre>
  * <p>
  * If the {@link Seed} annotation is specified, the same data set will be generated each test run
  * based on the given seed value.

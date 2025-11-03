@@ -253,9 +253,9 @@ public class InstancioExtension implements
         final boolean supportsParameter = containsAnnotation(annotations, Given.class) &&
                 // Exclude InstancioSource methods (which can generate arguments) to avoid the
                 // "Discovered multiple competing ParameterResolvers for parameter" error
-                !extensionContext.getTestMethod()
+                extensionContext.getTestMethod()
                         .map(m -> m.getDeclaredAnnotation(InstancioSource.class))
-                        .isPresent();
+                        .isEmpty();
 
         if (supportsParameter) {
             extensionContext.getStore(INSTANCIO_NAMESPACE)

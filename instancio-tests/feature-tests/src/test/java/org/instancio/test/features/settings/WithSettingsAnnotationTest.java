@@ -69,9 +69,9 @@ class WithSettingsAnnotationTest {
     @Nested
     class FooTest {
         @Test
-        @DisplayName("Settings are not injected into nested test class")
+        @DisplayName("Settings are injected into nested test class")
         void verifyWithSettings() {
-            assertThat(Instancio.create(int.class)).isNotEqualTo(-1);
+            assertThat(Instancio.create(int.class)).isEqualTo(-1);
         }
     }
 }
