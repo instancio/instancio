@@ -62,7 +62,7 @@
         <version.jakarta.persistence>3.2.0</version.jakarta.persistence>
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
         <version.jetbrains.annotations>26.0.2-1</version.jetbrains.annotations>
-        <version.junit>6.0.0</version.junit>
+        <version.junit>6.0.1</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.9.0</version.central-publishing-maven-plugin>

@@ -46,7 +46,7 @@ jobs:
     needs: deploy
     strategy:
       matrix:
-        junit: [ 6.0.0 ]
+        junit: [ 6.0.1 ]
     runs-on: ubuntu-latest
     name: "Verify snapshots with Junit ${{ matrix.junit }}"
     steps:
