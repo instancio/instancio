@@ -16,7 +16,6 @@
 package org.instancio.junit;
 
 import org.instancio.settings.Settings;
-import org.junit.jupiter.api.Nested;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -30,24 +29,20 @@ import java.lang.annotation.Target;
  * <p>This annotation must be placed on a {@link Settings} field.
  * There can be at most one field annotated {@code @WithSettings} per test class.
  *
- * <pre><code>
- * &#064;ExtendWith(InstancioExtension.class)
+ * <pre>{@code
+ * @ExtendWith(InstancioExtension.class)
  * class ExampleTest {
- *     &#064;WithSettings
+ *     @WithSettings
  *     private final Settings settings = Settings.create()
  *         .set(Keys.COLLECTION_MIN_SIZE, 50)
  *         .set(Keys.COLLECTION_MAX_SIZE, 100);
  *
- *     &#064;Test
+ *     @Test
  *     void example() {
  *
  *     }
  * }
- * </code></pre>
- *
- * <p><b>Note</b>: when a {@link Settings} instance is annotated with
- * {@code @WithSettings}, the specified settings are not automatically
- * applied to {@link Nested} test classes.
+ * }</pre>
  *
  * @since 1.1.1
  */
