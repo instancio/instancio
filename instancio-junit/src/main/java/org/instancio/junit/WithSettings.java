@@ -44,6 +44,32 @@ import java.lang.annotation.Target;
  * }
  * }</pre>
  *
+ * <h2>{@code @Nested} Test Classes</h2>
+ *
+ * <p>Prior to version {@code 6.0.0}, settings defined in {@code @Nested}
+ * test classes were independent from those in their outer classes.
+ *
+ * <p>Since version {@code 6.0.0}, when {@code @WithSettings} is used in
+ * {@code @Nested} test classes, the inner class settings are overlaid on
+ * top of the outer class settings. In other words, settings defined in the
+ * inner class override any matching settings from the outer class, for example:
+ *
+ * <pre>{@code
+ * @WithSettings
+ * private final Settings outer = Settings.create()
+ *     .set(Keys.STRING_MIN_LENGTH, 3)
+ *     .set(Keys.STRING_MAX_LENGTH, 20);
+ *
+ * @Nested
+ * class InnerTest {
+ *     @WithSettings
+ *     private final Settings inner = Settings.create()
+ *         .set(Keys.STRING_MIN_LENGTH, 10);
+ *
+ *     // Effective value of STRING_MIN_LENGTH = 10 and STRING_MAX_LENGTH = 20
+ * }
+ * }</pre>
+ *
  * @since 1.1.1
  */
 @Documented
