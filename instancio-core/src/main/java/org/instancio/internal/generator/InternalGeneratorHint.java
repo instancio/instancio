@@ -36,7 +36,6 @@ import java.util.StringJoiner;
 @InternalApi
 public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> {
     private final Class<?> targetClass;
-    private final boolean isDelegating;
     private final boolean excludeFromCallbacks;
     private final boolean nullableResult;
     private final boolean emptyResult;
@@ -44,7 +43,6 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
 
     private InternalGeneratorHint(final Builder builder) {
         targetClass = builder.targetClass;
-        isDelegating = builder.isDelegating;
         excludeFromCallbacks = builder.excludeFromCallbacks;
         nullableResult = builder.nullableResult;
         emptyResult = builder.emptyResult;
@@ -63,18 +61,6 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
      */
     public Class<?> targetClass() {
         return targetClass;
-    }
-
-    /**
-     * A hint indicating whether a generator delegates instantiation
-     * to another generator. This occurs when the generator does not
-     * have enough information to determine which type to instantiate.
-     *
-     * @return {@code true} a generator is delegating, {@code false} otherwise
-     * @since 2.0.0
-     */
-    public boolean isDelegating() {
-        return isDelegating;
     }
 
     /**
@@ -126,7 +112,6 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
     public String toString() {
         return new StringJoiner(", ", "GeneratorHint[", "]")
                 .add("targetClass=" + (targetClass == null ? null : targetClass.getTypeName()))
-                .add("isDelegating=" + isDelegating)
                 .add("nullableResult=" + nullableResult)
                 .add("emptyResult=" + emptyResult)
                 .add("emitNull=" + emitNull)
@@ -140,7 +125,6 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
 
     public static final class Builder {
         private Class<?> targetClass;
-        private boolean isDelegating;
         private boolean excludeFromCallbacks;
         private boolean nullableResult;
         private boolean emptyResult;
@@ -151,11 +135,6 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
 
         public Builder targetClass(final Class<?> targetClass) {
             this.targetClass = targetClass;
-            return this;
-        }
-
-        public Builder delegating(final boolean isDelegating) {
-            this.isDelegating = isDelegating;
             return this;
         }
 

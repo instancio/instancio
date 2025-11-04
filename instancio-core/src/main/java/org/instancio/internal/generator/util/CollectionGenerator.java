@@ -155,7 +155,6 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
                         .build())
                 .with(InternalGeneratorHint.builder()
                         .targetClass(collectionType)
-                        .delegating(isDelegating())
                         .nullableResult(isNullable())
                         .build())
                 .build();
