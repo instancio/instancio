@@ -17,7 +17,7 @@
         <version.assertj>3.27.6</version.assertj>
         <version.equalsverifier>4.2.1</version.equalsverifier>
         <version.junit.pioneer>2.3.0</version.junit.pioneer>
-        <version.logback>1.5.18</version.logback>
+        <version.logback>1.5.20</version.logback>
         <version.lombok>1.18.42</version.lombok>
         <version.mockito>5.19.0</version.mockito>
         <!-- plugins -->
