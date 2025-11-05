@@ -15,36 +15,67 @@
  */
 package org.instancio.tests.jpms.guava;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.*;
+import com.google.common.net.HostAndPort;
 import com.google.common.net.InternetDomainName;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(InstancioExtension.class)
 class JpmsGuavaTest {
 
-    private static class GuavaPerson {
-        private String name;
-        private InternetDomainName website;
-        private ImmutableList<String> hobbies;
+    private record AllSupportedGuavaTypes(ArrayListMultimap<UUID, String> arrayListMultimap,
+                                          BiMap<UUID, String> biMap,
+                                          HashBiMap<UUID, String> hashBiMap,
+                                          HashMultimap<UUID, String> hashMultimap,
+                                          HashMultiset<UUID> hashMultiset,
+                                          ImmutableBiMap<UUID, String> immutableBiMap,
+                                          ImmutableList<UUID> immutableList,
+                                          ImmutableListMultimap<UUID, String> immutableListMultimap,
+                                          ImmutableMap<UUID, String> immutableMap,
+                                          ImmutableMultimap<UUID, String> immutableMultimap,
+                                          ImmutableMultiset<UUID> immutableMultiset,
+                                          ImmutableSet<UUID> immutableSet,
+                                          ImmutableSetMultimap<UUID, String> immutableSetMultimap,
+                                          ImmutableSortedMap<UUID, String> immutableSortedMap,
+                                          ImmutableSortedMultiset<UUID> immutableSortedMultiset,
+                                          ImmutableSortedSet<UUID> immutableSortedSet,
+                                          ImmutableTable<String, Integer, Long> immutableTable,
+                                          LinkedHashMultimap<UUID, String> linkedHashMultimap,
+                                          LinkedHashMultiset<UUID> linkedHashMultiset,
+                                          LinkedListMultimap<UUID, String> linkedListMultimap,
+                                          ListMultimap<UUID, String> listMultimap,
+                                          Multiset<UUID> multiset,
+                                          Range<Integer> range,
+                                          SetMultimap<UUID, String> setMultimap,
+                                          SortedMultiset<UUID> sortedMultiset,
+                                          SortedSetMultimap<UUID, String> sortedSetMultimap,
+                                          Table<String, Integer, Long> table,
+                                          TreeMultimap<UUID, String> treeMultimap,
+                                          TreeMultiset<UUID> treeMultiset,
+                                          ConcurrentHashMultiset<UUID> concurrentHashMultiset,
+                                          HostAndPort hostAndPort,
+                                          InternetDomainName internetDomainName) {
     }
 
     @Test
     void create() {
-        final GuavaPerson result = Instancio.create(GuavaPerson.class);
+        final AllSupportedGuavaTypes result = Instancio.create(AllSupportedGuavaTypes.class);
 
-        assertThat(result.name).isNotBlank();
+        assertThat(result).hasNoNullFieldsOrProperties();
 
-        assertThat(result.website.toString())
+        assertThat(result.internetDomainName().toString())
                 .matches("[a-z]+\\.[a-z]+");
 
-        assertThat(result.hobbies)
+        assertThat(result.immutableList())
                 .isNotEmpty()
                 .isInstanceOf(ImmutableList.class)
-                .allSatisfy(hobby -> assertThat(hobby).isNotBlank());
+                .doesNotContainNull();
     }
 }
