@@ -58,7 +58,24 @@ jobs:
           java-version: 25
           cache: maven
       - name: "Test"
-        run: cd instancio-tests && mvn verify -pl instancio-junit-tests -am -Dversion.junit=${{ matrix.junit }}
+        run: cd instancio-tests && mvn verify -pl :instancio-junit-tests -am -Dversion.junit=${{ matrix.junit }}
+  guava:
+    needs: deploy
+    strategy:
+      matrix:
+        guava: [ 23.6.1-jre, 24.1.1-jre, 25.1-jre, 26.0-jre, 27.1-jre, 28.2-jre, 29.0-jre, 30.1.1-jre, 31.1-jre, 32.1.3-jre, 33.4.8-jre ]
+    runs-on: ubuntu-latest
+    name: "Verify snapshots with Guava ${{ matrix.guava }}"
+    steps:
+      - uses: actions/checkout@v5
+      - name: "Set up JDK"
+        uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: 25
+          cache: maven
+      - name: "Test"
+        run: cd instancio-tests && mvn verify -pl :instancio-guava-tests,:jpms-guava-tests -am -Dversion.guava=${{ matrix.guava }}
   experimental:
     needs: deploy
     runs-on: ubuntu-latest

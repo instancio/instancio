@@ -17,7 +17,9 @@ package org.instancio.guava.internal.generator;
 
 import com.google.common.net.InternetDomainName;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
+import org.instancio.generator.Hints;
 
 public class GuavaInternetDomainNameGenerator implements Generator<InternetDomainName> {
 
@@ -27,5 +29,10 @@ public class GuavaInternetDomainNameGenerator implements Generator<InternetDomai
         final String tld = random.oneOf(".com", ".net", ".org");
         final String domain = random.lowerCaseAlphabetic(length) + tld;
         return InternetDomainName.from(domain);
+    }
+
+    @Override
+    public Hints hints() {
+        return Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
     }
 }

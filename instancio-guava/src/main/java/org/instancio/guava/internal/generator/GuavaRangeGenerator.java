@@ -17,7 +17,9 @@ package org.instancio.guava.internal.generator;
 
 import com.google.common.collect.Range;
 import org.instancio.Random;
+import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
+import org.instancio.generator.Hints;
 
 public class GuavaRangeGenerator<C extends Comparable<C>>
         implements Generator<Range<C>> {
@@ -26,5 +28,10 @@ public class GuavaRangeGenerator<C extends Comparable<C>>
     @Override
     public Range<C> generate(final Random random) {
         return Range.all();
+    }
+
+    @Override
+    public Hints hints() {
+        return Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
     }
 }
