@@ -42,20 +42,18 @@ public final class TypeUtils {
     }
 
     public static Class<?> getArrayClass(@Nullable final Type type) {
-        if (type instanceof Class) {
-            final Class<?> klass = (Class<?>) type;
+        if (type instanceof Class<?> klass) {
 
             if (klass.isArray()) {
                 return klass;
             }
 
             return Array.newInstance(klass, 0).getClass();
-        } else if (type instanceof ParameterizedType) {
-            final Type rawType = ((ParameterizedType) type).getRawType();
+        } else if (type instanceof ParameterizedType parameterizedType) {
+            final Type rawType = parameterizedType.getRawType();
             return getArrayClass(rawType);
-        } else if (type instanceof GenericArrayType) {
-            final GenericArrayType arrayType = (GenericArrayType) type;
-            final Type genericComponent = arrayType.getGenericComponentType();
+        } else if (type instanceof GenericArrayType genericArrayType) {
+            final Type genericComponent = genericArrayType.getGenericComponentType();
             return Array.newInstance(getRawType(genericComponent), 0).getClass();
         }
         throw new IllegalArgumentException("Could not resolve array class for type: " + type);
@@ -66,10 +64,10 @@ public final class TypeUtils {
     public static <T> Class<T> getRawType(final Type type) {
         if (type instanceof Class) {
             return (Class<T>) type;
-        } else if (type instanceof ParameterizedType) {
-            return (Class<T>) ((ParameterizedType) type).getRawType();
-        } else if (type instanceof GenericArrayType) {
-            final Type genericComponentType = ((GenericArrayType) type).getGenericComponentType();
+        } else if (type instanceof ParameterizedType parameterizedType) {
+            return (Class<T>) parameterizedType.getRawType();
+        } else if (type instanceof GenericArrayType genericArrayType) {
+            final Type genericComponentType = genericArrayType.getGenericComponentType();
             return getRawType(genericComponentType);
         }
         throw Fail.withFataInternalError("Unhandled type: %s", type.getClass().getSimpleName());
@@ -89,8 +87,8 @@ public final class TypeUtils {
         List<Type> supertypes = collectSupertypes(klass);
 
         for (Type supertype : supertypes) {
-            if (supertype instanceof ParameterizedType) {
-                return (ParameterizedType) supertype;
+            if (supertype instanceof ParameterizedType parameterizedType) {
+                return parameterizedType;
             }
         }
         return findParameterizedSupertype(supertypes);
@@ -125,8 +123,7 @@ public final class TypeUtils {
     }
 
     public static Type[] getGenericSuperclassTypeArguments(final Class<?> klass) {
-        if (klass.getGenericSuperclass() instanceof ParameterizedType) {
-            final ParameterizedType genericSuperclass = (ParameterizedType) klass.getGenericSuperclass();
+        if (klass.getGenericSuperclass() instanceof ParameterizedType genericSuperclass) {
             return genericSuperclass.getActualTypeArguments();
         }
         return new Type[0];

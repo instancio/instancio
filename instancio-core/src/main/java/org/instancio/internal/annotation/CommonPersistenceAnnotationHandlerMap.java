@@ -44,7 +44,7 @@ class CommonPersistenceAnnotationHandlerMap extends AnnotationHandlerMap {
                                   final Class<?> targetClass,
                                   final GeneratorContext generatorContext) {
 
-            if (spec instanceof StringGeneratorSpec) {
+            if (spec instanceof final StringGeneratorSpec stringSpec) {
                 final Settings settings = generatorContext.getSettings();
                 final int maxLength = getLength(annotation);
                 final int minLength = Math.min(maxLength, settings.get(Keys.STRING_MIN_LENGTH));
@@ -54,13 +54,10 @@ class CommonPersistenceAnnotationHandlerMap extends AnnotationHandlerMap {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
                         minLength, maxLength, settings.get(Keys.STRING_MAX_LENGTH));
 
-                final StringGeneratorSpec stringSpec = (StringGeneratorSpec) spec;
                 stringSpec.length(range.min(), range.max());
-            } else if (spec instanceof InternalFractionalNumberGeneratorSpec) {
+            } else if (spec instanceof final InternalFractionalNumberGeneratorSpec<?> fractionalSpec) {
                 final int precision = getPrecision(annotation);
                 final int scale = getScale(annotation);
-                final InternalFractionalNumberGeneratorSpec<?> fractionalSpec =
-                        (InternalFractionalNumberGeneratorSpec<?>) spec;
 
                 if (precision > 0) {
                     fractionalSpec.precision(precision).scale(scale);

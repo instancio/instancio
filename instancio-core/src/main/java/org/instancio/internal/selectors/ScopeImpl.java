@@ -61,8 +61,7 @@ public final class ScopeImpl implements Scope {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof ScopeImpl)) return false;
-        final ScopeImpl scope = (ScopeImpl) o;
+        if (!(o instanceof ScopeImpl scope)) return false;
         return Objects.equals(target, scope.target)
                 && Objects.equals(depth, scope.depth);
     }
@@ -81,23 +80,19 @@ public final class ScopeImpl implements Scope {
         if (target.getTargetClass() != null) {
             elements.add(target.getTargetClass().getSimpleName());
         }
-        if (target instanceof TargetField) {
-            TargetField t = (TargetField) target;
+        if (target instanceof final TargetField t) {
             elements.add(StringUtils.quoteStringValue(t.getField().getName()));
         }
-        if (target instanceof TargetFieldName) {
-            TargetFieldName t = (TargetFieldName) target;
+        if (target instanceof final TargetFieldName t) {
             elements.add(StringUtils.quoteStringValue(t.getFieldName()));
         }
-        if (target instanceof TargetSetter) {
-            TargetSetter t = (TargetSetter) target;
+        if (target instanceof final TargetSetter t) {
             String methodName = t.getSetter().getName();
             elements.add(t.getParameterType() == null
                     ? methodName
                     : String.format("%s(%s)", methodName, t.getParameterType().getSimpleName()));
         }
-        if (target instanceof TargetSetterName) {
-            TargetSetterName t = (TargetSetterName) target;
+        if (target instanceof final TargetSetterName t) {
             elements.add(t.getParameterType() == null
                     ? t.getMethodName()
                     : String.format("%s(%s)", t.getMethodName(), t.getParameterType().getSimpleName()));

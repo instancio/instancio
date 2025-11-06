@@ -37,8 +37,7 @@ public final class ScopelessSelector implements TargetSelector {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof ScopelessSelector)) return false;
-        final ScopelessSelector selector = (ScopelessSelector) o;
+        if (!(o instanceof ScopelessSelector selector)) return false;
         return Objects.equals(targetClass, selector.targetClass)
                 && Objects.equals(member, selector.member);
     }

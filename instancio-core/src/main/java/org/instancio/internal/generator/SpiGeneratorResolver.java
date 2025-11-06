@@ -83,10 +83,9 @@ public class SpiGeneratorResolver {
     // TODO refactor
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     private Generator<?> processGenerator(final Generator<?> generator, final InternalNode node) {
-        if (generator instanceof ArrayGenerator) {
-            ((ArrayGenerator<?>) generator).subtype(node.getTargetClass());
-        } else if (generator instanceof AbstractGenerator) {
-            final AbstractGenerator<?> g = (AbstractGenerator<?>) generator;
+        if (generator instanceof ArrayGenerator<?> arrayGenerator) {
+            arrayGenerator.subtype(node.getTargetClass());
+        } else if (generator instanceof final AbstractGenerator<?> g) {
 
             if (!g.isDelegating()) {
                 return g;
@@ -101,9 +100,9 @@ public class SpiGeneratorResolver {
                 return generator;
             }
 
-            if (delegate instanceof AbstractGenerator<?>) {
-                final boolean nullable = ((AbstractGenerator<?>) generator).isNullable();
-                ((AbstractGenerator<?>) delegate).nullable(nullable);
+            if (delegate instanceof AbstractGenerator<?> delegateGenerator) {
+                final boolean nullable = g.isNullable();
+                delegateGenerator.nullable(nullable);
             }
             return GeneratorDecorator.replaceHints(delegate, hints);
         }

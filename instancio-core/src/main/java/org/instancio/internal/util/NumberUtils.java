@@ -256,8 +256,8 @@ public final class NumberUtils {
     }
 
     public static BigDecimal toBigDecimal(final Number n) {
-        if (n instanceof BigDecimal) {
-            return (BigDecimal) n;
+        if (n instanceof BigDecimal bd) {
+            return bd;
         }
         return n == null ? null : new BigDecimal(String.valueOf(n));
     }

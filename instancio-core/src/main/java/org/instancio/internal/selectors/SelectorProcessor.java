@@ -61,17 +61,17 @@ public final class SelectorProcessor {
             @NotNull final TargetSelector selector,
             @NotNull final ApiMethodSelector apiMethodSelector) {
 
-        if (selector instanceof SelectorImpl) {
-            final SelectorImpl result = processTargetAndScope((SelectorImpl) selector, apiMethodSelector);
+        if (selector instanceof SelectorImpl s) {
+            final SelectorImpl result = processTargetAndScope(s, apiMethodSelector);
             return Collections.singletonList(result);
 
-        } else if (selector instanceof SelectorGroupImpl) {
-            return processGroup((SelectorGroupImpl) selector, apiMethodSelector);
+        } else if (selector instanceof SelectorGroupImpl selectorGroup) {
+            return processGroup(selectorGroup, apiMethodSelector);
 
-        } else if (selector instanceof GetMethodSelector<?, ?>) {
+        } else if (selector instanceof GetMethodSelector<?, ?> getMethodSelector) {
             return process(SelectorImpl.builder()
                     .apiMethodSelector(apiMethodSelector)
-                    .target(new TargetGetterReference((GetMethodSelector<?, ?>) selector))
+                    .target(new TargetGetterReference(getMethodSelector))
                     .build(), apiMethodSelector);
 
         } else if (selector instanceof SetMethodSelector<?, ?>) {
@@ -80,8 +80,7 @@ public final class SelectorProcessor {
                     .target(new TargetSetterReference((SetMethodSelector<?, ?>) selector))
                     .build(), apiMethodSelector);
 
-        } else if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
-            final PrimitiveAndWrapperSelectorImpl ps = (PrimitiveAndWrapperSelectorImpl) selector;
+        } else if (selector instanceof PrimitiveAndWrapperSelectorImpl ps) {
             final SelectorImpl.Builder primitiveBuilder = ps.getPrimitive().toBuilder().apiMethodSelector(apiMethodSelector);
             final SelectorImpl.Builder wrapperBuilder = ps.getWrapper().toBuilder().apiMethodSelector(apiMethodSelector);
 
@@ -95,8 +94,7 @@ public final class SelectorProcessor {
 
             return Arrays.asList(primitiveBuilder.build(), wrapperBuilder.build());
 
-        } else if (selector instanceof PredicateSelectorImpl) {
-            final PredicateSelectorImpl ps = (PredicateSelectorImpl) selector;
+        } else if (selector instanceof PredicateSelectorImpl ps) {
             final PredicateSelectorImpl processed = ps.toBuilder()
                     .apiMethodSelector(apiMethodSelector)
                     .scopes(createScopeWithRootClass(ps.getScopes()))
@@ -144,8 +142,7 @@ public final class SelectorProcessor {
 
         final List<Scope> results = new ArrayList<>(scopes.size());
         for (Scope s : scopes) {
-            if (s instanceof ScopeImpl) {
-                final ScopeImpl scope = (ScopeImpl) s;
+            if (s instanceof ScopeImpl scope) {
                 final Target unprocessed = scope.getTarget();
                 final Target processed = unprocessed.withRootClass(targetContext);
                 results.add(new ScopeImpl(processed, scope.getDepth()));

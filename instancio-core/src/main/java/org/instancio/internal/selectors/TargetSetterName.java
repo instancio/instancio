@@ -63,17 +63,14 @@ public final class TargetSetterName implements Target {
         return new TargetSetter(method);
     }
 
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof TargetSetterName)) return false;
-
-        final TargetSetterName that = (TargetSetterName) o;
+        if (!(o instanceof TargetSetterName that)) return false;
 
         return Objects.equals(targetClass, that.targetClass)
-                && Objects.equals(methodName, that.methodName)
-                && Objects.equals(parameterType, that.parameterType);
+               && Objects.equals(methodName, that.methodName)
+               && Objects.equals(parameterType, that.parameterType);
     }
 
     @Override

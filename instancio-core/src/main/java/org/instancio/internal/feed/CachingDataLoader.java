@@ -43,8 +43,8 @@ public class CachingDataLoader {
         final DataSource dataSource = feedContext.getDataSource();
         final String tagKey = feedContext.getTagKey();
 
-        final Object cacheKey = dataSource instanceof CacheableDataSource
-                ? ((CacheableDataSource) dataSource).getKey()
+        final Object cacheKey = dataSource instanceof CacheableDataSource cacheableDataSource
+                ? cacheableDataSource.getKey()
                 : null;
 
         if (cacheKey == null) {

@@ -157,16 +157,16 @@ class NodeCreator {
 
         if (template != null) {
             node = template;
-        } else if (type instanceof Class) {
-            node = fromClass((Class<?>) type, member, setter, parent);
-        } else if (type instanceof ParameterizedType) {
-            node = fromParameterizedType((ParameterizedType) type, member, setter, parent);
-        } else if (type instanceof TypeVariable) {
-            node = fromTypeVariable((TypeVariable<?>) type, member, setter, parent);
-        } else if (type instanceof WildcardType) {
-            node = fromWildcardType((WildcardType) type, member, setter, parent);
-        } else if (type instanceof GenericArrayType) {
-            node = fromGenericArrayNode((GenericArrayType) type, member, setter, parent);
+        } else if (type instanceof Class<?> klass) {
+            node = fromClass(klass, member, setter, parent);
+        } else if (type instanceof ParameterizedType parameterizedType) {
+            node = fromParameterizedType(parameterizedType, member, setter, parent);
+        } else if (type instanceof TypeVariable<?> typeVariable) {
+            node = fromTypeVariable(typeVariable, member, setter, parent);
+        } else if (type instanceof WildcardType wildcardType) {
+            node = fromWildcardType(wildcardType, member, setter, parent);
+        } else if (type instanceof GenericArrayType genericArrayType) {
+            node = fromGenericArrayNode(genericArrayType, member, setter, parent);
         } else {
             throw new InstancioException("Unsupported type: " + type.getClass());
         }
@@ -314,8 +314,8 @@ class NodeCreator {
         final Class<?> targetClassComponentType = targetClass.getComponentType();
 
         if (!rawComponentType.isPrimitive()
-            && targetClassComponentType != null
-            && rawComponentType != targetClassComponentType) {
+                && targetClassComponentType != null
+                && rawComponentType != targetClassComponentType) {
 
             ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
 

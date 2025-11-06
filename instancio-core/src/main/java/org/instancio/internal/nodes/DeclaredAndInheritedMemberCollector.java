@@ -173,9 +173,8 @@ class DeclaredAndInheritedMemberCollector {
         @Override
         public boolean equals(final Object o) {
             if (this == o) return true;
-            if (!(o instanceof MethodKey)) return false;
+            if (!(o instanceof MethodKey methodKey)) return false;
 
-            final MethodKey methodKey = (MethodKey) o;
             return name.equals(methodKey.name) && parameterType.equals(methodKey.parameterType);
         }
 

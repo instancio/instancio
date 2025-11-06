@@ -27,6 +27,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -57,7 +58,7 @@ final class GeneratorSupport {
             return EnumSet.class.isAssignableFrom(type);
         } else if (generator instanceof CollectionGeneratorSpec) {
             return (Collection.class.isAssignableFrom(type) || type == Iterable.class)
-                    && type != EnumSet.class;
+                   && type != EnumSet.class;
         } else if (generator instanceof MapGeneratorSpec) {
             return Map.class.isAssignableFrom(type);
         } else if (generator instanceof EnumGeneratorSpec) {
@@ -76,15 +77,16 @@ final class GeneratorSupport {
         return false;
     }
 
+    @Nullable
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    static AbstractGenerator<?> unpackGenerator(final Generator<?> generator) {
-        if (generator instanceof AbstractGenerator) {
-            return (AbstractGenerator<?>) generator;
+    static AbstractGenerator<?> unpackAbstractGenerator(final Generator<?> generator) {
+        if (generator instanceof AbstractGenerator<?> g) {
+            return g;
         }
-        if (generator instanceof GeneratorDecorator) {
-            final Generator<?> delegate = ((GeneratorDecorator<?>) generator).getDelegate();
-            if (delegate instanceof AbstractGenerator) {
-                return (AbstractGenerator<?>) delegate;
+        if (generator instanceof GeneratorDecorator<?> decorator) {
+            final Generator<?> delegate = decorator.getDelegate();
+            if (delegate instanceof AbstractGenerator<?> g) {
+                return g;
             }
         }
         return null;

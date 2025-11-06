@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.context;
 
-import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
@@ -93,15 +92,13 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             unusedSelectors.add(targetSelector);
         }
 
-        if (targetSelector instanceof SelectorImpl) {
-            final SelectorImpl selector = (SelectorImpl) targetSelector;
+        if (targetSelector instanceof SelectorImpl selector) {
             final Target target = selector.getTarget();
             final ScopelessSelector scopeless = target.toScopelessSelector();
 
             selectors.put(selector, value);
             scopelessSelectors.computeIfAbsent(scopeless, selectorList -> new ArrayList<>(3)).add(selector);
-        } else if (targetSelector instanceof PredicateSelector) {
-            final PredicateSelectorImpl selector = (PredicateSelectorImpl) targetSelector;
+        } else if (targetSelector instanceof PredicateSelectorImpl selector) {
             predicateSelectors.add(new PredicateSelectorEntry<>(selector, value));
         } else {
             // Should not be reachable because selectors should be processed

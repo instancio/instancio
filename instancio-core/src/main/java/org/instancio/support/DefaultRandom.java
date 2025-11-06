@@ -211,8 +211,8 @@ public class DefaultRandom implements Random {
 
         final int index = intRange(0, collection.size() - 1);
 
-        if (collection instanceof List<?>) {
-            return ((List<T>) collection).get(index);
+        if (collection instanceof List<T> list) {
+            return list.get(index);
         }
 
         Iterator<T> iter = collection.iterator();

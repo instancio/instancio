@@ -129,8 +129,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof SelectorImpl)) return false;
-        final SelectorImpl that = (SelectorImpl) o;
+        if (!(o instanceof SelectorImpl that)) return false;
         return Objects.equals(getTarget(), that.getTarget())
                 && Objects.equals(getScopes(), that.getScopes())
                 && Objects.equals(getDepth(), that.getDepth());

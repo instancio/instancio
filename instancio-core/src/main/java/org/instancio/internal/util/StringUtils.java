@@ -114,8 +114,8 @@ public final class StringUtils {
      */
     public static String quoteStringValue(final Object value) {
         if (value == null) return null;
-        if (value instanceof String) {
-            return '"' + value.toString() + '"';
+        if (value instanceof String s) {
+            return '"' + s + '"';
         }
         return value.toString();
     }

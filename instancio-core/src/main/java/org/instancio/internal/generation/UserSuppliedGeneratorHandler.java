@@ -53,7 +53,7 @@ final class UserSuppliedGeneratorHandler implements NodeHandler {
         final Optional<Generator<?>> generatorOpt = modelContext.getGenerator(node);
 
         //noinspection OptionalIsPresent
-        if (!generatorOpt.isPresent()) {
+        if (generatorOpt.isEmpty()) {
             return GeneratorResult.emptyResult();
         }
 

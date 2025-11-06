@@ -196,8 +196,8 @@ public final class InternalSettings implements Settings {
         if (map.isEmpty()) return " {}";
         return "\n" + map.entrySet().stream()
                 .map(e -> {
-                    final String key = (e.getKey() instanceof SettingKey<?>)
-                            ? ((SettingKey<?>) e.getKey()).propertyKey()
+                    final String key = (e.getKey() instanceof SettingKey<?> settingKey)
+                            ? settingKey.propertyKey()
                             : e.getKey().toString();
 
                     return String.format("\t'%s': %s", key, e.getValue());

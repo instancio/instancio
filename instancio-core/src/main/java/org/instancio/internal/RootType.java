@@ -94,8 +94,7 @@ public final class RootType {
             final Map<Type, Type> typeMap) {
 
         final Type gsClass = rootClass.getGenericSuperclass();
-        if (gsClass instanceof ParameterizedType) {
-            final ParameterizedType genericSuperclass = (ParameterizedType) gsClass;
+        if (gsClass instanceof ParameterizedType genericSuperclass) {
             final Class<?> rawType = TypeUtils.getRawType(genericSuperclass.getRawType());
             final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
             final Type[] actualTypeArguments = genericSuperclass.getActualTypeArguments();

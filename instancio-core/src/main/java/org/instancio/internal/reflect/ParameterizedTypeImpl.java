@@ -58,9 +58,7 @@ public final class ParameterizedTypeImpl implements ParameterizedType {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof ParameterizedTypeImpl)) return false;
-
-        final ParameterizedTypeImpl that = (ParameterizedTypeImpl) o;
+        if (!(o instanceof ParameterizedTypeImpl that)) return false;
 
         return Objects.equals(ownerType, that.ownerType)
                 && Objects.equals(rawType, that.rawType)

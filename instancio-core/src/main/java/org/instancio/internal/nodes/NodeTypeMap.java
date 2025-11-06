@@ -95,9 +95,9 @@ public final class NodeTypeMap {
             }
         }
 
-        if (type instanceof ParameterizedType) {
+        if (type instanceof ParameterizedType parameterizedType) {
             final Class<?> rawType = TypeUtils.getRawType(type);
-            final Type[] typeArgs = ((ParameterizedType) type).getActualTypeArguments();
+            final Type[] typeArgs = parameterizedType.getActualTypeArguments();
             final TypeVariable<?>[] typeVars = rawType.getTypeParameters();
 
             for (int i = 0; i < typeArgs.length; i++) {
@@ -115,18 +115,17 @@ public final class NodeTypeMap {
             return type;
         } else if (type instanceof TypeVariable) {
             return rootType.getTypeMapping(type);
-        } else if (type instanceof WildcardType) {
-            WildcardType wType = (WildcardType) type;
-            return resolveTypeMapping(wType.getUpperBounds()[0]); // TODO multiple bounds
+        } else if (type instanceof WildcardType wildcardType) {
+            return resolveTypeMapping(wildcardType.getUpperBounds()[0]); // TODO multiple bounds
         }
         throw new UnsupportedOperationException("Unsupported type: " + type.getClass());
     }
 
     @Override
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof NodeTypeMap)) return false;
-        final NodeTypeMap other = (NodeTypeMap) o;
+        if (!(o instanceof NodeTypeMap other)) return false;
         return Objects.equals(typeMap, other.typeMap);
     }
 

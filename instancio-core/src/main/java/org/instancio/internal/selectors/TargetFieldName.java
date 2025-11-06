@@ -63,9 +63,7 @@ public final class TargetFieldName implements Target {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof TargetFieldName)) return false;
-
-        final TargetFieldName that = (TargetFieldName) o;
+        if (!(o instanceof TargetFieldName that)) return false;
 
         return Objects.equals(targetClass, that.targetClass)
                 && Objects.equals(fieldName, that.fieldName);

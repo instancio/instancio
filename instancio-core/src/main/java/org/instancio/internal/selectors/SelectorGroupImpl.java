@@ -45,10 +45,10 @@ public final class SelectorGroupImpl implements SelectorGroup, Flattener<TargetS
     }
 
     @Override
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof SelectorGroupImpl)) return false;
-        final SelectorGroupImpl that = (SelectorGroupImpl) o;
+        if (!(o instanceof SelectorGroupImpl that)) return false;
         return selectors.equals(that.selectors);
     }
 

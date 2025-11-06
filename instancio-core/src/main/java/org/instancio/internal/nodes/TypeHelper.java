@@ -84,8 +84,8 @@ class TypeHelper {
         }
 
         Type supertype = clazz.getGenericSuperclass();
-        if (supertype instanceof ParameterizedType) {
-            addTypeParameters((ParameterizedType) supertype, resultTypeMap);
+        if (supertype instanceof ParameterizedType parameterizedType) {
+            addTypeParameters(parameterizedType, resultTypeMap);
         }
 
         if (supertype != null) {
@@ -131,8 +131,8 @@ class TypeHelper {
 
         // If subtype has a generic superclass, add its type variables and type arguments to the type map
         final Type supertype = target.getGenericSuperclass();
-        if (supertype instanceof ParameterizedType) {
-            addTypeParameters((ParameterizedType) supertype, typeMap);
+        if (supertype instanceof ParameterizedType parameterizedType) {
+            addTypeParameters(parameterizedType, typeMap);
         }
 
         return typeMap;
