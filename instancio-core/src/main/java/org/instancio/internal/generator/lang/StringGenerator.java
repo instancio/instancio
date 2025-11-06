@@ -107,8 +107,8 @@ public class StringGenerator extends AbstractGenerator<String>
     @Override
     public StringGenerator nullable() {
         super.nullable();
-        if (delegate instanceof AbstractGenerator<?>) {
-            ((AbstractGenerator<?>) delegate).nullable();
+        if (delegate instanceof AbstractGenerator<?> g) {
+            g.nullable();
         }
         return this;
     }
@@ -116,8 +116,8 @@ public class StringGenerator extends AbstractGenerator<String>
     @Override
     public StringGenerator nullable(final boolean isNullable) {
         super.nullable(isNullable);
-        if (delegate instanceof AbstractGenerator<?>) {
-            ((AbstractGenerator<?>) delegate).nullable(isNullable);
+        if (delegate instanceof AbstractGenerator<?> g) {
+            g.nullable(isNullable);
         }
         return this;
     }
@@ -136,8 +136,8 @@ public class StringGenerator extends AbstractGenerator<String>
         ApiValidator.isTrue(minLength <= maxLength,
                 "min length must be less than or equal to max (%s, %s)", minLength, maxLength);
 
-        if (delegate instanceof InternalLengthGeneratorSpec<?>) {
-            ((InternalLengthGeneratorSpec<?>) delegate).length(minLength, maxLength);
+        if (delegate instanceof InternalLengthGeneratorSpec<?> lengthSpec) {
+            lengthSpec.length(minLength, maxLength);
         }
         return this;
     }

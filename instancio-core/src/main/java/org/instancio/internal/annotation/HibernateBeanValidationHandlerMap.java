@@ -58,7 +58,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
                             final Class<?> targetClass,
                             final GeneratorContext generatorContext) {
 
-            if (spec instanceof DurationGeneratorSpec) {
+            if (spec instanceof final DurationGeneratorSpec durationSpec) {
                 final org.hibernate.validator.constraints.time.DurationMin d =
                         (org.hibernate.validator.constraints.time.DurationMin) annotation;
 
@@ -70,7 +70,6 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
                         .plusMillis(d.millis())
                         .plusNanos(d.nanos());
 
-                final DurationGeneratorSpec durationSpec = (DurationGeneratorSpec) spec;
                 durationSpec.min(min.toNanos(), ChronoUnit.NANOS);
             }
         }
@@ -83,7 +82,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
                             final Class<?> targetClass,
                             final GeneratorContext generatorContext) {
 
-            if (spec instanceof DurationGeneratorSpec) {
+            if (spec instanceof final DurationGeneratorSpec durationSpec) {
                 final org.hibernate.validator.constraints.time.DurationMax d =
                         (org.hibernate.validator.constraints.time.DurationMax) annotation;
 
@@ -95,7 +94,6 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
                         .plusMillis(d.millis())
                         .plusNanos(d.nanos());
 
-                final DurationGeneratorSpec durationSpec = (DurationGeneratorSpec) spec;
                 durationSpec.max(max.toNanos(), ChronoUnit.NANOS);
             }
         }
@@ -117,11 +115,11 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
             final Range<Integer> range = AnnotationUtils.calculateRange(
                     length.min(), length.max(), settings.get(Keys.STRING_MAX_LENGTH));
 
-            if (spec instanceof InternalLengthGeneratorSpec<?>) {
-                ((InternalLengthGeneratorSpec<?>) spec).length(range.min(), range.max());
+            if (spec instanceof InternalLengthGeneratorSpec<?> lengthSpec) {
+                lengthSpec.length(range.min(), range.max());
             }
-            if (range.min() > 0 && spec instanceof StringGeneratorSpec) {
-                ((StringGeneratorSpec) spec).allowEmpty(false);
+            if (range.min() > 0 && spec instanceof StringGeneratorSpec stringSpec) {
+                stringSpec.allowEmpty(false);
             }
         }
     }
@@ -146,8 +144,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
 
                 AnnotationUtils.setSpecNullableToFalse(spec);
 
-            } else if (spec instanceof StringGenerator) {
-                final StringGenerator stringGenerator = (StringGenerator) spec;
+            } else if (spec instanceof final StringGenerator stringGenerator) {
                 final LongGenerator numGenerator = new LongGenerator(stringGenerator.getContext())
                         .nullable(false)
                         .min(range.min())
@@ -165,8 +162,8 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
                             final Class<?> targetClass,
                             final GeneratorContext generatorContext) {
 
-            if (spec instanceof CollectionGeneratorSpec<?>) {
-                ((CollectionGeneratorSpec<?>) spec).unique();
+            if (spec instanceof CollectionGeneratorSpec<?> collectionSpec) {
+                collectionSpec.unique();
             }
         }
     }

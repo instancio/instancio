@@ -124,14 +124,9 @@ public final class ApiValidator {
                 withTypeParametersNumberOfParameters(rootClass, rootTypeParameters));
 
         for (Type param : rootTypeParameters) {
-            if (param instanceof Class<?>) {
-                final Class<?> rawType = (Class<?>) param;
-
-                if (rawType.getTypeParameters().length > 0) {
-                    final String classWithTypeParams = Format.simpleNameWithTypeParameters(rawType);
-
-                    throw Fail.withUsageError(withTypeParametersNestedGenerics(classWithTypeParams));
-                }
+            if (param instanceof Class<?> rawType && rawType.getTypeParameters().length > 0) {
+                final String classWithTypeParams = Format.simpleNameWithTypeParameters(rawType);
+                throw Fail.withUsageError(withTypeParametersNestedGenerics(classWithTypeParams));
             }
         }
     }
@@ -160,7 +155,7 @@ public final class ApiValidator {
     }
 
     public static void validateGeneratorUsage(final Node node, final Generator<?> generator) {
-        final AbstractGenerator<?> absGen = GeneratorSupport.unpackGenerator(generator);
+        final AbstractGenerator<?> absGen = GeneratorSupport.unpackAbstractGenerator(generator);
         if (absGen == null) return;
 
         final String name = absGen.apiMethod();
@@ -268,8 +263,7 @@ public final class ApiValidator {
                         "Therefore origin selector cannot be a group such as:%n%n" +
                         "%s", selector);
 
-        if (selector instanceof PrimitiveAndWrapperSelectorImpl) {
-            final PrimitiveAndWrapperSelectorImpl pw = (PrimitiveAndWrapperSelectorImpl) selector;
+        if (selector instanceof final PrimitiveAndWrapperSelectorImpl pw) {
             throw Fail.withUsageError(
                     "assignment origin must not be a primitive/wrapper selector such as %s%n%n" +
                             "Please specify the type explicitly, for example: 'all(%s.class)' or 'all(%s.class)'",

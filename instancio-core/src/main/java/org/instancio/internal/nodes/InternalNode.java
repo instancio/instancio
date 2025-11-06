@@ -336,11 +336,11 @@ public final class InternalNode implements Node {
         }
 
         public Builder member(@Nullable final Member member) {
-            if (member instanceof Field) {
-                return member((Field) member);
+            if (member instanceof Field f) {
+                return member(f);
             }
-            if (member instanceof Method) {
-                return member((Method) member);
+            if (member instanceof Method m) {
+                return member(m);
             }
             return this;
         }

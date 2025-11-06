@@ -103,8 +103,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof PrimitiveAndWrapperSelectorImpl)) return false;
-        final PrimitiveAndWrapperSelectorImpl that = (PrimitiveAndWrapperSelectorImpl) o;
+        if (!(o instanceof PrimitiveAndWrapperSelectorImpl that)) return false;
         return primitive.equals(that.primitive) && wrapper.equals(that.wrapper);
     }
 

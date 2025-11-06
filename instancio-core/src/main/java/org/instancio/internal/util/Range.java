@@ -49,8 +49,7 @@ public final class Range<T> {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof Range)) return false;
-        final Range<?> range = (Range<?>) o;
+        if (!(o instanceof Range<?> range)) return false;
         return Objects.equals(min, range.min) && Objects.equals(max, range.max);
     }
 

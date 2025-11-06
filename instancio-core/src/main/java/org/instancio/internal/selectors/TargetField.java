@@ -41,11 +41,10 @@ public final class TargetField implements Target {
     }
 
     @Override
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof TargetField)) return false;
-
-        final TargetField that = (TargetField) o;
+        if (!(o instanceof TargetField that)) return false;
         return Objects.equals(field, that.field);
     }
 

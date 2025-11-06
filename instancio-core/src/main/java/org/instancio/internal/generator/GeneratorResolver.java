@@ -145,10 +145,10 @@ public class GeneratorResolver {
         }
 
         final Generator<?> generator = instantiateInternalGenerator(genClass, context);
-        if (generator instanceof SubtypeGeneratorSpec<?>) {
+        if (generator instanceof SubtypeGeneratorSpec<?> subtypeSpec) {
             final Class<?> subtype = GeneratorResolverMaps.getSubtype(targetClass);
             if (subtype != null) {
-                ((SubtypeGeneratorSpec<?>) generator).subtype(subtype);
+                subtypeSpec.subtype(subtype);
             }
         }
         return generator;

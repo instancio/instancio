@@ -22,22 +22,22 @@ public final class ArrayUtils {
     public static void shuffle(final Object arr, final Random random) {
         if (arr instanceof Object[]) {
             shuffleArray((Object[]) arr, random);
-        } else if (arr instanceof byte[]) {
-            shuffleArray((byte[]) arr, random);
-        } else if (arr instanceof short[]) {
-            shuffleArray((short[]) arr, random);
-        } else if (arr instanceof int[]) {
-            shuffleArray((int[]) arr, random);
-        } else if (arr instanceof long[]) {
-            shuffleArray((long[]) arr, random);
-        } else if (arr instanceof float[]) {
-            shuffleArray((float[]) arr, random);
-        } else if (arr instanceof double[]) {
-            shuffleArray((double[]) arr, random);
-        } else if (arr instanceof char[]) {
-            shuffleArray((char[]) arr, random);
-        } else if (arr instanceof boolean[]) {
-            shuffleArray((boolean[]) arr, random);
+        } else if (arr instanceof byte[] array) {
+            shuffleArray(array, random);
+        } else if (arr instanceof short[] array) {
+            shuffleArray(array, random);
+        } else if (arr instanceof int[] array) {
+            shuffleArray(array, random);
+        } else if (arr instanceof long[] array) {
+            shuffleArray(array, random);
+        } else if (arr instanceof float[] array) {
+            shuffleArray(array, random);
+        } else if (arr instanceof double[] array) {
+            shuffleArray(array, random);
+        } else if (arr instanceof char[] array) {
+            shuffleArray(array, random);
+        } else if (arr instanceof boolean[] array) {
+            shuffleArray(array, random);
         } else {
             throw new IllegalArgumentException("Not an array: " + arr);
         }

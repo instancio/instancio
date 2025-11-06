@@ -42,10 +42,10 @@ final class FillObjectHelper {
         // Supporting all generic types probably won't be possible.
         // For now, only handle known types like Collection and Map.
         // Handling other types will require a type token.
-        if (object instanceof Collection<?>) {
-            typeArgs = getCollectionTypeArgs((Collection<?>) object);
-        } else if (object instanceof Map<?, ?>) {
-            typeArgs = getMapTypeArgs((Map<?, ?>) object);
+        if (object instanceof Collection<?> collection) {
+            typeArgs = getCollectionTypeArgs(collection);
+        } else if (object instanceof Map<?, ?> map) {
+            typeArgs = getMapTypeArgs(map);
         } else {
             throw Fail.withUsageError(ErrorMessageUtils.fillParameterizedType(object.getClass()));
         }

@@ -59,8 +59,8 @@ public final class UserSuppliedGeneratorProcessor {
     GeneratorResult getGeneratorResult(final @NotNull InternalNode node, final Generator<?> g) {
         final Generator<?> generator = processGenerator(g, node);
 
-        if (generator instanceof EmitGenerator) {
-            return emitGeneratorHelper.getResult((EmitGenerator<?>) generator, node);
+        if (generator instanceof EmitGenerator<?> emitGenerator) {
+            return emitGeneratorHelper.getResult(emitGenerator, node);
         }
 
         final Hints hints = generator.hints();
@@ -83,15 +83,14 @@ public final class UserSuppliedGeneratorProcessor {
     private Generator<?> processGenerator(final Generator<?> generator, final InternalNode node) {
         ApiValidator.validateGeneratorUsage(node, generator);
 
-        if (generator instanceof ArrayGenerator) {
+        if (generator instanceof ArrayGenerator<?> arrayGenerator) {
             // If gen.array().subtype() was specified, then node targetClass
             // is expected to have the specified subtype.
             // If no subtype() was specified, then it will be null.
             // Therefore, it's safe to overwrite the generator subtype
             // with node's targetClass
-            ((ArrayGenerator<?>) generator).subtype(node.getTargetClass());
-        } else if (generator instanceof AbstractGenerator<?>) {
-            final AbstractGenerator<?> g = (AbstractGenerator<?>) generator;
+            arrayGenerator.subtype(node.getTargetClass());
+        } else if (generator instanceof final AbstractGenerator<?> g) {
 
             if (!g.isDelegating()) {
                 return generator;
@@ -101,9 +100,9 @@ public final class UserSuppliedGeneratorProcessor {
             final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
             final Generator<?> delegate = resolveDelegate(node, internalHint);
 
-            if (delegate instanceof AbstractGenerator<?>) {
-                final boolean nullable = ((AbstractGenerator<?>) generator).isNullable();
-                ((AbstractGenerator<?>) delegate).nullable(nullable);
+            if (delegate instanceof AbstractGenerator<?> delegateGenerator) {
+                final boolean nullable = g.isNullable();
+                delegateGenerator.nullable(nullable);
             }
 
             return GeneratorDecorator.replaceHints(delegate, hints);

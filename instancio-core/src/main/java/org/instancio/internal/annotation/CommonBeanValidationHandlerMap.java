@@ -60,8 +60,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
 
             final int fraction = getFraction(annotation);
 
-            if (spec instanceof StringGenerator) {
-                final StringGenerator generator = (StringGenerator) spec;
+            if (spec instanceof final StringGenerator generator) {
                 generator
                         .digits()
                         .length(getInteger(annotation))
@@ -244,30 +243,30 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
 
             final Settings settings = generatorContext.getSettings();
 
-            if (spec instanceof InternalLengthGeneratorSpec<?>) {
+            if (spec instanceof InternalLengthGeneratorSpec<?> lengthSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), settings.get(Keys.STRING_MAX_LENGTH));
 
-                ((InternalLengthGeneratorSpec<?>) spec).length(range.min(), range.max());
+                lengthSpec.length(range.min(), range.max());
 
-                if (range.min() > 0 && spec instanceof StringGeneratorSpec) {
-                    ((StringGeneratorSpec) spec).allowEmpty(false);
+                if (range.min() > 0 && spec instanceof StringGeneratorSpec stringSpec) {
+                    stringSpec.allowEmpty(false);
                 }
-            } else if (spec instanceof CollectionGeneratorSpec<?>) {
+            } else if (spec instanceof CollectionGeneratorSpec<?> collectionSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), settings.get(Keys.COLLECTION_MAX_SIZE));
 
-                ((CollectionGeneratorSpec<?>) spec).minSize(range.min()).maxSize(range.max());
-            } else if (spec instanceof MapGeneratorSpec<?, ?>) {
+                collectionSpec.minSize(range.min()).maxSize(range.max());
+            } else if (spec instanceof MapGeneratorSpec<?, ?> mapSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), settings.get(Keys.MAP_MAX_SIZE));
 
-                ((MapGeneratorSpec<?, ?>) spec).minSize(range.min()).maxSize(range.max());
-            } else if (spec instanceof ArrayGeneratorSpec<?>) {
+                mapSpec.minSize(range.min()).maxSize(range.max());
+            } else if (spec instanceof ArrayGeneratorSpec<?> arraySpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
                         getMin(annotation), getMax(annotation), settings.get(Keys.ARRAY_MAX_LENGTH));
 
-                ((ArrayGeneratorSpec<?>) spec).minLength(range.min()).maxLength(range.max());
+                arraySpec.minLength(range.min()).maxLength(range.max());
             }
         }
     }
@@ -281,24 +280,23 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
 
             final Settings settings = generatorContext.getSettings();
 
-            if (spec instanceof StringGenerator) {
-                final StringGenerator generator = (StringGenerator) spec;
+            if (spec instanceof final StringGenerator generator) {
                 generator.minLength(Math.max(generator.getMinLength(), 1))
                         .nullable(false)
                         .allowEmpty(false);
 
-            } else if (spec instanceof ArrayGenerator<?>) {
-                ((ArrayGenerator<?>) spec)
+            } else if (spec instanceof ArrayGenerator<?> arraySpec) {
+                arraySpec
                         .nullable(false)
                         .minLength(settings.get(Keys.ARRAY_MIN_LENGTH));
 
-            } else if (spec instanceof CollectionGenerator<?>) {
-                ((CollectionGenerator<?>) spec)
+            } else if (spec instanceof CollectionGenerator<?> collectionSpec) {
+                collectionSpec
                         .nullable(false)
                         .minSize(settings.get(Keys.COLLECTION_MIN_SIZE));
 
-            } else if (spec instanceof MapGenerator<?, ?>) {
-                ((MapGenerator<?, ?>) spec)
+            } else if (spec instanceof MapGenerator<?, ?> mapSpec) {
+                mapSpec
                         .nullable(false)
                         .minSize(settings.get(Keys.MAP_MIN_SIZE));
             }
@@ -329,8 +327,8 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                             final Class<?> targetClass,
                             final GeneratorContext generatorContext) {
 
-            if (spec instanceof BooleanGenerator) {
-                ((BooleanGenerator) spec).probability(generatedValue ? 1 : 0);
+            if (spec instanceof BooleanGenerator booleanSpec) {
+                booleanSpec.probability(generatedValue ? 1 : 0);
                 AnnotationUtils.setSpecNullableToFalse(spec);
             }
         }

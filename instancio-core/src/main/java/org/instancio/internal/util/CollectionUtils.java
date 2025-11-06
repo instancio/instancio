@@ -154,8 +154,8 @@ public final class CollectionUtils {
     public static <T> void shuffle(final Collection<T> collection, final Random random) {
         if (collection.isEmpty()) {
             return;
-        } else if (collection instanceof List) {
-            shuffleList((List<Object>) collection, random);
+        } else if (collection instanceof List<T> list) {
+            shuffleList(list, random);
             return;
         }
 

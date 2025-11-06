@@ -36,12 +36,10 @@ public final class TargetClass implements Target {
     }
 
     @Override
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof TargetClass)) return false;
-
-        final TargetClass that = (TargetClass) o;
-
+        if (!(o instanceof TargetClass that)) return false;
         return Objects.equals(targetClass, that.targetClass);
     }
 

@@ -99,10 +99,10 @@ public final class InternalKey<T>
     }
 
     @Override
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof SettingKey<?>)) return false;
-        final SettingKey<?> key = (SettingKey<?>) o;
+        if (!(o instanceof SettingKey<?> key)) return false;
         return Objects.equals(propertyKey, key.propertyKey());
     }
 

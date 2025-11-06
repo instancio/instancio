@@ -49,11 +49,10 @@ public final class TargetSetter implements Target {
     }
 
     @Override
+    @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof TargetSetter)) return false;
-
-        final TargetSetter that = (TargetSetter) o;
+        if (!(o instanceof TargetSetter that)) return false;
         return Objects.equals(setter, that.setter);
     }
 

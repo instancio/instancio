@@ -87,12 +87,10 @@ final class MethodRef {
             }
 
             final Object invocationHandler = Proxy.getInvocationHandler(methodRef);
-            if (invocationHandler instanceof ConvertedClosure) {
-                final ConvertedClosure convertedClosure = (ConvertedClosure) invocationHandler;
+            if (invocationHandler instanceof final ConvertedClosure convertedClosure) {
                 final Object maybeMethodClosure = convertedClosure.getDelegate();
 
-                if (maybeMethodClosure instanceof MethodClosure) {
-                    final MethodClosure methodClosure = (MethodClosure) maybeMethodClosure;
+                if (maybeMethodClosure instanceof final MethodClosure methodClosure) {
                     final Class<?> delegate = (Class<?>) methodClosure.getDelegate();
 
                     return new MethodRef(delegate, methodClosure.getMethod());
