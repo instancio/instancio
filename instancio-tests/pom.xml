@@ -12,7 +12,7 @@
 
     <properties>
         <argLine/>
-        <version.apache.commons>3.19.0</version.apache.commons>
+        <version.apache.commons>3.20.0</version.apache.commons>
         <version.archunit>1.4.1</version.archunit>
         <version.assertj>3.27.6</version.assertj>
         <version.equalsverifier>4.2.2</version.equalsverifier>
