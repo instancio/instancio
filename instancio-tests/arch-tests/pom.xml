@@ -19,13 +19,11 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-test-support</artifactId>
-            <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-core</artifactId>
-            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -36,7 +36,6 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-test-support</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.validation</groupId>
@@ -55,7 +54,6 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-junit</artifactId>
-            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
