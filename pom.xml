@@ -81,6 +81,7 @@
         <version.sonar-maven-plugin>5.3.0.6276</version.sonar-maven-plugin>
         <version.spotbugs-maven-plugin>4.9.8.1</version.spotbugs-maven-plugin>
         <version.versions-maven-plugin>2.19.1</version.versions-maven-plugin>
+        <version.flatten-maven-plugin>1.7.3</version.flatten-maven-plugin>
         <version.maven-resources-plugin>3.3.1</version.maven-resources-plugin>
         <version.maven-install-plugin>3.1.4</version.maven-install-plugin>
         <version.maven-deploy-plugin>3.1.4</version.maven-deploy-plugin>
@@ -96,6 +97,7 @@
         <module>instancio-core</module>
         <module>instancio-junit</module>
         <module>instancio-guava</module>
+        <module>instancio-bom</module>
     </modules>
 
     <profiles>
@@ -202,6 +204,33 @@
                         <property>latest.release.version</property>
                         <newVersion>${project.version}</newVersion>
                         <generateBackupPoms>false</generateBackupPoms>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>${version.flatten-maven-plugin}</version>
+                    <executions>
+                        <execution>
+                            <id>flatten</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>flatten</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>flatten-clean</id>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <flattenMode>ossrh</flattenMode>
+                        <pomElements>
+                            <build>remove</build>
+                            <repositories>remove</repositories>
+                        </pomElements>
                     </configuration>
                 </plugin>
                 <plugin>

@@ -10,6 +10,7 @@ NOTES.md
 .run/
 target/
 src/test/java/experimental/
+.flattened-pom.xml
 
 ### STS ###
 .apt_generated
