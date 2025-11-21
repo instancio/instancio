@@ -15,13 +15,13 @@
  */
 package org.instancio.internal.feed.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.instancio.internal.feed.CachingDataLoader;
 import org.instancio.internal.feed.DataLoader;
 import org.instancio.internal.feed.DataStore;
 import org.instancio.internal.feed.InternalFeed;
 import org.instancio.internal.feed.InternalFeedContext;
 import org.instancio.internal.feed.ResourceHandler;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 import java.util.function.BiFunction;

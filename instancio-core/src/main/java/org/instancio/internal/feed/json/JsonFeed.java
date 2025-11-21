@@ -15,10 +15,10 @@
  */
 package org.instancio.internal.feed.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.instancio.internal.feed.AbstractFeed;
 import org.instancio.internal.feed.DataStore;
 import org.instancio.internal.feed.InternalFeedContext;
+import tools.jackson.databind.JsonNode;
 
 class JsonFeed extends AbstractFeed<JsonNode> {
 
@@ -36,6 +36,6 @@ class JsonFeed extends AbstractFeed<JsonNode> {
 
         final JsonNode currentEntry = getCurrentEntry();
         final JsonNode node = currentEntry.get(propertyKey);
-        return node == null ? null : node.asText();
+        return node == null ? null : node.asString();
     }
 }

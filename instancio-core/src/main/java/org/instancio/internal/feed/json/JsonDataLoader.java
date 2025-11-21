@@ -15,11 +15,11 @@
  */
 package org.instancio.internal.feed.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.instancio.feed.DataSource;
 import org.instancio.internal.feed.DataLoader;
 import org.instancio.internal.util.Fail;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public final class JsonDataLoader implements DataLoader<List<JsonNode>> {
     @Override
     public List<JsonNode> load(final DataSource dataSource) throws Exception {
         try {
-            ObjectMapper mapper = new ObjectMapper();
+            JsonMapper mapper = JsonMapper.builder().build();
             final JsonNode jsonNode = mapper.readTree(getInputStream(dataSource));
             final List<JsonNode> results = new ArrayList<>(jsonNode.size());
             for (int i = 0; i < jsonNode.size(); i++) {
