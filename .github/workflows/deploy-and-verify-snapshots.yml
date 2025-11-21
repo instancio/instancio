@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Deploy"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: "Set up Maven Central Repository"
         uses: actions/setup-java@v5
         with:
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Verify snapshots with JDK ${{ matrix.java }}"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: "Set up JDK"
         uses: actions/setup-java@v5
         with:
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Verify snapshots with Junit ${{ matrix.junit }}"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: "Set up JDK"
         uses: actions/setup-java@v5
         with:
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Verify snapshots with Guava ${{ matrix.guava }}"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: "Set up JDK"
         uses: actions/setup-java@v5
         with:
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Verify snapshots with early access JDK"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: "Set up JDK"
         uses: actions/setup-java@v5
         with:
