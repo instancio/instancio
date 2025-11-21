@@ -19,7 +19,6 @@
             <groupId>org.instancio</groupId>
             <artifactId>instancio-core</artifactId>
             <scope>compile</scope>
-            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.instancio</groupId>
+        <artifactId>instancio-parent</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>instancio-bom</artifactId>
+    <packaging>pom</packaging>
+    <name>Instancio BOM</name>
+    <description>The BOM (Bill Of Materials) of Instancio to easily manage its modules</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.instancio</groupId>
+                <artifactId>instancio-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.instancio</groupId>
+                <artifactId>instancio-junit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.instancio</groupId>
+                <artifactId>instancio-guava</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <flattenMode>bom</flattenMode>
+                    <pomElements>
+                        <build>remove</build>
+                        <repositories>remove</repositories>
+                        <properties>remove</properties>
+                        <dependencyManagement>extended_interpolate</dependencyManagement>
+                    </pomElements>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
