@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.feed.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.instancio.internal.feed.AbstractDataStore;
+import tools.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public class JsonDataStore extends AbstractDataStore<JsonNode> {
 
         for (JsonNode entry : data) {
             final JsonNode node = entry.get(tagKey);
-            final String tag = node == null ? null : node.textValue();
+            final String tag = node == null ? null : node.asString();
 
             List<JsonNode> tagData = map.get(tag);
 

@@ -648,7 +648,7 @@ public final class ErrorMessageUtils {
                 .append(NL)
                 .append(" -> Add the following dependency:").append(NL)
                 .append(NL)
-                .append("    https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-databind")
+                .append("    https://central.sonatype.com/artifact/tools.jackson.core/jackson-databind")
                 .toString();
     }
 
