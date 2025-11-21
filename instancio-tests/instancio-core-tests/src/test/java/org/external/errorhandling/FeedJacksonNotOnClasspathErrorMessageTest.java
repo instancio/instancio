@@ -44,7 +44,7 @@ class FeedJacksonNotOnClasspathErrorMessageTest extends AbstractErrorMessageTest
 
                  -> Add the following dependency:
 
-                    https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-databind
+                    https://central.sonatype.com/artifact/tools.jackson.core/jackson-databind
 
                 """;
     }
