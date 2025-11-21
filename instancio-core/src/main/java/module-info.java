@@ -1,7 +1,7 @@
 module org.instancio.core {
     requires org.slf4j;
 
-    requires static com.fasterxml.jackson.databind;
+    requires static tools.jackson.databind;
     requires static jakarta.persistence;
     requires static jakarta.validation;
     requires static java.sql;

@@ -3432,7 +3432,7 @@ not provide this dependency transitively):
 
 ```xml
 <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
+    <groupId>tools.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
     <version>${jackson-databind-version}</version>
 </dependency>
