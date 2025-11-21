@@ -102,6 +102,18 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.instancio</groupId>
+                <artifactId>instancio-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.instancio</groupId>
+                <artifactId>instancio-test-support</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${version.logback}</version>
