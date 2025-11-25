@@ -16,5 +16,6 @@
         <maven.source.skip>true</maven.source.skip>
         <pmd.skip>true</pmd.skip>
         <gpg.skip>true</gpg.skip>
+        <skipPublishing>true</skipPublishing>
     </properties>
 </project>
