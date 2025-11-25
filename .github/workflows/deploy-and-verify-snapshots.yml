@@ -21,7 +21,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: "Deploy snapshots"
-        run: mvn -Prelease deploy
+        run: mvn -Prelease deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}

@@ -98,18 +98,10 @@
         <module>instancio-junit</module>
         <module>instancio-guava</module>
         <module>instancio-bom</module>
+        <module>instancio-tests</module>
     </modules>
 
     <profiles>
-        <profile>
-            <id>tests</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>instancio-tests</module>
-            </modules>
-        </profile>
         <profile>
             <id>release</id>
             <build>
@@ -391,11 +383,6 @@
                     <artifactId>central-publishing-maven-plugin</artifactId>
                     <version>${version.central-publishing-maven-plugin}</version>
                     <extensions>true</extensions>
-                    <configuration>
-                        <excludeArtifacts>
-                            <excludeArtifact>build-tools</excludeArtifact>
-                        </excludeArtifacts>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

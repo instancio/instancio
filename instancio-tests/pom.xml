@@ -12,6 +12,9 @@
 
     <properties>
         <argLine/>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <maven.source.skip>true</maven.source.skip>
+        <skipPublishing>true</skipPublishing>
         <version.apache.commons>3.20.0</version.apache.commons>
         <version.archunit>1.4.1</version.archunit>
         <version.assertj>3.27.6</version.assertj>
