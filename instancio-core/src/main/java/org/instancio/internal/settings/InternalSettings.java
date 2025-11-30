@@ -22,8 +22,8 @@ import org.instancio.internal.util.StringConverters;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -107,7 +107,7 @@ public final class InternalSettings implements Settings {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(@NotNull final SettingKey<T> key) {
+    public <T> T get(@NonNull final SettingKey<T> key) {
         final Object value = settingsMap.get(ApiValidator.notNull(key, "Key must not be null"));
 
         if (value == null || key.type() == null || key.type().isAssignableFrom(value.getClass())) {
@@ -149,7 +149,7 @@ public final class InternalSettings implements Settings {
     }
 
     @Override
-    public InternalSettings mapType(@NotNull final Class<?> type, @NotNull final Class<?> subtype) {
+    public InternalSettings mapType(@NonNull final Class<?> type, @NonNull final Class<?> subtype) {
         checkLockedForModifications();
         validateSubtype(type, subtype);
         subtypeMap.put(type, subtype);

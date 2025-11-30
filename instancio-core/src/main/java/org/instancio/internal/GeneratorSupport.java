@@ -27,7 +27,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.EnumSet;

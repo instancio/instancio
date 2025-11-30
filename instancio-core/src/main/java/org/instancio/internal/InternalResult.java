@@ -16,7 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.Result;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class InternalResult<T> implements Result<T> {
     private final T object;

@@ -16,7 +16,7 @@
 package org.instancio.internal.instantiation;
 
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.documentation.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

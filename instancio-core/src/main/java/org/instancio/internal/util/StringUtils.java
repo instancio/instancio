@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +44,7 @@ public final class StringUtils {
         return true;
     }
 
-    @NotNull
+    @NonNull
     public static String trimToEmpty(@Nullable final String s) {
         return s == null ? "" : s.trim();
     }
