@@ -25,8 +25,8 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.settings.InternalKey;
 import org.instancio.internal.settings.RangeAdjuster;
 import org.instancio.settings.SettingKey.SettingKeyBuilder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -835,7 +835,7 @@ public final class Keys {
      * @return the setting key, or {@code null} if none found
      */
     @SuppressWarnings("unchecked")
-    public static <T> SettingKey<T> get(@NotNull final String key) {
+    public static <T> SettingKey<T> get(@NonNull final String key) {
         return (SettingKey<T>) SETTING_KEY_MAP.get(key);
     }
 
@@ -859,8 +859,8 @@ public final class Keys {
     }
 
     private static <T> SettingKey<T> register(
-            @NotNull final String propertyKey,
-            @NotNull final Class<T> type,
+            @NonNull final String propertyKey,
+            @NonNull final Class<T> type,
             @Nullable final Object defaultValue,
             @Nullable final RangeAdjuster rangeAdjuster,
             final boolean allowsNullValue,
@@ -874,8 +874,8 @@ public final class Keys {
     }
 
     private static <T> SettingKey<T> registerRequiredAdjustable(
-            @NotNull final String propertyKey,
-            @NotNull final Class<T> type,
+            @NonNull final String propertyKey,
+            @NonNull final Class<T> type,
             @Nullable final Object defaultValue,
             @Nullable final RangeAdjuster rangeAdjuster,
             final boolean allowsNegative) {
@@ -884,9 +884,9 @@ public final class Keys {
     }
 
     private static <T> SettingKey<T> registerRequiredNonAdjustable(
-            @NotNull final String key,
-            @NotNull final Class<T> type,
-            @NotNull final Object defaultValue) {
+            @NonNull final String key,
+            @NonNull final Class<T> type,
+            @NonNull final Object defaultValue) {
 
         return register(key, type, defaultValue, null, false, false);
     }

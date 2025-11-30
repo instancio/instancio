@@ -25,7 +25,7 @@ import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.CollectionUtils;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,12 +42,12 @@ final class AssignmentSelectorMap {
     private final SelectorMap<List<TargetSelector>> originToDestinationSelectorsMap = new SelectorMapImpl<>();
     private final BooleanSelectorMap originSelectors = new BooleanSelectorMap();
 
-    AssignmentSelectorMap(@NotNull final GeneratorContext generatorContext) {
+    AssignmentSelectorMap(@NonNull final GeneratorContext generatorContext) {
         this.generatorContext = generatorContext;
         this.generatorInitialiser = new GeneratorInitialiser(generatorContext);
     }
 
-    void putAll(final @NotNull Map<TargetSelector, List<Assignment>> targetSelectors) {
+    void putAll(final @NonNull Map<TargetSelector, List<Assignment>> targetSelectors) {
         for (Map.Entry<TargetSelector, List<Assignment>> entry : targetSelectors.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }

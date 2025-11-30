@@ -22,8 +22,8 @@ import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Fail;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.NonNull;
+import org.instancio.documentation.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +61,9 @@ class AssignmentNodeHandler implements NodeHandler {
                 : new NoopAssignmentNodeHandler();
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public GeneratorResult getResult(@NotNull final InternalNode node) {
+    public GeneratorResult getResult(@NonNull final InternalNode node) {
         final List<InternalAssignment> assignments = context.getAssignments(node);
 
         // loop from the end so that the last matching assignment wins
@@ -139,9 +139,9 @@ class AssignmentNodeHandler implements NodeHandler {
             super(null, null, null);
         }
 
-        @NotNull
+        @NonNull
         @Override
-        public GeneratorResult getResult(final @NotNull InternalNode node) {
+        public GeneratorResult getResult(final @NonNull InternalNode node) {
             return GeneratorResult.emptyResult();
         }
 

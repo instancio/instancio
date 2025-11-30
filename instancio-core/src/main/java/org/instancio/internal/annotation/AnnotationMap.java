@@ -17,7 +17,7 @@ package org.instancio.internal.annotation;
 
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Verify;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.documentation.VisibleForTesting;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;

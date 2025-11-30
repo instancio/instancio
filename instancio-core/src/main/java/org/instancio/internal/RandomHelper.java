@@ -21,7 +21,7 @@ import org.instancio.support.DefaultRandom;
 import org.instancio.support.Global;
 import org.instancio.support.Seeds;
 import org.instancio.support.ThreadLocalRandom;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public final class RandomHelper {

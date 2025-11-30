@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -46,8 +46,8 @@ public final class ObjectUtils {
         return null;
     }
 
-    @NotNull
-    public static <T> T defaultIfNull(@Nullable final T value, @NotNull final T defaultValue) {
+    @NonNull
+    public static <T> T defaultIfNull(@Nullable final T value, @NonNull final T defaultValue) {
         return value == null ? defaultValue : value;
     }
 

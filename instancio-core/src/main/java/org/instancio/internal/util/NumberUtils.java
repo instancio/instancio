@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -137,7 +137,7 @@ public final class NumberUtils {
      * @return new minimum if current minimum is greater than the new maximum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMin(
-            @Nullable final T curMin, @NotNull final T newMax, final int percentage) {
+            @Nullable final T curMin, @NonNull final T newMax, final int percentage) {
 
         if (Objects.equals(newMax, curMin)) {
             return curMin;
@@ -188,7 +188,7 @@ public final class NumberUtils {
      * @return new maximum if current maximum is less than the new minimum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMax(
-            @Nullable final T curMax, @NotNull final T newMin, final int percentage) {
+            @Nullable final T curMax, @NonNull final T newMin, final int percentage) {
 
         if (Objects.equals(newMin, curMax)) {
             return curMax;

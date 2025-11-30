@@ -18,8 +18,8 @@ package org.instancio.internal.selectors;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -31,7 +31,7 @@ public final class TargetFieldName implements Target {
 
     public TargetFieldName(
             @Nullable final Class<?> targetClass,
-            @NotNull final String fieldName) {
+            @NonNull final String fieldName) {
 
         this.targetClass = targetClass;
         this.fieldName = fieldName;

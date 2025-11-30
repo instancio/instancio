@@ -30,7 +30,7 @@ import org.instancio.internal.util.Format;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.SettingKey;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Collection;

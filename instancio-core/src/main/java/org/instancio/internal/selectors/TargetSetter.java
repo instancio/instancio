@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.selectors;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -25,7 +25,7 @@ public final class TargetSetter implements Target {
     private final Method setter;
     private final Class<?> parameterType;
 
-    public TargetSetter(@NotNull final Method setter) {
+    public TargetSetter(@NonNull final Method setter) {
         this.setter = setter;
         this.parameterType = setter.getParameterTypes()[0];
     }

@@ -23,7 +23,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,7 +88,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     }
 
     @Override
-    public Selector within(@NotNull final Scope... scopes) {
+    public Selector within(@NonNull final Scope... scopes) {
         final List<Scope> scopeList = Arrays.asList(scopes);
         return new PrimitiveAndWrapperSelectorImpl(
                 primitive.toBuilder().scopes(scopeList).build(),

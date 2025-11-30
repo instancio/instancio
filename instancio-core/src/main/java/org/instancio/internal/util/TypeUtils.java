@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -59,7 +59,7 @@ public final class TypeUtils {
         throw new IllegalArgumentException("Could not resolve array class for type: " + type);
     }
 
-    @NotNull
+    @NonNull
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getRawType(final Type type) {
         if (type instanceof Class) {

@@ -16,8 +16,8 @@
 package org.instancio.internal;
 
 import org.instancio.internal.util.TypeUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +39,8 @@ public final class RootType {
     private final Map<Type, Type> typeMap;
 
     public RootType(
-            @NotNull final Type type,
-            @NotNull final List<Type> typeParameters) {
+            @NonNull final Type type,
+            @NonNull final List<Type> typeParameters) {
 
         this.type = type;
         this.typeParameters = typeParameters;

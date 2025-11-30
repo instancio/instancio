@@ -43,8 +43,8 @@ import org.instancio.internal.util.RecordUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
 import org.instancio.support.Log;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -157,7 +157,7 @@ class InstancioEngine {
         }
     }
 
-    @NotNull
+    @NonNull
     private GeneratorResult createObject(final InternalNode node, final boolean isNullable) {
         LOG.trace(" >> {}", node);
 
@@ -194,7 +194,7 @@ class InstancioEngine {
         return generatorResult;
     }
 
-    @NotNull
+    @NonNull
     private GeneratorResult doCreateObject(final InternalNode node, final boolean isNullable) {
         final GeneratorResult generatorResult;
 
@@ -220,12 +220,12 @@ class InstancioEngine {
         return generatorResult;
     }
 
-    @NotNull
+    @NonNull
     private GeneratorResult createObject(final InternalNode node) {
         return createObject(node, false);
     }
 
-    @NotNull
+    @NonNull
     private GeneratorResult generatePojo(final InternalNode node) {
         final GeneratorResult nodeResult = generateValue(node);
 

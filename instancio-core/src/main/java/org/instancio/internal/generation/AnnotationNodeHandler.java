@@ -30,8 +30,8 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.settings.Keys;
 import org.instancio.spi.InstancioServiceProvider.AnnotationProcessor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -92,9 +92,9 @@ final class AnnotationNodeHandler implements NodeHandler {
                 : NOOP_HANDLER;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public GeneratorResult getResult(@NotNull final InternalNode node) {
+    public GeneratorResult getResult(@NonNull final InternalNode node) {
         final Annotation[] annotations = annotationExtractor.getAnnotations(node);
 
         if (annotations.length == 0) {

@@ -17,8 +17,8 @@ package org.instancio.internal.nodes;
 
 import org.instancio.internal.RootType;
 import org.instancio.internal.util.TypeUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ class TypeHelper {
     }
 
     Type resolveTypeVariable(
-            @NotNull final TypeVariable<?> typeVar,
+            @NonNull final TypeVariable<?> typeVar,
             @Nullable final InternalNode parent) {
 
         Type mappedType = parent == null ? typeVar : parent.getTypeMap().getOrDefault(typeVar, typeVar);

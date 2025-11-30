@@ -19,7 +19,7 @@ import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.util.Format;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,7 @@ abstract class BaseSelector implements UnusedSelectorDescription, InternalSelect
         return apiMethodSelector;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public final List<Scope> getScopes() {
         return scopes;

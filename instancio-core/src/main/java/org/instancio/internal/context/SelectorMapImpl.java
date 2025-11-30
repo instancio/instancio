@@ -31,8 +31,8 @@ import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
 import org.instancio.internal.selectors.TargetSetter;
 import org.instancio.internal.util.Fail;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -293,8 +293,8 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
 
     private static boolean selectorScopesMatchNodeHierarchy(
             @Nullable final Integer candidateDepth,
-            @NotNull final List<Scope> candidateScopes,
-            @NotNull final InternalNode targetNode) {
+            @NonNull final List<Scope> candidateScopes,
+            @NonNull final InternalNode targetNode) {
 
         if (candidateDepth != null && candidateDepth != targetNode.getDepth()) {
             return false;

@@ -18,7 +18,7 @@ package org.instancio.internal.instantiation;
 import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;

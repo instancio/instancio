@@ -23,7 +23,7 @@ import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.Keys;
 import org.instancio.support.Log;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -94,8 +94,8 @@ public final class NodeFactory {
      * @param node to create children for
      * @return child nodes (without children), or an empty list if none.
      */
-    @NotNull
-    private List<InternalNode> createChildren(@NotNull final InternalNode node) {
+    @NonNull
+    private List<InternalNode> createChildren(@NonNull final InternalNode node) {
         if (node.isIgnored()) {
             return List.of();
         }

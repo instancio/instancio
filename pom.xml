@@ -61,7 +61,7 @@
         <version.groovy>5.0.4</version.groovy>
         <version.jakarta.persistence>3.2.0</version.jakarta.persistence>
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
-        <version.jetbrains.annotations>26.0.2-1</version.jetbrains.annotations>
+        <version.jspecify>1.0.0</version.jspecify>
         <version.junit>6.0.3</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
         <version.error_prone_core>2.47.0</version.error_prone_core>
@@ -491,6 +491,11 @@
                 <version>${version.slf4j}</version>
             </dependency>
             <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${version.jspecify}</version>
+            </dependency>
+            <dependency>
                 <groupId>jakarta.persistence</groupId>
                 <artifactId>jakarta.persistence-api</artifactId>
                 <version>${version.jakarta.persistence}</version>
@@ -523,12 +528,6 @@
                 <artifactId>groovy</artifactId>
                 <version>${version.groovy}</version>
                 <scope>provided</scope>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.jetbrains</groupId>
-                <artifactId>annotations</artifactId>
-                <version>${version.jetbrains.annotations}</version>
                 <optional>true</optional>
             </dependency>
             <dependency>

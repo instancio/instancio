@@ -16,8 +16,8 @@
 package org.instancio.internal.util;
 
 import org.instancio.Random;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,7 +142,7 @@ public final class CollectionUtils {
 
     // same as List.indexOf() but using '==' instead of equals()
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
-    public static int identityIndexOf(final Object obj, @NotNull final List<?> list) {
+    public static int identityIndexOf(final Object obj, @NonNull final List<?> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) == obj) {
                 return i;
