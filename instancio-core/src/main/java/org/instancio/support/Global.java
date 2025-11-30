@@ -20,8 +20,8 @@ import org.instancio.documentation.InternalApi;
 import org.instancio.internal.context.PropertiesLoader;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public final class Global {
@@ -38,7 +38,7 @@ public final class Global {
      *
      * @return settings from properties file
      */
-    @NotNull
+    @NonNull
     public static Settings getPropertiesFileSettings() {
         return PROPERTIES_FILE_SETTINGS;
     }

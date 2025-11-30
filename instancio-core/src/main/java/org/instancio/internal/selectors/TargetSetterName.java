@@ -17,8 +17,8 @@ package org.instancio.internal.selectors;
 
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -31,7 +31,7 @@ public final class TargetSetterName implements Target {
 
     public TargetSetterName(
             @Nullable final Class<?> targetClass,
-            @NotNull final String methodName,
+            @NonNull final String methodName,
             @Nullable final Class<?> parameterType) {
 
         this.targetClass = targetClass;

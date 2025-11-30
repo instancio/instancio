@@ -19,7 +19,7 @@ import org.instancio.GetMethodSelector;
 import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -52,7 +52,7 @@ public final class TargetGetterReference implements Target {
      * the {@code declaringClass} would be {@code Person}
      * and {@code methodName} would be {@code getAge}.
      */
-    @NotNull
+    @NonNull
     private Field resolveFieldFromGetterMethodReference(
             final List<InternalServiceProvider> internalServiceProviders,
             final Class<?> declaringClass,
