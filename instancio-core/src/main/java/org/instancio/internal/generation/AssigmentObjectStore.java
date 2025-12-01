@@ -19,6 +19,7 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 import org.instancio.documentation.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +81,7 @@ public class AssigmentObjectStore implements GenerationListener {
         }
     }
 
-    public GeneratorResult getValue(final TargetSelector destination) {
+    public @Nullable GeneratorResult getValue(final TargetSelector destination) {
         final Iterator<Object> iter = scopes.descendingIterator();
 
         while (iter.hasNext()) {

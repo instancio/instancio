@@ -183,8 +183,7 @@ public final class InternalFeedContext<F extends Feed> {
         return dataSource;
     }
 
-    @Nullable
-    public FormatOptions getFormatOptions() {
+    public @Nullable FormatOptions getFormatOptions() {
         return formatOptions;
     }
 

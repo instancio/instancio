@@ -280,7 +280,7 @@ public final class ApiValidator {
 
     public static void validateValueIsAssignableToElementNode(
             final String errorMsg,
-            final Object value,
+            @Nullable final Object value,
             final InternalNode containerNode,
             final InternalNode elementNode) {
 
@@ -306,7 +306,7 @@ public final class ApiValidator {
 
     public static void failIfMethodSelectorIsUsedWithFieldAssignment(
             final AssignmentType assignmentType,
-            final TargetSelector setMethodSelector) {
+            @Nullable final TargetSelector setMethodSelector) {
 
         if (assignmentType == AssignmentType.FIELD && setMethodSelector != null) {
             UnusedSelectorDescription desc = (UnusedSelectorDescription) setMethodSelector;

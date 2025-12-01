@@ -21,6 +21,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.time.LocalDateGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -48,7 +49,7 @@ class PeselDateGenerator extends AbstractGenerator<String> {
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         return null;
     }
 

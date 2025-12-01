@@ -19,6 +19,7 @@ import org.instancio.internal.RootType;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -49,7 +50,7 @@ public final class NodeTypeMap {
         return rootType;
     }
 
-    public Type get(final Type type) {
+    public @Nullable Type get(final Type type) {
         return typeMap.get(type);
     }
 

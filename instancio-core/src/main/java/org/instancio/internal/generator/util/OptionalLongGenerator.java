@@ -22,6 +22,7 @@ import org.instancio.generator.Hints;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.util.OptionalLong;
 
@@ -32,13 +33,13 @@ public final class OptionalLongGenerator extends AbstractGenerator<OptionalLong>
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         return null;
     }
 
     @Override
     @SuppressWarnings({"OptionalAssignedToNull", Sonar.NULL_OPTIONAL})
-    public OptionalLong tryGenerateNonNull(final Random random) {
+    public @Nullable OptionalLong tryGenerateNonNull(final Random random) {
         return null; // must be null to delegate creation to the engine
     }
 

@@ -25,6 +25,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,7 +57,7 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         // return null because there's no validation of the target class
         // for this spec (vararg can potentially have different types)
         return null;

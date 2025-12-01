@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 public class StringBuilderGenerator extends AbstractGenerator<StringBuilder> {
 
@@ -35,7 +36,7 @@ public class StringBuilderGenerator extends AbstractGenerator<StringBuilder> {
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         return null;
     }
 

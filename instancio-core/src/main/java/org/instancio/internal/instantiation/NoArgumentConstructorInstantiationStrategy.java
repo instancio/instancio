@@ -16,6 +16,7 @@
 package org.instancio.internal.instantiation;
 
 import org.instancio.internal.util.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 
@@ -23,7 +24,7 @@ class NoArgumentConstructorInstantiationStrategy implements InstantiationStrateg
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T createInstance(final Class<T> klass) {
+    public <T> @Nullable T createInstance(final Class<T> klass) {
         try {
             final Constructor<?> ctor = getDefaultConstructor(klass);
             if (ctor == null) {

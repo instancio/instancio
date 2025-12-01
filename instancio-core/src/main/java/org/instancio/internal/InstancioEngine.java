@@ -116,8 +116,7 @@ class InstancioEngine {
                 .orElse(null);
     }
 
-    @Nullable
-    private Object createRootObjectInternal() {
+    private @Nullable Object createRootObjectInternal() {
         final GeneratorResult generatorResult = createObject(rootNode);
         callbackHandler.invokeCallbacks();
         processDelayedNodes(true);

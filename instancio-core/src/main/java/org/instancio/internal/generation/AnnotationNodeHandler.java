@@ -172,8 +172,7 @@ final class AnnotationNodeHandler implements NodeHandler {
         return targetClass.isAssignableFrom(obj.getClass());
     }
 
-    @Nullable
-    private Generator<?> getGenerator(
+    private @Nullable Generator<?> getGenerator(
             final InternalNode node,
             final Annotation[] annotations,
             final AnnotationMap annotationMap) {
