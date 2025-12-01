@@ -32,7 +32,7 @@ public final class ObjectUtils {
     private static final Short DEFAULT_SHORT = (short) 0;
 
     @SuppressWarnings({"unchecked", Sonar.COGNITIVE_COMPLEXITY_OF_METHOD})
-    public static <T> T defaultValue(final Class<T> type) {
+    public static <T> @Nullable T defaultValue(final Class<T> type) {
         if (type.isPrimitive()) {
             if (type == int.class) return (T) DEFAULT_INT;
             if (type == long.class) return (T) DEFAULT_LONG;

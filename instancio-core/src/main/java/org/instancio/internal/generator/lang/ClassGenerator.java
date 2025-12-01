@@ -18,6 +18,7 @@ package org.instancio.internal.generator.lang;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,7 +41,7 @@ public class ClassGenerator extends AbstractGenerator<Class<?>> {
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         return null;
     }
 

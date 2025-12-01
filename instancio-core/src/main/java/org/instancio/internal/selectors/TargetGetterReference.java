@@ -20,6 +20,7 @@ import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -33,7 +34,7 @@ public final class TargetGetterReference implements Target {
     }
 
     @Override
-    public Class<?> getTargetClass() {
+    public @Nullable Class<?> getTargetClass() {
         return null;
     }
 

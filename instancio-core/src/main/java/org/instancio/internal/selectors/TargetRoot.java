@@ -15,12 +15,14 @@
  */
 package org.instancio.internal.selectors;
 
+import org.jspecify.annotations.Nullable;
+
 public enum TargetRoot implements Target {
 
     INSTANCE;
 
     @Override
-    public Class<?> getTargetClass() {
+    public @Nullable Class<?> getTargetClass() {
         return null;
     }
 

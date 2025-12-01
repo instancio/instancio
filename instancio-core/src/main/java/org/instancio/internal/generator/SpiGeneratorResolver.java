@@ -31,6 +31,7 @@ import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.instancio.spi.InstancioServiceProvider.GeneratorProvider;
 import org.instancio.spi.InstancioSpiException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,7 @@ public class SpiGeneratorResolver {
     }
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    public Generator<?> getSpiGenerator(final InternalNode node) {
+    public @Nullable Generator<?> getSpiGenerator(final InternalNode node) {
         for (ProviderEntry<GeneratorProvider> entry : providerEntries) {
             final GeneratorSpec<?> spec = entry.getProvider().getGenerator(node, generators);
 

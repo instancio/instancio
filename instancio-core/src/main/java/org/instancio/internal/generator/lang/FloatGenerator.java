@@ -23,6 +23,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
 import org.instancio.internal.generator.specs.InternalFractionalNumberGeneratorSpec;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 
@@ -118,7 +119,7 @@ public class FloatGenerator extends AbstractGenerator<Float>
     }
 
     @Override
-    public Float generate(final Random random) {
+    public @Nullable Float generate(final Random random) {
         final BigDecimal result = delegate.generate(random);
         return result == null ? null : result.floatValue();
     }

@@ -40,7 +40,7 @@ public final class ReflectionUtils {
         // non-instantiable
     }
 
-    public static Class<?> loadClass(final String fullyQualifiedName) {
+    public static @Nullable Class<?> loadClass(final String fullyQualifiedName) {
         try {
             return Class.forName(fullyQualifiedName);
         } catch (Exception ex) {
@@ -74,8 +74,7 @@ public final class ReflectionUtils {
         return ObjectUtils.defaultIfNull(p[0].getParameterizedType(), p[0].getType());
     }
 
-    @Nullable
-    public static Method getZeroArgMethod(final Class<?> klass, final String name) {
+    public static @Nullable Method getZeroArgMethod(final Class<?> klass, final String name) {
         try {
             return klass.getMethod(name);
         } catch (NoSuchMethodException ex) {
@@ -84,7 +83,7 @@ public final class ReflectionUtils {
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public static Method getSetterMethod(final Class<?> klass, final String methodName, final Class<?> parameterType) {
+    public static Method getSetterMethod(final Class<?> klass, final String methodName, @Nullable final Class<?> parameterType) {
         if (parameterType == null) {
 
             // getDeclaredMethods() order is not guaranteed.
@@ -122,8 +121,7 @@ public final class ReflectionUtils {
         }
     }
 
-    @Nullable
-    public static Field getFieldOrNull(final Class<?> klass, final String fieldName) {
+    public static @Nullable Field getFieldOrNull(final Class<?> klass, final String fieldName) {
         try {
             return klass.getDeclaredField(fieldName);
         } catch (NoSuchFieldException ex) {
@@ -133,7 +131,7 @@ public final class ReflectionUtils {
         }
     }
 
-    public static Object tryGetFieldValueOrElseNull(final Field field, final Object target) {
+    public static @Nullable Object tryGetFieldValueOrElseNull(final Field field, final Object target) {
         try {
             setAccessible(field);
             return field.get(target);

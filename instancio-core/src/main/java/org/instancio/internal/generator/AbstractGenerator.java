@@ -23,6 +23,7 @@ import org.instancio.generator.Hints;
 import org.instancio.generator.ValueSpec;
 import org.instancio.generator.specs.NullableGeneratorSpec;
 import org.instancio.internal.util.Constants;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base class for all internal generators.
@@ -64,12 +65,12 @@ public abstract class AbstractGenerator<T> implements Generator<T>, NullableGene
      * @return generated value, either a null or non-null
      */
     @Override
-    public T generate(final Random random) {
+    public @Nullable T generate(final Random random) {
         return random.diceRoll(isNullable()) ? null : tryGenerateNonNull(random);
     }
 
     @Override
-    public T get() {
+    public @Nullable T get() {
         return generate(context.random());
     }
 

@@ -15,13 +15,15 @@
  */
 package org.instancio.internal.util;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
 public final class Verify {
 
-    public static <T> T notNull(final T object, final String message, final Object... values) {
+    public static <T> T notNull(@NonNull final T object, final String message, final Object... values) {
         return Objects.requireNonNull(object, () -> String.format(message, values));
     }
 

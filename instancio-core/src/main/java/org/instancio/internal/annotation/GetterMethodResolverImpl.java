@@ -16,6 +16,7 @@
 package org.instancio.internal.annotation;
 
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,7 +24,7 @@ import java.lang.reflect.Method;
 class GetterMethodResolverImpl implements GetterMethodResolver {
 
     @Override
-    public Method getGetter(final InternalNode node) {
+    public @Nullable Method getGetter(final InternalNode node) {
         final Field field = node.getField();
 
         if (field == null) {

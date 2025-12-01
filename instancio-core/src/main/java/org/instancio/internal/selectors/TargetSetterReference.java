@@ -17,6 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.SetMethodSelector;
 import org.instancio.internal.util.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 
@@ -29,7 +30,7 @@ public final class TargetSetterReference implements Target {
     }
 
     @Override
-    public Class<?> getTargetClass() {
+    public @Nullable Class<?> getTargetClass() {
         return null;
     }
 

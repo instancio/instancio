@@ -49,8 +49,7 @@ public final class StringUtils {
         return s == null ? "" : s.trim();
     }
 
-    @Nullable
-    public static String trimToNull(@Nullable final String s) {
+    public static @Nullable String trimToNull(@Nullable final String s) {
         if (s == null) {
             return null;
         }
@@ -58,8 +57,7 @@ public final class StringUtils {
         return trimmed.isEmpty() ? null : trimmed;
     }
 
-    @Nullable
-    public static String singleQuote(@Nullable final String s) {
+    public static @Nullable String singleQuote(@Nullable final String s) {
         return s == null ? null : "'" + s + "'";
     }
 
@@ -84,7 +82,7 @@ public final class StringUtils {
         return false;
     }
 
-    public static String concatNonNull(final String... values) {
+    public static String concatNonNull(@Nullable final String... values) {
         final StringBuilder sb = new StringBuilder();
         if (values != null) {
             for (String val : values) {
@@ -112,7 +110,7 @@ public final class StringUtils {
      * Wraps the given {@code value} in quotes if it's a String,
      * otherwise returns a {@code toString()} representation.
      */
-    public static String quoteStringValue(final Object value) {
+    public static @Nullable String quoteStringValue(@Nullable final Object value) {
         if (value == null) return null;
         if (value instanceof String s) {
             return '"' + s + '"';

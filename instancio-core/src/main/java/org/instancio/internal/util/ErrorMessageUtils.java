@@ -32,6 +32,7 @@ import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -212,7 +213,7 @@ public final class ErrorMessageUtils {
         return getTypeMismatchErrorMessage(value, node, null);
     }
 
-    public static String getTypeMismatchErrorMessage(final Object value, final InternalNode node, final Throwable cause) {
+    public static String getTypeMismatchErrorMessage(final Object value, final InternalNode node, @Nullable final Throwable cause) {
         final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE)
                 .append("error assigning value to: ").append(nodePathToRootBlock(node)).append(NL)
                 .append(NL).append(NL);

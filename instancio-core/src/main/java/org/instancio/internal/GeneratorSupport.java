@@ -77,9 +77,8 @@ final class GeneratorSupport {
         return false;
     }
 
-    @Nullable
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    static AbstractGenerator<?> unpackAbstractGenerator(final Generator<?> generator) {
+    static @Nullable AbstractGenerator<?> unpackAbstractGenerator(final Generator<?> generator) {
         if (generator instanceof AbstractGenerator<?> g) {
             return g;
         }

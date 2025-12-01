@@ -43,8 +43,7 @@ public final class Global {
         return PROPERTIES_FILE_SETTINGS;
     }
 
-    @Nullable
-    public static Random getConfiguredRandom() {
+    public static @Nullable Random getConfiguredRandom() {
         return CONFIGURED_RANDOM;
     }
 

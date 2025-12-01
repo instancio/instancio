@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,7 @@ public final class UnicodeBlocks {
         return Holder.INSTANCE;
     }
 
-    public BlockRange getRange(final UnicodeBlock block) {
+    public @Nullable BlockRange getRange(final UnicodeBlock block) {
         return blockRangeMap.get(block);
     }
 

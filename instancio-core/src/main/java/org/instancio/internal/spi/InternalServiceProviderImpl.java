@@ -53,8 +53,7 @@ public final class InternalServiceProviderImpl implements InternalServiceProvide
             return ReflectionUtils.getFieldOrNull(declaringClass, methodName);
         }
 
-        @Nullable
-        private static Field getFieldNameByRemovingPrefix(
+        private static @Nullable Field getFieldNameByRemovingPrefix(
                 final Class<?> targetClass,
                 final String methodName,
                 final int getPrefixLength) {

@@ -18,6 +18,7 @@ package org.instancio.internal.generator.util.concurrent.atomic;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,7 +29,7 @@ public class AtomicBooleanGenerator extends AbstractGenerator<AtomicBoolean> {
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         return null; // no generator spec
     }
 

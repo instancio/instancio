@@ -17,6 +17,7 @@ package org.instancio.internal.util;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.settings.AssignmentType;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public final class SystemProperties {
@@ -36,7 +37,7 @@ public final class SystemProperties {
         return Boolean.TRUE.toString().equals(System.getProperty(key));
     }
 
-    public static AssignmentType getAssignmentType() {
+    public static @Nullable AssignmentType getAssignmentType() {
         final String type = System.getProperty(ASSIGNMENT_TYPE);
         return type == null ? null : AssignmentType.valueOf(type);
     }

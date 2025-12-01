@@ -20,6 +20,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.time.LocalDateTimeGenerator;
+import org.jspecify.annotations.Nullable;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -41,7 +42,7 @@ public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregoria
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         return null;
     }
 

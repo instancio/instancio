@@ -21,6 +21,7 @@ import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Range;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +83,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
-    public T generate(final Random random) {
+    public @Nullable T generate(final Random random) {
         if (random.diceRoll(isNullable())) {
             return null;
         }

@@ -31,6 +31,7 @@ import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -138,7 +139,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
 
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
-    public Map<K, V> tryGenerateNonNull(final Random random) {
+    public @Nullable Map<K, V> tryGenerateNonNull(final Random random) {
         try {
             Constructor<?> ctor = ReflectionUtils.setAccessible(mapType.getDeclaredConstructor());
             return (Map<K, V>) ctor.newInstance();

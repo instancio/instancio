@@ -94,9 +94,8 @@ public class GeneratorResolver {
      * imported via e.g. "requires java.sql". In case the classes are not
      * available, load them by name to avoid class not found error
      */
-    @Nullable
     @SuppressWarnings(Sonar.USE_INSTANCEOF)
-    private Generator<?> getGeneratorForLegacyClass(final Class<?> klass) {
+    private @Nullable Generator<?> getGeneratorForLegacyClass(final Class<?> klass) {
         final String className = klass.getName();
 
         if ("java.sql.Date".equals(className)) {

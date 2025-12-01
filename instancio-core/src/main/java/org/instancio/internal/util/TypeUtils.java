@@ -73,14 +73,12 @@ public final class TypeUtils {
         throw Fail.withFataInternalError("Unhandled type: %s", type.getClass().getSimpleName());
     }
 
-    @Nullable
-    public static Class<?> getGenericSuperclassTypeArgument(final Class<?> klass) {
+    public static @Nullable Class<?> getGenericSuperclassTypeArgument(final Class<?> klass) {
         final ParameterizedType type = findParameterizedSupertype(klass);
         return type == null ? null : getRawType(type.getActualTypeArguments()[0]);
     }
 
-    @Nullable
-    private static ParameterizedType findParameterizedSupertype(@Nullable final Class<?> klass) {
+    private static @Nullable ParameterizedType findParameterizedSupertype(@Nullable final Class<?> klass) {
         if (klass == null) {
             return null;
         }
