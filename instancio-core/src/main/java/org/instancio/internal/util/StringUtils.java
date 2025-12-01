@@ -105,7 +105,7 @@ public final class StringUtils {
     }
 
     public static <E extends Enum<E>> String enumToString(E val) {
-        return val.getClass().getSimpleName() + "." + val.name();
+        return val.getDeclaringClass().getSimpleName() + "." + val.name();
     }
 
     /**

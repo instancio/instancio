@@ -15,7 +15,7 @@
  */
 package org.instancio.test.features.assign;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.generator.Generator;
@@ -34,7 +34,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
@@ -49,7 +48,7 @@ class AssignPojoTest {
 
         final RichPerson result = Instancio.of(RichPerson.class)
                 .set(field(RichPerson::getAddress2), address)
-                .assign(valueOf(RichPerson::getAddress2).to(RichPerson::getAddress1))
+                .assign(Assign.valueOf(RichPerson::getAddress2).to(RichPerson::getAddress1))
                 .create();
 
         assertThat(result.getAddress1())
@@ -67,7 +66,7 @@ class AssignPojoTest {
 
         final RichPerson result = Instancio.of(RichPerson.class)
                 .supply(field(RichPerson::getAddress2), random -> address)
-                .assign(valueOf(RichPerson::getAddress2).to(RichPerson::getAddress1))
+                .assign(Assign.valueOf(RichPerson::getAddress2).to(RichPerson::getAddress1))
                 .create();
 
         assertThat(result.getAddress1())
@@ -97,7 +96,7 @@ class AssignPojoTest {
 
         final List<Phone> phoneNumbers = result.getAddress().getPhoneNumbers();
 
-        if (StringUtils.equalsAny(result.getAddress().getCountry(), "US", "Canada")) {
+        if (Strings.CS.equalsAny(result.getAddress().getCountry(), "US", "Canada")) {
             assertThat(phoneNumbers).allSatisfy(phone -> {
                 assertThat(phone.getCountryCode()).isEqualTo("+1");
                 assertThat(phone.getNumber()).containsOnlyDigits().hasSize(7);

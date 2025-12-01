@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.fill;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.InstancioObjectApi;
 import org.instancio.exception.UnresolvedAssignmentException;
@@ -34,7 +35,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Assign.valueOf;
 
 @FeatureTag({Feature.ASSIGN, Feature.FILL})
 @ExtendWith(InstancioExtension.class)
@@ -59,7 +59,7 @@ class FillAssignTest {
             // Overwrite field e via assign() with field h (generated value)
             Instancio.ofObject(object)
                     .withFillType(fillType)
-                    .assign(valueOf(StringsGhi::getH).to(StringsDef::getE))
+                    .assign(Assign.valueOf(StringsGhi::getH).to(StringsDef::getE))
                     .fill();
 
             assertThat(object.getDef().getE())
@@ -85,7 +85,7 @@ class FillAssignTest {
             // was not generated, therefore we get unresolved assignment error
             final InstancioObjectApi<StringsAbc> api = Instancio.ofObject(object)
                     .withFillType(FillType.APPLY_SELECTORS)
-                    .assign(valueOf(StringsGhi::getH).to(StringsDef::getE));
+                    .assign(Assign.valueOf(StringsGhi::getH).to(StringsDef::getE));
 
             assertThatThrownBy(api::fill)
                     .isExactlyInstanceOf(UnresolvedAssignmentException.class)
@@ -113,7 +113,7 @@ class FillAssignTest {
         // Overwrite field e via assign() with field h (preset value)
         Instancio.ofObject(object)
                 .withFillType(fillType)
-                .assign(valueOf(StringsGhi::getH).to(StringsDef::getE))
+                .assign(Assign.valueOf(StringsGhi::getH).to(StringsDef::getE))
                 .fill();
 
         assertThat(object.getDef().getE())

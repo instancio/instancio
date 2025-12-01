@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.feed.applyfeed;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.feed.Feed;
 import org.instancio.junit.InstancioExtension;
@@ -29,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.root;
 
 @FeatureTag({Feature.FEED, Feature.APPLY_FEED, Feature.ASSIGN})
@@ -49,8 +49,8 @@ class ApplyFeedAssignTest {
 
         final StringFields result = Instancio.of(StringFields.class)
                 .applyFeed(root(), feed)
-                .assign(valueOf(StringFields::getOne).to(StringFields::getThree))
-                .assign(valueOf(StringFields::getTwo).to(StringFields::getFour))
+                .assign(Assign.valueOf(StringFields::getOne).to(StringFields::getThree))
+                .assign(Assign.valueOf(StringFields::getTwo).to(StringFields::getFour))
                 .create();
 
         assertThat(result.getOne()).isEqualTo(result.getThree()).isEqualTo("foo");

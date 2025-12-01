@@ -293,12 +293,13 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         return list;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     private <T> T getGeneratedSpecValue(final Class<?> generatorClass) {
         final Generator<T> generator = (Generator<T>) ReflectionUtils.newInstance(generatorClass);
         return generator.generate(getGeneratorContext().random());
     }
 
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     private <T> T getFunctionSpecValue(
             final SpecMethod parentSpecMethod,
             final FeedSpecAnnotations.FunctionSpec functionSpec) {
@@ -365,7 +366,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         return resolvedMethod;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     private <T> T getTemplateSpecValue(final TemplateSpec templateSpec) {
         String template = templateSpec.value();
         final List<String> components = StringUtils.getTemplateKeys(template);

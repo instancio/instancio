@@ -46,7 +46,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.junit.internal.Constants.INSTANCIO_SOURCE_STATE;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -108,7 +107,7 @@ class InstancioExtensionTest {
         doReturn(List.of(new DummyTest())).when(testInstances).getAllInstances();
 
         final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
-        doReturn(store).when(context).getStore(create("org.instancio"));
+        doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
         doReturn(new FieldAnnotationMap(DummyTest.class))
                 .when(store)
                 .get(DummyTest.class, FieldAnnotationMap.class);
@@ -132,7 +131,7 @@ class InstancioExtensionTest {
         doReturn(Optional.of(new DummyTest())).when(testInstances).findInstance(DummyTest.class);
 
         final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
-        doReturn(store).when(context).getStore(create("org.instancio"));
+        doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
         doReturn(new FieldAnnotationMap(DummyTest.class))
                 .when(store)
                 .get(DummyTest.class, FieldAnnotationMap.class);
@@ -239,7 +238,7 @@ class InstancioExtensionTest {
     @DisplayName("Resources should be cleared after each test method")
     void afterEach() {
         ExtensionContext.Store store = mock(ExtensionContext.Store.class);
-        doReturn(store).when(context).getStore(create("org.instancio"));
+        doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
 
         extension.afterEach(context);
         verify(threadLocalRandom).remove();
@@ -254,7 +253,7 @@ class InstancioExtensionTest {
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
 
         ExtensionContext.Store store = mock(ExtensionContext.Store.class);
-        doReturn(store).when(context).getStore(create("org.instancio"));
+        doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
         when(context.getRequiredTestMethod()).thenReturn(method);
         when(threadLocalRandom.get()).thenReturn(new DefaultRandom(seedFromRandom, Seeds.Source.SEED_ANNOTATION));
@@ -274,7 +273,7 @@ class InstancioExtensionTest {
         final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
 
         ExtensionContext.Store store = mock(ExtensionContext.Store.class);
-        doReturn(store).when(context).getStore(create("org.instancio"));
+        doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
         when(store.get(INSTANCIO_SOURCE_STATE, InstancioSourceState.class))
                 .thenReturn(new InstancioSourceState(seedFromInstancioSourceState, 0));
 

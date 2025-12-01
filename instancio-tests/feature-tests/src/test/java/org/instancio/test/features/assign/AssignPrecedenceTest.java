@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign;
 
+import org.instancio.Assign;
 import org.instancio.Assignment;
 import org.instancio.GetMethodSelector;
 import org.instancio.Instancio;
@@ -31,7 +32,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 @FeatureTag(Feature.ASSIGN)
@@ -50,11 +50,11 @@ class AssignPrecedenceTest {
         final GetMethodSelector<StringsGhi, String> h = StringsGhi::getH;
 
         final Assignment[] assignments = {
-                valueOf(StringsGhi::getI).to(h),
-                valueOf(StringsAbc::getA).to(h),
-                valueOf(StringsDef::getF).to(h),
-                valueOf(StringsAbc::getC).to(h),
-                valueOf(StringsDef::getD).to(h) // should win!
+                Assign.valueOf(StringsGhi::getI).to(h),
+                Assign.valueOf(StringsAbc::getA).to(h),
+                Assign.valueOf(StringsDef::getF).to(h),
+                Assign.valueOf(StringsAbc::getC).to(h),
+                Assign.valueOf(StringsDef::getD).to(h) // should win!
         };
 
         final StringsAbc result = Instancio.of(StringsAbc.class)

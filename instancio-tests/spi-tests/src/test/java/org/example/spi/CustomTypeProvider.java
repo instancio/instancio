@@ -26,7 +26,6 @@ import org.instancio.test.support.pojo.interfaces.ItemInterface;
 import org.instancio.test.support.pojo.interfaces.MultipleInterfaceImpls;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class CustomTypeProvider implements InstancioServiceProvider {
@@ -40,17 +39,17 @@ public class CustomTypeProvider implements InstancioServiceProvider {
             .wrapper(LONG_HOLDER_INITIAL_VALUE)
             .build();
 
-    private static final Map<Class<?>, Class<?>> SUBTYPE_MAP = new HashMap<Class<?>, Class<?>>() {{
-        put(StringHolderInterface.class, StringHolderAlternativeImpl.class);
-        put(ItemInterface.class, ItemAlternativeImpl.class);
+    private static final Map<Class<?>, Class<?>> SUBTYPE_MAP = Map.of(
+            StringHolderInterface.class, StringHolderAlternativeImpl.class,
+            ItemInterface.class, ItemAlternativeImpl.class,
 
-        // Note: although Widget implementation is instantiated via custom TypeInstantiator,
-        // the subtype mapping is still required to populate the Node structure
-        put(MultipleInterfaceImpls.Widget.class, MultipleInterfaceImpls.WidgetB.class);
+            // Note: although Widget implementation is instantiated via custom TypeInstantiator,
+            // the subtype mapping is still required to populate the Node structure
+            MultipleInterfaceImpls.Widget.class, MultipleInterfaceImpls.WidgetB.class,
 
-        // Error handling: invalid subtype
-        put(BaseClassSubClassInheritance.SubClass.class, BaseClassSubClassInheritance.BaseClass.class);
-    }};
+            // Error handling: invalid subtype
+            BaseClassSubClassInheritance.SubClass.class, BaseClassSubClassInheritance.BaseClass.class
+    );
 
     private boolean getTypeInstantiatorInvoked;
     private boolean getTypeResolverInvoked;

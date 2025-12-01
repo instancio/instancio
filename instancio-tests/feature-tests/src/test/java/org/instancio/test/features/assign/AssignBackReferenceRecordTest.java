@@ -16,6 +16,7 @@
 package org.instancio.test.features.assign;
 
 import lombok.Data;
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
@@ -27,12 +28,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.root;
 import static org.instancio.Select.scope;
 
+@SuppressWarnings("SameNameButDifferent")
 @FeatureTag(Feature.ASSIGN)
 @ExtendWith(InstancioExtension.class)
 class AssignBackReferenceRecordTest {
@@ -48,7 +49,7 @@ class AssignBackReferenceRecordTest {
         @Test
         void rootRecord() {
             final Rec result = Instancio.of(Rec.class)
-                    .assign(valueOf(root()).to(field(Pojo::getRec)))
+                    .assign(Assign.valueOf(root()).to(field(Pojo::getRec)))
                     .create();
 
             assertThat(result.pojo.rec).isSameAs(result);
@@ -57,7 +58,7 @@ class AssignBackReferenceRecordTest {
         @Test
         void rootPojo() {
             final Pojo result = Instancio.of(Pojo.class)
-                    .assign(valueOf(root()).to(field(Rec::pojo)))
+                    .assign(Assign.valueOf(root()).to(field(Rec::pojo)))
                     .create();
 
             assertThat(result.rec.pojo).isSameAs(result);
@@ -75,7 +76,7 @@ class AssignBackReferenceRecordTest {
         @Test
         void rootRecord() {
             final Rec result = Instancio.of(Rec.class)
-                    .assign(valueOf(root()).to(all(Rec.class).within(scope(List.class))))
+                    .assign(Assign.valueOf(root()).to(all(Rec.class).within(scope(List.class))))
                     .create();
 
             assertThat(result.pojo.records)
@@ -95,7 +96,7 @@ class AssignBackReferenceRecordTest {
         @Test
         void rootRecord() {
             final Pojo result = Instancio.of(Pojo.class)
-                    .assign(valueOf(root()).to(all(Pojo.class).within(scope(List.class))))
+                    .assign(Assign.valueOf(root()).to(all(Pojo.class).within(scope(List.class))))
                     .create();
 
             assertThat(result.rec.pojos)

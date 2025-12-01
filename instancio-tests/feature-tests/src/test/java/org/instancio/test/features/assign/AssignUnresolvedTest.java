@@ -16,6 +16,7 @@
 package org.instancio.test.features.assign;
 
 import lombok.Data;
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.exception.UnresolvedAssignmentException;
@@ -30,7 +31,6 @@ import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 
 @FeatureTag(Feature.ASSIGN)
@@ -40,17 +40,17 @@ class AssignUnresolvedTest {
     @Test
     void unresolvedCollectionElement() {
         @Data
-        class Record {
+        class Pojo {
             Collection<IntegerHolder> collection;
             String a, b;
         }
 
-        final InstancioApi<Record> api = Instancio.of(Record.class)
-                .assign(given(Record::getA)
+        final InstancioApi<Pojo> api = Instancio.of(Pojo.class)
+                .assign(given(Pojo::getA)
                         .satisfies(o -> true)
                         .supply(all(IntegerHolder.class), IntegerHolder::new))
-                .assign(valueOf(Record::getA).to(Record::getB))
-                .assign(valueOf(Record::getB).to(Record::getA));
+                .assign(Assign.valueOf(Pojo::getA).to(Pojo::getB))
+                .assign(Assign.valueOf(Pojo::getB).to(Pojo::getA));
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(UnresolvedAssignmentException.class);

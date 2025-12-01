@@ -34,6 +34,7 @@ class OptionalIntGeneratorTest extends AbstractGeneratorTestTemplate<OptionalInt
         return new OptionalIntGenerator(getGeneratorContext());
     }
 
+    @Override
     @Test
     protected void tryGenerateNonNull() {
         assertThat(generator().tryGenerateNonNull(random))

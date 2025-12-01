@@ -24,7 +24,6 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,11 +36,11 @@ import static org.instancio.Select.all;
 @ExtendWith(InstancioExtension.class)
 class MapGeneratorWithEntriesTest {
 
-    private static final Map<Integer, String> EXPECTED_ENTRIES = new HashMap<Integer, String>() {{
-        put(-1, "foo");
-        put(-2, "bar");
-        put(-3, "baz");
-    }};
+    private static final Map<Integer, String> EXPECTED_ENTRIES = Map.of(
+            -1, "foo",
+            -2, "bar",
+            -3, "baz"
+    );
 
     @Test
     void withClassContaining() {

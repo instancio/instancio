@@ -19,6 +19,7 @@ import org.example.FooRecord;
 import org.example.generator.CustomIntegerGenerator;
 import org.example.generator.CustomListOfPojosGenerator;
 import org.example.spi.CustomGeneratorProvider;
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.TypeToken;
@@ -63,7 +64,6 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.field;
@@ -283,7 +283,7 @@ class GeneratorFromSpiTest {
         final int expected = -1;
         final IntegerHolder result = Instancio.of(IntegerHolder.class)
                 .set(all(int.class), expected)
-                .assign(valueOf(int.class).to(all(Integer.class)))
+                .assign(Assign.valueOf(int.class).to(all(Integer.class)))
                 .create();
 
         assertThat(result.getPrimitive())

@@ -15,11 +15,11 @@
  */
 package org.external.errorhandling;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.exception.UnresolvedAssignmentException;
 import org.instancio.test.support.pojo.misc.StringsAbc;
 
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
@@ -28,9 +28,9 @@ class UnresolvedAssignmentErrorTest extends AbstractErrorMessageTestTemplate {
     @Override
     void methodUnderTest() {
         Instancio.of(StringsAbc.class)
-                .assign(valueOf(StringsAbc::getA).to(StringsAbc::getB))
-                .assign(valueOf(field(StringsAbc::getB).within(scope(StringsAbc.class))).to(StringsAbc::getC))
-                .assign(valueOf(StringsAbc::getC).to(StringsAbc::getA))
+                .assign(Assign.valueOf(StringsAbc::getA).to(StringsAbc::getB))
+                .assign(Assign.valueOf(field(StringsAbc::getB).within(scope(StringsAbc.class))).to(StringsAbc::getC))
+                .assign(Assign.valueOf(StringsAbc::getC).to(StringsAbc::getA))
                 .create();
     }
 

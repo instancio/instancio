@@ -116,10 +116,10 @@ public final class ExtensionSupport {
         if (settings == null) {
             throw Fail.withSettingsOnNullOrNonStaticField();
         }
-        if (!(settings instanceof Settings)) {
+        if (!(settings instanceof Settings s)) {
             throw Fail.withSettingsOnWrongFieldType(field);
         }
-        return Optional.of((Settings) settings);
+        return Optional.of(s);
     }
 
     private ExtensionSupport() {

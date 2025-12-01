@@ -224,7 +224,7 @@ class GetMethodSelectorTest {
 
     @Nested
     class OverloadedGetterTest {
-        class Pojo {
+        static class Pojo {
             String foo;
 
             String getFoo() {

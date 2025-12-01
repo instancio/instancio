@@ -120,6 +120,7 @@ class PredicateSelectorWithSupplyTest {
     @Nested
     class TypePredicateTest {
 
+        @SuppressWarnings("JdkObsolete")
         @Test
         void typesOf() {
             final Person result = Instancio.of(Person.class)

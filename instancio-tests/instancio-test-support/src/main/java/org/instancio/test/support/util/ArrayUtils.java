@@ -16,6 +16,7 @@
 package org.instancio.test.support.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class ArrayUtils {
@@ -23,9 +24,10 @@ public final class ArrayUtils {
         // non-instantiable
     }
 
+    @SafeVarargs
     public static <T> List<T> toList(T... values) {
         List<T> result = new ArrayList<>();
-        for (T v : values) result.add(v);
+        Collections.addAll(result, values);
         return result;
     }
 

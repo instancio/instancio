@@ -154,16 +154,22 @@ public interface Generators extends CommonGeneratorSpecs {
     NetGenerators net();
 
     /**
-     * {@inheritDoc}
+     * Picks a random value from the given choices.
      *
+     * @param choices to choose from
+     * @param <T>     element type
+     * @return API builder reference
      * @since 1.0.1
      */
     @SuppressWarnings("unchecked")
     <T> OneOfArrayGeneratorSpec<T> oneOf(T... choices);
 
     /**
-     * {@inheritDoc}
+     * Picks a random value from the given choices.
      *
+     * @param choices to choose from
+     * @param <T>     element type
+     * @return API builder reference
      * @since 1.0.1
      */
     <T> OneOfCollectionGeneratorSpec<T> oneOf(Collection<T> choices);

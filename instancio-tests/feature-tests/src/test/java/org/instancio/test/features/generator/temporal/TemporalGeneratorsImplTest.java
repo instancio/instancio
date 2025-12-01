@@ -47,6 +47,7 @@ import static org.instancio.Select.all;
 @ExtendWith(InstancioExtension.class)
 class TemporalGeneratorsImplTest {
 
+    @SuppressWarnings("JavaUtilDate")
     @Test
     void generate() {
         final Instant instant = Instant.now();

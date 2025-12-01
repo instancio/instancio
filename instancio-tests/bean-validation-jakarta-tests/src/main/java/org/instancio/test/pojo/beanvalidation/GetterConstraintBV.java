@@ -20,6 +20,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import lombok.ToString;
 
+@SuppressWarnings("NullablePrimitive")
 public class GetterConstraintBV {
 
     @ToString

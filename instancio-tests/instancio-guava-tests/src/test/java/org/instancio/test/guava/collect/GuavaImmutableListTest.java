@@ -35,7 +35,7 @@ class GuavaImmutableListTest {
     private static final int EXPECTED_SIZE = 10;
 
     private static class Holder {
-        private List<String> List;
+        private List<String> list;
     }
 
     @Test
@@ -62,7 +62,7 @@ class GuavaImmutableListTest {
                 .generate(all(List.class), gen -> gen.collection().size(EXPECTED_SIZE).subtype(ImmutableList.class))
                 .create();
 
-        assertImmutableList(result.List);
+        assertImmutableList(result.list);
     }
 
     @Test
@@ -72,7 +72,7 @@ class GuavaImmutableListTest {
                 .generate(all(List.class), gen -> gen.collection().size(EXPECTED_SIZE))
                 .create();
 
-        assertImmutableList(result.List);
+        assertImmutableList(result.list);
     }
 
     private static void assertImmutableList(final List<String> result) {

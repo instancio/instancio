@@ -24,7 +24,7 @@ public abstract class DynPojoBase {
 
     protected final Map<String, Object> data = new HashMap<>();
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     protected final <T> T get(String key) {
         return (T) data.get(key);
     }

@@ -70,7 +70,7 @@ import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObje
 })
 @NonDeterministicTag("Set/Map size assertions may fail if same value is generated more than once")
 class BuiltInCollectionGeneratorTest {
-    private static final int EXPECTED_SIZE = RandomUtils.nextInt(90, 100);
+    private static final int EXPECTED_SIZE = RandomUtils.insecure().randomInt(90, 100);
 
     @Nested
     @DisplayName("Tests with unspecified collection().subtype()")

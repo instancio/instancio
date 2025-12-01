@@ -44,11 +44,11 @@ class UnusedEmitItemsReporter {
         });
     }
 
+    @SuppressWarnings({"StringBufferReplaceableByString", "UnnecessaryStringBuilder"})
     private static String buildUnusedItemsErrorMessage(
             final TargetSelector selector,
             final Collection<?> items) {
 
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder(256)
                 .append("not all the items provided via the 'emit()' method have been consumed").append(NL)
                 .append(NL)

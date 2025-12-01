@@ -24,7 +24,7 @@ import java.util.List;
 import static java.util.stream.Collectors.joining;
 import static org.instancio.internal.util.Constants.NL;
 
-@SuppressWarnings("StringBufferReplaceableByString")
+@SuppressWarnings({"StringBufferReplaceableByString", "UnnecessaryStringBuilder"})
 final class ApiValidatorMessageHelper {
 
     private static final String INCORRECT_TYPE_PARAMETERS_SPECIFIED =

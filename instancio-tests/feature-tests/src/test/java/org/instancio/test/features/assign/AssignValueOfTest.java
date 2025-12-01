@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign;
 
+import org.instancio.Assign;
 import org.instancio.Assignment;
 import org.instancio.Instancio;
 import org.instancio.Random;
@@ -43,7 +44,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatObject;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 
@@ -57,11 +57,11 @@ class AssignValueOfTest {
         final Supplier<String> supplier = () -> EXPECTED;
         final Generator<String> generator = random -> EXPECTED;
         return Stream.of(
-                Arguments.of(valueOf(StringsGhi::getH).set(EXPECTED)),
-                Arguments.of(valueOf(StringsGhi::getH).generate(gen -> gen.oneOf(EXPECTED))),
-                Arguments.of(valueOf(StringsGhi::getH).generate(Instancio.gen().oneOf(EXPECTED))),
-                Arguments.of(valueOf(StringsGhi::getH).supply(supplier)),
-                Arguments.of(valueOf(StringsGhi::getH).supply(generator)));
+                Arguments.of(Assign.valueOf(StringsGhi::getH).set(EXPECTED)),
+                Arguments.of(Assign.valueOf(StringsGhi::getH).generate(gen -> gen.oneOf(EXPECTED))),
+                Arguments.of(Assign.valueOf(StringsGhi::getH).generate(Instancio.gen().oneOf(EXPECTED))),
+                Arguments.of(Assign.valueOf(StringsGhi::getH).supply(supplier)),
+                Arguments.of(Assign.valueOf(StringsGhi::getH).supply(generator)));
     }
 
     @MethodSource("args")
@@ -77,7 +77,7 @@ class AssignValueOfTest {
     @Test
     void valueOfTo() {
         final StringsAbc result = Instancio.of(StringsAbc.class)
-                .assign(valueOf(StringsGhi::getH).to(StringsDef::getE))
+                .assign(Assign.valueOf(StringsGhi::getH).to(StringsDef::getE))
                 .create();
 
         assertThat(result.def.e).isEqualTo(result.def.ghi.h);
@@ -86,7 +86,7 @@ class AssignValueOfTest {
     @Test
     void valueOfAs() {
         final StringsAbc result = Instancio.of(StringsAbc.class)
-                .assign(valueOf(StringsGhi::getH)
+                .assign(Assign.valueOf(StringsGhi::getH)
                         .to(StringsDef::getE)
                         .as((String s) -> "prefix-" + s))
                 .create();
@@ -97,7 +97,7 @@ class AssignValueOfTest {
     @Test
     void valueOfAsRandom() {
         final IntegerHolder result = Instancio.of(IntegerHolder.class)
-                .assign(valueOf(IntegerHolder::getPrimitive)
+                .assign(Assign.valueOf(IntegerHolder::getPrimitive)
                         .to(IntegerHolder::getWrapper)
                         .as((Integer source, Random random) -> source + random.oneOf(1, -1)))
                 .create();
@@ -111,7 +111,7 @@ class AssignValueOfTest {
         final List<StringsAbc> results = Instancio.ofList(StringsAbc.class)
                 .size(size)
                 .generate(field(StringsGhi::getH), gen -> gen.oneOf("H1", "H2"))
-                .assign(valueOf(StringsGhi::getH)
+                .assign(Assign.valueOf(StringsGhi::getH)
                         .to(StringsDef::getE)
                         .when(When.is("H1")))
                 .create();
@@ -131,7 +131,7 @@ class AssignValueOfTest {
         final List<StringsAbc> results = Instancio.ofList(StringsAbc.class)
                 .size(size)
                 .generate(field(StringsGhi::getH), gen -> gen.oneOf("H1", "H2"))
-                .assign(valueOf(StringsGhi::getH)
+                .assign(Assign.valueOf(StringsGhi::getH)
                         .to(StringsDef::getE)
                         .as((String s) -> "E1-" + s)
                         .when(When.is("H1")))
@@ -149,7 +149,7 @@ class AssignValueOfTest {
     @Test
     void valueOfSetPojo() {
         final StringsAbc result = Instancio.of(StringsAbc.class)
-                .assign(valueOf(StringsDef.class).set(new StringsDef()))
+                .assign(Assign.valueOf(StringsDef.class).set(new StringsDef()))
                 .create();
 
         assertThatObject(result.def)
@@ -161,7 +161,7 @@ class AssignValueOfTest {
     @Test
     void valueOfSupplyCollectionElement() {
         final Address result = Instancio.of(Address.class)
-                .assign(valueOf(Phone.class).supply(() -> new Phone()))
+                .assign(Assign.valueOf(Phone.class).supply(() -> new Phone()))
                 .create();
 
         assertThat(result.getPhoneNumbers()).isNotEmpty().allSatisfy(phone ->
@@ -173,7 +173,7 @@ class AssignValueOfTest {
     @Test
     void valueOfGenerateCollectionElementField() {
         final Address result = Instancio.of(Address.class)
-                .assign(valueOf(Phone::getNumber).generate(gen -> gen.string().digits()))
+                .assign(Assign.valueOf(Phone::getNumber).generate(gen -> gen.string().digits()))
                 .create();
 
         assertThat(result.getPhoneNumbers()).isNotEmpty().allSatisfy(phone ->
@@ -183,7 +183,7 @@ class AssignValueOfTest {
     @Test
     void valueOfGenerateCollectionSubtype() {
         ListString result = Instancio.of(ListString.class)
-                .assign(valueOf(ListString::getList).generate(gen -> gen.collection().subtype(LinkedList.class)))
+                .assign(Assign.valueOf(ListString::getList).generate(gen -> gen.collection().subtype(LinkedList.class)))
                 .create();
 
         assertThat(result.getList())

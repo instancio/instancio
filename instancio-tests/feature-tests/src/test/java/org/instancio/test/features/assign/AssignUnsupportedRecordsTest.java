@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.exception.UnresolvedAssignmentException;
@@ -27,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.root;
 
 @FeatureTag(Feature.ASSIGN)
@@ -44,7 +44,7 @@ class AssignUnsupportedRecordsTest {
     @FeatureTag(Feature.UNSUPPORTED)
     void cyclicParentChildWithBackReference() {
         final InstancioApi<ParentRecord> api = Instancio.of(ParentRecord.class)
-                .assign(valueOf(root()).to(ChildRecord::parent));
+                .assign(Assign.valueOf(root()).to(ChildRecord::parent));
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(UnresolvedAssignmentException.class);

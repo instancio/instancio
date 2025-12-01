@@ -199,8 +199,9 @@ public class DefaultRandom implements Random {
         return new String(s);
     }
 
+    @SafeVarargs
     @Override
-    public <T> T oneOf(final T[] array) {
+    public final <T> T oneOf(final T... array) {
         Verify.notEmpty(array, "Array must have at least one element");
         return array[intRange(0, array.length - 1)];
     }

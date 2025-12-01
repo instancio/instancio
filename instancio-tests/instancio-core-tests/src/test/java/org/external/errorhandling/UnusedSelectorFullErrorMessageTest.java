@@ -214,6 +214,7 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                 """;
     }
 
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     private <V> V failIfCalled() {
         return fail("Should not be called");
     }

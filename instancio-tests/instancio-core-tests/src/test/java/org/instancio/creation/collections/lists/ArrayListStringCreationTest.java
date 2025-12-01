@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @GenericsTag
 public class ArrayListStringCreationTest extends CreationTestTemplate<ArrayList<String>> {
 
+    @SuppressWarnings("NonApiType")
     @Override
     protected void verify(ArrayList<String> result) {
         assertThat(result)

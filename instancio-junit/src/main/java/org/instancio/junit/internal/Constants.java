@@ -17,11 +17,9 @@ package org.instancio.junit.internal;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
-
 public final class Constants {
 
-    public static final ExtensionContext.Namespace INSTANCIO_NAMESPACE = create("org.instancio");
+    public static final ExtensionContext.Namespace INSTANCIO_NAMESPACE = ExtensionContext.Namespace.create("org.instancio");
     public static final String INSTANCIO_SOURCE_STATE = "instancio.source.state";
 
     private Constants() {

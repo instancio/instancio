@@ -47,7 +47,7 @@ import static org.instancio.Select.all;
 class MapGeneratorWithKeysTest {
     private static final int SAMPLE_SIZE = 1000;
     private static final String[] EXPECTED_KEYS = {"one", "two", "three"};
-    private static final TypeToken<Map<String, Integer>> MAP_TYPE_TOKEN = new TypeToken<Map<String, Integer>>() {};
+    private static final TypeToken<Map<String, Integer>> MAP_TYPE_TOKEN = new TypeToken<>() {};
 
     @Nested
     class WithKeysAndMapSizeTest {
@@ -57,7 +57,7 @@ class MapGeneratorWithKeysTest {
                     .generate(all(Map.class), gen -> gen.map().withKeys(EXPECTED_KEYS))
                     .stream()
                     .limit(SAMPLE_SIZE)
-                    .map(it -> it.keySet().size())
+                    .map(Map::size)
                     .collect(Collectors.toSet());
 
             final Set<Integer> expectedKeySetSizes = IntStream.rangeClosed(Constants.MIN_SIZE, Constants.MAX_SIZE)

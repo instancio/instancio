@@ -58,7 +58,7 @@ abstract class AssignAbcBaseTest {
     final void selfReferencing(final String fieldName) {
         final InstancioApi<StringsAbc> api = Instancio.of(StringsAbc.class)
                 .assign(Assign.given(field(StringsAbc.class, fieldName))
-                        .satisfies(a -> true)
+                        .satisfies(field -> true)
                         .set(field(StringsAbc.class, fieldName), "foo"));
 
         assertUnresolvedAssignmentException(api);

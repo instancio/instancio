@@ -93,7 +93,7 @@ class CustomGeneratorWithDataStructuresTest {
     }
 
     private static Generator<Container> generator(final AfterGenerate afterGenerate) {
-        return new Generator<Container>() {
+        return new Generator<>() {
             @Override
             public Container generate(final Random random) {
                 return new Container();

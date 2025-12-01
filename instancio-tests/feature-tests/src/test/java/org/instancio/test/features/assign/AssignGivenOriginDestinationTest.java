@@ -56,7 +56,7 @@ class AssignGivenOriginDestinationTest {
             assignGiven().elseGenerate(gen -> gen.text().pattern(ODD)));
 
     @FieldSource("args")
-    @ParameterizedTest()
+    @ParameterizedTest
     void verifyAssignment(final Assignment assignment) {
         final StringsGhi result = Instancio.of(StringsGhi.class)
                 .assign(assignment)

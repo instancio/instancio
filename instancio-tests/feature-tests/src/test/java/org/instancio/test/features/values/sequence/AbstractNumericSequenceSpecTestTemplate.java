@@ -29,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class AbstractNumericSequenceSpecTestTemplate<T extends Number & Comparable<T>>
         extends AbstractValueSpecTestTemplate<T> {
 
+    @Override
     protected abstract NumericSequenceSpec<T> spec();
 
     @Override

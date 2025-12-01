@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+@SuppressWarnings("DefaultPackage")
 class DefaultPackageClass {
 
     // used via reflection

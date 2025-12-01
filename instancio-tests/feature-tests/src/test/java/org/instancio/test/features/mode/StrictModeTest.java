@@ -156,6 +156,7 @@ class StrictModeTest {
         }
     }
 
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     private static <V> V failIfCalled() {
         return fail("Should not be called");
     }

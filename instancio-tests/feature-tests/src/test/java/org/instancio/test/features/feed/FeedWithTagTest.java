@@ -207,9 +207,10 @@ class FeedWithTagTest {
      */
     @Test
     void tagKeyMissingForSomeRecords() {
-        final String data = "a,b,c\n"
-                + "10,11,12\n"
-                + "20"; // missing c value
+        final String data = """
+                a,b,c
+                10,11,12
+                20"""; // missing c value
 
         final Feed result = Instancio.ofFeed(Feed.class)
                 .withDataSource(source -> source.ofString(data))

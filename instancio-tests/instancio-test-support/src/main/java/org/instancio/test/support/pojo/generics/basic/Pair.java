@@ -24,6 +24,7 @@ public class Pair<L, R> {
     private L left;
     private R right;
 
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

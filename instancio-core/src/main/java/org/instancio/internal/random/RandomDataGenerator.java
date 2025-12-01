@@ -60,7 +60,7 @@ public final class RandomDataGenerator {
                 random.nextBytes(byteArray);
                 bits = 0;
                 for (final byte b : byteArray) {
-                    bits = (bits << 8) | ((b) & 0xffL);
+                    bits = (bits << 8) | (b & 0xffL);
                 }
                 bits &= 0x7fffffffffffffffL;
                 val = bits % n;

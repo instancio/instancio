@@ -65,8 +65,8 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
 
     public SelectorAssert hasFieldName(String expected) {
         final Target target = getAs(SelectorImpl.class).getTarget();
-        if (target instanceof TargetField) {
-            assertThat(((TargetField) target).getField().getName()).isEqualTo(expected);
+        if (target instanceof TargetField targetField) {
+            assertThat(targetField.getField().getName()).isEqualTo(expected);
         } else {
             assertThat(((TargetFieldName) target).getFieldName()).isEqualTo(expected);
         }
@@ -75,8 +75,8 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
 
     public SelectorAssert hasMethodName(String expected) {
         final Target target = getAs(SelectorImpl.class).getTarget();
-        if (target instanceof TargetSetter) {
-            assertThat(((TargetSetter) target).getSetter().getName()).isEqualTo(expected);
+        if (target instanceof TargetSetter targetSetter) {
+            assertThat(targetSetter.getSetter().getName()).isEqualTo(expected);
         } else {
             assertThat(((TargetSetterName) target).getMethodName()).isEqualTo(expected);
         }

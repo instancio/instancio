@@ -101,7 +101,8 @@ public class CnpjGenerator extends AbstractGenerator<String> implements CnpjSpec
     private int generateDigit(String baseCnpj, int initialWeight) {
         int weight = initialWeight;
         int sum = 0;
-        for (char digit : baseCnpj.toCharArray()) {
+        for (int i = 0; i < baseCnpj.length(); i++) {
+            char digit = baseCnpj.charAt(i);
             sum += Character.getNumericValue(digit) * weight;
             weight--;
             if (weight == 1) {

@@ -29,13 +29,12 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 
 class CallbackHandler implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(CallbackHandler.class);
 
     private final ModelContext context;
-    private final Map<InternalNode, List<Object>> resultsForCallbacks = new IdentityHashMap<>();
+    private final IdentityHashMap<InternalNode, List<Object>> resultsForCallbacks = new IdentityHashMap<>();
 
     private CallbackHandler(final ModelContext context) {
         this.context = context;

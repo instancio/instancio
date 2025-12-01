@@ -34,7 +34,7 @@ public class OuterClass {
     }
 
     @Data
-    @SuppressWarnings("InnerClassMayBeStatic")
+    @SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
     public class InnerClass { // intentionally not static
         private String value;
     }

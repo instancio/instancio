@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.junit.InstancioExtension;
@@ -28,7 +29,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 @FeatureTag({Feature.ASSIGN, Feature.MODEL})
@@ -38,7 +38,7 @@ class AssignWithModelTest {
     @Test
     void createFromModel() {
         final Model<StringsAbc> model = Instancio.of(StringsAbc.class)
-                .assign(valueOf(StringsAbc::getA).to(StringsAbc::getB))
+                .assign(Assign.valueOf(StringsAbc::getA).to(StringsAbc::getB))
                 .toModel();
 
         final StringsAbc result = Instancio.create(model);

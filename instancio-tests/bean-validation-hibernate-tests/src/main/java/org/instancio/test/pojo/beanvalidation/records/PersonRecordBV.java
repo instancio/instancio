@@ -28,12 +28,13 @@ import org.instancio.test.support.pojo.person.PersonName;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+@SuppressWarnings("ArrayRecordComponent")
 public record PersonRecordBV(
         @NotNull
         @UUID
         String uuid,
 
-        @PersonName // this his not a validation annotation and should be ignored
+        @PersonName // this is not a validation annotation and should be ignored
         @NotNull
         @Length(min = 2)
         String name,

@@ -69,7 +69,7 @@ class CustomPredicateNodeSelectorTest {
                     PRIORITY,
                     nodePredicate,
                     Collections.emptyList(),
-                    /* depth = */ null,
+                    /* selectorDepth = */ null,
                     /* isLenient = */ false,
                     /* isHiddenFromVerboseOutput = */ false,
                     apiInvocationDescription,

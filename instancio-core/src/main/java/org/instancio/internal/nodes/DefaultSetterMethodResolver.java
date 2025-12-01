@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.nodes;
 
-import org.instancio.internal.util.Fail;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.Settings;
@@ -49,17 +48,11 @@ final class DefaultSetterMethodResolver {
         return null;
     }
 
-    @SuppressWarnings("PMD.ExhaustiveSwitchHasDefault")
     private static MethodNameResolver getMethodNameResolver(final SetterStyle style) {
-        switch (style) {
-            case SET:
-                return new SetterMethodNameWithPrefixResolver("set");
-            case WITH:
-                return new SetterMethodNameWithPrefixResolver("with");
-            case PROPERTY:
-                return new SetterMethodNameNoPrefixResolver();
-            default:
-                throw Fail.withFataInternalError("Unhandled setter style: %s", style);
-        }
+        return switch (style) {
+            case SET -> new SetterMethodNameWithPrefixResolver("set");
+            case WITH -> new SetterMethodNameWithPrefixResolver("with");
+            case PROPERTY -> new SetterMethodNameNoPrefixResolver();
+        };
     }
 }

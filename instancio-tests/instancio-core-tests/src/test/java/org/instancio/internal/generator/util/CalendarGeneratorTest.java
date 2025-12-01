@@ -20,7 +20,7 @@ import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -30,9 +30,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CalendarGeneratorTest extends AbstractGeneratorTestTemplate<Calendar, CalendarGenerator> {
 
-    private static final ZonedDateTime START = ZonedDateTime.of(
-            LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999),
-            OffsetDateTime.now().getOffset());
+    private static final ZonedDateTime START = LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999)
+            .atZone(ZoneId.systemDefault());
 
     private final CalendarGenerator generator = new CalendarGenerator(getGeneratorContext());
 

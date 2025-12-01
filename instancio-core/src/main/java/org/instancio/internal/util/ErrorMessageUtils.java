@@ -52,7 +52,8 @@ import static org.instancio.internal.util.Format.withoutPackage;
         Sonar.STRING_LITERALS_DUPLICATED,
         "PMD.AvoidDuplicateLiterals",
         "PMD.ExcessiveImports",
-        "StringBufferReplaceableByString"
+        "StringBufferReplaceableByString",
+        "UnnecessaryStringBuilder"
 })
 public final class ErrorMessageUtils {
     private static final int INITIAL_SB_SIZE = 1024;
@@ -509,13 +510,14 @@ public final class ErrorMessageUtils {
 
     public static String selectorNotNullErrorMessage(
             final String message, final String methodName, final String invokedMethods, final Throwable t) {
-        final String template = "%n" +
-                "  %s%n" +
-                "  method invocation: %s%n" +
-                "  at %s";
-        final String invocation = String.format("%s.%s( -> null <- )", invokedMethods, methodName);
+        final String invocation = "%s.%s( -> null <- )".formatted(invokedMethods, methodName);
         final String at = Format.firstNonInstancioStackTraceLine(t);
-        return String.format(template, message, invocation, at);
+        return """
+                
+                  %s
+                  method invocation: %s
+                  at %s\
+                """.formatted(message, invocation, at);
     }
 
     public static String invalidAnnotationHandlerMethod(
@@ -870,7 +872,7 @@ public final class ErrorMessageUtils {
     }
 
     private static String enumValueDesc(final Enum<?> e) {
-        return String.format("%s.%s", e.getClass().getSimpleName(), e.name());
+        return String.format("%s.%s", e.getDeclaringClass().getSimpleName(), e.name());
     }
 
     private static Throwable getRootCause(final Throwable t) {

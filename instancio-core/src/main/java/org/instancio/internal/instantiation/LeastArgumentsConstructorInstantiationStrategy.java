@@ -29,6 +29,7 @@ import java.util.function.Predicate;
  * Attempts instantiating a class using a non-default constructor with
  * the least number of arguments.
  */
+@SuppressWarnings("UnnecessaryLambda")
 class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStrategy {
 
     private static final Predicate<Constructor<?>> NON_ZERO_ARG = c -> c.getParameterCount() > 0;

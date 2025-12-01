@@ -32,7 +32,7 @@ public final class FeedSelectors {
                     Constants.FEED_SELECTOR_PRIORITY,
                     predicate,
                     Collections.emptyList(),
-                    /* depth = */ null,
+                    /* selectorDepth = */ null,
                     /* isLenient = */ true,
                     /* isHiddenFromVerboseOutput = */ true,
                     description,

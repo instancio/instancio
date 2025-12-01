@@ -70,6 +70,7 @@ class CustomCollectionGeneratorAfterGenerateAndSelectorsTest {
             .intOne(EXISTING_INT_ONE)
             .build();
 
+    @SuppressWarnings("ReferenceEquality")
     private final Predicate<StringAndPrimitiveFields> ELEMENT_CREATED_BY_USER = e -> e == existingElement;
     private final Predicate<StringAndPrimitiveFields> ELEMENT_GENERATED_BY_ENGINE = ELEMENT_CREATED_BY_USER.negate();
 

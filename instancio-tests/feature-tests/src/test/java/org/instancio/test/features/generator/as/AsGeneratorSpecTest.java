@@ -89,6 +89,7 @@ class AsGeneratorSpecTest {
         assertThat(result).isBetween(0, 9);
     }
 
+    @SuppressWarnings("EnumOrdinal")
     @Test
     void enumWithToStringFunction() {
         final Integer result = Instancio.of(Integer.class)

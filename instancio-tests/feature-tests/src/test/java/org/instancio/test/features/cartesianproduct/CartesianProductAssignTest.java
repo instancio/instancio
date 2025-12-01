@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.cartesianproduct;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
@@ -27,7 +28,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 @FeatureTag({Feature.CARTESIAN_PRODUCT, Feature.ASSIGN})
@@ -42,8 +42,8 @@ class CartesianProductAssignTest {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(field(IntegerHolder::getPrimitive), 1, 2)
                 .with(field(IntegerHolder::getWrapper), 3, 4)
-                .assign(valueOf(IntegerHolder::getPrimitive).set(8))
-                .assign(valueOf(IntegerHolder::getWrapper).set(9))
+                .assign(Assign.valueOf(IntegerHolder::getPrimitive).set(8))
+                .assign(Assign.valueOf(IntegerHolder::getWrapper).set(9))
                 .create();
 
         assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(8, 8, 8, 8);

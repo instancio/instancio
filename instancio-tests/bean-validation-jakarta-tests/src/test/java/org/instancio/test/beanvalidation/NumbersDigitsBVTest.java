@@ -89,7 +89,7 @@ class NumbersDigitsBVTest {
                 .matches("^-?\\d+\\.\\d{1,2}$");
 
         assertThat(result.getFloatWrapper())
-                .isBetween(-99999.999f, 99999.999f)
+                .isStrictlyBetween(-100000.0f, 100000.0f)
                 .asString()
                 .matches("^-?\\d+\\.\\d{1,3}$");
 

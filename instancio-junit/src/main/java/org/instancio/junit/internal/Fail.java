@@ -23,6 +23,7 @@ import java.util.List;
 
 import static org.instancio.internal.util.Constants.NL;
 
+@SuppressWarnings({"StringBufferReplaceableByString", "UnnecessaryStringBuilder"})
 final class Fail {
 
     private static final int SB_SIZE = 512;
@@ -32,7 +33,6 @@ final class Fail {
     }
 
     static InstancioApiException withSettingsOnNullField() {
-        //noinspection StringBufferReplaceableByString
         final String msg = new StringBuilder(SB_SIZE)
                 .append("Cause:").append(NL)
                 .append(" -> @WithSettings must be annotated on a non-null field.").append(NL)
@@ -42,7 +42,6 @@ final class Fail {
     }
 
     static InstancioApiException withSettingsOnNullOrNonStaticField() {
-        //noinspection StringBufferReplaceableByString
         final String msg = new StringBuilder(SB_SIZE)
                 .append("Possible causes:").append(NL)
                 .append(" -> @WithSettings must be annotated on a non-null field.").append(NL)
@@ -54,7 +53,6 @@ final class Fail {
     }
 
     static InstancioApiException withSettingsOnWrongFieldType(final Field field) {
-        //noinspection StringBufferReplaceableByString
         final String msg = new StringBuilder(SB_SIZE)
                 .append("Cause:").append(NL)
                 .append(" -> @WithSettings must be annotated on a Settings field.").append(NL)

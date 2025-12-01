@@ -16,6 +16,7 @@
 package org.instancio.test.features.setmodel;
 
 import lombok.Data;
+import org.instancio.Assign;
 import org.instancio.Assignment;
 import org.instancio.Instancio;
 import org.instancio.Model;
@@ -36,7 +37,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
@@ -60,15 +60,15 @@ class SetModelAssignTest {
         final Model<Inner> innerModel = Instancio.of(Inner.class)
                 .set(field(Inner::getA).within(inner1Scope), expectedValue)
                 // assignment within inner1
-                .assign(valueOf(field(Inner::getA).within(inner1Scope)).to(field(Inner::getB).within(inner1Scope)))
+                .assign(Assign.valueOf(field(Inner::getA).within(inner1Scope)).to(field(Inner::getB).within(inner1Scope)))
                 .toModel();
 
 
         final Outer result = Instancio.of(Outer.class)
                 .setModel(field(Outer::getInner1), innerModel)
                 // assign inner1 field values to inner2
-                .assign(valueOf(field(Inner::getA).within(inner1Scope)).to(field(Inner::getA).within(inner2Scope)))
-                .assign(valueOf(field(Inner::getB).within(inner1Scope)).to(field(Inner::getB).within(inner2Scope)))
+                .assign(Assign.valueOf(field(Inner::getA).within(inner1Scope)).to(field(Inner::getA).within(inner2Scope)))
+                .assign(Assign.valueOf(field(Inner::getB).within(inner1Scope)).to(field(Inner::getB).within(inner2Scope)))
                 .create();
 
         assertThat(result.inner1.a).isEqualTo(result.inner1.b)
@@ -83,7 +83,7 @@ class SetModelAssignTest {
             final String expectedValue = "-value-";
             final Model<Inner> innerModel = Instancio.of(Inner.class)
                     .set(field(Inner::getA), expectedValue)
-                    .assign(valueOf(Inner::getA).to(Inner::getB))
+                    .assign(Assign.valueOf(Inner::getA).to(Inner::getB))
                     .toModel();
 
             final Outer result = Instancio.of(Outer.class)
@@ -149,8 +149,8 @@ class SetModelAssignTest {
 
             // assign inner1 field values to inner2
             final Assignment[] assignments = {
-                    valueOf(field(Inner::getA).within(inner1Scope)).to(field(Inner::getA).within(inner2Scope)),
-                    valueOf(field(Inner::getB).within(inner1Scope)).to(field(Inner::getB).within(inner2Scope))
+                    Assign.valueOf(field(Inner::getA).within(inner1Scope)).to(field(Inner::getA).within(inner2Scope)),
+                    Assign.valueOf(field(Inner::getB).within(inner1Scope)).to(field(Inner::getB).within(inner2Scope))
             };
 
             final Outer result = Instancio.of(Outer.class)
@@ -175,8 +175,8 @@ class SetModelAssignTest {
             // assignment targets are within the inner1 model
             final Outer result = Instancio.of(Outer.class)
                     .setModel(field(Outer::getInner1), innerModel)
-                    .assign(valueOf(field(Inner::getA).within(inner2Scope)).to(field(Inner::getA).within(inner1Scope)))
-                    .assign(valueOf(field(Inner::getB).within(inner2Scope)).to(field(Inner::getB).within(inner1Scope)))
+                    .assign(Assign.valueOf(field(Inner::getA).within(inner2Scope)).to(field(Inner::getA).within(inner1Scope)))
+                    .assign(Assign.valueOf(field(Inner::getB).within(inner2Scope)).to(field(Inner::getB).within(inner1Scope)))
                     .create();
 
             assertThat(result.inner1.a).isEqualTo(result.inner2.a);

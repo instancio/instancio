@@ -95,9 +95,9 @@ class SetBackReferenceWithSelectorTest {
     @Nested
     class WithAssignTest {
         //@formatter:off
-        @Data class B { A d; Integer id; }
-        @Data class A { B b; Integer id; }
-        @Data class Root { A a; }
+        @Data static class B { A d; Integer id; }
+        @Data static class A { B b; Integer id; }
+        @Data static class Root { A a; }
         //@formatter:on
 
         @Test

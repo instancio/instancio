@@ -26,6 +26,7 @@ public final class Throwables {
         // non-instantiable
     }
 
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     public static <T extends Throwable> T mockThrowable(String... stackElementClassNames) {
         final StackTraceElement[] stackTraceElements = Arrays.stream(stackElementClassNames)
                 .map(Throwables::mockStackTraceElement)

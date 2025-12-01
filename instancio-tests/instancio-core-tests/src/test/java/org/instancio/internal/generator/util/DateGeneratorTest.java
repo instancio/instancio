@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class DateGeneratorTest extends AbstractGeneratorTestTemplate<Date, DateGenerator> {
 
     private static final Instant START = LocalDateTime.of(1970, 1, 1, 0, 0, 1, 999999999)
-            .toInstant(OffsetDateTime.now().getOffset());
+            .atZone(ZoneOffset.systemDefault()).toInstant();
 
     private final DateGenerator generator = new DateGenerator(getGeneratorContext());
 

@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
  * A supplier that provides {@link Type} information. It can be used
  * with generic classes in order to avoid "unchecked assignment" warnings.
  * <p>
- * The following examples both create an instance of @{code Pair} class.
+ * The following examples both create an instance of {@code Pair} class.
  *
  * <pre>{@code
  *      // Generates an "unchecked assignment" warning

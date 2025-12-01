@@ -34,6 +34,7 @@ class OptionalDoubleGeneratorTest extends AbstractGeneratorTestTemplate<Optional
         return new OptionalDoubleGenerator(getGeneratorContext());
     }
 
+    @Override
     @Test
     protected void tryGenerateNonNull() {
         assertThat(generator().tryGenerateNonNull(random))

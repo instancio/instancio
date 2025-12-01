@@ -108,7 +108,7 @@ class InstancioEngine {
                 SetModelValidatingListener.create(context)};
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     <T> T createRootObject() {
         return (T) errorHandler
                 .conditionalFailOnError(this::createRootObjectInternal)

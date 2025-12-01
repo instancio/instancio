@@ -51,7 +51,7 @@ public class AnnotationMap {
         this.map = CollectionUtils.asLinkedHashMap(Annotation::annotationType, annotations);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     <A extends Annotation> A get(final Class<?> key) {
         return (A) map.get(key);
     }

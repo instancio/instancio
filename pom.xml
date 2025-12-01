@@ -64,6 +64,7 @@
         <version.jetbrains.annotations>26.0.2-1</version.jetbrains.annotations>
         <version.junit>6.0.1</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
+        <version.error_prone_core>2.45.0</version.error_prone_core>
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.9.0</version.central-publishing-maven-plugin>
         <version.jacoco-maven-plugin>0.8.14</version.jacoco-maven-plugin>
@@ -126,6 +127,53 @@
                         <artifactId>maven-gpg-plugin</artifactId>
                     </plugin>
                 </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>error-prone</id>
+            <activation>
+                <jdk>[21,)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <configuration>
+                                <compilerArgs>
+                                    <arg>-XDcompilePolicy=simple</arg>
+                                    <arg>--should-stop=ifError=FLOW</arg>
+                                    <arg>
+                                        -Xplugin:ErrorProne
+                                        -Xep:AnnotateFormatMethod:OFF
+                                        -Xep:BooleanLiteral:OFF
+                                        -Xep:CharacterGetNumericValue:OFF
+                                        -Xep:DefaultCharset:OFF
+                                        -Xep:DoNotCallSuggester:OFF
+                                        -Xep:EffectivelyPrivate:OFF
+                                        -Xep:ImmutableEnumChecker:OFF
+                                        -Xep:JavaInstantGetSecondsGetNano:OFF
+                                        -Xep:JavaTimeDefaultTimeZone:OFF
+                                        -Xep:MissingSummary:OFF
+                                        -Xep:MixedMutabilityReturnType:OFF
+                                        -Xep:StaticAssignmentOfThrowable:OFF
+                                        -Xep:StringSplitter:OFF
+                                        -Xep:UnusedMethod:OFF
+                                        -Xep:UnusedVariable:OFF
+                                    </arg>
+                                </compilerArgs>
+                                <annotationProcessorPaths>
+                                    <path>
+                                        <groupId>com.google.errorprone</groupId>
+                                        <artifactId>error_prone_core</artifactId>
+                                        <version>${version.error_prone_core}</version>
+                                    </path>
+                                </annotationProcessorPaths>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
             </build>
         </profile>
     </profiles>
