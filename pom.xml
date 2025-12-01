@@ -65,6 +65,7 @@
         <version.junit>6.0.1</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
         <version.error_prone_core>2.45.0</version.error_prone_core>
+        <version.nullaway>0.12.12</version.nullaway>
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.9.0</version.central-publishing-maven-plugin>
         <version.jacoco-maven-plugin>0.8.14</version.jacoco-maven-plugin>
@@ -144,13 +145,24 @@
                                 <compilerArgs>
                                     <arg>-XDcompilePolicy=simple</arg>
                                     <arg>--should-stop=ifError=FLOW</arg>
-                                    <arg>-Xplugin:ErrorProne</arg>
+                                    <arg>
+                                        -Xplugin:ErrorProne
+                                        -Xep:NullAway:ERROR
+                                        -XepOpt:NullAway:OnlyNullMarked
+                                        -XepOpt:NullAway:JSpecifyMode
+                                        -XepOpt:NullAway:HandleTestAssertionLibraries
+                                    </arg>
                                 </compilerArgs>
                                 <annotationProcessorPaths>
                                     <path>
                                         <groupId>com.google.errorprone</groupId>
                                         <artifactId>error_prone_core</artifactId>
                                         <version>${version.error_prone_core}</version>
+                                    </path>
+                                    <path>
+                                        <groupId>com.uber.nullaway</groupId>
+                                        <artifactId>nullaway</artifactId>
+                                        <version>${version.nullaway}</version>
                                     </path>
                                 </annotationProcessorPaths>
                             </configuration>
