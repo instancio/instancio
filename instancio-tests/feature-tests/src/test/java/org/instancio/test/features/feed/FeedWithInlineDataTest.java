@@ -42,10 +42,12 @@ class FeedWithInlineDataTest {
     private final Settings settings = Settings.create()
             .set(Keys.FEED_DATA_ACCESS, FeedDataAccess.RANDOM);
 
-    @Feed.Source(string = "id, number\n"
-            + "1, 100\n"
-            + "2, 200\n"
-            + "3, 300\n")
+    @Feed.Source(string = """
+            id, number
+            1, 100
+            2, 200
+            3, 300
+            """)
     private interface SampleFeed extends Feed {
 
         FeedSpec<Integer> id();

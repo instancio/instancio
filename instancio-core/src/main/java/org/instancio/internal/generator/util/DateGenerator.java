@@ -75,6 +75,6 @@ public class DateGenerator extends AbstractGenerator<Date> implements TemporalSp
 
     @Override
     protected Date tryGenerateNonNull(final Random random) {
-        return Date.from((delegate).tryGenerateNonNull(random));
+        return Date.from(delegate.tryGenerateNonNull(random));
     }
 }

@@ -15,12 +15,10 @@
  */
 package org.instancio.internal;
 
-import org.instancio.Model;
 import org.instancio.Node;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
@@ -44,7 +42,7 @@ import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParameter
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
 import static org.instancio.internal.util.ErrorMessageUtils.createSetterSelectorWithFieldAssignmentErrorMessage;
 
-@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.GodClass"})
+@SuppressWarnings("PMD.GodClass")
 public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
@@ -197,10 +195,6 @@ public final class ApiValidator {
                         + "%n\tPerson person = Instancio.of(Person.class)"
                         + "%n\t\t.set(field(\"firstName\"), null)"
                         + "%n\t\t.create();", supplierOrGenerator));
-    }
-
-    public static <E> Model<E> valueSpecDoesNotSupportToModel(final String specMethodName) {
-        throw new InstancioApiException(specMethodName + " spec does not support toModel()");
     }
 
     public static int validateSize(final int size) {

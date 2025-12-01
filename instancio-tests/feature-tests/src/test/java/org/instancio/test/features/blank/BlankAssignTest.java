@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.blank;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.generators.Generators;
 import org.instancio.junit.InstancioExtension;
@@ -28,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 @FeatureTag({Feature.BLANK, Feature.ASSIGN})
@@ -42,7 +42,7 @@ class BlankAssignTest {
     @Test
     void copyValueOfNullField() {
         final StringsGhi result = Instancio.ofBlank(StringsGhi.class)
-                .assign(valueOf(StringsGhi::getG).to(StringsGhi::getH))
+                .assign(Assign.valueOf(StringsGhi::getG).to(StringsGhi::getH))
                 .create();
 
         assertThat(result.g).isEqualTo(result.h).isNull();
@@ -52,7 +52,7 @@ class BlankAssignTest {
     void copyValueOfNonNullField() {
         final StringsGhi result = Instancio.ofBlank(StringsGhi.class)
                 .generate(field(StringsGhi::getG), Generators::string)
-                .assign(valueOf(StringsGhi::getG).to(StringsGhi::getH))
+                .assign(Assign.valueOf(StringsGhi::getG).to(StringsGhi::getH))
                 .create();
 
         assertThat(result.g).isEqualTo(result.h).isNotBlank();

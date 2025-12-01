@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.generator.oneof;
 
+import org.instancio.Assign;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
@@ -32,7 +33,6 @@ import java.util.Collections;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 @FeatureTag({Feature.GENERATE, Feature.ONE_OF_ARRAY_GENERATOR, Feature.ONE_OF_COLLECTION_GENERATOR})
@@ -59,7 +59,7 @@ class OneOfTypeMismatchTest {
     @ParameterizedTest
     void viaAssign(final GeneratorSpecProvider<String> specProvider) {
         final InstancioApi<Person> api = Instancio.of(Person.class)
-                .assign(valueOf(Person::getAddress).generate(specProvider));
+                .assign(Assign.valueOf(Person::getAddress).generate(specProvider));
 
         assertIncompatibleTypeError(api);
     }

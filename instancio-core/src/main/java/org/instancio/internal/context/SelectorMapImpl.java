@@ -68,7 +68,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
      * and insertion order (last added wins).
      */
     private final Set<PredicateSelectorEntry<V>> predicateSelectors = new SortedSetWithReverseInsertionOrder<>(
-            Comparator.comparingInt((o -> o.predicateSelector.getPriority())));
+            Comparator.comparingInt(o -> o.predicateSelector.getPriority()));
 
     @Override
     public void forEach(final BiConsumer<TargetSelector, ? super V> action) {
@@ -206,7 +206,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
                 // Predicate selector depth is captured as a Predicate<Integer>
                 // and it is checked by getNodePredicate() above.
                 // Therefore, passing null below
-                && selectorScopesMatchNodeHierarchy(/*depth = */ null, entry.predicateSelector.getScopes(), targetNode);
+                && selectorScopesMatchNodeHierarchy(/*candidateDepth = */ null, entry.predicateSelector.getScopes(), targetNode);
 
         if (isMatch) {
             unusedSelectors.remove(entry.predicateSelector);

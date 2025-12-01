@@ -24,7 +24,6 @@ import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 
 import java.util.IdentityHashMap;
-import java.util.Map;
 
 /**
  * Store for POJOs that is used to resolve back-references when
@@ -32,7 +31,7 @@ import java.util.Map;
  */
 class GeneratedPojoStore {
 
-    private final Map<InternalNode, Object> generatedPojos = new IdentityHashMap<>();
+    private final IdentityHashMap<InternalNode, Object> generatedPojos = new IdentityHashMap<>();
 
     private GeneratedPojoStore() {
         // created via static factory method

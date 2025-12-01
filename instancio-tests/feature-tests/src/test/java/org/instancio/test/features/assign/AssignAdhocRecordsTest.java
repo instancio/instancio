@@ -100,6 +100,7 @@ class AssignAdhocRecordsTest {
     @Test
     void withRecordAsArrayElementAndRecordGenerator() {
         record B(int val) {}
+        @SuppressWarnings("ArrayRecordComponent")
         record A(B[] array, int val) {}
 
         final List<A> results = Instancio.ofList(A.class)

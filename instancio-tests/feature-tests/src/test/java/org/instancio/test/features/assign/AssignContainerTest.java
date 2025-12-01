@@ -16,6 +16,7 @@
 package org.instancio.test.features.assign;
 
 import lombok.Data;
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
@@ -26,7 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
@@ -45,7 +45,7 @@ class AssignContainerTest {
     @Test
     void optional() {
         final OptionalHolder result = Instancio.of(OptionalHolder.class)
-                .assign(valueOf(field("string")).to(allStrings().within(scope(Optional.class))))
+                .assign(Assign.valueOf(field("string")).to(allStrings().within(scope(Optional.class))))
                 .create();
 
         assertThat(result.optional).isPresent().get()

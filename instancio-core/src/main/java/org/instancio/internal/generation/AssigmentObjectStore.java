@@ -39,7 +39,7 @@ public class AssigmentObjectStore implements GenerationListener {
 
     // A map containing "scope" objects as keys, and a Map of destination
     // selectors to generated objects as values.
-    private final Map<Object, Map<TargetSelector, GeneratorResult>> objectStore = new IdentityHashMap<>();
+    private final IdentityHashMap<Object, Map<TargetSelector, GeneratorResult>> objectStore = new IdentityHashMap<>();
     private final Deque<Object> scopes = new ArrayDeque<>();
     private final ModelContext context;
 

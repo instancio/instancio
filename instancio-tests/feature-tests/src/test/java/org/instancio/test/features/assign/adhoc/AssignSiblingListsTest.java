@@ -31,7 +31,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
@@ -106,7 +105,7 @@ class AssignSiblingListsTest {
         final TargetSelector list1Elements = all(Integer.class).within(field(TwoListsOfInteger::getList1).toScope());
 
         final TwoListsOfInteger result = Instancio.of(TwoListsOfInteger.class)
-                .assign(valueOf(list1Elements).generate(gen -> gen.ints().range(1, 10)))
+                .assign(Assign.valueOf(list1Elements).generate(gen -> gen.ints().range(1, 10)))
                 .assign(given(TwoListsOfInteger::getList1)
                         .satisfies((List<Integer> l) -> l.stream().allMatch(i -> i >= 1 && i <= 10))
                         .generate(field(TwoListsOfInteger::getList2), gen -> gen.collection().size(2)))

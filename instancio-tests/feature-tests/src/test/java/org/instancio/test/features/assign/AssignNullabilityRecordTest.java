@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.When;
@@ -35,7 +36,6 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.root;
@@ -54,10 +54,10 @@ class AssignNullabilityRecordTest {
         final StringsAbcRecord result = Instancio.of(StringsAbcRecord.class)
                 .set(root(), null)
                 .assign(// should all be ignored and not raise an error
-                        valueOf(StringsAbcRecord::a).to(StringsAbcRecord::b),
-                        valueOf(StringsAbcRecord::b).to(StringsAbcRecord::a),
-                        valueOf(StringsGhiRecord::g).to(StringsGhiRecord::i),
-                        valueOf(StringsGhiRecord::i).to(StringsGhiRecord::g))
+                        Assign.valueOf(StringsAbcRecord::a).to(StringsAbcRecord::b),
+                        Assign.valueOf(StringsAbcRecord::b).to(StringsAbcRecord::a),
+                        Assign.valueOf(StringsGhiRecord::g).to(StringsGhiRecord::i),
+                        Assign.valueOf(StringsGhiRecord::i).to(StringsGhiRecord::g))
                 .create();
 
         assertThat(result).isNull();
@@ -96,7 +96,7 @@ class AssignNullabilityRecordTest {
         void setNullRecordViaSet() {
             final StringsAbcRecord result = Instancio.of(StringsAbcRecord.class)
                     .set(all(StringsDefRecord.class), null)
-                    .assign(valueOf(StringsAbcRecord::a).to(StringsDefRecord::d)) // ignored
+                    .assign(Assign.valueOf(StringsAbcRecord::a).to(StringsDefRecord::d)) // ignored
                     .create();
 
             assertThat(result.def()).isNull();
@@ -106,7 +106,7 @@ class AssignNullabilityRecordTest {
         void setNullRecordViaAssignment() {
             final StringsAbcRecord result = Instancio.of(StringsAbcRecord.class)
                     .assign(given(StringsAbcRecord::a).satisfies(o -> true).set(all(StringsDefRecord.class), null))
-                    .assign(valueOf(StringsAbcRecord::a).to(StringsDefRecord::d)) // ignored
+                    .assign(Assign.valueOf(StringsAbcRecord::a).to(StringsDefRecord::d)) // ignored
                     .create();
 
             assertThat(result.def()).isNull();
@@ -125,7 +125,7 @@ class AssignNullabilityRecordTest {
         void setNullRecordViaSet() {
             final StringsAbcRecord result = Instancio.of(StringsAbcRecord.class)
                     .set(all(StringsDefRecord.class), null)
-                    .assign(valueOf(StringsDefRecord::d).to(StringsGhiRecord::g))
+                    .assign(Assign.valueOf(StringsDefRecord::d).to(StringsGhiRecord::g))
                     .create();
 
             assertThat(result.def()).isNull();
@@ -135,7 +135,7 @@ class AssignNullabilityRecordTest {
         void setNullRecordViaAssignment() {
             final StringsAbcRecord result = Instancio.of(StringsAbcRecord.class)
                     .assign(given(StringsAbcRecord::a).satisfies(o -> true).set(all(StringsDefRecord.class), null))
-                    .assign(valueOf(StringsDefRecord::d).to(StringsGhiRecord::g))
+                    .assign(Assign.valueOf(StringsDefRecord::d).to(StringsGhiRecord::g))
                     .create();
 
             assertThat(result.def()).isNull();

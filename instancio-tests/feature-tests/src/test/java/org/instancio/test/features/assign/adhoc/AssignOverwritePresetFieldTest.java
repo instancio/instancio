@@ -16,6 +16,7 @@
 package org.instancio.test.features.assign.adhoc;
 
 import lombok.Data;
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
@@ -27,7 +28,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 
 @FeatureTag({Feature.ASSIGN, Feature.OVERWRITE_EXISTING_VALUES})
 @ExtendWith(InstancioExtension.class)
@@ -46,7 +46,7 @@ class AssignOverwritePresetFieldTest {
     void overwriteInitializedFieldUsingAssignment(final boolean overwriteExistingValues) {
         final Pojo result = Instancio.of(Pojo.class)
                 .withSetting(Keys.OVERWRITE_EXISTING_VALUES, overwriteExistingValues)
-                .assign(valueOf(Pojo::getB).to(Pojo::getA))
+                .assign(Assign.valueOf(Pojo::getB).to(Pojo::getA))
                 .create();
 
         assertThat(result.getA())

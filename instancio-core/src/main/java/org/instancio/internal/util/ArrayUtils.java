@@ -20,8 +20,8 @@ import org.instancio.Random;
 public final class ArrayUtils {
 
     public static void shuffle(final Object arr, final Random random) {
-        if (arr instanceof Object[]) {
-            shuffleArray((Object[]) arr, random);
+        if (arr instanceof Object[] array) {
+            shuffleArray(array, random);
         } else if (arr instanceof byte[] array) {
             shuffleArray(array, random);
         } else if (arr instanceof short[] array) {

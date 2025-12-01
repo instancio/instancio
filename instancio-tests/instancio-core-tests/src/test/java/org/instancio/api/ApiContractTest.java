@@ -15,6 +15,7 @@
  */
 package org.instancio.api;
 
+import org.instancio.Assign;
 import org.instancio.Assignment;
 import org.instancio.DepthPredicateSelector;
 import org.instancio.FieldSelectorBuilder;
@@ -52,7 +53,6 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Function;
 
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ClassAssert.assertThatClass;
@@ -419,14 +419,14 @@ class ApiContractTest {
 
             @Test
             void valueOfTo() {
-                final ValueOf valueOf = valueOf(origin);
+                final ValueOf valueOf = Assign.valueOf(origin);
                 final ValueOfOriginDestination valueOfOriginDestination = valueOf.to(destination1);
                 final Assignment assignment = valueOfOriginDestination.as(Function.identity());
             }
 
             @Test
             void valueOfSet() {
-                final ValueOf valueOf = valueOf(origin);
+                final ValueOf valueOf = Assign.valueOf(origin);
                 final Assignment assignment = valueOf.set("foo");
             }
         }

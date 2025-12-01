@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign.adhoc;
 
+import org.instancio.Assign;
 import org.instancio.Assignment;
 import org.instancio.Instancio;
 import org.instancio.When;
@@ -45,7 +46,6 @@ import java.util.function.Function;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.When.is;
@@ -60,7 +60,7 @@ class AssignAdhocPersonTest {
                     .satisfies("Canada"::equals)
                     .set(field(Phone::getCountryCode), "+1"),
 
-            valueOf(Address::getCountry)
+            Assign.valueOf(Address::getCountry)
                     .to(Phone::getCountryCode)
                     .as((Function<String, String>) s -> s.equals("Canada") ? "+1" : s));
 
@@ -94,7 +94,7 @@ class AssignAdhocPersonTest {
         };
 
         final Person result = Instancio.of(Person.class)
-                .assign(valueOf(Person::getGender).to(Person::getName).as(fn))
+                .assign(Assign.valueOf(Person::getGender).to(Person::getName).as(fn))
                 .assign(given(field(Person::getName), field(Pet::getName))
                         .set(When.is("Cathy"), "Cat")
                         .set(When.is("Doug"), "Dog")
@@ -249,7 +249,7 @@ class AssignAdhocPersonTest {
                     String.format("%s %s %s", o.getTwo(), o.getThree(), o.getFour());
 
             final StringFields result = Instancio.of(StringFields.class)
-                    .assign(valueOf(StringFields.class).to(StringFields::getOne).as(valueFn))
+                    .assign(Assign.valueOf(StringFields.class).to(StringFields::getOne).as(valueFn))
                     .create();
 
             assertThat(result.getOne()).isEqualTo(valueFn.apply(result));
@@ -261,7 +261,7 @@ class AssignAdhocPersonTest {
                     String.format("%s %s %s", o.getA(), o.getDef().getD(), o.getDef().getGhi().getI());
 
             final StringsAbc result = Instancio.of(StringsAbc.class)
-                    .assign(valueOf(StringsAbc.class).to(StringsAbc::getC).as(valueFn))
+                    .assign(Assign.valueOf(StringsAbc.class).to(StringsAbc::getC).as(valueFn))
                     .create();
 
             assertThat(result.getC()).isEqualTo(valueFn.apply(result));
@@ -273,7 +273,7 @@ class AssignAdhocPersonTest {
                     String.format("%s %s %s", o.getC(), o.getDef().getF(), o.getDef().getGhi().getH());
 
             final StringsAbc result = Instancio.of(StringsAbc.class)
-                    .assign(valueOf(StringsAbc.class).to(StringsDef::getE).as(valueFn))
+                    .assign(Assign.valueOf(StringsAbc.class).to(StringsDef::getE).as(valueFn))
                     .create();
 
             assertThat(result.getDef().getE()).isEqualTo(valueFn.apply(result));
@@ -285,7 +285,7 @@ class AssignAdhocPersonTest {
                     String.format("%s %s %s", o.getA(), o.getDef().getD(), o.getDef().getGhi().getH());
 
             final StringsAbc result = Instancio.of(StringsAbc.class)
-                    .assign(valueOf(StringsAbc.class).to(StringsGhi::getI).as(valueFn))
+                    .assign(Assign.valueOf(StringsAbc.class).to(StringsGhi::getI).as(valueFn))
                     .create();
 
             assertThat(result.getDef().getGhi().getI()).isEqualTo(valueFn.apply(result));

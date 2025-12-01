@@ -227,7 +227,7 @@ public final class NodeFactory {
         // Add setter methods without a corresponding field
         for (Method method : classData.getUnmatchedSetters()) {
             final Type type = ReflectionUtils.getSetMethodParameterType(method);
-            final InternalNode child = nodeCreator.createNode(type, /* field = */ null, method, node);
+            final InternalNode child = nodeCreator.createNode(type, /* member = */ null, method, node);
 
             if (child != null) {
                 children.add(child);

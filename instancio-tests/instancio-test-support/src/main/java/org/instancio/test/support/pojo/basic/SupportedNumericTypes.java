@@ -40,8 +40,7 @@ public class SupportedNumericTypes {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final SupportedNumericTypes that = (SupportedNumericTypes) o;
+        if (!(o instanceof SupportedNumericTypes that)) return false;
         return getPrimitiveByte() == that.getPrimitiveByte()
                 && getPrimitiveShort() == that.getPrimitiveShort()
                 && getPrimitiveInt() == that.getPrimitiveInt()

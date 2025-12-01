@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 import static java.util.stream.Collectors.joining;
 import static org.instancio.internal.util.Constants.NL;
 
-@SuppressWarnings("StringBufferReplaceableByString")
+@SuppressWarnings({"StringBufferReplaceableByString", "UnnecessaryStringBuilder"})
 public final class Format {
     private static final int SB_SMALL = 60;
     private static final String METHOD_PADDING = "  │ ";
@@ -43,7 +43,6 @@ public final class Format {
     }
 
     public static String nodePathToRootBlock(final InternalNode node) {
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder()
                 .append(node.toDisplayString()).append(" (depth=").append(node.getDepth()).append(')').append(NL)
                 .append(NL)

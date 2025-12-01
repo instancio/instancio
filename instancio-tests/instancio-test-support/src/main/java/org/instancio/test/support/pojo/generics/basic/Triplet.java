@@ -25,6 +25,7 @@ public class Triplet<M, N, O> {
     private N mid;
     private O right;
 
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

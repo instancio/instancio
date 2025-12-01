@@ -26,8 +26,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,7 +56,7 @@ class ArraySettingsTest {
     @DisplayName("Allow null to be generated for array")
     void nullable() {
         final Settings overrides = settings.merge(Settings.create().set(Keys.ARRAY_NULLABLE, true));
-        final Set<long[]> results = new HashSet<>();
+        final List<long[]> results = new ArrayList<>();
         for (int i = 0; i < SAMPLE_SIZE; i++) {
             final ArrayLong result = createArray(overrides);
             results.add(result.getPrimitive());

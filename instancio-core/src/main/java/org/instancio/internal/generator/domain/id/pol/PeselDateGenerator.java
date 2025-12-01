@@ -70,22 +70,13 @@ class PeselDateGenerator extends AbstractGenerator<String> {
     private static String codedMonthFromDate(LocalDate localDate) {
         final int century = localDate.getYear() / 100;
         int codedMonth = localDate.getMonthValue();
-        switch (century) {
-            case 18:
-                codedMonth += 80;
-                break;
-            case 20:
-                codedMonth += 20;
-                break;
-            case 21:
-                codedMonth += 40;
-                break;
-            case 22:
-                codedMonth += 60;
-                break;
-            default:
-                break;
-        }
-        return String.format("%02d", codedMonth);
+        int offset = switch (century) {
+            case 18 -> 80;
+            case 20 -> 20;
+            case 21 -> 40;
+            case 22 -> 60;
+            default -> 0;
+        };
+        return String.format("%02d", codedMonth + offset);
     }
 }

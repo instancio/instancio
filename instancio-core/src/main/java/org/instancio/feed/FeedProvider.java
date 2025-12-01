@@ -19,11 +19,10 @@ import org.instancio.FeedApi;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.internal.feed.InternalFeedContext;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-
-import static org.instancio.internal.feed.InternalFeedContext.builder;
 
 /**
  * Provider interface for building {@link Feed} instances.
@@ -65,7 +64,7 @@ public interface FeedProvider {
          */
         @ExperimentalApi
         default <F extends Feed> FeedApi of(Class<F> feedClass) {
-            return builder(feedClass);
+            return InternalFeedContext.builder(feedClass);
         }
 
         /**
@@ -77,7 +76,7 @@ public interface FeedProvider {
          */
         @ExperimentalApi
         default FeedApi ofInputStream(InputStream inputStream) {
-            return builder(source -> source.ofInputStream(inputStream));
+            return InternalFeedContext.builder(source -> source.ofInputStream(inputStream));
         }
 
         /**
@@ -89,7 +88,7 @@ public interface FeedProvider {
          */
         @ExperimentalApi
         default FeedApi ofFile(Path path) {
-            return builder(source -> source.ofFile(path));
+            return InternalFeedContext.builder(source -> source.ofFile(path));
         }
 
         /**
@@ -101,7 +100,7 @@ public interface FeedProvider {
          */
         @ExperimentalApi
         default FeedApi ofResource(String name) {
-            return builder(source -> source.ofResource(name));
+            return InternalFeedContext.builder(source -> source.ofResource(name));
         }
 
         /**
@@ -113,7 +112,7 @@ public interface FeedProvider {
          */
         @ExperimentalApi
         default FeedApi ofString(String data) {
-            return builder(source -> source.ofString(data));
+            return InternalFeedContext.builder(source -> source.ofString(data));
         }
     }
 }

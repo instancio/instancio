@@ -16,6 +16,7 @@
 package org.instancio.test.features.assign.adhoc;
 
 import lombok.Data;
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.junit.InstancioExtension;
@@ -27,7 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 /**
@@ -46,11 +46,11 @@ class AssignModelStateLeakTest {
         }
 
         final Model<Pojo> model = Instancio.of(Pojo.class)
-                .assign(valueOf(Pojo::getAmountA).to(field(Pojo::getAmountB)))
+                .assign(Assign.valueOf(Pojo::getAmountA).to(field(Pojo::getAmountB)))
                 .toModel();
 
         final Pojo result1 = Instancio.of(model)
-                .assign(valueOf(Pojo::getAmountA)
+                .assign(Assign.valueOf(Pojo::getAmountA)
                         .to(field(Pojo::getAmountB))
                         .as((BigDecimal amount) -> amount.subtract(BigDecimal.ONE)))
                 .create();

@@ -94,8 +94,8 @@ abstract class VariableLengthModCheckGenerator
         ApiValidator.isTrue(isValidCheckDigit, this::getCheckDigitErrorMessage);
     }
 
+    @SuppressWarnings({"StringBufferReplaceableByString", "UnnecessaryStringBuilder"})
     private String getCheckDigitErrorMessage() {
-        //noinspection StringBufferReplaceableByString
         return new StringBuilder()
                 .append("checkDigitIndex must satisfy condition:").append(NL)
                 .append("  ->  checkDigitIndex >= 0 && (checkDigitIndex < startIndex || checkDigitIndex >= endIndex)").append(NL)

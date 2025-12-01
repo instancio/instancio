@@ -42,6 +42,7 @@ class PeriodValueSpecTest extends AbstractValueSpecTestTemplate<Period> {
         return Instancio.gen().temporal().period();
     }
 
+    @SuppressWarnings("JavaPeriodGetDays")
     @Test
     void days() {
         final List<Period> actual = spec().days(MIN, MAX).list(Constants.SAMPLE_SIZE_DDD);

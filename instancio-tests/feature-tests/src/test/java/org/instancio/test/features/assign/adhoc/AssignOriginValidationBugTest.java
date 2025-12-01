@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign.adhoc;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Person;
@@ -25,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 /**
@@ -47,9 +47,9 @@ class AssignOriginValidationBugTest {
     void shouldNotThrowException() {
         final Person result = Instancio.of(Person.class)
                 .ignore(field(Person::getUuid))
-                .assign(valueOf(Person::getAge).set(123))
-                .assign(valueOf(Person::getName).set("foo"))
-                .assign(valueOf(Pet::getName).set("bar"))
+                .assign(Assign.valueOf(Person::getAge).set(123))
+                .assign(Assign.valueOf(Person::getName).set("foo"))
+                .assign(Assign.valueOf(Pet::getName).set("bar"))
                 .create();
 
         assertThat(result.getUuid()).isNull();

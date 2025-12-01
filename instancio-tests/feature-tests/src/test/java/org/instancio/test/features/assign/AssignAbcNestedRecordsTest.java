@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign;
 
+import org.instancio.Assign;
 import org.instancio.Assignment;
 import org.instancio.Instancio;
 import org.instancio.Model;
@@ -30,7 +31,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Assign.given;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
@@ -64,14 +64,14 @@ class AssignAbcNestedRecordsTest {
     @Test
     void assignments() {
         final Assignment[] assignments = shuffleArgs(
-                valueOf(A).to(B),
-                valueOf(A).to(I),
-                valueOf(B).to(C),
-                valueOf(B).to(D),
-                valueOf(B).to(E),
-                valueOf(C).to(F),
-                valueOf(E).to(H),
-                valueOf(I).to(G));
+                Assign.valueOf(A).to(B),
+                Assign.valueOf(A).to(I),
+                Assign.valueOf(B).to(C),
+                Assign.valueOf(B).to(D),
+                Assign.valueOf(B).to(E),
+                Assign.valueOf(C).to(F),
+                Assign.valueOf(E).to(H),
+                Assign.valueOf(I).to(G));
 
         final StringsAbcRecord result = Instancio.of(baseModel)
                 .assign(assignments)

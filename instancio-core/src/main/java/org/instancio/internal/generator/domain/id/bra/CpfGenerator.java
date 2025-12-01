@@ -59,7 +59,7 @@ public class CpfGenerator extends AbstractGenerator<String> implements CpfSpec {
     }
 
     /**
-     * Formats the given CPF using the following pattern: @code{xxx.xxx.xxx-xx}
+     * Formats the given CPF using the following pattern: {@code xxx.xxx.xxx-xx}
      *
      * @param baseCPF The base CPF
      * @param digits  The verifier digits
@@ -99,7 +99,8 @@ public class CpfGenerator extends AbstractGenerator<String> implements CpfSpec {
     private int generateDigit(String baseCpf, int initialWeight) {
         int weight = initialWeight;
         int sum = 0;
-        for (char digit : baseCpf.toCharArray()) {
+        for (int i = 0; i < baseCpf.length(); i++) {
+            char digit = baseCpf.charAt(i);
             sum += Character.getNumericValue(digit) * weight;
             weight++;
         }

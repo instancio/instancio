@@ -36,7 +36,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 import static org.instancio.Select.root;
 
@@ -58,10 +57,10 @@ class AssignNullabilityTest {
         final StringsAbc result = Instancio.of(StringsAbc.class)
                 .set(root(), null)
                 .assign(// should all be ignored and not raise an error
-                        valueOf(StringsAbc::getA).to(StringsAbc::getB),
-                        valueOf(StringsAbc::getB).to(StringsAbc::getA),
-                        valueOf(StringsGhi::getG).to(StringsGhi::getI),
-                        valueOf(StringsGhi::getI).to(StringsGhi::getG))
+                        Assign.valueOf(StringsAbc::getA).to(StringsAbc::getB),
+                        Assign.valueOf(StringsAbc::getB).to(StringsAbc::getA),
+                        Assign.valueOf(StringsGhi::getG).to(StringsGhi::getI),
+                        Assign.valueOf(StringsGhi::getI).to(StringsGhi::getG))
                 .create();
 
         assertThat(result).isNull();

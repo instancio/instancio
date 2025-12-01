@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class AbstractNumberSpecTestTemplate<T extends Number>
         extends AbstractValueSpecTestTemplate<T> {
 
+    @Override
     protected abstract NumberSpec<T> spec();
 
     protected abstract Pair<T, T> getRange();

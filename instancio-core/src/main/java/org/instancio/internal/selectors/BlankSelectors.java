@@ -65,7 +65,7 @@ public final class BlankSelectors {
                     Constants.BLANK_SELECTOR_PRIORITY,
                     predicate,
                     Collections.emptyList(),
-                    /* depth = */ null,
+                    /* selectorDepth = */ null,
                     /* isLenient = */ true,
                     /* isHiddenFromVerboseOutput = */ true,
                     description,

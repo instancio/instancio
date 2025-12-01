@@ -84,6 +84,7 @@ public final class AssignmentErrorUtil {
         return sb.toString();
     }
 
+    @SuppressWarnings({"StringBufferReplaceableByString", "UnnecessaryStringBuilder"})
     public static String getAmbiguousErrorMessage(
             final TargetSelector selector,
             final InternalNode matchingNode1,

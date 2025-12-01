@@ -30,7 +30,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.field;
 
 @FeatureTag({Feature.FILTER, Feature.ASSIGN})
@@ -61,7 +60,7 @@ class FilterWithAssignTest {
         final StringFields result = Instancio.of(StringFields.class)
                 .generate(field(StringFields::getOne), gen -> gen.oneOf("foo", "bar"))
                 .filter(field(StringFields::getOne), (String one) -> one.equals("bar"))
-                .assign(valueOf(StringFields::getOne).to(StringFields::getTwo))
+                .assign(Assign.valueOf(StringFields::getOne).to(StringFields::getTwo))
                 .create();
 
         assertThat(result.getOne()).isEqualTo(result.getTwo()).isEqualTo("bar");

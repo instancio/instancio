@@ -21,7 +21,7 @@ final class JakartaBeanValidationAnnotationLibraryFacade extends AbstractAnnotat
 
     JakartaBeanValidationAnnotationLibraryFacade() {
         putPrimary(() -> jakarta.validation.constraints.Email.class,
-                ((annotation, context) -> new EmailGenerator(context)));
+                (annotation, context) -> new EmailGenerator(context));
     }
 
     @Override

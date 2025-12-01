@@ -39,6 +39,7 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
     // Keep a copy of the original items to support RECYCLE
     private final List<T> originalItems = new ArrayList<>();
 
+    @SuppressWarnings("JdkObsolete")
     // Items to emit may contain null elements
     private final Queue<T> items = new LinkedList<>();
 

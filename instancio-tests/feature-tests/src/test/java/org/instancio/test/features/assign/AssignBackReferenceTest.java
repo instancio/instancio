@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
@@ -37,7 +38,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.root;
@@ -57,8 +57,8 @@ class AssignBackReferenceTest {
         @ParameterizedTest
         void withRoot(final TargetSelector rootObjectSelector) {
             final MainPojo result = Instancio.of(MainPojo.class)
-                    .assign(valueOf(rootObjectSelector).to(DetailPojo::getMainPojo))
-                    .assign(valueOf(MainPojo::getId).to(DetailPojo::getMainPojoId))
+                    .assign(Assign.valueOf(rootObjectSelector).to(DetailPojo::getMainPojo))
+                    .assign(Assign.valueOf(MainPojo::getId).to(DetailPojo::getMainPojoId))
                     .create();
 
             assertThat(result.getDetailPojos()).isNotEmpty().allSatisfy(detail -> {
@@ -70,8 +70,8 @@ class AssignBackReferenceTest {
         @Test
         void createList() {
             final List<MainPojo> results = Instancio.ofList(MainPojo.class)
-                    .assign(valueOf(all(MainPojo.class)).to(DetailPojo::getMainPojo))
-                    .assign(valueOf(MainPojo::getId).to(DetailPojo::getMainPojoId))
+                    .assign(Assign.valueOf(all(MainPojo.class)).to(DetailPojo::getMainPojo))
+                    .assign(Assign.valueOf(MainPojo::getId).to(DetailPojo::getMainPojoId))
                     .create();
 
             assertThat(results).isNotEmpty().allSatisfy(result -> {
@@ -93,8 +93,8 @@ class AssignBackReferenceTest {
         @ParameterizedTest
         void withRoot(final TargetSelector selector) {
             final DetailPojo result = Instancio.of(DetailPojo.class)
-                    .assign(valueOf(selector).to(all(DetailPojo.class).within(scope(List.class))))
-                    .assign(valueOf(MainPojo::getId).to(DetailPojo::getMainPojoId))
+                    .assign(Assign.valueOf(selector).to(all(DetailPojo.class).within(scope(List.class))))
+                    .assign(Assign.valueOf(MainPojo::getId).to(DetailPojo::getMainPojoId))
                     .create();
 
             assertThat(result.getMainPojo().getDetailPojos()).isNotEmpty().allSatisfy(detail -> {
@@ -111,9 +111,9 @@ class AssignBackReferenceTest {
         @ParameterizedTest
         void createList(final TargetSelector rootListElementSelector) {
             final List<DetailPojo> results = Instancio.ofList(DetailPojo.class)
-                    .assign(valueOf(rootListElementSelector)
+                    .assign(Assign.valueOf(rootListElementSelector)
                             .to(all(DetailPojo.class).within(scope(MainPojo.class))))
-                    .assign(valueOf(MainPojo::getId).to(DetailPojo::getMainPojoId))
+                    .assign(Assign.valueOf(MainPojo::getId).to(DetailPojo::getMainPojoId))
                     .create();
 
             assertThat(results).isNotEmpty().allSatisfy(result -> {
@@ -134,13 +134,13 @@ class AssignBackReferenceTest {
         @Test
         void create() {
             final MainPojoContainer result = Instancio.of(MainPojoContainer.class)
-                    .assign(valueOf(mainPojo1).to(field(DetailPojo::getMainPojo).within(mainPojo1.toScope())))
-                    .assign(valueOf(mainPojo2).to(field(DetailPojo::getMainPojo).within(mainPojo2.toScope())))
+                    .assign(Assign.valueOf(mainPojo1).to(field(DetailPojo::getMainPojo).within(mainPojo1.toScope())))
+                    .assign(Assign.valueOf(mainPojo2).to(field(DetailPojo::getMainPojo).within(mainPojo2.toScope())))
 
-                    .assign(valueOf(mainPojoId.atDepth(2).within(mainPojo1.toScope()))
+                    .assign(Assign.valueOf(mainPojoId.atDepth(2).within(mainPojo1.toScope()))
                             .to(field(DetailPojo::getMainPojoId).within(mainPojo1.toScope())))
 
-                    .assign(valueOf(mainPojoId.atDepth(2).within(mainPojo2.toScope()))
+                    .assign(Assign.valueOf(mainPojoId.atDepth(2).within(mainPojo2.toScope()))
                             .to(field(DetailPojo::getMainPojoId).within(mainPojo2.toScope())))
                     .create();
 
@@ -150,13 +150,13 @@ class AssignBackReferenceTest {
         @Test
         void createList() {
             final List<MainPojoContainer> results = Instancio.ofList(MainPojoContainer.class)
-                    .assign(valueOf(mainPojo1).to(field(DetailPojo::getMainPojo).within(mainPojo1.toScope())))
-                    .assign(valueOf(mainPojo2).to(field(DetailPojo::getMainPojo).within(mainPojo2.toScope())))
+                    .assign(Assign.valueOf(mainPojo1).to(field(DetailPojo::getMainPojo).within(mainPojo1.toScope())))
+                    .assign(Assign.valueOf(mainPojo2).to(field(DetailPojo::getMainPojo).within(mainPojo2.toScope())))
 
-                    .assign(valueOf(mainPojoId.atDepth(3).within(mainPojo1.toScope()))
+                    .assign(Assign.valueOf(mainPojoId.atDepth(3).within(mainPojo1.toScope()))
                             .to(field(DetailPojo::getMainPojoId).within(mainPojo1.toScope())))
 
-                    .assign(valueOf(mainPojoId.atDepth(3).within(mainPojo2.toScope()))
+                    .assign(Assign.valueOf(mainPojoId.atDepth(3).within(mainPojo2.toScope()))
                             .to(field(DetailPojo::getMainPojoId).within(mainPojo2.toScope())))
                     .create();
 
@@ -184,7 +184,7 @@ class AssignBackReferenceTest {
         }
 
         final Container result = Instancio.of(Container.class)
-                .assign(valueOf(root()).to(all(Container.class).within(scope(Optional.class))))
+                .assign(Assign.valueOf(root()).to(all(Container.class).within(scope(Optional.class))))
                 .create();
 
         assertThat(result.optional).get().isSameAs(result);
@@ -197,7 +197,7 @@ class AssignBackReferenceTest {
         }
 
         final Container result = Instancio.of(Container.class)
-                .assign(valueOf(root()).to(all(Container.class).within(scope(Container[].class))))
+                .assign(Assign.valueOf(root()).to(all(Container.class).within(scope(Container[].class))))
                 .create();
 
         assertThat(result.array)
@@ -212,7 +212,7 @@ class AssignBackReferenceTest {
         }
 
         final Container result = Instancio.of(Container.class)
-                .assign(valueOf(root()).to(all(Container.class).within(scope(List.class))))
+                .assign(Assign.valueOf(root()).to(all(Container.class).within(scope(List.class))))
                 .create();
 
         assertThat(result.list)
@@ -227,7 +227,7 @@ class AssignBackReferenceTest {
         }
 
         final Container result = Instancio.of(Container.class)
-                .assign(valueOf(root()).to(all(Container.class).within(scope(Map.class))))
+                .assign(Assign.valueOf(root()).to(all(Container.class).within(scope(Map.class))))
                 .create();
 
         assertThat(result.map.values())

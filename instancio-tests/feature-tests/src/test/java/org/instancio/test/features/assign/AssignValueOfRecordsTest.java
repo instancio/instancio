@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.assign;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.record.StringsAbcRecord;
@@ -25,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 
 @FeatureTag(Feature.ASSIGN)
 @ExtendWith(InstancioExtension.class)
@@ -35,7 +35,7 @@ class AssignValueOfRecordsTest {
     @DisplayName("Without a predicate")
     void unconditional() {
         final StringsAbcRecord result = Instancio.of(StringsAbcRecord.class)
-                .assign(valueOf(StringsAbcRecord::a).set("A"))
+                .assign(Assign.valueOf(StringsAbcRecord::a).set("A"))
                 .create();
 
         assertThat(result.a()).isEqualTo("A");
@@ -45,8 +45,8 @@ class AssignValueOfRecordsTest {
     @DisplayName("With null predicate")
     void nullPredicate() {
         final StringsAbcRecord result = Instancio.of(StringsAbcRecord.class)
-                .assign(valueOf(StringsAbcRecord::a).set("A"))
-                .assign(valueOf(StringsAbcRecord::a).to(StringsAbcRecord::b).when(null))
+                .assign(Assign.valueOf(StringsAbcRecord::a).set("A"))
+                .assign(Assign.valueOf(StringsAbcRecord::a).to(StringsAbcRecord::b).when(null))
                 .create();
 
         assertThat(result.a())
@@ -58,8 +58,8 @@ class AssignValueOfRecordsTest {
     @DisplayName("With true predicate")
     void truePredicate() {
         final StringsAbcRecord result = Instancio.of(StringsAbcRecord.class)
-                .assign(valueOf(StringsAbcRecord::a).set("A"))
-                .assign(valueOf(StringsAbcRecord::a).to(StringsAbcRecord::b).when(o -> true))
+                .assign(Assign.valueOf(StringsAbcRecord::a).set("A"))
+                .assign(Assign.valueOf(StringsAbcRecord::a).to(StringsAbcRecord::b).when(o -> true))
                 .create();
 
         assertThat(result.a())
@@ -71,8 +71,8 @@ class AssignValueOfRecordsTest {
     @DisplayName("With false predicate")
     void falsePredicate() {
         final StringsAbcRecord result = Instancio.of(StringsAbcRecord.class)
-                .assign(valueOf(StringsAbcRecord::a).set("A"))
-                .assign(valueOf(StringsAbcRecord::a).to(StringsAbcRecord::b).when(o -> false))
+                .assign(Assign.valueOf(StringsAbcRecord::a).set("A"))
+                .assign(Assign.valueOf(StringsAbcRecord::a).to(StringsAbcRecord::b).when(o -> false))
                 .create();
 
         assertThat(result.a())

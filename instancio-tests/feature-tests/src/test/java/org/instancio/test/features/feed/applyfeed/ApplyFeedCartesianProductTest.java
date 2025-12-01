@@ -45,11 +45,12 @@ class ApplyFeedCartesianProductTest {
                 Arguments.of(all(StringsGhi.class)));
     }
 
-    @Feed.Source(string = "g, h, i\n" +
-            " _G1_, _H1_, I1\n" +
-            " _G2_, _H2_, I2\n" +
-            " _G3_, _H3_, I3\n" +
-            " _G4_, _H4_, I4")
+    @Feed.Source(string = """
+            g, h, i
+             _G1_, _H1_, I1
+             _G2_, _H2_, I2
+             _G3_, _H3_, I3
+             _G4_, _H4_, I4""")
     private interface SampleFeed extends Feed {}
 
     @MethodSource("args")

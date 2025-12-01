@@ -63,8 +63,8 @@ public class StringGenerator extends AbstractGenerator<String>
         this.maxLength = settings.get(Keys.STRING_MAX_LENGTH);
         super.nullable(settings.get(Keys.STRING_NULLABLE));
         this.allowEmpty = settings.get(Keys.STRING_ALLOW_EMPTY);
-        this.stringCase = StringCase.values()[settings.get(Keys.STRING_CASE).ordinal()];
-        this.stringType = StringType.values()[settings.get(Keys.STRING_TYPE).ordinal()];
+        this.stringCase = StringCase.valueOf(settings.get(Keys.STRING_CASE).name());
+        this.stringType = StringType.valueOf(settings.get(Keys.STRING_TYPE).name());
     }
 
     public final int getMinLength() {

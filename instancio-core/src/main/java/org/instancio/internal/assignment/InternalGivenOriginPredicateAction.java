@@ -35,7 +35,7 @@ public class InternalGivenOriginPredicateAction
     private final Predicate<Object> originPredicate;
     private final List<InternalAssignment> assignments = new ArrayList<>(3);
 
-    <T> InternalGivenOriginPredicateAction(
+    InternalGivenOriginPredicateAction(
             final TargetSelector origin,
             final Predicate<Object> originPredicate,
             final TargetSelector destination,

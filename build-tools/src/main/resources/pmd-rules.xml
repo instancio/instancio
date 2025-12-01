@@ -31,6 +31,11 @@
         <exclude name="GuardLogStatement"/>
         <exclude name="ImplicitFunctionalInterface"/>
     </rule>
+    <rule ref="category/java/bestpractices.xml/LooseCoupling">
+        <properties>
+            <property name="allowedTypes" value="java.util.Properties, java.util.IdentityHashMap" />
+        </properties>
+    </rule>
 
     <rule ref="category/java/codestyle.xml">
         <exclude name="AtLeastOneConstructor"/>

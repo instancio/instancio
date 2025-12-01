@@ -19,7 +19,6 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,9 +85,7 @@ class MapHintTest {
                 .generateEntries(3)
                 .nullableMapKeys(true)
                 .nullableMapValues(true)
-                .withEntries(new HashMap<String, String>() {{
-                    put("foo", "bar");
-                }})
+                .withEntries(Map.of("foo", "bar"))
                 .build())
                 .hasToString("MapHint[generateEntries=3," +
                         " nullableMapKeys=true," +

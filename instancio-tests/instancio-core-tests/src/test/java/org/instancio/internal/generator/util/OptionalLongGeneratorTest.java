@@ -34,6 +34,7 @@ class OptionalLongGeneratorTest extends AbstractGeneratorTestTemplate<OptionalLo
         return new OptionalLongGenerator(getGeneratorContext());
     }
 
+    @Override
     @Test
     protected void tryGenerateNonNull() {
         assertThat(generator().tryGenerateNonNull(random))

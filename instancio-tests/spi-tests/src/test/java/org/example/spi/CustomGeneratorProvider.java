@@ -46,7 +46,6 @@ import org.instancio.test.support.pojo.person.PhoneWithType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -76,22 +75,22 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         // empty
     }
 
-    private static final Map<Class<?>, GeneratorSpec<?>> GENERATOR_MAP = new HashMap<>() {{
-        put(String.class, new StringGeneratorFromSpi());
-        put(Pattern.class, new PatternGeneratorFromSpi());
-        put(int.class, new CustomIntegerGenerator());
-        put(Integer.class, new CustomIntegerGenerator());
-        put(byte.class, new IntegerSequenceGenerator(GENERATOR_CONTEXT).as(Integer::byteValue));
-        put(Byte.class, new IntegerSequenceGenerator(GENERATOR_CONTEXT).as(Integer::byteValue));
-        put(Address.class, new CustomAddressGenerator());
-        put(Phone.class, new CustomPhoneGenerator());
-        put(Field.class, new ExceptionThrowingGenerator());
-        put(FooRecord.class, (Generator<?>) random -> new FooRecord(FOO_RECORD_VALUE));
-        put(InitCountingPojo.class, INIT_COUNTING_GENERATOR);
+    private static final Map<Class<?>, GeneratorSpec<?>> GENERATOR_MAP = Map.ofEntries(
+            Map.entry(String.class, new StringGeneratorFromSpi()),
+            Map.entry(Pattern.class, new PatternGeneratorFromSpi()),
+            Map.entry(int.class, new CustomIntegerGenerator()),
+            Map.entry(Integer.class, new CustomIntegerGenerator()),
+            Map.entry(byte.class, new IntegerSequenceGenerator(GENERATOR_CONTEXT).as(Integer::byteValue)),
+            Map.entry(Byte.class, new IntegerSequenceGenerator(GENERATOR_CONTEXT).as(Integer::byteValue)),
+            Map.entry(Address.class, new CustomAddressGenerator()),
+            Map.entry(Phone.class, new CustomPhoneGenerator()),
+            Map.entry(Field.class, new ExceptionThrowingGenerator()),
+            Map.entry(FooRecord.class, (Generator<?>) random -> new FooRecord(FOO_RECORD_VALUE)),
+            Map.entry(InitCountingPojo.class, INIT_COUNTING_GENERATOR),
 
-        // Error-handling: generator spec does not implement the Generator interface
-        put(Float.class, new CustomFloatSpec());
-    }};
+            // Error-handling: generator spec does not implement the Generator interface
+            Map.entry(Float.class, new CustomFloatSpec())
+    );
 
     private final GeneratorProvider generatorProvider = new GeneratorProviderImpl();
     private boolean getGeneratorProviderInvoked;

@@ -68,6 +68,7 @@ class UnusedSelectorsWithMixedApiMethodsTest {
                 .subtypeSelector(all(CharSequence.class), line(getClass(), l));
     }
 
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     private static <V> V failIfCalled() {
         return fail("Should not be called");
     }

@@ -38,6 +38,7 @@ class OptionalGeneratorTest extends AbstractGeneratorTestTemplate<Optional<Boole
         return generator;
     }
 
+    @Override
     @Test
     protected void hints() {
         final Hints hints = generator().hints();
@@ -47,6 +48,7 @@ class OptionalGeneratorTest extends AbstractGeneratorTestTemplate<Optional<Boole
                 .containerHintGenerateEntriesIsBetween(1, 1);
     }
 
+    @Override
     @Test
     protected void tryGenerateNonNull() {
         final Object result = generator().tryGenerateNonNull(random);

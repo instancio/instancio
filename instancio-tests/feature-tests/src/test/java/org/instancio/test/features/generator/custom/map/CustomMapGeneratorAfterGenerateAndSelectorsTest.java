@@ -76,6 +76,7 @@ class CustomMapGeneratorAfterGenerateAndSelectorsTest {
             .intOne(EXISTING_INT_ONE)
             .build();
 
+    @SuppressWarnings("ReferenceEquality")
     private final Predicate<Map.Entry<UUID, StringAndPrimitiveFields>> ENTRY_CREATED_BY_USER = e -> e.getValue() == existingEntry;
     private final Predicate<Map.Entry<UUID, StringAndPrimitiveFields>> ENTRY_GENERATED_BY_ENGINE = ENTRY_CREATED_BY_USER.negate();
 

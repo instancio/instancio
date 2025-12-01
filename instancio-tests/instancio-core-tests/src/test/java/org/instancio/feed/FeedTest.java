@@ -51,9 +51,10 @@ class FeedTest {
         final SampleFeed result1 = Instancio.createFeed(SampleFeed.class);
         final SampleFeed result2 = Instancio.createFeed(SampleFeed.class);
 
-        assertThat(result1).isEqualTo(result1)
+        assertThat(result1)
                 .isNotEqualTo(result2)
                 .doesNotHaveSameHashCodeAs(result2);
+        assertThat(result1.equals(result1)).isTrue();
     }
 
     @Test
@@ -68,7 +69,7 @@ class FeedTest {
     }
 
     @Test
-    @SuppressWarnings("resource")
+    @SuppressWarnings({"resource", "InputStreamSlowMultibyteRead"})
     void shouldCloseDataInputStream() {
         class TestInputStream extends InputStream {
             final InputStream delegate = new ByteArrayInputStream("value\nfoo".getBytes());

@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.generator.array;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.TargetSelector;
 import org.instancio.TypeToken;
@@ -38,7 +39,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Assign.valueOf;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
@@ -60,7 +60,7 @@ class ArrayGeneratorSubtypeTest {
     @Test
     void shouldCreateArrayOfTypeSpecifiedViaAssign() {
         final TwoArraysOfItemInterfaceString result = Instancio.of(TwoArraysOfItemInterfaceString.class)
-                .assign(valueOf(all(ItemInterface[].class)).generate(gen -> gen.array().subtype(Item[].class)))
+                .assign(Assign.valueOf(all(ItemInterface[].class)).generate(gen -> gen.array().subtype(Item[].class)))
                 .create();
 
         assertArrayContainsExpectedSubtype(result);

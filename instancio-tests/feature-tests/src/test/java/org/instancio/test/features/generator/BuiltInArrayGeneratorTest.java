@@ -38,7 +38,7 @@ import static org.instancio.Select.field;
 @FeatureTag(Feature.GENERATE)
 @ExtendWith(InstancioExtension.class)
 class BuiltInArrayGeneratorTest {
-    private static final int EXPECTED_LENGTH = RandomUtils.nextInt(0, 10);
+    private static final int EXPECTED_LENGTH = RandomUtils.insecure().randomInt(0, 10);
 
     @Nested
     class UsingOfClassAPITest {

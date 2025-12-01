@@ -76,7 +76,8 @@ public class TituloEleitoralGenerator extends AbstractGenerator<String> implemen
     private int generateDigit(String baseNumber, int initialWeight) {
         int weight = initialWeight;
         int sum = 0;
-        for (char digit : baseNumber.toCharArray()) {
+        for (int i = 0; i < baseNumber.length(); i++) {
+            char digit = baseNumber.charAt(i);
             sum += Character.getNumericValue(digit) * weight;
             weight++;
         }
