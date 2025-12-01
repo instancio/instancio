@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class InternalKey<T>
-        implements SettingKey<T>, AutoAdjustable, Comparable<SettingKey<T>> {
+        implements SettingKey<T>, AutoAdjustable, Comparable<InternalKey<T>> {
 
     private final String propertyKey;
     private final Class<?> type;
@@ -112,7 +112,7 @@ public final class InternalKey<T>
     }
 
     @Override
-    public int compareTo(final SettingKey<T> o) {
+    public int compareTo(final InternalKey<T> o) {
         return propertyKey.compareTo(o.propertyKey());
     }
 

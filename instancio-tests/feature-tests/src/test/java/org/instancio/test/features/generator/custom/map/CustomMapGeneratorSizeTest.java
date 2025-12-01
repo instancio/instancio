@@ -51,11 +51,11 @@ class CustomMapGeneratorSizeTest {
     private static final int INITIAL_SIZE = 1;
     private static final int GENERATE_ENTRIES = 3;
 
-    private static final Map<String, Integer> WITH_ENTRIES = new HashMap<String, Integer>() {{
-        put("foo", 123);
-        put("bar", 234);
-        put("baz", 345);
-    }};
+    private static final Map<String, Integer> WITH_ENTRIES = Map.of(
+            "foo", 123,
+            "bar", 234,
+            "baz", 345
+    );
 
     private static class CustomMap<K, V> extends HashMap<K, V> {}
 
