@@ -64,7 +64,7 @@ public final class CollectionUtils {
         return map == null ? Collections.emptyMap() : Collections.unmodifiableMap(map);
     }
 
-    public static <K, E> Map<K, List<E>> asUnmodifiableLinkedHashMapOfLists(final Map<K, List<E>> map) {
+    public static <K, E> Map<K, List<E>> asUnmodifiableLinkedHashMapOfLists(@Nullable final Map<K, List<E>> map) {
         if (map == null) {
             return Collections.emptyMap();
         }
@@ -75,7 +75,7 @@ public final class CollectionUtils {
         return Collections.unmodifiableMap(copy);
     }
 
-    public static <K, E> Map<K, List<E>> copyAsLinkedHashMap(final Map<K, List<E>> map) {
+    public static <K, E> Map<K, List<E>> copyAsLinkedHashMap(@Nullable final Map<K, List<E>> map) {
         if (map == null) {
             return new LinkedHashMap<>(0);
         }
@@ -102,7 +102,7 @@ public final class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <T> Set<T> asSet(final T... values) {
+    public static <T> Set<T> asSet(@Nullable final T... values) {
         if (values == null) {
             return Collections.emptySet();
         }
@@ -112,7 +112,7 @@ public final class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <K, V> Map<K, V> asLinkedHashMap(final Function<V, K> keyFn, final V... values) {
+    public static <K, V> Map<K, V> asLinkedHashMap(final Function<V, K> keyFn, @Nullable final V... values) {
         if (values == null) return Collections.emptyMap();
         final Map<K, V> map = new LinkedHashMap<>(values.length);
         for (V value : values) {

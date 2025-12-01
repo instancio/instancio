@@ -28,6 +28,7 @@ import org.instancio.internal.util.UnicodeBlocks;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -207,7 +208,7 @@ public class StringGenerator extends AbstractGenerator<String>
 
     // Hot path - benchmark when making changes.
     @Override
-    public String tryGenerateNonNull(final Random random) {
+    public @Nullable String tryGenerateNonNull(final Random random) {
         if (delegate != null) {
             final Object result = delegate.generate(random);
             return result == null ? null : result.toString();

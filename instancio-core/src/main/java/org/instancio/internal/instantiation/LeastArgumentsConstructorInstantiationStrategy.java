@@ -37,7 +37,7 @@ class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStr
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T createInstance(final Class<T> klass) {
+    public <T> @Nullable T createInstance(final Class<T> klass) {
         final Constructor<?> ctor = getConstructorWithLeastArgs(klass);
 
         if (ctor == null) {
@@ -62,8 +62,7 @@ class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStr
         }
     }
 
-    @Nullable
-    private static <T> Constructor<?> getConstructorWithLeastArgs(final Class<T> klass) {
+    private static <T> @Nullable Constructor<?> getConstructorWithLeastArgs(final Class<T> klass) {
         final Comparator<Constructor<?>> comparator = Comparator.comparingInt(Constructor::getParameterCount);
         final Predicate<Constructor<?>> predicate = NON_ZERO_ARG.and(NOT_BUILDER);
         Constructor<?> result = null;

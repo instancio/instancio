@@ -16,6 +16,7 @@
 package org.instancio.internal.instantiation;
 
 import org.instancio.internal.util.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 import org.instancio.documentation.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ final class UnsafeInstantiationStrategy implements InstantiationStrategy {
     }
 
     @Override
-    public <T> T createInstance(final Class<T> klass) {
+    public <T> @Nullable T createInstance(final Class<T> klass) {
         return isUnsafeAvailable()
                 ? UnsafeHelper.getInstance().allocateInstance(klass)
                 : null;

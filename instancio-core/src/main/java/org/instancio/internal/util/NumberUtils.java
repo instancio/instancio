@@ -255,7 +255,7 @@ public final class NumberUtils {
         return value.compareTo(BigDecimal.ZERO) == 0;
     }
 
-    public static BigDecimal toBigDecimal(final Number n) {
+    public static @Nullable BigDecimal toBigDecimal(final Number n) {
         if (n instanceof BigDecimal bd) {
             return bd;
         }

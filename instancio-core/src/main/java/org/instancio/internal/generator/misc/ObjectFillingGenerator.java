@@ -44,7 +44,7 @@ public final class ObjectFillingGenerator extends AbstractGenerator<Object> {
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         return null;
     }
 

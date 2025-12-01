@@ -21,6 +21,7 @@ import org.instancio.generator.specs.ShuffleSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.CollectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +38,7 @@ public class ShuffleGenerator<T> extends AbstractGenerator<Collection<T>>
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         // no validation is needed because this spec
         // is only available via Instancio.gen()
         return null;

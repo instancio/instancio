@@ -18,6 +18,7 @@ package org.instancio.internal.generator.xml;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.Nullable;
 
 import javax.xml.namespace.QName;
 
@@ -28,7 +29,7 @@ public class QNameGenerator extends AbstractGenerator<QName> {
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         return null;
     }
 

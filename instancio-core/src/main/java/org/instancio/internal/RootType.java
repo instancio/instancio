@@ -55,8 +55,7 @@ public final class RootType {
         return typeParameters;
     }
 
-    @Nullable
-    public Type getTypeMapping(Type type) {
+    public @Nullable Type getTypeMapping(Type type) {
         return typeMap.get(type);
     }
 
