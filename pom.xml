@@ -75,7 +75,7 @@
         <version.maven-jar-plugin>3.5.0</version.maven-jar-plugin>
         <version.maven-javadoc-plugin>3.12.0</version.maven-javadoc-plugin>
         <version.maven-pmd-plugin>3.28.0</version.maven-pmd-plugin>
-        <version.maven-release-plugin>3.2.0</version.maven-release-plugin>
+        <version.maven-release-plugin>3.3.0</version.maven-release-plugin>
         <version.maven-site-plugin>3.21.0</version.maven-site-plugin>
         <version.maven-source-plugin>3.4.0</version.maven-source-plugin>
         <version.sonar-maven-plugin>5.4.0.6343</version.sonar-maven-plugin>
