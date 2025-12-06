@@ -17,8 +17,8 @@ package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
 import org.instancio.internal.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public final class ScopeImpl implements Scope {
     private final Target target;
     private final Integer depth;
 
-    public ScopeImpl(@NotNull final Target target, @Nullable final Integer depth) {
+    public ScopeImpl(@NonNull final Target target, @Nullable final Integer depth) {
         this.target = target;
         this.depth = depth;
     }

@@ -21,7 +21,7 @@ import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.Keys;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 class UsingGeneratorResolverHandler implements NodeHandler {
 
@@ -39,9 +39,9 @@ class UsingGeneratorResolverHandler implements NodeHandler {
                 context.getSettings().get(Keys.STRING_FIELD_PREFIX_ENABLED));
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public GeneratorResult getResult(@NotNull final InternalNode node) {
+    public GeneratorResult getResult(@NonNull final InternalNode node) {
         final Generator<?> generator = generatorResolver.getCached(node);
 
         if (generator == null) {

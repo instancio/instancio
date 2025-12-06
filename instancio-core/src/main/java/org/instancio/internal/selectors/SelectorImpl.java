@@ -23,8 +23,8 @@ import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,9 +51,9 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
     private SelectorImpl(
             final ApiMethodSelector apiMethodSelector,
             final Target target,
-            @NotNull final List<Scope> scopes,
+            @NonNull final List<Scope> scopes,
             @Nullable final Selector parent,
-            @NotNull final Throwable stackTraceHolder,
+            @NonNull final Throwable stackTraceHolder,
             @Nullable final Integer depth,
             final boolean isLenient) {
 
@@ -100,7 +100,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
     }
 
     @Override
-    public Selector within(@NotNull final Scope... scopes) {
+    public Selector within(@NonNull final Scope... scopes) {
         return toBuilder().scopes(Arrays.asList(scopes)).build();
     }
 

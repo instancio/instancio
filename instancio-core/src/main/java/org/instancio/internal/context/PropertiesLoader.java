@@ -16,7 +16,7 @@
 package org.instancio.internal.context;
 
 import org.instancio.support.Log;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.documentation.VisibleForTesting;
 
 import java.io.IOException;
 import java.io.InputStream;

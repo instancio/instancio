@@ -22,6 +22,7 @@ import org.instancio.generator.specs.OptionalGeneratorSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -47,7 +48,7 @@ public class OptionalGenerator<T> extends AbstractGenerator<Optional<T>>
 
     @Override
     @SuppressWarnings({"OptionalAssignedToNull", Sonar.NULL_OPTIONAL})
-    public Optional<T> tryGenerateNonNull(final Random random) {
+    public @Nullable Optional<T> tryGenerateNonNull(final Random random) {
         if (random.diceRoll(allowEmpty)) {
             return Optional.empty();
         }

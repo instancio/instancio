@@ -20,7 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.usa.SsnSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.StringUtils;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.documentation.VisibleForTesting;
 
 public class SsnGenerator extends AbstractGenerator<String> implements SsnSpec {
 

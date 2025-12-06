@@ -16,7 +16,7 @@
 package org.instancio.internal.spi;
 
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.EnumMap;
@@ -53,8 +53,7 @@ public final class InternalServiceProviderImpl implements InternalServiceProvide
             return ReflectionUtils.getFieldOrNull(declaringClass, methodName);
         }
 
-        @Nullable
-        private static Field getFieldNameByRemovingPrefix(
+        private static @Nullable Field getFieldNameByRemovingPrefix(
                 final Class<?> targetClass,
                 final String methodName,
                 final int getPrefixLength) {

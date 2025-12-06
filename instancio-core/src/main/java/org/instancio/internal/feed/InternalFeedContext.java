@@ -41,7 +41,7 @@ import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
 import org.instancio.support.ThreadLocalSettings;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Paths;
 import java.util.function.Function;
@@ -183,8 +183,7 @@ public final class InternalFeedContext<F extends Feed> {
         return dataSource;
     }
 
-    @Nullable
-    public FormatOptions getFormatOptions() {
+    public @Nullable FormatOptions getFormatOptions() {
         return formatOptions;
     }
 
