@@ -17,6 +17,7 @@ package org.instancio.junit;
 
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
+import org.instancio.internal.util.Verify;
 import org.instancio.junit.internal.ElementAnnotations;
 import org.instancio.junit.internal.ExtensionSupport;
 import org.instancio.junit.internal.FieldAnnotationMap;
@@ -162,7 +163,7 @@ public class InstancioExtension implements
                 .get(testClass, FieldAnnotationMap.class);
 
         for (Field field : testClass.getDeclaredFields()) {
-            final List<Annotation> annotations = annotationMap.get(field);
+            final List<Annotation> annotations = annotationMap != null ? annotationMap.get(field) : List.of();
 
             if (!containsAnnotation(annotations, Given.class)) {
                 continue;
@@ -208,7 +209,9 @@ public class InstancioExtension implements
             final Method testMethod = context.getRequiredTestMethod();
 
             // Should be safe to cast since we don't expect any other implementations of Random.
-            final DefaultRandom random = (DefaultRandom) threadLocalRandom.get();
+            if (!(threadLocalRandom.get() instanceof DefaultRandom random)) {
+                return;
+            }
 
             final InstancioSourceState instancioSourceState = context.getStore(INSTANCIO_NAMESPACE)
                     .get(INSTANCIO_SOURCE_STATE, InstancioSourceState.class);
@@ -271,8 +274,8 @@ public class InstancioExtension implements
 
         final Parameter parameter = parameterContext.getParameter();
 
-        final ElementAnnotations elementAnnotations = extensionContext.getStore(INSTANCIO_NAMESPACE)
-                .get(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
+        final ElementAnnotations elementAnnotations = Verify.notNull(extensionContext.getStore(INSTANCIO_NAMESPACE)
+                .get(ELEMENT_ANNOTATIONS, ElementAnnotations.class), "ElementAnnotations should be present");
 
         final Type targetType = parameter.getParameterizedType();
 

@@ -18,6 +18,7 @@ package org.instancio.junit.internal;
 import org.instancio.Random;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.junit.GivenProvider;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -63,7 +64,7 @@ public class InternalElementContext implements GivenProvider.ElementContext {
     }
 
     @Override
-    public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
+    public <A extends Annotation> @Nullable A getAnnotation(final Class<A> annotationType) {
         return elementAnnotations.getAnnotation(annotationType);
     }
 }
