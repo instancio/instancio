@@ -20,7 +20,7 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.settings.BeanValidationTarget;
 import org.instancio.settings.Keys;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -40,7 +40,7 @@ public final class AnnotationExtractor {
         this.getterMethodResolver = new GetterMethodResolverImpl();
     }
 
-    @NotNull
+    @NonNull
     public Annotation[] getAnnotations(final InternalNode node) {
         final Field field = node.getField();
 

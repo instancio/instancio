@@ -22,7 +22,7 @@ import org.instancio.internal.nodes.NodeKind;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodNotFound;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static org.instancio.internal.util.ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue;
 import static org.instancio.internal.util.ReflectionUtils.hasNonNullValue;

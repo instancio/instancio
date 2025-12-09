@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.context;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -79,7 +79,7 @@ class SortedSetWithReverseInsertionOrder<E> implements Set<E> {
     }
 
     @Override
-    public <T> T[] toArray(@NotNull final T[] a) {
+    public <T> T[] toArray(@NonNull final T[] a) {
         throw new UnsupportedOperationException();
     }
 
@@ -89,22 +89,22 @@ class SortedSetWithReverseInsertionOrder<E> implements Set<E> {
     }
 
     @Override
-    public boolean containsAll(@NotNull final Collection<?> c) {
+    public boolean containsAll(@NonNull final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean addAll(@NotNull final Collection<? extends E> c) {
+    public boolean addAll(@NonNull final Collection<? extends E> c) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean retainAll(@NotNull final Collection<?> c) {
+    public boolean retainAll(@NonNull final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean removeAll(@NotNull final Collection<?> c) {
+    public boolean removeAll(@NonNull final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 

@@ -23,7 +23,7 @@ import org.instancio.spi.InstancioServiceProvider.SetterMethodResolver;
 import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.ServiceProviderContext;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.documentation.VisibleForTesting;
 
 import java.util.List;
 

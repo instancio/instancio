@@ -55,9 +55,7 @@ class CollectionUtilsTest {
         //noinspection ConstantConditions
         assertThat(CollectionUtils.isNullOrEmpty((Map<?, ?>) null)).isTrue();
         assertThat(CollectionUtils.isNullOrEmpty(Collections.emptyMap())).isTrue();
-        assertThat(CollectionUtils.isNullOrEmpty(new HashMap<String, String>() {{
-            put("foo", "bar");
-        }})).isFalse();
+        assertThat(CollectionUtils.isNullOrEmpty(Map.of("foo", "bar"))).isFalse();
     }
 
     @Test

@@ -18,7 +18,7 @@ package org.instancio.internal.assigners;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.spi.InstancioServiceProvider.SetterMethodResolver;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.List;

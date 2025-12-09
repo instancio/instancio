@@ -16,7 +16,7 @@
 package org.instancio.internal;
 
 import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -65,7 +65,7 @@ public final class DelayedNodeQueue implements Iterable<DelayedNode> {
         return delayedNodes.stream();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Iterator<DelayedNode> iterator() {
         return delayedNodes.iterator();

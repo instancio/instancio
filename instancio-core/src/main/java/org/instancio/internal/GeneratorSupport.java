@@ -27,7 +27,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.util.Sonar;
 import org.instancio.internal.util.TypeUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -77,9 +77,8 @@ final class GeneratorSupport {
         return false;
     }
 
-    @Nullable
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    static AbstractGenerator<?> unpackAbstractGenerator(final Generator<?> generator) {
+    static @Nullable AbstractGenerator<?> unpackAbstractGenerator(final Generator<?> generator) {
         if (generator instanceof AbstractGenerator<?> g) {
             return g;
         }

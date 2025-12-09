@@ -18,14 +18,14 @@ package org.instancio.internal.settings;
 import org.instancio.internal.ApiValidator;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
 
 public final class InternalKey<T>
-        implements SettingKey<T>, AutoAdjustable, Comparable<SettingKey<T>> {
+        implements SettingKey<T>, AutoAdjustable, Comparable<InternalKey<T>> {
 
     private final String propertyKey;
     private final Class<?> type;
@@ -89,8 +89,8 @@ public final class InternalKey<T>
     @Override
     @SuppressWarnings("unchecked")
     public <N extends Number & Comparable<N>> void autoAdjust(
-            @NotNull final Settings settings,
-            @NotNull final N otherValue) {
+            @NonNull final Settings settings,
+            @NonNull final N otherValue) {
 
         if (rangeAdjuster != null) {
             final SettingKey<N> key = (SettingKey<N>) this;
@@ -112,7 +112,7 @@ public final class InternalKey<T>
     }
 
     @Override
-    public int compareTo(final SettingKey<T> o) {
+    public int compareTo(final InternalKey<T> o) {
         return propertyKey.compareTo(o.propertyKey());
     }
 
