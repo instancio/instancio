@@ -47,7 +47,7 @@ public class OptionalGenerator<T> extends AbstractGenerator<Optional<T>>
     }
 
     @Override
-    @SuppressWarnings({"OptionalAssignedToNull", Sonar.NULL_OPTIONAL})
+    @SuppressWarnings({"OptionalAssignedToNull", Sonar.NULL_OPTIONAL, "NullableOptional"})
     public @Nullable Optional<T> tryGenerateNonNull(final Random random) {
         if (random.diceRoll(allowEmpty)) {
             return Optional.empty();

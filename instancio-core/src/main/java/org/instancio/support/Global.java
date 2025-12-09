@@ -20,7 +20,6 @@ import org.instancio.documentation.InternalApi;
 import org.instancio.internal.context.PropertiesLoader;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 @InternalApi
@@ -30,6 +29,7 @@ public final class Global {
             .merge(Settings.from(PropertiesLoader.loadDefaultPropertiesFile()))
             .lock();
 
+    @Nullable
     private static final Random CONFIGURED_RANDOM = PROPERTIES_FILE_SETTINGS.get(Keys.SEED) == null
             ? null : new DefaultRandom(PROPERTIES_FILE_SETTINGS.get(Keys.SEED), Seeds.Source.GLOBAL);
 
@@ -38,7 +38,6 @@ public final class Global {
      *
      * @return settings from properties file
      */
-    @NonNull
     public static Settings getPropertiesFileSettings() {
         return PROPERTIES_FILE_SETTINGS;
     }
