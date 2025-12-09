@@ -26,6 +26,7 @@ import org.instancio.internal.util.Verify;
 import org.instancio.junit.GivenProvider;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.ParameterizedType;
@@ -37,10 +38,11 @@ import java.util.stream.Stream;
 @InternalApi
 public class ObjectCreator {
 
+    @Nullable
     private final Settings settings;
     private final Random random;
 
-    public ObjectCreator(final Settings settings, final Random random) {
+    public ObjectCreator(final @Nullable Settings settings, final @Nullable Random random) {
         this.settings = settings;
         this.random = Verify.notNull(random, "null random");
     }

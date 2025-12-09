@@ -16,12 +16,15 @@
 package org.instancio.junit.internal;
 
 import org.instancio.Random;
+import org.instancio.documentation.Initializer;
+import org.instancio.internal.util.Verify;
 import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
@@ -46,6 +49,7 @@ public class InstancioSourceArgumentsProvider
 
     private InstancioSource instancioSource;
 
+    @Initializer
     @Override
     public void accept(final InstancioSource instancioSource) {
         this.instancioSource = instancioSource;
@@ -58,11 +62,11 @@ public class InstancioSourceArgumentsProvider
 
         ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
 
-        final Random random = threadLocalRandom.get();
+        final Random random = Verify.notNull(threadLocalRandom.get(), "null random");
         final Settings settings = threadLocalSettings.get();
         final int samples = getNumberOfSamples(settings);
 
-        final InstancioSourceState state = new InstancioSourceState(threadLocalRandom.get().getSeed(), samples);
+        final InstancioSourceState state = new InstancioSourceState(random.getSeed(), samples);
         context.getStore(INSTANCIO_NAMESPACE).put(INSTANCIO_SOURCE_STATE, state);
 
         return Stream
@@ -73,7 +77,7 @@ public class InstancioSourceArgumentsProvider
                 .limit(samples);
     }
 
-    private int getNumberOfSamples(Settings threadLocalSettings) {
+    private int getNumberOfSamples(@Nullable Settings threadLocalSettings) {
         if (instancioSource.samples() > 0) {
             return instancioSource.samples();
         }
@@ -86,7 +90,7 @@ public class InstancioSourceArgumentsProvider
         return Global.getPropertiesFileSettings().get(Keys.INSTANCIO_SOURCE_SAMPLES);
     }
 
-    private static Object[] createObjects(final ParameterDeclarations parameters, final Random random, final Settings settings) {
+    private static Object[] createObjects(final ParameterDeclarations parameters, final @Nullable Random random, final @Nullable Settings settings) {
         return parameters.getAll().stream()
                 .map(ParameterDeclaration::getAnnotatedElement)
                 .map(Parameter.class::cast)

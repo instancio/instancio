@@ -16,6 +16,7 @@
 package org.instancio.junit.internal;
 
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -58,7 +59,7 @@ public final class ReflectionUtils {
     }
 
     @SuppressWarnings("java:S3011")
-    static Object getFieldValue(final Field field, final Object target) {
+    static @Nullable Object getFieldValue(final Field field, final @Nullable Object target) {
         try {
             field.setAccessible(true);
             return field.get(target);

@@ -15,8 +15,6 @@
  */
 package org.instancio.junit.internal;
 
-import org.jspecify.annotations.Nullable;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -33,7 +31,7 @@ public class FieldAnnotationMap {
         }
     }
 
-    public @Nullable List<Annotation> get(final Field field) {
-        return map.get(field);
+    public List<Annotation> get(final Field field) {
+        return map.getOrDefault(field, List.of());
     }
 }
