@@ -1,3 +1,7 @@
+---
+description: "Official Instancio reference documentation. Covers core APIs, object generation, selectors, Models, settings, and JUnit 5 integration."
+---
+
 ## Introduction
 
 ### Overview

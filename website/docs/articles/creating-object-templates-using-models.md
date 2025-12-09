@@ -2,6 +2,7 @@
 hide:
   - navigation
   - toc
+description: "Create reusable object templates with Instancio Models. Simplify Java test data setup, reduce duplication, and handle complex validation scenarios."
 ---
 
 # Creating object templates using Models

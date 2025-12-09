@@ -2,6 +2,7 @@
 hide:
   - navigation
   - toc
+description: "Instructions for building Instancio from sources and MkDocs documentation site."
 ---
 
 # Building From Sources

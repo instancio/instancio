@@ -2,6 +2,7 @@
 hide:
   - navigation
   - toc
+description: "Get started with Instancio. Install dependencies via Maven or Gradle using instancio-core or instancio-junit."
 ---
 
 # Getting Started

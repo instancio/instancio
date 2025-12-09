@@ -2,6 +2,7 @@
 hide:
   - navigation
   - toc
+description: "Use Instancio with JUnit 5. Reproduce failures with @Seed, apply custom settings with @WithSettings, and generate data with @InstancioSource."
 ---
 
 # Using Instancio with JUnit 5

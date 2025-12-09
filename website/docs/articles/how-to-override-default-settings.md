@@ -2,6 +2,7 @@
 hide:
   - navigation
   - toc
+description: "Override Instancio settings globally, per test, or per object. Configure collections, nullability, number ranges, and other test data defaults."
 ---
 
 # How to override default settings
