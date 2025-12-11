@@ -18,16 +18,14 @@ package org.instancio.internal.generator.domain.id.pol;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.pol.NipSpec;
-import org.instancio.internal.util.CollectionUtils;
 import org.instancio.settings.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.instancio.support.Log;
 
 import java.util.List;
 
 public class NipGenerator extends WeightsModCheckGenerator implements NipSpec {
-    private static final Logger LOG = LoggerFactory.getLogger(NipGenerator.class);
-    private static final List<Integer> NIP_WEIGHTS = CollectionUtils.asUnmodifiableList(6, 5, 7, 2, 3, 4, 5, 6, 7);
+
+    private static final List<Integer> NIP_WEIGHTS = List.of(6, 5, 7, 2, 3, 4, 5, 6, 7);
     private static final String FALLBACK = "123456321";
 
     public NipGenerator(final GeneratorContext context) {
@@ -54,12 +52,13 @@ public class NipGenerator extends WeightsModCheckGenerator implements NipSpec {
                 return payload;
             }
         }
-        LOG.atWarn()
-                .setMessage("Max attempts reached {} (configurable with the setting {}), " +
-                        "returning a static fallback to guarantee a valid Nip code")
-                .addArgument(maxGenerationAttempts)
-                .addArgument(Keys.MAX_GENERATION_ATTEMPTS::propertyKey)
-                .log();
+
+        Log.msg(Log.Category.MAX_GENERATION_ATTEMPTS,
+                "Max generation attempts ({}) reached (configurable via '{}'). " +
+                "Using static fallback Nip code.",
+                maxGenerationAttempts,
+                Keys.MAX_GENERATION_ATTEMPTS.propertyKey());
+
         return FALLBACK;
     }
 

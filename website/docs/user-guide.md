@@ -4068,11 +4068,11 @@ The table below summarises these categories and their corresponding log levels:
 | Level   | Category                                                                                                                                                     |
 |---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `WARN`  | **`org.instancio.log.max.depth.reached`**{ title="Logs a message when the maximum object graph depth limit is reached." }                                    |
+| `WARN`  | **`org.instancio.log.max.generation.attempts.reached`**{ title="Logs a message when the maximum number of generation attempts is reached." }                 |
 | `DEBUG` | **`org.instancio.log.properties`**{ title="Logs whether the instancio.properties file was found on the classpath or if default properties are being used." } |
 | `TRACE` | **`org.instancio.log.seed`**{ title="Logs the effective seed value and its source." }                                                                        |
 | `TRACE` | **`org.instancio.log.settings`**{ title="Logs the current Settings configuration." }                                                                         |
 | `WARN`  | **`org.instancio.log.suppressed.error`**{ title="Logs exceptions that were suppressed instead of thrown, typically when Keys.FAIL_ON_ERROR is disabled." }   |
-
 
 
 In addition to logging, the builder API provides the `verbose()` method that outputs

@@ -54,6 +54,18 @@ public final class Log {
         MAX_DEPTH_REACHED(Level.WARN, "org.instancio.log.max.depth.reached"),
 
         /**
+         * Logs a message when the maximum number of generation attempts is reached.
+         *
+         * <p>This typically indicates that Instancio was unable to generate
+         * a valid value within the configured attempt limit and is falling back
+         * to a static default to ensure a valid result.
+         *
+         * @see Keys#MAX_GENERATION_ATTEMPTS
+         * @since 6.0.0
+         */
+        MAX_GENERATION_ATTEMPTS(Level.WARN, "org.instancio.log.max.generation.attempts.reached"),
+
+        /**
          * Logs whether the {@code instancio.properties} file was found
          * on the classpath or if default properties are being used.
          *
