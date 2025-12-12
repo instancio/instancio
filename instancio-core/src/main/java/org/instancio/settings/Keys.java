@@ -249,6 +249,17 @@ public final class Keys {
             "fail.on.max.depth.reached", Boolean.class, false);
 
     /**
+     * Indicates whether an error should be thrown when a value cannot be
+     * generated within the configured {@link #MAX_GENERATION_ATTEMPTS};
+     * default is {@code false}; property name {@code fail.on.max.generation.attempts.reached}.
+     *
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Boolean> FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED = registerRequiredNonAdjustable(
+            "fail.on.max.generation.attempts.reached", Boolean.class, true);
+
+    /**
      * Specifies minimum value for floats;
      * default is 1; property name {@code float.min}.
      */

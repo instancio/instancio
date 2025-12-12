@@ -17,7 +17,10 @@ package org.instancio.test.features.generator.id.pol;
 
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.Keys;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
@@ -27,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.root;
 
 @FeatureTag(Feature.GENERATOR)
@@ -54,5 +58,16 @@ class NipGeneratorTest {
                 .limit(Constants.SAMPLE_SIZE_DDD);
 
         assertThat(result).containsNull();
+    }
+
+    @Test
+    void whenNipGenerationAttemptsExceeded_shouldThrowException() {
+        final InstancioApi<String> api = Instancio.of(String.class)
+                .withSetting(Keys.MAX_GENERATION_ATTEMPTS, 0)
+                .generate(root(), gen -> gen.id().pol().nip());
+
+        assertThatThrownBy(api::create)
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("Unable to generate a valid NIP within the maximum of 0 attempts (configurable via 'max.generation.attempts')");
     }
 }

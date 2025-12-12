@@ -43,12 +43,14 @@ class NipBVTest {
     }
 
     @Test
-    void nipMaxAttemptsReached() {
+    void whenFailOnMaxGenerationAttemptsReachedDisabled_shouldGenerateDefaultNip() {
         var results = Instancio.ofList(NipBV.class)
                 .size(SAMPLE_SIZE_DDD)
                 .withSetting(Keys.MAX_GENERATION_ATTEMPTS, 0)
                 .withSetting(Keys.COLLECTION_NULLABLE, false)
+                .withSetting(Keys.FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED, false)
                 .create();
+
         assertThat(results)
                 .hasSize(SAMPLE_SIZE_DDD)
                 .allSatisfy(HibernateValidatorUtil::assertValid)
