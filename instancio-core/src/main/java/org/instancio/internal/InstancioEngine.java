@@ -42,6 +42,7 @@ import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.RecordUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
+import org.instancio.support.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -166,8 +167,18 @@ class InstancioEngine {
 
         while (!context.isAccepted(node, generatorResult.getValue())) {
             if (++retryCount > maxGenerationAttempts) {
-                throw Fail.withUsageError(ErrorMessageUtils.maxGenerationAttemptsExceeded(
-                        node, maxGenerationAttempts));
+
+                if (context.getSettings().get(Keys.FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED)) {
+                    throw Fail.withUsageError(ErrorMessageUtils.maxGenerationAttemptsExceeded(
+                            node, maxGenerationAttempts));
+                } else {
+                    Log.msg(Log.Category.MAX_GENERATION_ATTEMPTS,
+                            "Max generation attempts ({}) reached (configurable via '{}'). " +
+                            "Using random value as fallback.",
+                            maxGenerationAttempts,
+                            Keys.MAX_GENERATION_ATTEMPTS.propertyKey());
+                    break;
+                }
             }
             generatorResult = doCreateObject(node, isNullable);
         }

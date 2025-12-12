@@ -363,7 +363,8 @@ interface BaseApi<T> {
      * If a value is rejected, a new value will be generated,
      * which will also be tested against the {@code predicate}.
      * If no value is accepted after {@link Keys#MAX_GENERATION_ATTEMPTS},
-     * an exception will be thrown.
+     * an exception is thrown by default, unless configured otherwise
+     * using {@link Keys#FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED}.
      *
      * <p>A simple example is to generate a list of even numbers:
      * <pre>{@code
@@ -380,6 +381,7 @@ interface BaseApi<T> {
      * @param predicate that must be satisfied by the generated value
      * @param <V>       the type of object the predicate is evaluated against
      * @return API builder reference
+     * @see Keys#FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED
      * @see Keys#MAX_GENERATION_ATTEMPTS
      * @since 4.6.0
      */
@@ -735,8 +737,9 @@ interface BaseApi<T> {
      * }</pre>
      *
      * <p>If it is impossible to generate a sufficient number of
-     * unique values after a certain number of attempts,
-     * an exception will be thrown:
+     * unique values after {@link Keys#MAX_GENERATION_ATTEMPTS},
+     * an exception is thrown by default, unless configured otherwise
+     * using {@link Keys#FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED}.
      *
      * <pre>{@code
      * List<Boolean> results = Instancio.ofList(Boolean.class)
@@ -747,6 +750,8 @@ interface BaseApi<T> {
      *
      * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference
+     * @see Keys#FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED
+     * @see Keys#MAX_GENERATION_ATTEMPTS
      * @since 4.8.0
      */
     @ExperimentalApi
