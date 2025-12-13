@@ -18,6 +18,7 @@ package org.instancio.internal.generator.domain.id.pol;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.pol.NipSpec;
+import org.instancio.internal.util.Fail;
 import org.instancio.settings.Keys;
 import org.instancio.support.Log;
 
@@ -51,6 +52,13 @@ public class NipGenerator extends WeightsModCheckGenerator implements NipSpec {
             if (modulo(payload) < 10) {
                 return payload;
             }
+        }
+
+        if (getContext().getSettings().get(Keys.FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED)) {
+            throw Fail.withUsageError(
+                    "Unable to generate a valid NIP within the maximum of %s attempts (configurable via '%s')",
+                    maxGenerationAttempts,
+                    Keys.MAX_GENERATION_ATTEMPTS.propertyKey());
         }
 
         Log.msg(Log.Category.MAX_GENERATION_ATTEMPTS,

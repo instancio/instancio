@@ -18,6 +18,8 @@ package org.instancio.test.features.filter;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.Keys;
+import org.instancio.test.support.conditions.Conditions;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.tags.Feature;
@@ -68,5 +70,15 @@ class FilterBasicTest {
                 .create();
 
         assertThat(result).isTrue();
+    }
+
+    @Test
+    void whenFailOnMaxGenerationAttemptsReached_isFalse_shouldFallBackToRandomValue() {
+        final String result = Instancio.of(String.class)
+                .withSetting(Keys.FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED, false)
+                .filter(root(), (String s) -> s.equals("will never match"))
+                .create();
+
+        assertThat(result).is(Conditions.RANDOM_STRING);
     }
 }
