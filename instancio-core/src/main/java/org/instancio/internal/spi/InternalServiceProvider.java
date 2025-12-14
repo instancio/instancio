@@ -33,11 +33,11 @@ import java.util.function.Function;
 @InternalApi
 public interface InternalServiceProvider {
 
-    default InternalContainerFactoryProvider getContainerFactoryProvider() {
+    default @Nullable InternalContainerFactoryProvider getContainerFactoryProvider() {
         return null;
     }
 
-    default InternalGetterMethodFieldResolver getGetterMethodFieldResolver() {
+    default @Nullable InternalGetterMethodFieldResolver getGetterMethodFieldResolver() {
         return null;
     }
 
@@ -60,7 +60,7 @@ public interface InternalServiceProvider {
          * @param methodName     the method name extracted from method reference
          * @return resolved field or {@code null} if the field could not be resolved
          */
-        Field resolveField(Class<?> declaringClass, String methodName);
+        @Nullable Field resolveField(Class<?> declaringClass, String methodName);
     }
 
     /**

@@ -25,6 +25,7 @@ import org.instancio.generators.Generators;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -111,7 +112,7 @@ public interface InstancioServiceProvider {
      * @return a custom generator provider, or {@code null} if not required
      * @since 2.11.0
      */
-    default GeneratorProvider getGeneratorProvider() {
+    default @Nullable GeneratorProvider getGeneratorProvider() {
         return null;
     }
 
@@ -121,7 +122,7 @@ public interface InstancioServiceProvider {
      * @return a custom type resolver, or {@code null} if not required
      * @since 2.11.0
      */
-    default TypeResolver getTypeResolver() {
+    default @Nullable TypeResolver getTypeResolver() {
         return null;
     }
 
@@ -131,7 +132,7 @@ public interface InstancioServiceProvider {
      * @return a custom type instantiator, or {@code null} if not required
      * @since 2.11.0
      */
-    default TypeInstantiator getTypeInstantiator() {
+    default @Nullable TypeInstantiator getTypeInstantiator() {
         return null;
     }
 
@@ -142,7 +143,7 @@ public interface InstancioServiceProvider {
      * @since 3.2.0
      */
     @ExperimentalApi
-    default SetterMethodResolver getSetterMethodResolver() {
+    default @Nullable SetterMethodResolver getSetterMethodResolver() {
         return null;
     }
 
@@ -153,7 +154,7 @@ public interface InstancioServiceProvider {
      * @since 4.5.0
      */
     @ExperimentalApi
-    default AnnotationProcessor getAnnotationProcessor() {
+    default @Nullable AnnotationProcessor getAnnotationProcessor() {
         return null;
     }
 
@@ -181,7 +182,7 @@ public interface InstancioServiceProvider {
          *                               does not implement {@link Generator}
          * @since 2.11.0
          */
-        GeneratorSpec<?> getGenerator(Node node, Generators generators);
+        @Nullable GeneratorSpec<?> getGenerator(Node node, Generators generators);
     }
 
     /**
@@ -221,7 +222,7 @@ public interface InstancioServiceProvider {
          *                               a subtype of the argument class
          * @since 2.11.0
          */
-        Class<?> getSubtype(Class<?> type);
+        @Nullable Class<?> getSubtype(Class<?> type);
     }
 
     /**
@@ -255,7 +256,7 @@ public interface InstancioServiceProvider {
          *                               instance of the specified {@code type}
          * @since 2.11.0
          */
-        Object instantiate(Class<?> type);
+        @Nullable Object instantiate(Class<?> type);
     }
 
     /**
@@ -281,7 +282,7 @@ public interface InstancioServiceProvider {
          * @since 3.2.0
          */
         @ExperimentalApi
-        Method getSetter(Node node);
+        @Nullable Method getSetter(Node node);
     }
 
     /**

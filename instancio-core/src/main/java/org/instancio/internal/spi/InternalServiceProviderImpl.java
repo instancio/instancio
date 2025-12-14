@@ -41,7 +41,7 @@ public final class InternalServiceProviderImpl implements InternalServiceProvide
         private static final String IS_PREFIX = "is";
 
         @Override
-        public Field resolveField(final Class<?> declaringClass, final String methodName) {
+        public @Nullable Field resolveField(final Class<?> declaringClass, final String methodName) {
             if (hasPrefix(GET_PREFIX, methodName)) {
                 final Field field = getFieldNameByRemovingPrefix(declaringClass, methodName, GET_PREFIX.length());
                 if (field != null) return field;
@@ -73,7 +73,7 @@ public final class InternalServiceProviderImpl implements InternalServiceProvide
 
         @Override
         @SuppressWarnings({"rawtypes", "unchecked"})
-        public <S, T> Function<S, T> getMappingFunction(
+        public <S, T> @Nullable Function<S, T> getMappingFunction(
                 final Class<T> targetType,
                 final List<Class<?>> typeArguments) {
 

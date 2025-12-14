@@ -28,6 +28,7 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("NullAway") // The @Nullable generic parameter confuses NullAway https://github.com/uber/NullAway/issues/1128
 class ProviderEntryTest {
 
     private static final GeneratorProvider NOOP_GENERATOR_PROVIDER = (node, generators) -> null;

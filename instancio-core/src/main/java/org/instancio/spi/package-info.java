@@ -16,4 +16,7 @@
 /**
  * Defines Service Provider Interfaces for providing custom implementations.
  */
+@NullMarked
 package org.instancio.spi;
+
+import org.jspecify.annotations.NullMarked;
