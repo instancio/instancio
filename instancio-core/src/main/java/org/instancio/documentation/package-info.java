@@ -16,4 +16,7 @@
 /**
  * API documentation classes.
  */
+@NullMarked
 package org.instancio.documentation;
+
+import org.jspecify.annotations.NullMarked;
