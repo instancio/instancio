@@ -22,6 +22,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.domain.internet.Ip4Generator;
+import org.instancio.internal.util.Verify;
 
 public class GuavaHostAndPortGenerator implements Generator<HostAndPort> {
 
@@ -37,7 +38,7 @@ public class GuavaHostAndPortGenerator implements Generator<HostAndPort> {
 
     @Override
     public HostAndPort generate(final Random random) {
-        final String host = ip4Generator.generate(random);
+        final String host = Verify.notNull(ip4Generator.generate(random), "host not null");
         final int port = random.intRange(MIN_PORT, MAX_PORT);
         return HostAndPort.fromParts(host, port);
     }

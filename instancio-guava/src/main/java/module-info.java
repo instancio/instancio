@@ -1,3 +1,6 @@
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 module org.instancio.guava {
     requires transitive org.instancio.core;
 

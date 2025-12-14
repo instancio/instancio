@@ -22,6 +22,7 @@ import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A class for generating values of a specific type.
@@ -59,7 +60,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * @return generated value or {@code null} if value is nullable,
      * could not be generated, or generation is delegated to the engine
      */
-    T generate(Random random);
+    @Nullable T generate(Random random);
 
     /**
      * Hints provided by the generator to the engine.

@@ -168,6 +168,7 @@
                                         -XepOpt:NullAway:OnlyNullMarked
                                         -XepOpt:NullAway:JSpecifyMode
                                         -XepOpt:NullAway:HandleTestAssertionLibraries
+                                        -XepOpt:NullAway:KnownInitializers=org.instancio.generator.Generator.init,org.instancio.spi.InstancioServiceProvider.init
                                     </arg>
                                 </compilerArgs>
                                 <annotationProcessorPaths>
