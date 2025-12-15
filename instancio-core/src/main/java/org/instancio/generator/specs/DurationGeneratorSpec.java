@@ -23,7 +23,9 @@ import java.time.temporal.TemporalUnit;
  *
  * @since 1.5.4
  */
-public interface DurationGeneratorSpec extends NullableGeneratorSpec<Duration> {
+public interface DurationGeneratorSpec extends
+        AsGeneratorSpec<Duration>,
+        NullableGeneratorSpec<Duration> {
 
     /**
      * Generate a {@link Duration} greater than or equal to the specified amount.
