@@ -26,6 +26,7 @@ import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.interfaces.PropertiesInterface;
 import org.instancio.test.support.pojo.interfaces.PropertiesInterfaceImpl;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -205,7 +206,7 @@ class SettingsTest {
                     .set(Keys.ARRAY_MAX_LENGTH, newMaxLength);
 
             final int expected = newMaxLength - newMaxLength * Constants.RANGE_ADJUSTMENT_PERCENTAGE / 100;
-            final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
+            final Integer newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
             assertThat(newMin).isEqualTo(expected);
         }
 
@@ -288,7 +289,7 @@ class SettingsTest {
         }
 
         private static <T extends Number & Comparable<T>> void assertRange(
-                final Settings settings, final SettingKey<T> min, final SettingKey<T> max, final T zero) {
+                final Settings settings, final SettingKey<@NonNull T> min, final SettingKey<@NonNull T> max, final T zero) {
 
             assertThat(settings.get(min)).isLessThan(zero);
             assertThat(settings.get(max)).isEqualTo(zero);
@@ -307,7 +308,7 @@ class SettingsTest {
 
             ((InternalSettings) settings).set(Keys.ARRAY_MAX_LENGTH, newMaxLength, AUTO_ADJUST_DISABLED);
 
-            final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
+            final Integer newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
             assertThat(newMin).isEqualTo(minLength);
         }
     }
@@ -366,6 +367,7 @@ class SettingsTest {
             assertThatNoException().isThrownBy(() -> settings.set(key, null));
         }
 
+        @SuppressWarnings("NullAway")
         @Test
         void nullKeyNotAllowed() {
             assertThatThrownBy(() -> settings.set(null, "some value"))

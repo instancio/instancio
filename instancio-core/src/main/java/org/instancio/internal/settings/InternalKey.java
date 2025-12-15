@@ -18,7 +18,6 @@ package org.instancio.internal.settings;
 import org.instancio.internal.ApiValidator;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
@@ -28,9 +27,9 @@ public final class InternalKey<T>
         implements SettingKey<T>, AutoAdjustable, Comparable<InternalKey<T>> {
 
     private final String propertyKey;
-    private final Class<?> type;
-    private final Object defaultValue;
-    private final RangeAdjuster rangeAdjuster;
+    private final @Nullable Class<?> type;
+    private final @Nullable Object defaultValue;
+    private final @Nullable RangeAdjuster rangeAdjuster;
     private final boolean allowsNullValue;
     private final boolean allowsNegative;
 
@@ -46,7 +45,7 @@ public final class InternalKey<T>
      *                        only needed if {@code rangeAdjuster} is specified
      */
     public InternalKey(final String propertyKey,
-                       final Class<?> type,
+                       @Nullable final Class<?> type,
                        @Nullable final Object defaultValue,
                        @Nullable final RangeAdjuster rangeAdjuster,
                        final boolean allowsNullValue,
@@ -67,13 +66,13 @@ public final class InternalKey<T>
 
     @Override
     @SuppressWarnings("unchecked")
-    public Class<T> type() {
+    public @Nullable Class<T> type() {
         return (Class<T>) type;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public T defaultValue() {
+    public @Nullable T defaultValue() {
         return (T) defaultValue;
     }
 
@@ -89,8 +88,8 @@ public final class InternalKey<T>
     @Override
     @SuppressWarnings("unchecked")
     public <N extends Number & Comparable<N>> void autoAdjust(
-            @NonNull final Settings settings,
-            @NonNull final N otherValue) {
+            final Settings settings,
+            final N otherValue) {
 
         if (rangeAdjuster != null) {
             final SettingKey<N> key = (SettingKey<N>) this;
@@ -119,7 +118,7 @@ public final class InternalKey<T>
     @Override
     public String toString() {
         return String.format("SettingKey[propertyKey=%s, type=%s]",
-                propertyKey, type.getSimpleName());
+                propertyKey, type != null ? type.getSimpleName() : "not specified");
     }
 
     public static <T> SettingKeyBuilder<T> builder(final Class<T> type) {
@@ -128,7 +127,7 @@ public final class InternalKey<T>
 
     public static final class InternalKeyBuilder<T> implements SettingKeyBuilder<T> {
         private final Class<T> type;
-        private String propertyKey;
+        private @Nullable String propertyKey;
 
         private InternalKeyBuilder(final Class<T> type) {
             this.type = ApiValidator.notNull(type, "type must not be null");

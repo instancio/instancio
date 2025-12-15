@@ -57,6 +57,7 @@ class KeysTest {
         assertThat(key.allowsNullValue()).isTrue();
     }
 
+    @SuppressWarnings("NullAway")
     @Test
     void validationNullType() {
         assertThatThrownBy(() -> Keys.ofType(null))
@@ -64,6 +65,7 @@ class KeysTest {
                 .hasMessageContaining("type must not be null");
     }
 
+    @SuppressWarnings("NullAway")
     @Test
     void validationNullPropertyKey() {
         final SettingKey.SettingKeyBuilder<String> builder = Keys.ofType(String.class);

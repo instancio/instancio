@@ -48,6 +48,7 @@ class SettingsCustomKeyTest {
         assertThat(key.propertyKey()).isEqualTo("xyz");
     }
 
+    @SuppressWarnings("NullAway")
     @Test
     void validation() {
         assertThatThrownBy(() -> Keys.ofType(null))

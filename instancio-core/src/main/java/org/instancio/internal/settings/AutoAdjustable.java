@@ -17,7 +17,6 @@ package org.instancio.internal.settings;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.settings.Settings;
-import org.jspecify.annotations.NonNull;
 
 /**
  * Represents a setting that can be auto-adjusted based on the value
@@ -40,6 +39,6 @@ public interface AutoAdjustable {
      * @since 2.11.0
      */
     <N extends Number & Comparable<N>> void autoAdjust(
-            @NonNull Settings settings,
-            @NonNull N otherValue);
+            Settings settings,
+            N otherValue);
 }

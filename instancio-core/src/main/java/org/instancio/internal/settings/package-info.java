@@ -18,4 +18,7 @@
  *
  * <p><b>Classes within this package are not part of the public API.</b></p>
  */
+@NullMarked
 package org.instancio.internal.settings;
+
+import org.jspecify.annotations.NullMarked;

@@ -25,7 +25,6 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.settings.InternalKey;
 import org.instancio.internal.settings.RangeAdjuster;
 import org.instancio.settings.SettingKey.SettingKeyBuilder;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -835,7 +834,7 @@ public final class Keys {
      * @return the setting key, or {@code null} if none found
      */
     @SuppressWarnings("unchecked")
-    public static <T> SettingKey<T> get(@NonNull final String key) {
+    public static <T> @Nullable SettingKey<T> get(final String key) {
         return (SettingKey<T>) SETTING_KEY_MAP.get(key);
     }
 
@@ -859,8 +858,8 @@ public final class Keys {
     }
 
     private static <T> SettingKey<T> register(
-            @NonNull final String propertyKey,
-            @NonNull final Class<T> type,
+            final String propertyKey,
+            final Class<T> type,
             @Nullable final Object defaultValue,
             @Nullable final RangeAdjuster rangeAdjuster,
             final boolean allowsNullValue,
@@ -874,8 +873,8 @@ public final class Keys {
     }
 
     private static <T> SettingKey<T> registerRequiredAdjustable(
-            @NonNull final String propertyKey,
-            @NonNull final Class<T> type,
+            final String propertyKey,
+            final Class<T> type,
             @Nullable final Object defaultValue,
             @Nullable final RangeAdjuster rangeAdjuster,
             final boolean allowsNegative) {
@@ -884,9 +883,9 @@ public final class Keys {
     }
 
     private static <T> SettingKey<T> registerRequiredNonAdjustable(
-            @NonNull final String key,
-            @NonNull final Class<T> type,
-            @NonNull final Object defaultValue) {
+            final String key,
+            final Class<T> type,
+            final Object defaultValue) {
 
         return register(key, type, defaultValue, null, false, false);
     }

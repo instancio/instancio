@@ -16,6 +16,7 @@
 package org.instancio.settings;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A setting key represents a configuration item that can be
@@ -38,7 +39,7 @@ public interface SettingKey<T> {
      * @return the type of value associated with this key
      * @since 1.0.1
      */
-    Class<T> type();
+    @Nullable Class<T> type();
 
     /**
      * A unique property key identifying this setting.
@@ -55,7 +56,7 @@ public interface SettingKey<T> {
      * @return default value, or {@code null} if not defined
      * @since 1.0.1
      */
-    default T defaultValue() {
+    default @Nullable T defaultValue() {
         return null;
     }
 
