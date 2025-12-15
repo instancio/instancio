@@ -17,6 +17,7 @@ package org.instancio.settings;
 
 import org.instancio.internal.settings.InternalSettings;
 import org.instancio.internal.util.Constants;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 
@@ -108,7 +109,7 @@ public interface Settings {
      * @param <T> setting value type
      * @return value for given key, or {@code null} if none.
      */
-    <T> T get(SettingKey<T> key);
+    <T> @Nullable T get(SettingKey<T> key);
 
     /**
      * Set the setting with the given key to the specified value.
@@ -122,7 +123,7 @@ public interface Settings {
      * @param value to set, can be {@code null}
      * @return this instance of settings
      */
-    <T> Settings set(SettingKey<T> key, T value);
+    <T> Settings set(SettingKey<T> key, @Nullable T value);
 
     /**
      * Maps a supertype to a specified subtype, allowing the creation

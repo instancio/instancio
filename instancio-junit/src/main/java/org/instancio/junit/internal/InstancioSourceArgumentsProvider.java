@@ -87,7 +87,7 @@ public class InstancioSourceArgumentsProvider
                 return samples;
             }
         }
-        return Global.getPropertiesFileSettings().get(Keys.INSTANCIO_SOURCE_SAMPLES);
+        return Verify.notNull(Global.getPropertiesFileSettings().get(Keys.INSTANCIO_SOURCE_SAMPLES), "samples not null");
     }
 
     private static Object[] createObjects(final ParameterDeclarations parameters, final @Nullable Random random, final @Nullable Settings settings) {

@@ -22,7 +22,6 @@ import org.instancio.internal.util.StringConverters;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
@@ -107,7 +106,7 @@ public final class InternalSettings implements Settings {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(@NonNull final SettingKey<T> key) {
+    public <T> @Nullable T get(final SettingKey<T> key) {
         final Object value = settingsMap.get(ApiValidator.notNull(key, "Key must not be null"));
 
         if (value == null || key.type() == null || key.type().isAssignableFrom(value.getClass())) {
@@ -118,7 +117,7 @@ public final class InternalSettings implements Settings {
     }
 
     @Override
-    public <T> InternalSettings set(final SettingKey<T> key, final T value) {
+    public <T> InternalSettings set(final SettingKey<T> key, final @Nullable T value) {
         return set(key, value, AUTO_ADJUST_ENABLED);
     }
 
@@ -135,7 +134,7 @@ public final class InternalSettings implements Settings {
      * @param autoAdjust whether to auto-adjust related
      * @return this instance of settings
      */
-    <T> InternalSettings set(final SettingKey<T> key, @Nullable final T value, final boolean autoAdjust) {
+    <T> InternalSettings set(final SettingKey<T> key, final @Nullable T value, final boolean autoAdjust) {
         checkLockedForModifications();
         validateKeyValue(key, value);
         settingsMap.put(key, value);
@@ -149,7 +148,7 @@ public final class InternalSettings implements Settings {
     }
 
     @Override
-    public InternalSettings mapType(@NonNull final Class<?> type, @NonNull final Class<?> subtype) {
+    public InternalSettings mapType(final Class<?> type, final Class<?> subtype) {
         checkLockedForModifications();
         validateSubtype(type, subtype);
         subtypeMap.put(type, subtype);
