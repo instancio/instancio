@@ -16,4 +16,7 @@
 /**
  * Contains classes related to generators.
  */
+@NullMarked
 package org.instancio.generator;
+
+import org.jspecify.annotations.NullMarked;

@@ -16,4 +16,7 @@
 /**
  * Contains {@link org.instancio.generator.Hint} implementations.
  */
+@NullMarked
 package org.instancio.generator.hints;
+
+import org.jspecify.annotations.NullMarked;

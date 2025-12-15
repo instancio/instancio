@@ -201,7 +201,7 @@ public final class CollectionHint implements Hint<CollectionHint> {
         private boolean nullableElements;
         private boolean shuffle;
         private boolean unique;
-        private List<Object> withElements;
+        private @Nullable List<Object> withElements;
 
         private Builder() {
         }

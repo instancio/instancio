@@ -17,6 +17,7 @@ package org.instancio.generator.specs;
 
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.internal.util.Verify;
 
 import java.util.function.Function;
 
@@ -62,7 +63,7 @@ public interface AsGeneratorSpec<T> extends GeneratorSpec<T> {
         return (Generator<R>) random -> {
             final Generator<T> generator = (Generator<T>) this;
             final T result = generator.generate(random);
-            return mappingFunction.apply(result);
+            return mappingFunction.apply(Verify.notNull(result, "result not null"));
         };
     }
 }

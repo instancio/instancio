@@ -103,7 +103,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * @see AfterGenerate
      * @since 2.0.0
      */
-    default Hints hints() {
+    default @Nullable Hints hints() {
         return null;
     }
 }

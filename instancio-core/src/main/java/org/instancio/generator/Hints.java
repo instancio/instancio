@@ -16,6 +16,7 @@
 package org.instancio.generator;
 
 import org.instancio.internal.ApiValidator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
  */
 public final class Hints {
 
-    private final AfterGenerate afterGenerate;
+    private final @Nullable AfterGenerate afterGenerate;
     private final Map<Class<?>, Hint<?>> hintMap;
 
     private Hints(final Builder builder) {
@@ -69,7 +70,7 @@ public final class Hints {
      * @see AfterGenerate
      * @since 2.0.0
      */
-    public AfterGenerate afterGenerate() {
+    public @Nullable AfterGenerate afterGenerate() {
         return afterGenerate;
     }
 
@@ -81,7 +82,7 @@ public final class Hints {
      * @return hint with the specified type, or {@code null} if none found
      * @since 2.0.0
      */
-    public <T extends Hint<T>> T get(final Class<T> hintType) {
+    public <T extends Hint<T>> @Nullable T get(final Class<T> hintType) {
         return hintType.cast(hintMap.get(hintType));
     }
 
@@ -98,8 +99,8 @@ public final class Hints {
      * Builder for constructing {@link Hints}.
      */
     public static final class Builder {
-        private AfterGenerate afterGenerate;
-        private Map<Class<?>, Hint<?>> hintMap;
+        private @Nullable AfterGenerate afterGenerate;
+        private @Nullable Map<Class<?>, Hint<?>> hintMap;
 
         private Builder() {
         }

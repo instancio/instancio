@@ -210,8 +210,8 @@ public final class MapHint implements Hint<MapHint> {
         private int generateEntries;
         private boolean nullableMapKeys;
         private boolean nullableMapValues;
-        private Map<Object, Object> withEntries;
-        private List<Object> withKeys;
+        private @Nullable Map<Object, Object> withEntries;
+        private @Nullable List<Object> withKeys;
 
         private Builder() {
         }

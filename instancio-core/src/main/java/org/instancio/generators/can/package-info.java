@@ -19,4 +19,7 @@
  *
  * @since 3.1.0
  */
+@NullMarked
 package org.instancio.generators.can;
+
+import org.jspecify.annotations.NullMarked;
