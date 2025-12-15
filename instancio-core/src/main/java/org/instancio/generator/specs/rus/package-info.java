@@ -18,4 +18,7 @@
  *
  * @since 5.0.0
  */
+@NullMarked
 package org.instancio.generator.specs.rus;
+
+import org.jspecify.annotations.NullMarked;

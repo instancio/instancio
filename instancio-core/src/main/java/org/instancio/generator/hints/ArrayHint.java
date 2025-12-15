@@ -169,7 +169,7 @@ public final class ArrayHint implements Hint<ArrayHint> {
     public static final class Builder {
         private boolean nullableElements;
         private boolean shuffle;
-        private List<Object> withElements;
+        private @Nullable List<Object> withElements;
 
         private Builder() {
         }
