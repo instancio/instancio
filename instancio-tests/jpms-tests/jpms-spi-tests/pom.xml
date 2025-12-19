@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>jpms-tests</artifactId>
-        <version>6.0.0-RC1</version>
+        <version>6.0.0-RC2-SNAPSHOT</version>
     </parent>
     <artifactId>jpms-spi-tests</artifactId>
     <name>Instancio tests: JPMS SPI Tests</name>
