@@ -16,4 +16,7 @@
 /**
  * Provides classes for overriding settings at runtime.
  */
+@NullMarked
 package org.instancio.settings;
+
+import org.jspecify.annotations.NullMarked;

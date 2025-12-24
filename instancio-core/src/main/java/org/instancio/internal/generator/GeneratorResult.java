@@ -18,8 +18,8 @@ package org.instancio.internal.generator;
 import org.instancio.TargetSelector;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -38,7 +38,7 @@ public final class GeneratorResult {
     private final Hints hints;
     private final Type type;
 
-    private GeneratorResult(@Nullable final Object value, @NotNull final Hints hints, final Type type) {
+    private GeneratorResult(@Nullable final Object value, @NonNull final Hints hints, final Type type) {
         this.value = value;
         this.hints = Objects.requireNonNull(hints, "null hints");
         this.type = type;

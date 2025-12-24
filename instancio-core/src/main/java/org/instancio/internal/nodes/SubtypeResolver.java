@@ -22,7 +22,7 @@ import org.instancio.internal.util.SealedClassUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ final class SubtypeResolver {
      *   <li>a generator's {@code subtype()} method, e.g. {@code gen.collection().subtype()}</li>
      * </ol>
      */
-    Optional<Class<?>> resolveSubtype(@NotNull final InternalNode node) {
+    Optional<Class<?>> resolveSubtype(@NonNull final InternalNode node) {
         final Optional<Class<?>> subtype = getSubtype(node);
 
         if (subtype.isPresent()) {

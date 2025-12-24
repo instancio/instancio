@@ -23,7 +23,7 @@ import org.instancio.spi.InstancioServiceProvider.SetterMethodResolver;
 import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.ServiceProviderContext;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.documentation.VisibleForTesting;
 
 import java.util.List;
 
@@ -39,6 +39,7 @@ public final class Providers {
         this(ServiceLoaders.loadAll(InstancioServiceProvider.class), context);
     }
 
+    @SuppressWarnings("NullAway") // The @Nullable generic parameter confuses NullAway https://github.com/uber/NullAway/issues/1128
     @VisibleForTesting
     Providers(final List<InstancioServiceProvider> spList, final ServiceProviderContext context) {
         spList.forEach(sp -> sp.init(context));

@@ -19,7 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CreditCardSpec;
 import org.instancio.internal.generator.checksum.BaseModCheckGenerator;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.documentation.VisibleForTesting;
 
 public class CreditCardNumberGenerator extends BaseModCheckGenerator implements CreditCardSpec {
 

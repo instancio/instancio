@@ -19,6 +19,8 @@
  * @since 5.0.0
  */
 @ExperimentalApi
+@NullMarked
 package org.instancio.feed;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.NullMarked;

@@ -19,7 +19,6 @@ import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioServiceProvider.GeneratorProvider;
 import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -29,6 +28,7 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("NullAway") // The @Nullable generic parameter confuses NullAway https://github.com/uber/NullAway/issues/1128
 class ProviderEntryTest {
 
     private static final GeneratorProvider NOOP_GENERATOR_PROVIDER = (node, generators) -> null;
@@ -83,7 +83,6 @@ class ProviderEntryTest {
         assertThat(fn.count).isEqualTo(2);
     }
 
-    @NotNull
     private static InstancioServiceProvider createProvider() {
         return new InstancioServiceProvider() {
             @Override

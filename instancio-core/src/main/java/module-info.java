@@ -7,9 +7,10 @@ module org.instancio.core {
     requires static java.sql;
     requires static java.xml;
     requires static jdk.unsupported;
-    requires static org.jetbrains.annotations;
     requires static org.hibernate.validator;
     requires static org.apache.groovy;
+
+    requires static transitive org.jspecify;
 
     exports org.instancio;
     exports org.instancio.documentation;

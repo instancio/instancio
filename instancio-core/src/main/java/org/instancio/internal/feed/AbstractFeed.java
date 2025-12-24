@@ -35,7 +35,7 @@ import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -339,7 +339,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         }
     }
 
-    @NotNull
+    @NonNull
     private Method resolveFunctionSpecHandler(
             final SpecMethod parentSpecMethod,
             final Class<?> providerClass) {

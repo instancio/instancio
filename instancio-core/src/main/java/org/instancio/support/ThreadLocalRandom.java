@@ -17,19 +17,20 @@ package org.instancio.support;
 
 import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public final class ThreadLocalRandom {
 
     private static final ThreadLocalRandom INSTANCE = new ThreadLocalRandom();
 
-    private static final ThreadLocal<Random> RANDOM = new ThreadLocal<>();
+    private static final ThreadLocal<@Nullable Random> RANDOM = new ThreadLocal<>();
 
     private ThreadLocalRandom() {
         // non-instantiable
     }
 
-    public Random get() {
+    public @Nullable Random get() {
         return RANDOM.get();
     }
 

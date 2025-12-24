@@ -27,7 +27,8 @@ import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.UnicodeBlocks;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -207,7 +208,7 @@ public class StringGenerator extends AbstractGenerator<String>
 
     // Hot path - benchmark when making changes.
     @Override
-    public String tryGenerateNonNull(final Random random) {
+    public @Nullable String tryGenerateNonNull(final Random random) {
         if (delegate != null) {
             final Object result = delegate.generate(random);
             return result == null ? null : result.toString();
@@ -227,7 +228,7 @@ public class StringGenerator extends AbstractGenerator<String>
         return result;
     }
 
-    @NotNull
+    @NonNull
     private String generateString(final Random random) {
         if (stringType == StringType.NUMERIC_SEQUENCE) {
             return String.valueOf(++sequence);
@@ -239,7 +240,7 @@ public class StringGenerator extends AbstractGenerator<String>
                 : generateAsciiString(random, length);
     }
 
-    @NotNull
+    @NonNull
     private String generateAsciiString(final Random random, final int length) {
         final char[] fromChars = getStringCharacters();
         final char[] s = new char[length];

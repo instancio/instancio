@@ -20,7 +20,7 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.SpiGeneratorResolver;
 import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 class SpiGeneratorNodeHandler implements NodeHandler {
 
@@ -35,9 +35,9 @@ class SpiGeneratorNodeHandler implements NodeHandler {
         this.spiGeneratorResolver = spiGeneratorResolver;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public GeneratorResult getResult(@NotNull final InternalNode node) {
+    public GeneratorResult getResult(@NonNull final InternalNode node) {
         final Generator<?> generator = spiGeneratorResolver.getSpiGenerator(node);
 
         if (generator == null) {

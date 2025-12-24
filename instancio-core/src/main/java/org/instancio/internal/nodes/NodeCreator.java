@@ -26,8 +26,8 @@ import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +84,7 @@ class NodeCreator {
 
 
     @Nullable
-    InternalNode createNode(@NotNull final Type type,
+    InternalNode createNode(@NonNull final Type type,
                             @Nullable final InternalNode parent) {
 
         return createNode(type, /* member = */ null, /* setter = */ null, parent);
@@ -132,7 +132,7 @@ class NodeCreator {
      * @return created node
      */
     @Nullable
-    InternalNode createNode(@NotNull final Type type,
+    InternalNode createNode(@NonNull final Type type,
                             @Nullable final Member member,
                             @Nullable final Method setter,
                             @Nullable final InternalNode parent) {

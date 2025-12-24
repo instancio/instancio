@@ -30,7 +30,7 @@ import org.instancio.internal.util.Format;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.SettingKey;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -280,7 +280,7 @@ public final class ApiValidator {
 
     public static void validateValueIsAssignableToElementNode(
             final String errorMsg,
-            final Object value,
+            @Nullable final Object value,
             final InternalNode containerNode,
             final InternalNode elementNode) {
 
@@ -306,7 +306,7 @@ public final class ApiValidator {
 
     public static void failIfMethodSelectorIsUsedWithFieldAssignment(
             final AssignmentType assignmentType,
-            final TargetSelector setMethodSelector) {
+            @Nullable final TargetSelector setMethodSelector) {
 
         if (assignmentType == AssignmentType.FIELD && setMethodSelector != null) {
             UnusedSelectorDescription desc = (UnusedSelectorDescription) setMethodSelector;

@@ -17,6 +17,7 @@ package org.instancio.internal.spi;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.generator.InternalContainerHint;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -32,11 +33,11 @@ import java.util.function.Function;
 @InternalApi
 public interface InternalServiceProvider {
 
-    default InternalContainerFactoryProvider getContainerFactoryProvider() {
+    default @Nullable InternalContainerFactoryProvider getContainerFactoryProvider() {
         return null;
     }
 
-    default InternalGetterMethodFieldResolver getGetterMethodFieldResolver() {
+    default @Nullable InternalGetterMethodFieldResolver getGetterMethodFieldResolver() {
         return null;
     }
 
@@ -59,7 +60,7 @@ public interface InternalServiceProvider {
          * @param methodName     the method name extracted from method reference
          * @return resolved field or {@code null} if the field could not be resolved
          */
-        Field resolveField(Class<?> declaringClass, String methodName);
+        @Nullable Field resolveField(Class<?> declaringClass, String methodName);
     }
 
     /**
@@ -83,7 +84,7 @@ public interface InternalServiceProvider {
          * @param <T>           target type
          * @return conversion function, or {@code null} if not defined
          */
-        <S, T> Function<S, T> getMappingFunction(Class<T> targetType, List<Class<?>> typeArguments);
+        <S, T> @Nullable Function<S, T> getMappingFunction(Class<T> targetType, List<Class<?>> typeArguments);
 
         /**
          * Returns {@code true} if the given {@code type} represents a container.

@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.junit.internal;
+package org.instancio.documentation;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class FieldAnnotationMap {
+import static java.lang.annotation.ElementType.METHOD;
 
-    private final Map<Field, List<Annotation>> map = new HashMap<>();
-
-    public FieldAnnotationMap(final Class<?> klass) {
-        for (Field field : klass.getDeclaredFields()) {
-            map.put(field, ReflectionUtils.collectionAnnotations(field));
-        }
-    }
-
-    public List<Annotation> get(final Field field) {
-        return map.getOrDefault(field, List.of());
-    }
+/**
+ * Denotes methods that initialize {@code @NonNull} fields.
+ *
+ * @since 6.0.0
+ */
+@Documented
+@Retention(RetentionPolicy.SOURCE)
+@Target(METHOD)
+public @interface Initializer {
 }

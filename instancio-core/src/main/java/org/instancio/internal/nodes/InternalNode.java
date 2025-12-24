@@ -21,7 +21,7 @@ import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.Verify;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
