@@ -20,7 +20,7 @@ import org.instancio.feed.FeedSpec;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -50,9 +50,8 @@ public class InternalFeedSpecResolver {
      * @param node to resolve the spec for
      * @return the resolved feed spec or {@code null} if no matches found
      */
-    @Nullable
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    public FeedSpec<?> getSpec(final InternalNode node) {
+    public @Nullable FeedSpec<?> getSpec(final InternalNode node) {
         final Class<?> feedClass = feed.getFeedContext().getFeedClass();
         final String nodeFieldName = node.getField().getName();
         final boolean nodeMatchedFeedProperty = unmappedFeedProperties.remove(nodeFieldName);

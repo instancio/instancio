@@ -32,7 +32,7 @@ import org.instancio.internal.generator.domain.id.rus.InnGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
 import org.instancio.internal.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 final class HibernateBeanValidationAnnotationLibraryFacade extends AbstractAnnotationLibraryFacade {
 
@@ -111,7 +111,7 @@ final class HibernateBeanValidationAnnotationLibraryFacade extends AbstractAnnot
         return urlGenerator;
     }
 
-    @NotNull
+    @NonNull
     private static EanGenerator getEanGenerator(
             final org.hibernate.validator.constraints.EAN ean,
             final GeneratorContext context) {

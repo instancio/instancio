@@ -16,8 +16,8 @@
 package org.instancio.internal.util;
 
 import org.instancio.Random;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,7 +64,7 @@ public final class CollectionUtils {
         return map == null ? Collections.emptyMap() : Collections.unmodifiableMap(map);
     }
 
-    public static <K, E> Map<K, List<E>> asUnmodifiableLinkedHashMapOfLists(final Map<K, List<E>> map) {
+    public static <K, E> Map<K, List<E>> asUnmodifiableLinkedHashMapOfLists(@Nullable final Map<K, List<E>> map) {
         if (map == null) {
             return Collections.emptyMap();
         }
@@ -75,7 +75,7 @@ public final class CollectionUtils {
         return Collections.unmodifiableMap(copy);
     }
 
-    public static <K, E> Map<K, List<E>> copyAsLinkedHashMap(final Map<K, List<E>> map) {
+    public static <K, E> Map<K, List<E>> copyAsLinkedHashMap(@Nullable final Map<K, List<E>> map) {
         if (map == null) {
             return new LinkedHashMap<>(0);
         }
@@ -102,7 +102,7 @@ public final class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <T> Set<T> asSet(final T... values) {
+    public static <T> Set<T> asSet(@Nullable final T... values) {
         if (values == null) {
             return Collections.emptySet();
         }
@@ -112,7 +112,7 @@ public final class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <K, V> Map<K, V> asLinkedHashMap(final Function<V, K> keyFn, final V... values) {
+    public static <K, V> Map<K, V> asLinkedHashMap(final Function<V, K> keyFn, @Nullable final V... values) {
         if (values == null) return Collections.emptyMap();
         final Map<K, V> map = new LinkedHashMap<>(values.length);
         for (V value : values) {
@@ -142,7 +142,7 @@ public final class CollectionUtils {
 
     // same as List.indexOf() but using '==' instead of equals()
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
-    public static int identityIndexOf(final Object obj, @NotNull final List<?> list) {
+    public static int identityIndexOf(final Object obj, @NonNull final List<?> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) == obj) {
                 return i;

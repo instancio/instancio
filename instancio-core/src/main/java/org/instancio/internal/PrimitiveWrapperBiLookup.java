@@ -15,6 +15,8 @@
  */
 package org.instancio.internal;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +47,7 @@ public final class PrimitiveWrapperBiLookup {
         return map;
     }
 
-    public static Class<?> getEquivalent(final Class<?> primitiveOrWrapper) {
+    public static @Nullable Class<?> getEquivalent(final Class<?> primitiveOrWrapper) {
         return CORE_TYPES.get(primitiveOrWrapper);
     }
 

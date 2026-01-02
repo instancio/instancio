@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -32,7 +32,7 @@ public final class ObjectUtils {
     private static final Short DEFAULT_SHORT = (short) 0;
 
     @SuppressWarnings({"unchecked", Sonar.COGNITIVE_COMPLEXITY_OF_METHOD})
-    public static <T> T defaultValue(final Class<T> type) {
+    public static <T> @Nullable T defaultValue(final Class<T> type) {
         if (type.isPrimitive()) {
             if (type == int.class) return (T) DEFAULT_INT;
             if (type == long.class) return (T) DEFAULT_LONG;
@@ -46,8 +46,8 @@ public final class ObjectUtils {
         return null;
     }
 
-    @NotNull
-    public static <T> T defaultIfNull(@Nullable final T value, @NotNull final T defaultValue) {
+    @NonNull
+    public static <T> T defaultIfNull(@Nullable final T value, @NonNull final T defaultValue) {
         return value == null ? defaultValue : value;
     }
 

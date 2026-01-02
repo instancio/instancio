@@ -32,15 +32,15 @@ class InternalServiceProviderImplTest {
         @Test
         void resolveFieldName() {
             // java beans style
-            assertThat(resolver.resolveField(BeanStylePojo.class, "getFoo").getName()).isEqualTo("foo");
-            assertThat(resolver.resolveField(BeanStylePojo.class, "isBar").getName()).isEqualTo("bar");
+            assertThat(resolver.resolveField(BeanStylePojo.class, "getFoo")).isNotNull().extracting("name").isEqualTo("foo");
+            assertThat(resolver.resolveField(BeanStylePojo.class, "isBar")).isNotNull().extracting("name").isEqualTo("bar");
 
             // property style getters (e.g. java records)
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "foo").getName()).isEqualTo("foo");
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "bar").getName()).isEqualTo("bar");
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "isBaz").getName()).isEqualTo("isBaz");
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "haz").getName()).isEqualTo("haz");
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "hasGaz").getName()).isEqualTo("hasGaz");
+            assertThat(resolver.resolveField(PropertyStylePojo.class, "foo")).isNotNull().extracting("name").isEqualTo("foo");
+            assertThat(resolver.resolveField(PropertyStylePojo.class, "bar")).isNotNull().extracting("name").isEqualTo("bar");
+            assertThat(resolver.resolveField(PropertyStylePojo.class, "isBaz")).isNotNull().extracting("name").isEqualTo("isBaz");
+            assertThat(resolver.resolveField(PropertyStylePojo.class, "haz")).isNotNull().extracting("name").isEqualTo("haz");
+            assertThat(resolver.resolveField(PropertyStylePojo.class, "hasGaz")).isNotNull().extracting("name").isEqualTo("hasGaz");
         }
     }
 }

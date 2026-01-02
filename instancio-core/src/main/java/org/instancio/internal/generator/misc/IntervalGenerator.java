@@ -23,6 +23,7 @@ import org.instancio.generator.specs.IntervalSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.PropertyBitSet;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -38,7 +39,7 @@ public class IntervalGenerator<T> extends AbstractGenerator<IntervalSupplier<T>>
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         // no validation needed for this method since
         // it's only available via Instancio.gen()
         return null;

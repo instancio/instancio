@@ -16,6 +16,7 @@
 package org.instancio.feed;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +50,7 @@ public interface DataSource {
      * @since 5.0.0
      */
     @ExperimentalApi
-    default String getName() {
+    default @Nullable String getName() {
         return null;
     }
 }

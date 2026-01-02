@@ -18,6 +18,7 @@ package org.instancio.internal.generator.time;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.time.ZoneOffset;
 
@@ -31,7 +32,7 @@ public class ZoneOffsetGenerator extends AbstractGenerator<ZoneOffset> {
     }
 
     @Override
-    public String apiMethod() {
+    public @Nullable String apiMethod() {
         return null;
     }
 

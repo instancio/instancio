@@ -1,3 +1,6 @@
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 module org.instancio.junit {
   requires transitive org.instancio.core;
 

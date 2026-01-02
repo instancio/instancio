@@ -29,7 +29,7 @@ import org.instancio.internal.generator.misc.EmitGenerator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
@@ -55,8 +55,8 @@ public final class UserSuppliedGeneratorProcessor {
         this.emitGeneratorHelper = new EmitGeneratorHelper(context);
     }
 
-    @NotNull
-    GeneratorResult getGeneratorResult(final @NotNull InternalNode node, final Generator<?> g) {
+    @NonNull
+    GeneratorResult getGeneratorResult(final @NonNull InternalNode node, final Generator<?> g) {
         final Generator<?> generator = processGenerator(g, node);
 
         if (generator instanceof EmitGenerator<?> emitGenerator) {
@@ -111,7 +111,7 @@ public final class UserSuppliedGeneratorProcessor {
         return generator;
     }
 
-    @NotNull
+    @NonNull
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     private Generator<?> resolveDelegate(final InternalNode node, final InternalGeneratorHint internalHint) {
         final Class<?> targetClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());

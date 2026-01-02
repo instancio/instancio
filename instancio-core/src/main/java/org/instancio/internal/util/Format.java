@@ -17,6 +17,7 @@ package org.instancio.internal.util;
 
 import org.instancio.Scope;
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,7 +37,7 @@ public final class Format {
     private static final String METHOD_PADDING = "  │ ";
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+\\.");
 
-    public static String formatNode(final InternalNode node) {
+    public static @Nullable String formatNode(final InternalNode node) {
         return node.getField() == null
                 ? withoutPackage(node.getType())
                 : formatField(node.getField());
@@ -111,8 +112,7 @@ public final class Format {
         return sb.append('>').toString();
     }
 
-
-    public static String formatField(final Field field) {
+    public static @Nullable String formatField(final Field field) {
         return field == null ? null : String.format("%s %s (in %s)",
                 withoutPackage(ObjectUtils.defaultIfNull(field.getGenericType(), field.getType())),
                 field.getName(),
@@ -125,7 +125,7 @@ public final class Format {
      * @param method setter method with exactly one argument
      * @return method formatted as a string
      */
-    public static String formatSetterMethod(final Method method) {
+    public static @Nullable String formatSetterMethod(final Method method) {
         return method == null ? null : String.format("%s.%s(%s)",
                 withoutPackage(method.getDeclaringClass()),
                 method.getName(),
