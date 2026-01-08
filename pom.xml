@@ -66,7 +66,7 @@
         <version.slf4j>2.0.17</version.slf4j>
         <version.error_prone_core>2.45.0</version.error_prone_core>
         <!-- plugins -->
-        <version.central-publishing-maven-plugin>0.9.0</version.central-publishing-maven-plugin>
+        <version.central-publishing-maven-plugin>0.10.0</version.central-publishing-maven-plugin>
         <version.jacoco-maven-plugin>0.8.14</version.jacoco-maven-plugin>
         <version.maven-bundle-plugin>6.0.0</version.maven-bundle-plugin>
         <version.maven-checkstyle-plugin>3.6.0</version.maven-checkstyle-plugin>
