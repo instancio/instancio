@@ -64,7 +64,7 @@
         <version.jetbrains.annotations>26.0.2-1</version.jetbrains.annotations>
         <version.junit>6.0.2</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
-        <version.error_prone_core>2.45.0</version.error_prone_core>
+        <version.error_prone_core>2.46.0</version.error_prone_core>
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.10.0</version.central-publishing-maven-plugin>
         <version.jacoco-maven-plugin>0.8.14</version.jacoco-maven-plugin>
