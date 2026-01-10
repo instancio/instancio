@@ -143,6 +143,8 @@
                             <configuration>
                                 <compilerArgs>
                                     <arg>-XDcompilePolicy=simple</arg>
+                                    <!-- Needed by ErrorProne when using Java 21 -->
+                                    <arg>-XDaddTypeAnnotationsToSymbol=true</arg>
                                     <arg>--should-stop=ifError=FLOW</arg>
                                     <arg>
                                         -Xplugin:ErrorProne
