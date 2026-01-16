@@ -46,33 +46,35 @@ import static org.instancio.internal.util.ErrorMessageUtils.createSetterSelector
 public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
-    private static final String CREATE_TYPE_TOKEN_HELP = "" +
-            "%n\tExample:" +
-            "%n\tMap<String, List<Integer>> map = Instancio.create(new TypeToken<Map<String, List<Integer>>>(){});" +
-            "%n%n\t// or the builder version" +
-            "%n\tMap<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){}).create();";
+    private static final String CREATE_TYPE_TOKEN_HELP = """
+            \tExample:
+            \tMap<String, List<Integer>> map = Instancio.create(new TypeToken<Map<String, List<Integer>>>(){});
 
-    private static final String CREATE_CLASS_HELP = "" +
-            "%n\tExample:" +
-            "%n\tPerson person = Instancio.create(Person.class);" +
-            "%n%n\t// or the builder version" +
-            "%n\tPerson person = Instancio.of(Person.class).create();";
+            \t// or the builder version
+            \tMap<String, List<Integer>> map = Instancio.of(new TypeToken<Map<String, List<Integer>>>(){}).create();""";
+
+    private static final String CREATE_CLASS_HELP = """
+            \tExample:
+            \tPerson person = Instancio.create(Person.class);
+
+            \t// or the builder version
+            \tPerson person = Instancio.of(Person.class).create();""";
 
     public static void validateRootClass(@Nullable final Type type) {
         isTrue(type != null,
                 "class must not be null"
-                        + "%n -> Please provide a valid class%n"
+                        + "%n -> Please provide a valid class%n%n"
                         + CREATE_CLASS_HELP);
     }
 
     public static Type validateTypeToken(final TypeTokenSupplier<?> typeTokenSupplier) {
         notNull(typeTokenSupplier, "type token must not be null"
-                + "%n -> Please provide a valid type token%n"
+                + "%n -> Please provide a valid type token%n%n"
                 + CREATE_TYPE_TOKEN_HELP);
 
         final Type type = typeTokenSupplier.get();
         notNull(type, "type token must not return a null Type"
-                + "%n -> Please provide a valid Type%n"
+                + "%n -> Please provide a valid Type%n%n"
                 + CREATE_TYPE_TOKEN_HELP);
 
         return type;
@@ -170,13 +172,14 @@ public final class ApiValidator {
     }
 
     public static void validateGenerateSecondArgument(final Object arg) {
-        isFalse(arg == null, () ->
-                String.format("the second argument of 'generate()' method must not be null"
-                        + "%n -> To generate a null value, use 'set(TargetSelector, null)'"
-                        + "%n%n\tExample:"
-                        + "%n\tPerson person = Instancio.of(Person.class)"
-                        + "%n\t\t.set(field(\"firstName\"), null)"
-                        + "%n\t\t.create();"));
+        isFalse(arg == null, """
+                the second argument of 'generate()' method must not be null
+                 -> To generate a null value, use 'set(TargetSelector, null)'
+
+                \tExample:
+                \tPerson person = Instancio.of(Person.class)
+                \t\t.set(field("firstName"), null)
+                \t\t.create();""");
     }
 
     public static void validateGeneratorNotNull(@Nullable final Object obj) {
@@ -188,13 +191,16 @@ public final class ApiValidator {
     }
 
     private static void validateSupplierOrGenerator(@Nullable final Object obj, final String supplierOrGenerator) {
-        isFalse(obj == null, () ->
-                String.format("null %s passed to 'supply()' method"
-                        + "%n -> To generate a null value, use 'set(TargetSelector, null)'"
-                        + "%n%n\tExample:"
-                        + "%n\tPerson person = Instancio.of(Person.class)"
-                        + "%n\t\t.set(field(\"firstName\"), null)"
-                        + "%n\t\t.create();", supplierOrGenerator));
+        final String msg = """
+                null %s passed to 'supply()' method
+                 -> To generate a null value, use 'set(TargetSelector, null)'
+
+                \tExample:
+                \tPerson person = Instancio.of(Person.class)
+                \t\t.set(field("firstName"), null)
+                \t\t.create();""";
+
+        isFalse(obj == null, () -> String.format(msg, supplierOrGenerator));
     }
 
     public static int validateSize(final int size) {
@@ -252,15 +258,20 @@ public final class ApiValidator {
         notNull(selector, "origin selector must not be null");
 
         isFalse(selector instanceof SelectorGroup,
-                "invalid origin selector%n%n" +
-                        "Assignment origin must not match more than one target." +
-                        "Therefore origin selector cannot be a group such as:%n%n" +
-                        "%s", selector);
+                """
+                        invalid origin selector
+
+                        Assignment origin must not match more than one target.
+                        Therefore origin selector cannot be a group such as:
+
+                        %s""", selector);
 
         if (selector instanceof final PrimitiveAndWrapperSelectorImpl pw) {
             throw Fail.withUsageError(
-                    "assignment origin must not be a primitive/wrapper selector such as %s%n%n" +
-                            "Please specify the type explicitly, for example: 'all(%s.class)' or 'all(%s.class)'",
+                    """
+                            assignment origin must not be a primitive/wrapper selector such as %s
+
+                            Please specify the type explicitly, for example: 'all(%s.class)' or 'all(%s.class)'""",
                     selector,
                     pw.getWrapper().getTargetClass().getSimpleName(),
                     pw.getPrimitive().getTargetClass().getSimpleName());

@@ -39,7 +39,8 @@ class ValueOfWithSelectorGroupErrorTest extends AbstractErrorMessageTestTemplate
 
                 Reason: invalid origin selector
 
-                Assignment origin must not match more than one target.Therefore origin selector cannot be a group such as:
+                Assignment origin must not match more than one target.
+                Therefore origin selector cannot be a group such as:
 
                 all(
                 	all(String)
