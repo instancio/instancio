@@ -27,7 +27,7 @@
         <version.maven-failsafe-plugin>3.5.4</version.maven-failsafe-plugin>
         <version.maven-surefire-plugin>3.5.4</version.maven-surefire-plugin>
         <version.maven-dependency-plugin>3.9.0</version.maven-dependency-plugin>
-        <version.byte.buddy>1.18.3</version.byte.buddy>
+        <version.byte.buddy>1.18.4</version.byte.buddy>
     </properties>
 
     <!-- These test modules are run against Java 17 and higher.
