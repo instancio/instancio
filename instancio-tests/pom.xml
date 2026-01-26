@@ -17,7 +17,7 @@
         <skipPublishing>true</skipPublishing>
         <version.apache.commons>3.20.0</version.apache.commons>
         <version.archunit>1.4.1</version.archunit>
-        <version.assertj>3.27.6</version.assertj>
+        <version.assertj>3.27.7</version.assertj>
         <version.equalsverifier>4.3.1</version.equalsverifier>
         <version.junit.pioneer>2.3.0</version.junit.pioneer>
         <version.logback>1.5.25</version.logback>
