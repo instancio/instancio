@@ -13,7 +13,7 @@
     <properties>
         <maven.enforcer.require.java.version>[21,)</maven.enforcer.require.java.version>
         <maven.compiler.release>21</maven.compiler.release>
-        <version.jooq>3.20.10</version.jooq>
+        <version.jooq>3.20.11</version.jooq>
     </properties>
 
     <build>
