@@ -17,8 +17,10 @@ package org.instancio.internal.generators;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CreditCardSpec;
+import org.instancio.generator.specs.CurrencySpec;
 import org.instancio.generators.FinanceSpecs;
 import org.instancio.internal.generator.domain.finance.CreditCardNumberGenerator;
+import org.instancio.internal.generator.domain.finance.CurrencyGenerator;
 
 final class FinanceSpecsImpl implements FinanceSpecs {
 
@@ -33,4 +35,8 @@ final class FinanceSpecsImpl implements FinanceSpecs {
         return new CreditCardNumberGenerator(context);
     }
 
+    @Override
+    public CurrencySpec currency() {
+        return new CurrencyGenerator(context);
+    }
 }

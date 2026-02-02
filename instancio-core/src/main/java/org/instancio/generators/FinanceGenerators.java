@@ -15,7 +15,9 @@
  */
 package org.instancio.generators;
 
+import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.specs.CreditCardGeneratorSpec;
+import org.instancio.generator.specs.CurrencyGeneratorSpec;
 
 /**
  * Contains built-in finance-related generators.
@@ -33,4 +35,13 @@ public interface FinanceGenerators {
      * @since 2.11.0
      */
     CreditCardGeneratorSpec creditCard();
+
+    /**
+     * Generates currencies.
+     *
+     * @return API builder reference
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    CurrencyGeneratorSpec currency();
 }

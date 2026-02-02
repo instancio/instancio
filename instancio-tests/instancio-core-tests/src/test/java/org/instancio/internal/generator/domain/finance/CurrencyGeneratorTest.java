@@ -13,33 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators;
+package org.instancio.internal.generator.domain.finance;
 
-import org.instancio.documentation.ExperimentalApi;
-import org.instancio.generator.specs.CreditCardSpec;
-import org.instancio.generator.specs.CurrencySpec;
+import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 
-/**
- * Provides finance-related generators.
- *
- * @since 5.0.0
- */
-public interface FinanceSpecs extends FinanceGenerators {
+class CurrencyGeneratorTest extends AbstractGeneratorTestTemplate<String, CurrencyGenerator> {
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 5.0.0
-     */
+    private final CurrencyGenerator generator = new CurrencyGenerator(getGeneratorContext());
+
     @Override
-    CreditCardSpec creditCard();
+    protected String getApiMethod() {
+        return "currency()";
+    }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 6.0.0
-     */
     @Override
-    @ExperimentalApi
-    CurrencySpec currency();
+    protected CurrencyGenerator generator() {
+        return generator;
+    }
 }
