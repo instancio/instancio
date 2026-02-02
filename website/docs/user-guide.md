@@ -4909,7 +4909,8 @@ Generators
 │   └── mod11()
 │
 ├── finance()
-│   └── creditCard()
+│   ├── creditCard()
+│   └── currency()
 │
 ├── id()
 │   ├── ean()

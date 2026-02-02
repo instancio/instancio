@@ -13,26 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.generators;
+package org.instancio.generator.specs;
 
 import org.instancio.documentation.ExperimentalApi;
-import org.instancio.generator.specs.CreditCardSpec;
-import org.instancio.generator.specs.CurrencySpec;
 
 /**
- * Provides finance-related generators.
+ * Spec for generating currency values as strings.
  *
- * @since 5.0.0
+ * <p>Allows generating either ISO 4217 currency codes (e.g. {@code "USD"})
+ * or currency symbols (e.g. {@code "$"}).
+ *
+ * @since 6.0.0
  */
-public interface FinanceSpecs extends FinanceGenerators {
+@ExperimentalApi
+public interface CurrencyGeneratorSpec extends
+        AsGeneratorSpec<String>,
+        NullableGeneratorSpec<String> {
 
     /**
-     * {@inheritDoc}
+     * Specifies that an ISO 4217 currency code should be generated.
      *
-     * @since 5.0.0
+     * @return spec builder
+     * @since 6.0.0
      */
-    @Override
-    CreditCardSpec creditCard();
+    @ExperimentalApi
+    CurrencyGeneratorSpec code();
+
+    /**
+     * Specifies that a currency symbol should be generated.
+     *
+     * @return spec builder
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    CurrencyGeneratorSpec symbol();
 
     /**
      * {@inheritDoc}
@@ -40,6 +54,5 @@ public interface FinanceSpecs extends FinanceGenerators {
      * @since 6.0.0
      */
     @Override
-    @ExperimentalApi
-    CurrencySpec currency();
+    CurrencyGeneratorSpec nullable();
 }
