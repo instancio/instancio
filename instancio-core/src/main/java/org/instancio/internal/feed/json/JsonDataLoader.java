@@ -19,7 +19,7 @@ import org.instancio.feed.DataSource;
 import org.instancio.internal.feed.DataLoader;
 import org.instancio.internal.util.Fail;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +28,16 @@ import static org.instancio.internal.util.ErrorMessageUtils.jacksonNotOnClasspat
 
 public final class JsonDataLoader implements DataLoader<List<JsonNode>> {
 
+    // Lazy singleton to force NoClassDefFoundError during load() invocation
+    // rather than class loading when Jackson is not on the classpath
+    private static final class Holder {
+        private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    }
+
     @Override
     public List<JsonNode> load(final DataSource dataSource) throws Exception {
         try {
-            JsonMapper mapper = JsonMapper.builder().build();
-            final JsonNode jsonNode = mapper.readTree(getInputStream(dataSource));
+            final JsonNode jsonNode = Holder.OBJECT_MAPPER.readTree(getInputStream(dataSource));
             final List<JsonNode> results = new ArrayList<>(jsonNode.size());
             for (int i = 0; i < jsonNode.size(); i++) {
                 results.add(jsonNode.get(i));
