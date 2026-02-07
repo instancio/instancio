@@ -1,15 +1,15 @@
 module org.instancio.core {
     requires org.slf4j;
 
-    requires static tools.jackson.databind;
     requires static jakarta.persistence;
     requires static jakarta.validation;
     requires static java.sql;
     requires static java.xml;
     requires static jdk.unsupported;
-    requires static org.jetbrains.annotations;
-    requires static org.hibernate.validator;
     requires static org.apache.groovy;
+    requires static org.hibernate.validator;
+    requires static org.jetbrains.annotations;
+    requires static tools.jackson.databind;
 
     exports org.instancio;
     exports org.instancio.documentation;
