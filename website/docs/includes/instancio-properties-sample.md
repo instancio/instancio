@@ -1,6 +1,4 @@
-# Sample properties file for reference; this file is not used.
-# For properties to be loaded automatically, the file must be named
-# 'instancio.properties' and placed at the root of the classpath.
+```properties linenums="1" title="Sample instancio.properties"
 array.elements.nullable=false
 array.max.length=6
 array.min.length=2
@@ -68,3 +66,15 @@ subtype.java.util.Collection=java.util.ArrayList
 subtype.java.util.List=java.util.ArrayList
 subtype.java.util.Map=java.util.HashMap
 subtype.java.util.SortedMap=java.util.TreeMap
+```
+
+---
+
+- The `*.elements.nullable`, `map.keys.nullable`, and `map.values.nullable` properties determine whether
+  Instancio can generate `null` values for array/collection elements, as well as map keys and values.
+- Other `*.nullable` properties control whether Instancio is permitted to generate `null` values for a specific type.
+- The `mode` property sets the operation to either `STRICT` (default) or `LENIENT`.
+  For more details, see [Selector Strictness](#selector-strictness).
+- Defines a global seed value for consistent data generation.
+- Properties prefixed with `subtype` define default implementations for abstract types or map types to specific subtypes.
+- This follows the same mechanism as [subtype mapping](#subtype-mapping), but is configured via property files.
