@@ -28,7 +28,15 @@ import java.util.List;
  * @since 4.0.0
  */
 @InternalApi
-public interface Target {
+public sealed interface Target permits
+        TargetClass,
+        TargetField,
+        TargetFieldName,
+        TargetGetterReference,
+        TargetRoot,
+        TargetSetter,
+        TargetSetterName,
+        TargetSetterReference {
 
     Class<?> getTargetClass();
 
@@ -51,7 +59,7 @@ public interface Target {
         return this;
     }
 
-    class TargetContext {
+    final class TargetContext {
 
         private final Class<?> rootClass;
         private final List<InternalServiceProvider> internalServiceProviders;

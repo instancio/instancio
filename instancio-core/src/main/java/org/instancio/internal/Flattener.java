@@ -20,7 +20,7 @@ import org.instancio.documentation.InternalApi;
 import java.util.List;
 
 /**
- * Flattens a list composite objects.
+ * Flattens a composite structure of objects into a single list.
  *
  * @param <T> the type of object
  * @since 1.3.0
@@ -29,9 +29,13 @@ import java.util.List;
 public interface Flattener<T> {
 
     /**
-     * Flattens objects into a list.
+     * Flattens the composite structure into a single-level list.
      *
-     * @return a flattened list
+     * <p>This method traverses the entire structure and collects all objects
+     * into a flat list, removing any nesting or hierarchy.
+     *
+     * @return a list containing all objects from the flattened structure;
+     * never {@code null}
      * @since 1.3.0
      */
     List<T> flatten();
