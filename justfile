@@ -24,7 +24,7 @@ release:
 
 pip-install-mkdocs:
     pip install mkdocs
-    pip install mkdocs-material
-    pip install mkdocs-macros-plugin
     pip install mkdocs-autolinks-plugin
-
+    pip install mkdocs-macros-plugin
+    pip install mkdocs-material
+    pip install mkdocs-minify-html-plugin
