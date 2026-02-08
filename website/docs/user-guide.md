@@ -4758,7 +4758,8 @@ Each one offers customisation options relevant to the class it generates, for ex
     See the <a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/specs/package-summary.html" target="_blank">
     `org.instancio.generator.specs` package Javadocs</a> for methods offered by the built-in generators below.
 
-```css
+<pre>
+<code>
 Generators
 │
 ├── booleans()
@@ -4775,10 +4776,10 @@ Generators
 ├── collection()
 ├── map()
 ├── emit()
-├── enumOf(Class<E>)
-├── enumSet(Class<E>)
+├── enumOf(Class&lt;E&gt;)
+├── enumSet(Class&lt;E&gt;)
 │
-├── oneOf(Collection<T>)
+├── oneOf(Collection&lt;T&gt;)
 ├── oneOf(T...)
 │
 ├── optional()
@@ -4858,13 +4859,14 @@ Generators
 │       └── ssn()
 │
 ├── shuffle(T...)
-├── shuffle(Collection<T>)
+├── shuffle(Collection&lt;T&gt;)
 │
 └── spatial()
     └── coordinate()
         ├── lat()
         └── lon()
-```
+</code>
+</pre>
 
 !!! info "The `io().file()` and `nio().path()` generators can save files on the filesystem."
 
