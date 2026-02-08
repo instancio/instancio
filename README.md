@@ -240,7 +240,6 @@ A big thank you to the current project sponsors:
 - [@darthblonderss](https://github.com/darthblonderss)
 - [@mauravan](https://github.com/mauravan)
 - [@mevlana14](https://github.com/mevlana14)
-- [@zalabbad](https://github.com/zalabbad)
 
 Thanks to [JetBrains](https://jb.gg/OpenSource) and [YourKit](https://www.yourkit.com)
 for supporting this project with their open source licenses.
