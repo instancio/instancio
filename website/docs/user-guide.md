@@ -4762,109 +4762,104 @@ Each one offers customisation options relevant to the class it generates, for ex
 <code>
 Generators
 │
-├── booleans()
-├── chars()
-├── bytes()
-├── shorts()
-├── ints()
-├── longs()
-├── floats()
-├── doubles()
-├── string()
+├── {{ spec("booleans()") }}
+├── {{ spec("chars()") }}
+├── {{ spec("bytes()") }}
+├── {{ spec("shorts()") }}
+├── {{ spec("ints()") }}
+├── {{ spec("longs()") }}
+├── {{ spec("floats()") }}
+├── {{ spec("doubles()") }}
+├── {{ spec("string()") }}
 │
-├── array()
-├── collection()
-├── map()
-├── emit()
-├── enumOf(Class&lt;E&gt;)
-├── enumSet(Class&lt;E&gt;)
+├── {{ spec("array()") }}
+├── {{ spec("collection()") }}
+├── {{ spec("map()") }}
+├── {{ spec("emit()") }}
+├── {{ spec("enumOf(Class&lt;E&gt;)") }}
+├── {{ spec("enumSet(Class&lt;E&gt;)") }}
 │
-├── oneOf(Collection&lt;T&gt;)
-├── oneOf(T...)
-│
-├── optional()
-│
-├── math()
-│   ├── bigInteger()
-│   └── bigDecimal()
-│
-├── net()
-│   ├── email()
-│   ├── ip4()
-│   ├── uri()
-│   └── url()
-│
-├── intervalStarting(T)
-│
-├── io()
-│   └── file()
-│
-├── nio()
-│   └── path()
+├── {{ spec("intervalStarting(T)") }}
+├── {{ spec("oneOf(Collection&lt;T&gt;)") }}
+├── {{ spec("oneOf(T...)") }}
+├── {{ spec("optional()") }}
+├── {{ spec("shuffle(T...)") }}
+├── {{ spec("shuffle(Collection&lt;T&gt;)") }}
 │
 ├── atomic()
-│   ├── atomicInteger()
-│   └── atomicLong()
-│
-├── temporal()
-│   ├── calendar()
-│   ├── date()
-│   ├── duration()
-│   ├── instant()
-│   ├── localDate()
-│   ├── localDateTime()
-│   ├── localTime()
-│   ├── offsetDateTime()
-│   ├── offsetTime()
-│   ├── period()
-│   ├── sqlDate()
-│   ├── timestamp()
-│   ├── year()
-│   ├── yearMonth()
-│   └── zonedDateTime()
-│
-├── text()
-│   ├── csv()
-│   ├── loremIpsum()
-│   ├── pattern(String)
-│   ├── uuid()
-│   ├── word()
-│   └── wordTemplate(String)
+│   ├── {{ spec("atomicInteger()") }}
+│   └── {{ spec("atomicLong()") }}
 │
 ├── checksum()
-│   ├── luhn()
-│   ├── mod10()
-│   └── mod11()
+│   ├── {{ spec("luhn()") }}
+│   ├── {{ spec("mod10()") }}
+│   └── {{ spec("mod11()") }}
 │
 ├── finance()
-│   ├── creditCard()
-│   └── currency()
+│   ├── {{ spec("creditCard()") }}
+│   └── {{ spec("currency()") }}
 │
 ├── id()
-│   ├── ean()
-│   ├── isbn()
+│   ├── {{ spec("ean()") }}
+│   ├── {{ spec("isbn()") }}
 │   ├── bra()
-│   │   ├── cpf()
-│   │   ├── cnpj()
-│   │   └── tituloEleitoral()
+│   │   ├── {{ spec("cpf()") }}
+│   │   ├── {{ spec("cnpj()") }}
+│   │   └── {{ spec("tituloEleitoral()") }}
 │   ├── can()
-│   │   └── sin()
+│   │   └── {{ spec("sin()") }}
 │   ├── pol()
-│   │   ├── nip()
-│   │   ├── pesel()
-│   │   └── regon()
+│   │   ├── {{ spec("nip()") }}
+│   │   ├── {{ spec("pesel()") }}
+│   │   └── {{ spec("regon()") }}
 │   ├── rus()
-│   │   └── inn()
+│   │   └── {{ spec("inn()") }}
 │   └── usa()
-│       └── ssn()
+│       └── {{ spec("ssn()") }}
 │
-├── shuffle(T...)
-├── shuffle(Collection&lt;T&gt;)
+├── io()
+│   └── {{ spec("file()") }}
 │
-└── spatial()
-    └── coordinate()
-        ├── lat()
-        └── lon()
+├── math()
+│   ├── {{ spec("bigInteger()") }}
+│   └── {{ spec("bigDecimal()") }}
+│
+├── net()
+│   ├── {{ spec("email()") }}
+│   ├── {{ spec("ip4()") }}
+│   ├── {{ spec("uri()") }}
+│   └── {{ spec("url()") }}
+│
+├── nio()
+│   └── {{ spec("path()") }}
+│
+├── spatial()
+│   └── {{ spec("coordinate()") }}
+│
+├── temporal()
+│   ├── {{ spec("calendar()") }}
+│   ├── {{ spec("date()") }}
+│   ├── {{ spec("duration()") }}
+│   ├── {{ spec("instant()") }}
+│   ├── {{ spec("localDate()") }}
+│   ├── {{ spec("localDateTime()") }}
+│   ├── {{ spec("localTime()") }}
+│   ├── {{ spec("offsetDateTime()") }}
+│   ├── {{ spec("offsetTime()") }}
+│   ├── {{ spec("period()") }}
+│   ├── {{ spec("sqlDate()") }}
+│   ├── {{ spec("timestamp()") }}
+│   ├── {{ spec("year()") }}
+│   ├── {{ spec("yearMonth()") }}
+│   └── {{ spec("zonedDateTime()") }}
+│
+└── text()
+    ├── {{ spec("csv()") }}
+    ├── {{ spec("loremIpsum()") }}
+    ├── {{ spec("pattern(String)") }}
+    ├── {{ spec("uuid()") }}
+    ├── {{ spec("word()") }}
+    └── {{ spec("wordTemplate(String)") }}
 </code>
 </pre>
 
