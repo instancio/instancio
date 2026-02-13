@@ -10,7 +10,7 @@
     <name>Instancio tests: Groovy Tests</name>
 
     <properties>
-        <version.gmavenplus-plugin>4.3.0</version.gmavenplus-plugin>
+        <version.gmavenplus-plugin>4.3.1</version.gmavenplus-plugin>
     </properties>
 
     <dependencies>
