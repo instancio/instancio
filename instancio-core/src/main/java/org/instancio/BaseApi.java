@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * @param <T> the type of object to create
  * @since 4.0.0
  */
-interface BaseApi<T> {
+public interface BaseApi<T> {
 
     /**
      * Specifies that a class or field should be ignored.

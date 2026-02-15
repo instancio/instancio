@@ -24,7 +24,7 @@ import org.instancio.settings.Settings;
  *
  * @since 5.0.0
  */
-interface SettingsApi {
+public interface SettingsApi {
 
     /**
      * Overrides the setting for the given {@code key}

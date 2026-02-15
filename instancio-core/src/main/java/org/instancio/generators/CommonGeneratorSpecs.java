@@ -37,7 +37,7 @@ import org.instancio.generator.specs.StringGeneratorSpec;
  *
  * @since 5.0.0
  */
-interface CommonGeneratorSpecs {
+public interface CommonGeneratorSpecs {
 
     /**
      * Generator for {@link String} values.

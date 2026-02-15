@@ -25,7 +25,7 @@ import java.time.temporal.TemporalUnit;
  * @param <T> temporal type
  * @since 4.2.0
  */
-interface TruncatableTemporalGeneratorSpec<T> extends GeneratorSpec<T> {
+public interface TruncatableTemporalGeneratorSpec<T> extends GeneratorSpec<T> {
 
     /**
      * Truncates generated values to the specified unit.
