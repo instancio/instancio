@@ -22,7 +22,7 @@ import org.instancio.settings.Settings;
  *
  * @since 4.0.0
  */
-interface VerboseModeApi {
+public interface VerboseModeApi {
 
     /**
      * Outputs debug information to {@code System.out}. This includes:

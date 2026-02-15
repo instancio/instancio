@@ -17,18 +17,28 @@ package org.instancio.api;
 
 import org.instancio.InstancioApi;
 import org.instancio.feed.Feed;
+import org.instancio.generators.Generators;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.instancio.test.support.asserts.ClassAssert.assertThatSuperInterface;
 
 class PackagePrivateClassesTest {
 
+    // TODO revert to package-private
+    @Disabled("Base APIs are public due to JPMS/Javadoc limitations")
     @Test
     void instancioApis_shouldNotBePublic() {
         assertThatSuperInterface(InstancioApi.class, "BaseApi").isNotPublic();
         assertThatSuperInterface(InstancioApi.class, "LenientModeApi").isNotPublic();
         assertThatSuperInterface(InstancioApi.class, "SettingsApi").isNotPublic();
         assertThatSuperInterface(InstancioApi.class, "VerboseModeApi").isNotPublic();
+    }
+
+    @Disabled("Base APIs are public due to JPMS/Javadoc limitations")
+    @Test
+    void baseSpecs_shouldNotBePublic() {
+        assertThatSuperInterface(Generators.class, "CommonGeneratorSpecs").isNotPublic();
     }
 
     @Test
