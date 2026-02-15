@@ -1011,8 +1011,8 @@ exposes the available generators to simplify their discovery using IDE auto-comp
 
 ``` java linenums="1" title="Example of using generate()"
 Person person = Instancio.of(Person.class)
-    .generate(field("age"), gen -> gen.ints().range(18, 65))
-    .generate(field("pets"), gen -> gen.array().length(3))
+    .generate(field(Person::getAge), gen -> gen.ints().range(18, 65))
+    .generate(field(Person::getPets), gen -> gen.array().length(3))
     .generate(field(Phone.class, "number"), gen -> gen.text().pattern("#d#d#d-#d#d-#d#d"))
     .create();
 ```
@@ -1023,7 +1023,7 @@ Using the collection generator, this can be overridden by specifying the type ex
 
 ``` java linenums="1" title="Example: customising a collection"
 Person person = Instancio.of(Person.class)
-    .generate(field("phoneNumbers"), gen -> gen.collection().minSize(3).subtype(LinkedList.class))
+    .generate(field(Person::getPhoneNumbers), gen -> gen.collection().minSize(3).subtype(LinkedList.class))
     .generate(field(Phone.class, "countryCode"), gen -> gen.oneOf("+33", "+39", "+44", "+49"))
     .create();
 ```
@@ -4750,9 +4750,26 @@ Once the test is passing, the `@Seed` annotation can be removed so that new data
 
 ## Built-in Generators
 
-The list of generators provided below is available via the [`generate()`](#using-generate) method.
-Most of these generators are also available via [`Instancio.gen()`](#creating-simple-values) class.
-Each one offers customisation options relevant to the class it generates, for example `bigDecimal().scale(5)`.
+Instancio generators are available through two APIs. The first is the [`generate()`](#using-generate)
+method that can be used to customise values within an object:
+
+```java
+Person person = Instancio.of(Person.class)
+    .generate(field(Person::getDateOfBirth), gen -> gen.temporal().localDate().past())
+    .create();
+```
+
+The second is the [`Instancio.gen()`](#creating-simple-values) method
+which can be used to generate a standalone value or a collection of values:
+
+```java
+LocalDate pastDate = Instancio.gen().temporal().localDate().past().get();
+List<LocalDate> pastDates = Instancio.gen().temporal().localDate().past().list(5);
+```
+
+Most of the built-in generators are exposed via both APIs, however there are some
+that are only exposed through one of them.
+
 
 !!! tip
     See the <a href="https://javadoc.io/doc/org.instancio/instancio-core/latest/org/instancio/generator/specs/package-summary.html" target="_blank">
@@ -4779,6 +4796,7 @@ Generators
 ├── {{ spec("enumOf(Class&lt;E&gt;)") }}
 ├── {{ spec("enumSet(Class&lt;E&gt;)") }}
 │
+├── {{ spec("hash()") }}
 ├── {{ spec("intervalStarting(T)") }}
 ├── {{ spec("oneOf(Collection&lt;T&gt;)") }}
 ├── {{ spec("oneOf(T...)") }}
