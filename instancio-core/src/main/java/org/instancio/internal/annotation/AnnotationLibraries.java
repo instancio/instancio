@@ -17,6 +17,7 @@ package org.instancio.internal.annotation;
 
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.slf4j.Logger;
@@ -40,8 +41,8 @@ public final class AnnotationLibraries {
 
     public static List<AnnotationLibraryFacade> discoverOnClasspath(final ModelContext modelContext) {
         final Settings settings = modelContext.getSettings();
-        final boolean jpaEnabled = settings.get(Keys.JPA_ENABLED);
-        final boolean beanValidationEnabled = settings.get(Keys.BEAN_VALIDATION_ENABLED);
+        final boolean jpaEnabled = Verify.notNull(settings.get(Keys.JPA_ENABLED), "jpaEnabled is null");
+        final boolean beanValidationEnabled = Verify.notNull(settings.get(Keys.BEAN_VALIDATION_ENABLED), "beanValidationEnabled is null");
 
         LOG.trace("Keys.BEAN_VALIDATION_ENABLED={}, Keys.JPA_ENABLED={}",
                 beanValidationEnabled, jpaEnabled);

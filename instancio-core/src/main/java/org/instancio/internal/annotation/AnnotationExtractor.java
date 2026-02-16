@@ -18,9 +18,9 @@ package org.instancio.internal.annotation;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.BeanValidationTarget;
 import org.instancio.settings.Keys;
-import org.jspecify.annotations.NonNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -36,11 +36,10 @@ public final class AnnotationExtractor {
     private final GetterMethodResolver getterMethodResolver;
 
     public AnnotationExtractor(final ModelContext context) {
-        this.beanValidationTarget = context.getSettings().get(Keys.BEAN_VALIDATION_TARGET);
+        this.beanValidationTarget = Verify.notNull(context.getSettings().get(Keys.BEAN_VALIDATION_TARGET), "beanValidationTarget is null");
         this.getterMethodResolver = new GetterMethodResolverImpl();
     }
 
-    @NonNull
     public Annotation[] getAnnotations(final InternalNode node) {
         final Field field = node.getField();
 

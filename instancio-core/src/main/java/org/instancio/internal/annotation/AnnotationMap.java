@@ -18,6 +18,7 @@ package org.instancio.internal.annotation;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.documentation.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -45,14 +46,14 @@ import java.util.Map;
 public class AnnotationMap {
 
     private final Map<Class<?>, Annotation> map;
-    private Annotation primary;
+    private @Nullable Annotation primary;
 
     public AnnotationMap(final Annotation... annotations) {
         this.map = CollectionUtils.asLinkedHashMap(Annotation::annotationType, annotations);
     }
 
     @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
-    <A extends Annotation> A get(final Class<?> key) {
+    <A extends Annotation> @Nullable A get(final Class<?> key) {
         return (A) map.get(key);
     }
 
@@ -66,7 +67,7 @@ public class AnnotationMap {
         map.remove(primary.annotationType());
     }
 
-    Annotation removePrimary() {
+    @Nullable Annotation removePrimary() {
         final Annotation p = primary;
         if (primary != null) {
             primary = null; // NOPMD

@@ -26,6 +26,7 @@ import org.instancio.internal.generator.lang.StringGenerator;
 import org.instancio.internal.generator.specs.InternalLengthGeneratorSpec;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Range;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
@@ -113,7 +114,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
             final Settings settings = generatorContext.getSettings();
 
             final Range<Integer> range = AnnotationUtils.calculateRange(
-                    length.min(), length.max(), settings.get(Keys.STRING_MAX_LENGTH));
+                    length.min(), length.max(), Verify.notNull(settings.get(Keys.STRING_MAX_LENGTH), "stringMaxLength is null"));
 
             if (spec instanceof InternalLengthGeneratorSpec<?> lengthSpec) {
                 lengthSpec.length(range.min(), range.max());

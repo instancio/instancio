@@ -16,6 +16,7 @@
 package org.instancio.internal.annotation;
 
 import org.instancio.internal.util.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +44,7 @@ class AnnotationMapTest {
     @Bar
     @Baz
     @SuppressWarnings("unused") // used via reflection
-    private static final Object DUMMY = null;
+    private static final @Nullable Object DUMMY = null;
 
     private static final Annotation[] ANNOTATIONS =
             ReflectionUtils.getField(AnnotationMapTest.class, "DUMMY").getDeclaredAnnotations();
@@ -51,7 +52,7 @@ class AnnotationMapTest {
     private static Annotation getAnnotation(Class<?> type) {
         return Arrays.stream(ANNOTATIONS)
                 .filter(a -> a.annotationType() == type)
-                .findAny().orElse(null);
+                .findAny().orElseThrow();
     }
 
     /**

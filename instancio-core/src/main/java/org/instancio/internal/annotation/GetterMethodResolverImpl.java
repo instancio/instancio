@@ -60,7 +60,7 @@ class GetterMethodResolverImpl implements GetterMethodResolver {
         return new String(ch);
     }
 
-    private static Method getMethod(final Class<?> declaringClass, final String methodName) {
+    private static @Nullable Method getMethod(final Class<?> declaringClass, final String methodName) {
         try {
             return declaringClass.getDeclaredMethod(methodName);
         } catch (Exception ex) {

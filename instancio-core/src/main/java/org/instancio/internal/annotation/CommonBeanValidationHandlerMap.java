@@ -34,6 +34,7 @@ import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.Range;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
@@ -245,7 +246,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
 
             if (spec instanceof InternalLengthGeneratorSpec<?> lengthSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), settings.get(Keys.STRING_MAX_LENGTH));
+                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.STRING_MAX_LENGTH), "stringMaxLength is null"));
 
                 lengthSpec.length(range.min(), range.max());
 
@@ -254,17 +255,17 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                 }
             } else if (spec instanceof CollectionGeneratorSpec<?> collectionSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), settings.get(Keys.COLLECTION_MAX_SIZE));
+                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.COLLECTION_MAX_SIZE),"collectionMaxSize is null"));
 
                 collectionSpec.minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof MapGeneratorSpec<?, ?> mapSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), settings.get(Keys.MAP_MAX_SIZE));
+                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.MAP_MAX_SIZE),"mapMaxSize is null"));
 
                 mapSpec.minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof ArrayGeneratorSpec<?> arraySpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), settings.get(Keys.ARRAY_MAX_LENGTH));
+                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.ARRAY_MAX_LENGTH),"arrayMaxLength is null"));
 
                 arraySpec.minLength(range.min()).maxLength(range.max());
             }
@@ -288,17 +289,17 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
             } else if (spec instanceof ArrayGenerator<?> arraySpec) {
                 arraySpec
                         .nullable(false)
-                        .minLength(settings.get(Keys.ARRAY_MIN_LENGTH));
+                        .minLength(Verify.notNull(settings.get(Keys.ARRAY_MIN_LENGTH),"arrayMinLength is null"));
 
             } else if (spec instanceof CollectionGenerator<?> collectionSpec) {
                 collectionSpec
                         .nullable(false)
-                        .minSize(settings.get(Keys.COLLECTION_MIN_SIZE));
+                        .minSize(Verify.notNull(settings.get(Keys.COLLECTION_MIN_SIZE), "collectionMinSize is null"));
 
             } else if (spec instanceof MapGenerator<?, ?> mapSpec) {
                 mapSpec
                         .nullable(false)
-                        .minSize(settings.get(Keys.MAP_MIN_SIZE));
+                        .minSize(Verify.notNull(settings.get(Keys.MAP_MIN_SIZE), "mapMinSize is null"));
             }
         }
     }
