@@ -62,7 +62,7 @@
         <version.jakarta.persistence>3.2.0</version.jakarta.persistence>
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
         <version.jetbrains.annotations>26.0.2-1</version.jetbrains.annotations>
-        <version.junit>6.0.2</version.junit>
+        <version.junit>6.0.3</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
         <version.error_prone_core>2.47.0</version.error_prone_core>
         <!-- plugins -->
