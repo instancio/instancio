@@ -25,6 +25,7 @@ import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ final class FieldAssigner implements Assigner {
     }
 
     @Override
-    public void assign(final InternalNode node, final Object target, final Object value) {
+    public void assign(final InternalNode node, final Object target, final @Nullable Object value) {
         final Field field = node.getField();
 
         // can't assign null to a primitive
@@ -53,7 +54,7 @@ final class FieldAssigner implements Assigner {
         }
     }
 
-    private void setField(final InternalNode node, final Object target, final Object arg) {
+    private void setField(final InternalNode node, final Object target, final @Nullable Object arg) {
         final Field field = node.getField();
         final Object value = arg == null ? ObjectUtils.defaultValue(field.getType()) : arg;
 
@@ -71,7 +72,7 @@ final class FieldAssigner implements Assigner {
         }
     }
 
-    private void handleError(final InternalNode node, final Object value, final Exception ex) {
+    private void handleError(final InternalNode node, final @Nullable Object value, final Exception ex) {
         final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
         final Field field = node.getField();
         if (onSetFieldError == OnSetFieldError.FAIL) {

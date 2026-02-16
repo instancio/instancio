@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SuppressWarnings({"NullAway", "DataFlowIssue"})
 class GeneratorHolderTest {
 
     @Test

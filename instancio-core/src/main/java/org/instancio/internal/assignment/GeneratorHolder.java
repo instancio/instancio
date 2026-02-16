@@ -20,15 +20,16 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public final class GeneratorHolder {
 
-    private final Generator<?> generator;
-    private final GeneratorSpecProvider<?> specProvider;
+    private final @Nullable Generator<?> generator;
+    private final @Nullable GeneratorSpecProvider<?> specProvider;
 
-    private GeneratorHolder(final Generator<?> generator, final GeneratorSpecProvider<?> specProvider) {
+    private GeneratorHolder(final @Nullable Generator<?> generator, final @Nullable GeneratorSpecProvider<?> specProvider) {
         this.generator = generator;
         this.specProvider = specProvider;
     }
@@ -60,12 +61,12 @@ public final class GeneratorHolder {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Generator<T> getGenerator() {
+    public <T> @Nullable Generator<T> getGenerator() {
         return (Generator<T>) generator;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> GeneratorSpecProvider<T> getSpecProvider() {
+    public <T> @Nullable GeneratorSpecProvider<T> getSpecProvider() {
         return (GeneratorSpecProvider<T>) specProvider;
     }
 }

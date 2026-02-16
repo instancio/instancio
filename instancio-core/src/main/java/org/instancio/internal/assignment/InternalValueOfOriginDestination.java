@@ -22,6 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.ValueOfOriginDestination;
 import org.instancio.ValueOfOriginDestinationPredicate;
 import org.instancio.internal.Flattener;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,8 +34,8 @@ public class InternalValueOfOriginDestination
 
     private final TargetSelector origin;
     private final TargetSelector destination;
-    private Predicate<?> predicate;
-    private RandomFunction<?, ?> valueMapper;
+    private @Nullable Predicate<?> predicate;
+    private @Nullable RandomFunction<?, ?> valueMapper;
 
     public InternalValueOfOriginDestination(final TargetSelector origin, final TargetSelector destination) {
         this.origin = origin;

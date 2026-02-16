@@ -44,6 +44,7 @@ class InternalAssignmentTest {
         }
     }
 
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     @Nested
     class ValidationTest {
         private final InternalAssignment.Builder builder = InternalAssignment.builder();

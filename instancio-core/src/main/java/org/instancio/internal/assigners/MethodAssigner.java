@@ -24,11 +24,13 @@ import org.instancio.internal.util.Format;
 import org.instancio.internal.util.MethodUtils;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +49,7 @@ final class MethodAssigner implements Assigner {
 
     MethodAssigner(final ModelContext context) {
         this.settings = context.getSettings();
-        this.excludedModifiers = settings.get(Keys.SETTER_EXCLUDE_MODIFIER);
+        this.excludedModifiers = Verify.notNull(settings.get(Keys.SETTER_EXCLUDE_MODIFIER), "setterExcludeModifier is null");
         this.fieldAssigner = new FieldAssigner(settings);
         this.setterMethodResolverFacade = new SetterMethodResolverFacade(
                 context.getServiceProviders().getSetterMethodResolvers());
@@ -59,7 +61,7 @@ final class MethodAssigner implements Assigner {
     }
 
     @Override
-    public void assign(final InternalNode node, final Object target, final Object arg) {
+    public void assign(final InternalNode node, final Object target, final @Nullable Object arg) {
         final Method method = getSetterMethod(node);
 
         if (method == null) {
@@ -83,7 +85,7 @@ final class MethodAssigner implements Assigner {
         }
     }
 
-    private Method getSetterMethod(final InternalNode node) {
+    private @Nullable Method getSetterMethod(final InternalNode node) {
         final Method method = setterMethodResolverFacade.resolveSetterMethod(node);
         return method == null ? node.getSetter() : method;
     }
@@ -91,7 +93,7 @@ final class MethodAssigner implements Assigner {
     private void handleMethodInvocationError(
             final InternalNode node,
             final Object target,
-            final Object arg,
+            final @Nullable Object arg,
             final Method method,
             final Exception ex) {
 
@@ -118,7 +120,7 @@ final class MethodAssigner implements Assigner {
     private void handleMethodNotFoundError(
             final InternalNode node,
             final Object target,
-            final Object arg) {
+            final @Nullable Object arg) {
 
         final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
 

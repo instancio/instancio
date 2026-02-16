@@ -453,7 +453,7 @@ public final class ErrorMessageUtils {
 
         final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
         final String fieldName = formatField(field);
-        final String argType = withoutPackage(value.getClass());
+        final String argType = value == null ? "n/a" : withoutPackage(value.getClass());
         final String argValue = StringUtils.quoteStringValue(value);
 
         return """

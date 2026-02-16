@@ -22,6 +22,7 @@ import org.instancio.documentation.InternalApi;
 import org.instancio.generator.Generator;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,12 +30,12 @@ import java.util.function.Predicate;
 
 @InternalApi
 public final class InternalAssignment implements Assignment, Flattener<InternalAssignment> {
-    private final TargetSelector origin;
-    private final Predicate<?> originPredicate;
-    private final TargetSelector destination;
-    private final GeneratorHolder generatorHolder;
-    private final Generator<?> generator;
-    private final RandomFunction<?, ?> valueMapper;
+    private final @Nullable TargetSelector origin;
+    private final @Nullable Predicate<?> originPredicate;
+    private final @Nullable TargetSelector destination;
+    private final @Nullable GeneratorHolder generatorHolder;
+    private final @Nullable Generator<?> generator;
+    private final @Nullable RandomFunction<?, ?> valueMapper;
 
     private InternalAssignment(final Builder builder) {
         origin = builder.origin;
@@ -45,30 +46,30 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
         valueMapper = builder.valueMapper;
     }
 
-    public TargetSelector getOrigin() {
+    public @Nullable TargetSelector getOrigin() {
         return origin;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Predicate<T> getOriginPredicate() {
+    public <T> @Nullable Predicate<T> getOriginPredicate() {
         return (Predicate<T>) originPredicate;
     }
 
-    public TargetSelector getDestination() {
+    public @Nullable TargetSelector getDestination() {
         return destination;
     }
 
-    public GeneratorHolder getGeneratorHolder() {
+    public @Nullable GeneratorHolder getGeneratorHolder() {
         return generatorHolder;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Generator<T> getGenerator() {
+    public <T> @Nullable Generator<T> getGenerator() {
         return (Generator<T>) generator;
     }
 
     @SuppressWarnings("unchecked")
-    public <S, T> RandomFunction<S, T> getValueMapper() {
+    public <S, T> @Nullable RandomFunction<S, T> getValueMapper() {
         return (RandomFunction<S, T>) valueMapper;
     }
 
@@ -93,12 +94,12 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
     }
 
     public static final class Builder {
-        private TargetSelector origin;
-        private Predicate<?> originPredicate;
-        private TargetSelector destination;
-        private GeneratorHolder generatorHolder;
-        private Generator<?> generator;
-        private RandomFunction<?, ?> valueMapper;
+        private @Nullable TargetSelector origin;
+        private @Nullable Predicate<?> originPredicate;
+        private @Nullable TargetSelector destination;
+        private @Nullable GeneratorHolder generatorHolder;
+        private @Nullable Generator<?> generator;
+        private @Nullable RandomFunction<?, ?> valueMapper;
 
         private Builder() {
         }
@@ -108,7 +109,7 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
             return this;
         }
 
-        public <T> Builder originPredicate(final Predicate<T> originPredicate) {
+        public <T> Builder originPredicate(final @Nullable Predicate<T> originPredicate) {
             this.originPredicate = originPredicate;
             return this;
         }
@@ -128,7 +129,7 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
             return this;
         }
 
-        public Builder valueMapper(final RandomFunction<?, ?> valueMapper) {
+        public Builder valueMapper(final @Nullable RandomFunction<?, ?> valueMapper) {
             this.valueMapper = valueMapper;
             return this;
         }
