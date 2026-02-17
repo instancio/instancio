@@ -17,9 +17,11 @@ package org.instancio.internal.feed.csv;
 
 import org.instancio.feed.FormatOptionsProvider;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.FeedDataTrim;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import static java.lang.String.format;
 
@@ -38,7 +40,7 @@ public final class InternalCsvFormatOptions implements FormatOptionsProvider.For
         this.delimiter = validateDelimiter(builder.delimiter);
         this.feedDataTrim = builder.feedDataTrim != null
                 ? builder.feedDataTrim
-                : settings.get(Keys.FEED_DATA_TRIM);
+                : Verify.notNull(settings.get(Keys.FEED_DATA_TRIM), "feedDataTrim is null");
     }
 
     private char validateDelimiter(char delimiter) {
@@ -70,7 +72,7 @@ public final class InternalCsvFormatOptions implements FormatOptionsProvider.For
 
         private String commentPrefix = DEFAULT_COMMENT_PREFIX;
         private char delimiter = DEFAULT_DELIMITER;
-        private FeedDataTrim feedDataTrim;
+        private @Nullable FeedDataTrim feedDataTrim;
 
         private Builder() {
             // instantiated via builder()

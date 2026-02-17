@@ -16,6 +16,7 @@
 package org.instancio.internal.feed.datasource;
 
 import org.instancio.feed.DataSource;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +31,7 @@ public class CacheableDataSource implements CacheableSource {
     }
 
     @Override
-    public String getName() {
+    public @Nullable String getName() {
         return delegate.getName();
     }
 

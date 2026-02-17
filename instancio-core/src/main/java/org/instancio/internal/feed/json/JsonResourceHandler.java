@@ -21,6 +21,7 @@ import org.instancio.internal.feed.DataStore;
 import org.instancio.internal.feed.InternalFeed;
 import org.instancio.internal.feed.InternalFeedContext;
 import org.instancio.internal.feed.ResourceHandler;
+import org.jspecify.annotations.Nullable;
 import tools.jackson.databind.JsonNode;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public final class JsonResourceHandler implements ResourceHandler {
     public InternalFeed createFeed(final InternalFeedContext<?> feedContext) {
         final DataLoader<?> dataLoader = new JsonDataLoader();
 
-        final BiFunction<String, List<?>, DataStore<?>> tagKeyToDataStoreMapper =
+        final BiFunction<@Nullable String, List<?>, DataStore<?>> tagKeyToDataStoreMapper =
                 (tagKey, data) -> new JsonDataStore(tagKey, (List<JsonNode>) data);
 
         final DataStore<?> dataStore = cachingDataLoader.loadData(

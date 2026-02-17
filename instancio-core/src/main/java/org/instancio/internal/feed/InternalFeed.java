@@ -19,6 +19,7 @@ import org.instancio.documentation.InternalApi;
 import org.instancio.feed.Feed;
 import org.instancio.feed.FeedSpec;
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public interface InternalFeed {
      * @return a spec with the specified type
      */
     @SuppressWarnings("PMD.UseVarargs")
-    <T> FeedSpec<T> createSpec(SpecMethod method, Object[] args);
+    <T> FeedSpec<T> createSpec(SpecMethod method, Object @Nullable [] args);
 
     /**
      * Returns a spec for the given property name and target type.

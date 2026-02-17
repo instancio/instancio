@@ -25,7 +25,6 @@ import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.CollectionUtils;
-import org.instancio.internal.util.Verify;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,6 +84,7 @@ final class AssignmentSelectorMap {
         }
     }
 
+    @SuppressWarnings("NullAway") // TODO For some reason nullaway keeps reporting holder.getSpecProvider() as nullable no matter the safeguards
     private List<InternalAssignment> processAssignments(final List<Assignment> assignments) {
         final List<InternalAssignment> processed = new ArrayList<>(assignments.size());
         final Generators generators = new BuiltInGenerators(generatorContext);
@@ -95,7 +95,7 @@ final class AssignmentSelectorMap {
             if (assignment.getGeneratorHolder() != null) {
                 final GeneratorHolder holder = assignment.getGeneratorHolder();
                 final Generator<?> generator = holder.getGenerator() == null
-                        ? (Generator<?>) Verify.notNull(holder.getSpecProvider(), "holder spec provider is null").getSpec(generators)
+                        ? (Generator<?>) holder.getSpecProvider().getSpec(generators)
                         : holder.getGenerator();
 
                 final Generator<?> updatedGenerator = generatorInitialiser.initGenerator(assignment.getDestination(), generator);

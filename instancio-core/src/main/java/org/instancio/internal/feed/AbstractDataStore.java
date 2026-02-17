@@ -16,6 +16,7 @@
 package org.instancio.internal.feed;
 
 import org.instancio.internal.ApiValidator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +28,12 @@ import static java.util.Collections.unmodifiableList;
 public abstract class AbstractDataStore<R> implements DataStore<R> {
 
     private final List<R> data;
-    private final String tagKey;
+    private final @Nullable String tagKey;
     private final Map<String, Integer> fieldIndexMap;
     private final List<String> tagKeys;
     private final Map<String, List<R>> groupedByTag;
 
-    protected AbstractDataStore(final String tagKey, final List<R> data) {
+    protected AbstractDataStore(final @Nullable String tagKey, final List<R> data) {
         ApiValidator.isFalse(data.isEmpty(), "empty data source");
         this.data = unmodifiableList(data);
         this.tagKey = tagKey;
@@ -44,7 +45,7 @@ public abstract class AbstractDataStore<R> implements DataStore<R> {
     protected abstract Map<String, Integer> createFieldIndexMap(List<R> data);
 
     protected abstract Map<String, List<R>> groupDataByTag(
-            String tagKey,
+            @Nullable String tagKey,
             Map<String, Integer> fieldIndexMap,
             List<R> data);
 
@@ -55,9 +56,8 @@ public abstract class AbstractDataStore<R> implements DataStore<R> {
     @Override
     public final List<R> get(final String tagValue) {
         final List<R> tagData = groupedByTag.get(tagValue);
-        ApiValidator.notNull(tagData, () -> String.format(
+        return ApiValidator.notNull(tagData, () -> String.format(
                 "no data found with tag value: '%s' (tagKey is set to: '%s')", tagValue, tagKey));
-        return tagData;
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.instancio.internal.feed.csv;
 import org.instancio.feed.DataSource;
 import org.instancio.internal.feed.DataLoader;
 import org.instancio.settings.FeedDataTrim;
+import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -103,7 +104,7 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
         }
     }
 
-    private String trimToken(String token, boolean isQuotedToken) {
+    private @Nullable String trimToken(String token, boolean isQuotedToken) {
         String result = token;
         if (result.isEmpty()) {
             return null;

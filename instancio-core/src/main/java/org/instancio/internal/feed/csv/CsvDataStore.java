@@ -16,6 +16,7 @@
 package org.instancio.internal.feed.csv;
 
 import org.instancio.internal.feed.AbstractDataStore;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 public class CsvDataStore extends AbstractDataStore<String[]> {
 
-    public CsvDataStore(final String tagKey, final List<String[]> data) {
+    public CsvDataStore(final @Nullable String tagKey, final List<String[]> data) {
         super(tagKey, data);
     }
 
@@ -42,7 +43,7 @@ public class CsvDataStore extends AbstractDataStore<String[]> {
 
     @Override
     protected Map<String, List<String[]>> groupDataByTag(
-            final String tagKey,
+            final @Nullable String tagKey,
             final Map<String, Integer> fieldIndexMap,
             final List<String[]> data) {
 

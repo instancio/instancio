@@ -20,7 +20,7 @@ import org.instancio.feed.DataSource;
 import org.instancio.internal.feed.datasource.CacheableDataSource;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -33,12 +33,11 @@ public class CachingDataLoader {
 
     private static final Map<Object, DataStore<?>> CACHE = new ConcurrentHashMap<>();
 
-    @NonNull
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public DataStore<?> loadData(
             final InternalFeedContext<?> feedContext,
             final DataLoader<?> dataLoader,
-            final BiFunction<String, List<?>, DataStore<?>> tagKeyToDataStoreMapper) {
+            final BiFunction<@Nullable String, List<?>, DataStore<?>> tagKeyToDataStoreMapper) {
 
         final DataSource dataSource = feedContext.getDataSource();
         final String tagKey = feedContext.getTagKey();

@@ -16,6 +16,7 @@
 package org.instancio.internal.feed.json;
 
 import org.instancio.internal.feed.AbstractDataStore;
+import org.jspecify.annotations.Nullable;
 import tools.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.Set;
 
 public class JsonDataStore extends AbstractDataStore<JsonNode> {
 
-    public JsonDataStore(final String tagKey, final List<JsonNode> data) {
+    public JsonDataStore(final @Nullable String tagKey, final List<JsonNode> data) {
         super(tagKey, data);
     }
 
@@ -46,7 +47,7 @@ public class JsonDataStore extends AbstractDataStore<JsonNode> {
 
     @Override
     protected Map<String, List<JsonNode>> groupDataByTag(
-            final String tagKey,
+            final @Nullable String tagKey,
             final Map<String, Integer> fieldIndexMap,
             final List<JsonNode> data) {
 

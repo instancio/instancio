@@ -18,6 +18,8 @@ package org.instancio.internal.feed.json;
 import org.instancio.internal.feed.AbstractFeed;
 import org.instancio.internal.feed.DataStore;
 import org.instancio.internal.feed.InternalFeedContext;
+import org.instancio.internal.util.Verify;
+import org.jspecify.annotations.Nullable;
 import tools.jackson.databind.JsonNode;
 
 class JsonFeed extends AbstractFeed<JsonNode> {
@@ -30,11 +32,11 @@ class JsonFeed extends AbstractFeed<JsonNode> {
     }
 
     @Override
-    protected String getValue(final String propertyKey) {
+    protected @Nullable String getValue(final String propertyKey) {
         // We don't need the value, just fail if property key not found
         getPropertyIndex(propertyKey);
 
-        final JsonNode currentEntry = getCurrentEntry();
+        final JsonNode currentEntry = Verify.notNull(getCurrentEntry(), "currentEntry is null");
         final JsonNode node = currentEntry.get(propertyKey);
         return node == null ? null : node.asString();
     }

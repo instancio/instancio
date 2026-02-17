@@ -22,6 +22,7 @@ import org.instancio.internal.feed.DataStore;
 import org.instancio.internal.feed.InternalFeed;
 import org.instancio.internal.feed.InternalFeedContext;
 import org.instancio.internal.feed.ResourceHandler;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -39,7 +40,7 @@ public final class CsvResourceHandler implements ResourceHandler {
 
         final DataLoader<?> dataLoader = new CsvDataLoader((InternalCsvFormatOptions) csvOptions);
 
-        final BiFunction<String, List<?>, DataStore<?>> tagKeyToDataStoreMapper =
+        final BiFunction<@Nullable String, List<?>, DataStore<?>> tagKeyToDataStoreMapper =
                 (tagKey, data) -> new CsvDataStore(tagKey, (List<String[]>) data);
 
         final DataStore<?> dataStore = cachingDataLoader.loadData(

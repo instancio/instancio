@@ -33,6 +33,7 @@ import org.instancio.internal.feed.datasource.ResourceDataSource;
 import org.instancio.internal.feed.datasource.StringDataSource;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.FeedFormatType;
@@ -46,14 +47,15 @@ import org.jspecify.annotations.Nullable;
 import java.nio.file.Paths;
 import java.util.function.Function;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class InternalFeedContext<F extends Feed> {
 
     private final Class<F> feedClass;
     private final GeneratorContext generatorContext;
-    private final String tagKey;
-    private final String tagValue;
+    private final @Nullable String tagKey;
+    private final @Nullable String tagValue;
     private final DataSource dataSource;
-    private final FormatOptions formatOptions;
+    private final @Nullable FormatOptions formatOptions;
     private final FeedFormatType feedFormatType;
     private final FeedDataAccess feedDataAccess;
     private final FeedDataEndAction feedDataEndAction;
@@ -74,13 +76,13 @@ public final class InternalFeedContext<F extends Feed> {
         this.feedDataAccess = resolveFeedDataAccess(settings, feedClass, builder.feedDataAccess);
         this.feedDataEndAction = builder.feedDataEndAction != null
                 ? builder.feedDataEndAction
-                : settings.get(Keys.FEED_DATA_END_ACTION);
+                : Verify.notNull(settings.get(Keys.FEED_DATA_END_ACTION), "feedDataEndAction is null");
     }
 
     private static FeedFormatType resolveDataFormatType(
             final Settings settings,
             final Class<?> feedClass,
-            final FeedFormatType feedFormatType) {
+            final @Nullable FeedFormatType feedFormatType) {
 
         if (feedFormatType != null) {
             return feedFormatType;
@@ -89,13 +91,13 @@ public final class InternalFeedContext<F extends Feed> {
         if (formatType != null) {
             return formatType.value();
         }
-        return settings.get(Keys.FEED_FORMAT_TYPE);
+        return Verify.notNull(settings.get(Keys.FEED_FORMAT_TYPE), "feedFormatType is null");
     }
 
     private static FeedDataAccess resolveFeedDataAccess(
             final Settings settings,
             final Class<?> feedClass,
-            final FeedDataAccess feedDataAccess) {
+            final @Nullable FeedDataAccess feedDataAccess) {
 
         if (feedDataAccess != null) {
             return feedDataAccess;
@@ -104,7 +106,7 @@ public final class InternalFeedContext<F extends Feed> {
         final Feed.DataAccess dataAccessAnnotation = feedClass.getDeclaredAnnotation(Feed.DataAccess.class);
         return dataAccessAnnotation != null
                 ? dataAccessAnnotation.value()
-                : settings.get(Keys.FEED_DATA_ACCESS);
+                : Verify.notNull(settings.get(Keys.FEED_DATA_ACCESS), "feedDataAccess is null");
     }
 
     private static GeneratorContext resolveGeneratorContext(final Builder<?> builder) {
@@ -120,10 +122,10 @@ public final class InternalFeedContext<F extends Feed> {
                 settings, RandomHelper.resolveRandom(settings.get(Keys.SEED), null));
     }
 
-    private static String resolveTagKey(
+    private static @Nullable String resolveTagKey(
             final Settings settings,
             final Class<?> feedClass,
-            final String tagKey) {
+            final @Nullable String tagKey) {
 
         if (tagKey != null) {
             return tagKey;
@@ -136,10 +138,10 @@ public final class InternalFeedContext<F extends Feed> {
     }
 
     private static DataSource resolveDataSource(
-            final Feed.Source feedSource,
+            final Feed.@Nullable Source feedSource,
             final Class<?> feedClass,
-            final DataSource dataSource,
-            final String tagKey) {
+            final @Nullable DataSource dataSource,
+            final @Nullable String tagKey) {
 
         // sources of data in order of precedence
         if (dataSource != null) {
@@ -171,11 +173,11 @@ public final class InternalFeedContext<F extends Feed> {
         return feedClass;
     }
 
-    public String getTagKey() {
+    public @Nullable String getTagKey() {
         return tagKey;
     }
 
-    public String getTagValue() {
+    public @Nullable String getTagValue() {
         return tagValue;
     }
 
@@ -217,20 +219,20 @@ public final class InternalFeedContext<F extends Feed> {
         private static final FormatOptionsFactory DATA_FORMAT_FACTORY = new FormatOptionsFactory() {};
 
         private final Class<F> feedClass;
-        private GeneratorContext generatorContext;
-        private String tagKey;
-        private String tagValue;
-        private DataSource dataSource;
-        private Function<Settings, FormatOptions> formatOptions;
-        private FeedFormatType feedFormatType;
-        private FeedDataAccess feedDataAccess;
-        private FeedDataEndAction feedDataEndAction;
-        private Settings settings;
+        private @Nullable GeneratorContext generatorContext;
+        private @Nullable String tagKey;
+        private @Nullable String tagValue;
+        private @Nullable DataSource dataSource;
+        private @Nullable Function<Settings, FormatOptions> formatOptions;
+        private @Nullable FeedFormatType feedFormatType;
+        private @Nullable FeedDataAccess feedDataAccess;
+        private @Nullable FeedDataEndAction feedDataEndAction;
+        private @Nullable Settings settings;
 
-        private Builder(final Class<F> feedClass) {
+        private Builder(final @Nullable Class<F> feedClass) {
             ApiValidator.isTrue(feedClass != null && feedClass.isInterface(),
                     "Feed must be an interface, but got: %s", feedClass);
-            this.feedClass = feedClass;
+            this.feedClass = Verify.notNull(feedClass, "feedClass cannot be null");
         }
 
         public Builder<F> withGeneratorContext(final GeneratorContext generatorContext) {

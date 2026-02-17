@@ -24,6 +24,7 @@ import org.instancio.feed.FeedSpecAnnotations.NullableSpec;
 import org.instancio.feed.FeedSpecAnnotations.TemplateSpec;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.TypeUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -40,9 +41,9 @@ public final class SpecMethod {
 
     private final Method method;
     private final Class<?> targetType;
-    private final GeneratedSpec generatedSpec;
-    private final FunctionSpec functionSpec;
-    private final TemplateSpec templateSpec;
+    private final @Nullable GeneratedSpec generatedSpec;
+    private final @Nullable FunctionSpec functionSpec;
+    private final @Nullable TemplateSpec templateSpec;
     private final String dataPropertyName;
 
     public SpecMethod(final Method method) {
@@ -59,15 +60,15 @@ public final class SpecMethod {
         return method;
     }
 
-    public GeneratedSpec getGeneratedSpec() {
+    public @Nullable GeneratedSpec getGeneratedSpec() {
         return generatedSpec;
     }
 
-    public FunctionSpec getFunctionSpec() {
+    public @Nullable FunctionSpec getFunctionSpec() {
         return functionSpec;
     }
 
-    public TemplateSpec getTemplateSpec() {
+    public @Nullable TemplateSpec getTemplateSpec() {
         return templateSpec;
     }
 
@@ -92,7 +93,7 @@ public final class SpecMethod {
         return method.getDeclaredAnnotation(NullableSpec.class) != null;
     }
 
-    public <A extends Annotation> A getAnnotation(final Class<A> annotationClass) {
+    public <A extends Annotation> @Nullable A getAnnotation(final Class<A> annotationClass) {
         return method.getDeclaredAnnotation(annotationClass);
     }
 

@@ -35,7 +35,7 @@ import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -57,18 +57,18 @@ import static org.instancio.internal.util.ReflectionUtils.getZeroArgMethod;
 import static org.instancio.internal.util.ReflectionUtils.setAccessible;
 import static org.instancio.internal.util.StringConverters.getConverter;
 
-@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports", "PMD.GodClass"})
+@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports", "PMD.GodClass", "NullAway"}) // TODO Internal nullability of this class is complicated
 public abstract class AbstractFeed<R> implements InternalFeed {
     private static final boolean UPDATE_BITSET = true;
 
     private final DataStore<R> dataStore;
     private final InternalFeedContext<?> feedContext;
-    private final String tagValue;
+    private final @Nullable String tagValue;
     private final GeneratorContext generatorContext;
     private final PropertyBitSet propertyBitSet;
     private final Class<?> feedClass;
     private final AtomicInteger sequentialAccessIndex = new AtomicInteger(-1);
-    private R currentEntry;
+    private @Nullable R currentEntry;
 
     protected AbstractFeed(
             final InternalFeedContext<?> feedContext,
@@ -90,7 +90,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
      * or {@code null} if a value is not present
      * @throws InstancioApiException if the data store does not contain the given property
      */
-    protected abstract String getValue(String propertyKey);
+    protected abstract @Nullable String getValue(String propertyKey);
 
     @Override
     public final InternalFeedContext<?> getFeedContext() {
@@ -110,7 +110,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
     }
 
     @Override
-    public final <T> FeedSpec<T> createSpec(final SpecMethod specMethod, final Object[] args) {
+    public final <T> FeedSpec<T> createSpec(final SpecMethod specMethod, final Object @Nullable [] args) {
         return createSpecInternal(specMethod, args, UPDATE_BITSET);
     }
 
@@ -121,7 +121,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         return createSpecWithPostProcessors(supplier, Collections.emptyList(), false);
     }
 
-    protected final R getCurrentEntry() {
+    protected final @Nullable R getCurrentEntry() {
         return currentEntry;
     }
 
@@ -148,7 +148,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
 
     private <T> FeedSpec<T> createSpecInternal(
             final SpecMethod specMethod,
-            final Object[] args,
+            final Object @Nullable [] args,
             final boolean updateBitSet) {
 
         final Supplier<T> resultSupplier = getValueSupplier(specMethod, args, updateBitSet);
@@ -185,7 +185,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
     @SuppressWarnings("unchecked")
     private <T> Supplier<T> getValueSupplier(
             final SpecMethod specMethod,
-            final Object[] args,
+            final Object @Nullable [] args,
             final boolean updateBitSet) {
 
         // Handle built-in feed spec methods
@@ -294,7 +294,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
     }
 
     @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
-    private <T> T getGeneratedSpecValue(final Class<?> generatorClass) {
+    private <T> @Nullable T getGeneratedSpecValue(final Class<?> generatorClass) {
         final Generator<T> generator = (Generator<T>) ReflectionUtils.newInstance(generatorClass);
         return generator.generate(getGeneratorContext().random());
     }
@@ -339,7 +339,6 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         }
     }
 
-    @NonNull
     private Method resolveFunctionSpecHandler(
             final SpecMethod parentSpecMethod,
             final Class<?> providerClass) {
