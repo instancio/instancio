@@ -23,6 +23,7 @@ import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -53,17 +54,17 @@ final class ModelContextSource {
 
     @SuppressWarnings({Sonar.TOO_MANY_PARAMETERS, "PMD.ExcessiveParameterList"})
     ModelContextSource(
-            final List<Type> withTypeParametersList,
-            final Map<TargetSelector, Class<?>> subtypeSelectors,
-            final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap,
-            final Map<TargetSelector, Generator<?>> generatorMap,
-            final Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap,
-            final Map<TargetSelector, Predicate<?>> filterMap,
-            final Map<TargetSelector, List<Assignment>> assignmentMap,
-            final Map<TargetSelector, ModelContext> setModelMap,
-            final Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap,
-            final Set<TargetSelector> ignoreSet,
-            final Set<TargetSelector> withNullableSet) {
+            final @Nullable List<Type> withTypeParametersList,
+            final @Nullable Map<TargetSelector, Class<?>> subtypeSelectors,
+            final @Nullable Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap,
+            final @Nullable Map<TargetSelector, Generator<?>> generatorMap,
+            final @Nullable Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap,
+            final @Nullable Map<TargetSelector, Predicate<?>> filterMap,
+            final @Nullable Map<TargetSelector, List<Assignment>> assignmentMap,
+            final @Nullable Map<TargetSelector, ModelContext> setModelMap,
+            final @Nullable Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap,
+            final @Nullable Set<TargetSelector> ignoreSet,
+            final @Nullable Set<TargetSelector> withNullableSet) {
 
         this.withTypeParametersList = asUnmodifiableList(withTypeParametersList);
         this.subtypeMap = asUnmodifiableMap(subtypeSelectors);

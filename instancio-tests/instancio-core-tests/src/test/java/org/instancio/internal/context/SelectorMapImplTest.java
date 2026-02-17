@@ -51,6 +51,7 @@ import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
 
+@SuppressWarnings("NullAway")
 class SelectorMapImplTest {
     private final NodeFactory nodeFactory = Fixtures.nodeFactory();
 

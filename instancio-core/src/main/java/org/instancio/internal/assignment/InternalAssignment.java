@@ -30,23 +30,23 @@ import java.util.function.Predicate;
 
 @InternalApi
 public final class InternalAssignment implements Assignment, Flattener<InternalAssignment> {
-    private final @Nullable TargetSelector origin;
+    private final TargetSelector origin;
     private final @Nullable Predicate<?> originPredicate;
-    private final @Nullable TargetSelector destination;
+    private final TargetSelector destination;
     private final @Nullable GeneratorHolder generatorHolder;
     private final @Nullable Generator<?> generator;
     private final @Nullable RandomFunction<?, ?> valueMapper;
 
     private InternalAssignment(final Builder builder) {
-        origin = builder.origin;
+        origin = ApiValidator.notNull(builder.origin, "origin selector must not be null");
         originPredicate = builder.originPredicate;
-        destination = builder.destination;
+        destination = ApiValidator.notNull(builder.destination, "destination selector must not be null");
         generatorHolder = builder.generatorHolder;
         generator = builder.generator;
         valueMapper = builder.valueMapper;
     }
 
-    public @Nullable TargetSelector getOrigin() {
+    public TargetSelector getOrigin() {
         return origin;
     }
 
@@ -55,7 +55,7 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
         return (Predicate<T>) originPredicate;
     }
 
-    public @Nullable TargetSelector getDestination() {
+    public TargetSelector getDestination() {
         return destination;
     }
 

@@ -65,6 +65,7 @@ import org.instancio.settings.Settings;
 import org.instancio.support.Global;
 import org.instancio.support.Log;
 import org.instancio.support.ThreadLocalSettings;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -93,8 +94,8 @@ public final class ModelContext {
 
     private final ModelContextSource contextSource;
     private final RootType rootType;
-    private final Integer maxDepth;
-    private final Long seed;
+    private final @Nullable Integer maxDepth;
+    private final @Nullable Long seed;
     private final boolean verbose;
     private final Settings settings;
     private final Random random;
@@ -196,7 +197,7 @@ public final class ModelContext {
     }
 
     public Integer getMaxDepth() {
-        return defaultIfNull(maxDepth, settings.get(Keys.MAX_DEPTH));
+        return defaultIfNull(maxDepth, Verify.notNull(settings.get(Keys.MAX_DEPTH), "maxDepth is null"));
     }
 
     public SelectorMaps getSelectorMaps() {
@@ -295,23 +296,23 @@ public final class ModelContext {
     @SuppressWarnings({"PMD.GodClass", "PMD.TooManyFields", "UnusedReturnValue"})
     public static final class Builder {
         private final Type rootType;
-        private List<Type> withTypeParametersList;
-        private Object fillObject;
-        private FillType fillType;
-        private Map<TargetSelector, Class<?>> subtypeMap;
-        private Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap;
-        private Map<TargetSelector, Generator<?>> generatorMap;
-        private Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap;
-        private Map<TargetSelector, Predicate<?>> filterMap;
-        private Map<TargetSelector, List<Assignment>> assignmentMap;
-        private Map<TargetSelector, ModelContext> setModelMap;
-        private Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap;
-        private Set<TargetSelector> ignoreSet;
-        private Set<TargetSelector> withNullableSet;
-        private Settings settings;
-        private Integer maxDepth;
-        private Long seed;
-        private Boolean lenient;
+        private @Nullable List<Type> withTypeParametersList;
+        private @Nullable Object fillObject;
+        private @Nullable FillType fillType;
+        private @Nullable Map<TargetSelector, Class<?>> subtypeMap;
+        private @Nullable Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap;
+        private @Nullable Map<TargetSelector, Generator<?>> generatorMap;
+        private @Nullable Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap;
+        private @Nullable Map<TargetSelector, Predicate<?>> filterMap;
+        private @Nullable Map<TargetSelector, List<Assignment>> assignmentMap;
+        private @Nullable Map<TargetSelector, ModelContext> setModelMap;
+        private @Nullable Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap;
+        private @Nullable Set<TargetSelector> ignoreSet;
+        private @Nullable Set<TargetSelector> withNullableSet;
+        private @Nullable Settings settings;
+        private @Nullable Integer maxDepth;
+        private @Nullable Long seed;
+        private @Nullable Boolean lenient;
         private boolean verbose;
         private final SelectorProcessor selectorProcessor;
         private final SetterSelectorHolder setMethodSelectorHolder = new SetterSelectorHolder();
@@ -494,7 +495,7 @@ public final class ModelContext {
                             .destination(destination)
                             .build();
 
-                    this.assignmentMap
+                    Verify.notNull(this.assignmentMap, "assignmentMap is initialized in the calling method")
                             .computeIfAbsent(destination, k -> new ArrayList<>())
                             .add(processedAssignment);
                 }
@@ -581,7 +582,7 @@ public final class ModelContext {
             // Increment max depth to account for the additional layer added by the collection
             maxDepth = otherContext.maxDepth == null ? null : otherContext.maxDepth + 1; //NOPMD
             settings = Settings.from(otherContext.settings)
-                    .set(Keys.MAX_DEPTH, otherContext.settings.get(Keys.MAX_DEPTH) + 1)
+                    .set(Keys.MAX_DEPTH, Verify.notNull(otherContext.settings.get(Keys.MAX_DEPTH), "maxDepth is null") + 1)
                     .lock();
 
             return this;

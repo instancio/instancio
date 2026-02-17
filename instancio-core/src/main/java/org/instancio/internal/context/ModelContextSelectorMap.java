@@ -18,6 +18,7 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class ModelContextSelectorMap {
         return selectorMap;
     }
 
-    public ModelContext getContext(final InternalNode node) {
+    public @Nullable ModelContext getContext(final InternalNode node) {
         return selectorMap.getValue(node).orElse(null);
     }
 }

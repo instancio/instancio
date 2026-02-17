@@ -15,6 +15,7 @@
  */
 package org.instancio.internal;
 
+import jakarta.validation.constraints.NotNull;
 import org.instancio.Node;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
@@ -227,10 +228,11 @@ public final class ApiValidator {
         return obj;
     }
 
-    public static <T> void doesNotContainNull(final T[] array, final Supplier<String> supplier) {
+    public static <T> T[] doesNotContainNull(final @Nullable T[] array, final Supplier<String> supplier) {
         for (T e : array) {
             if (e == null) throw Fail.withUsageError(supplier.get());
         }
+        return array;
     }
 
     public static void isTrue(final boolean condition, final String message, final Object... values) {

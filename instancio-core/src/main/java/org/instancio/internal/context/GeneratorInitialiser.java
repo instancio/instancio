@@ -21,6 +21,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 
 import java.util.LinkedHashMap;
@@ -34,14 +35,14 @@ final class GeneratorInitialiser {
 
     GeneratorInitialiser(final GeneratorContext generatorContext) {
         this.context = generatorContext;
-        this.defaultAfterGenerate = generatorContext.getSettings().get(Keys.AFTER_GENERATE_HINT);
+        this.defaultAfterGenerate = Verify.notNull(generatorContext.getSettings().get(Keys.AFTER_GENERATE_HINT), "afterGenerateHint is null");
     }
 
     <T> Generator<T> initGenerator(final TargetSelector targetSelector, final Generator<T> g) {
         g.init(context);
 
         final Generator<T> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
-        final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
+        final InternalGeneratorHint hint = Verify.notNull(generator.hints(), "generator decorator can't have null hints").get(InternalGeneratorHint.class);
 
         if (hint != null && hint.targetClass() != null) {
             subtypeMap.put(targetSelector, hint.targetClass());

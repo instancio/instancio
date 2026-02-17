@@ -42,6 +42,7 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.utils.TypeUtils;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -209,6 +210,7 @@ class ModelContextTest {
         assertThat(ctx.isAccepted(mockNode(List.class), "any value")).isFalse();
     }
 
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     @Test
     void nullSubtype() {
         final ModelContext.Builder builder = ModelContext.builder(Person.class);
@@ -354,7 +356,7 @@ class ModelContextTest {
         return field(field.getDeclaringClass(), field.getName());
     }
 
-    private static InternalNode mockNode(Class<?> targetClass, Field field) {
+    private static InternalNode mockNode(Class<?> targetClass, @Nullable Field field) {
         final InternalNode node = mock(InternalNode.class);
         doReturn(targetClass).when(node).getRawType();
         doReturn(field).when(node).getField();

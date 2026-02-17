@@ -100,7 +100,7 @@ public interface Settings {
      * @param other settings to merge
      * @return new instance of merged settings
      */
-    Settings merge(Settings other);
+    Settings merge(@Nullable Settings other);
 
     /**
      * Get setting value for given key.

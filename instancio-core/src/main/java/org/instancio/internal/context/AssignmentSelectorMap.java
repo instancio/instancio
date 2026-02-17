@@ -25,7 +25,7 @@ import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.CollectionUtils;
-import org.jspecify.annotations.NonNull;
+import org.instancio.internal.util.Verify;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,12 +42,12 @@ final class AssignmentSelectorMap {
     private final SelectorMap<List<TargetSelector>> originToDestinationSelectorsMap = new SelectorMapImpl<>();
     private final BooleanSelectorMap originSelectors = new BooleanSelectorMap();
 
-    AssignmentSelectorMap(@NonNull final GeneratorContext generatorContext) {
+    AssignmentSelectorMap(final GeneratorContext generatorContext) {
         this.generatorContext = generatorContext;
         this.generatorInitialiser = new GeneratorInitialiser(generatorContext);
     }
 
-    void putAll(final @NonNull Map<TargetSelector, List<Assignment>> targetSelectors) {
+    void putAll(final Map<TargetSelector, List<Assignment>> targetSelectors) {
         for (Map.Entry<TargetSelector, List<Assignment>> entry : targetSelectors.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
@@ -95,7 +95,7 @@ final class AssignmentSelectorMap {
             if (assignment.getGeneratorHolder() != null) {
                 final GeneratorHolder holder = assignment.getGeneratorHolder();
                 final Generator<?> generator = holder.getGenerator() == null
-                        ? (Generator<?>) holder.getSpecProvider().getSpec(generators)
+                        ? (Generator<?>) Verify.notNull(holder.getSpecProvider(), "holder spec provider is null").getSpec(generators)
                         : holder.getGenerator();
 
                 final Generator<?> updatedGenerator = generatorInitialiser.initGenerator(assignment.getDestination(), generator);

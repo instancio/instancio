@@ -31,7 +31,6 @@ import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
 import org.instancio.internal.selectors.TargetSetter;
 import org.instancio.internal.util.Fail;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayDeque;
@@ -122,7 +121,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         if (!withParent.isEmpty()) {
             final SelectorImpl selector = withParent.get(0);
             markUsed(selector);
-            return Optional.of(this.selectors.get(selector));
+            return Optional.ofNullable(this.selectors.get(selector));
         }
 
         return getPredicateSelectorMatch(node);
@@ -293,8 +292,8 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
 
     private static boolean selectorScopesMatchNodeHierarchy(
             @Nullable final Integer candidateDepth,
-            @NonNull final List<Scope> candidateScopes,
-            @NonNull final InternalNode targetNode) {
+            final List<Scope> candidateScopes,
+            final InternalNode targetNode) {
 
         if (candidateDepth != null && candidateDepth != targetNode.getDepth()) {
             return false;

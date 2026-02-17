@@ -19,6 +19,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -37,7 +38,7 @@ final class FillObjectHelper {
             return Collections.emptyList();
         }
 
-        final Type[] typeArgs;
+        final @Nullable Type[] typeArgs;
 
         // Supporting all generic types probably won't be possible.
         // For now, only handle known types like Collection and Map.
@@ -50,17 +51,15 @@ final class FillObjectHelper {
             throw Fail.withUsageError(ErrorMessageUtils.fillParameterizedType(object.getClass()));
         }
 
-        ApiValidator.doesNotContainNull(typeArgs, () ->
+        return CollectionUtils.asUnmodifiableList(ApiValidator.doesNotContainNull(typeArgs, () ->
                 "the fill() method cannot resolve type arguments from the given "
-                        + object.getClass().getSimpleName() + " instance because it contains null value(s)");
-
-        return CollectionUtils.asUnmodifiableList(typeArgs);
+                        + object.getClass().getSimpleName() + " instance because it contains null value(s)"));
     }
 
-    private static Type[] getCollectionTypeArgs(final Collection<?> collection) {
+    private static @Nullable Type[] getCollectionTypeArgs(final Collection<?> collection) {
         ApiValidator.isFalse(collection.isEmpty(), "cannot fill() an empty collection");
 
-        final Type[] typeArgs = new Type[1];
+        final @Nullable Type[] typeArgs = new Type[1];
 
         for (Object element : collection) {
             if (typeArgs[0] == null) {
@@ -73,10 +72,10 @@ final class FillObjectHelper {
         return typeArgs;
     }
 
-    private static Type[] getMapTypeArgs(final Map<?, ?> map) {
+    private static @Nullable Type[] getMapTypeArgs(final Map<?, ?> map) {
         ApiValidator.isFalse(map.isEmpty(), "cannot fill() an empty map");
 
-        final Type[] typeArgs = new Type[2];
+        final @Nullable Type[] typeArgs = new Type[2];
 
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             if (typeArgs[0] == null) {
@@ -92,7 +91,7 @@ final class FillObjectHelper {
         return typeArgs;
     }
 
-    private static Class<?> getType(final Object o) {
+    private static @Nullable Class<?> getType(final @Nullable Object o) {
         return o == null ? null : o.getClass();
     }
 }
