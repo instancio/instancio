@@ -41,6 +41,7 @@ class ReflectionUtilsTest {
 
     @Nested
     class GetClassTest {
+        @SuppressWarnings({"NullAway", "DataFlowIssue"})
         @Test
         void nullClassName() {
             assertThatThrownBy(() -> ReflectionUtils.getClass(null))
@@ -78,6 +79,7 @@ class ReflectionUtilsTest {
         assertThat(ReflectionUtils.isArrayOrConcrete(klass)).isFalse();
     }
 
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     @Test
     void getEnumValues() {
         final Gender[] enumValues = ReflectionUtils.getEnumValues(Gender.class);
@@ -116,6 +118,7 @@ class ReflectionUtilsTest {
                 .hasMessageContaining("Could not find method method '%s' declared by %s", invalidMethodName, Person.class);
     }
 
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     @Test
     void getField() {
         record SampleRecord(String foo, int bar) {}
@@ -138,6 +141,7 @@ class ReflectionUtilsTest {
                 .hasMessageContaining("invalid field 'foo' for class org.instancio.test.support.pojo.person.Person");
     }
 
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     @Test
     void getFieldValue() {
         final Person person = Person.builder().name("foo").build();

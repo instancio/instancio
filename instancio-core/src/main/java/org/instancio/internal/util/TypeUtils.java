@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.util;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Array;
@@ -59,7 +58,6 @@ public final class TypeUtils {
         throw new IllegalArgumentException("Could not resolve array class for type: " + type);
     }
 
-    @NonNull
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getRawType(final Type type) {
         if (type instanceof Class) {
@@ -110,7 +108,7 @@ public final class TypeUtils {
         return supertypes;
     }
 
-    private static ParameterizedType findParameterizedSupertype(final List<Type> types) {
+    private static @Nullable ParameterizedType findParameterizedSupertype(final List<Type> types) {
         for (Type type : types) {
             ParameterizedType pType = findParameterizedSupertype(getRawType(type));
             if (pType != null) {

@@ -16,6 +16,7 @@
 package org.instancio.internal.util;
 
 import org.instancio.documentation.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
@@ -46,7 +47,7 @@ public final class ExceptionUtils {
     }
 
     @VisibleForTesting
-    static String getCausedBy(final Throwable throwable) {
+    static String getCausedBy(final @Nullable Throwable throwable) {
         final StringBuilder sb = new StringBuilder(1024);
 
         for (Throwable t = throwable; t != null; t = t.getCause()) {

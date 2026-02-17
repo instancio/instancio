@@ -25,6 +25,7 @@ import org.instancio.test.support.pojo.generics.basic.Item;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfList;
 import org.instancio.test.support.pojo.generics.inheritance.NonGenericSubclassOfMap;
 import org.instancio.testsupport.fixtures.Types;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -108,7 +109,7 @@ class TypeUtilsTest {
 
     private static class Foo implements Generator<String> {
         @Override
-        public String generate(final Random random) {
+        public @Nullable String generate(final Random random) {
             return null;
         }
     }

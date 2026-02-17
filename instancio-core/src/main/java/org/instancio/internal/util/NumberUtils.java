@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.util;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
@@ -26,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+@SuppressWarnings("NullAway") // TODO Internal nullability of this class is complicated
 public final class NumberUtils {
 
     private static final int RADIX_DECIMAL = 10;
@@ -137,7 +137,7 @@ public final class NumberUtils {
      * @return new minimum if current minimum is greater than the new maximum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMin(
-            @Nullable final T curMin, @NonNull final T newMax, final int percentage) {
+            final @Nullable T curMin, final T newMax, final int percentage) {
 
         if (Objects.equals(newMax, curMin)) {
             return curMin;
@@ -188,7 +188,7 @@ public final class NumberUtils {
      * @return new maximum if current maximum is less than the new minimum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMax(
-            @Nullable final T curMax, @NonNull final T newMin, final int percentage) {
+            final @Nullable T curMax, final T newMin, final int percentage) {
 
         if (Objects.equals(newMin, curMax)) {
             return curMax;
@@ -225,11 +225,11 @@ public final class NumberUtils {
         return fn.apply(newMaxBD);
     }
 
-    public static Integer calculateNewMinSize(@Nullable final Integer curMin, final Integer newMax) {
+    public static Integer calculateNewMinSize(final @Nullable Integer curMin, final Integer newMax) {
         return Math.max(0, calculateNewMin(curMin, newMax, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
     }
 
-    public static Integer calculateNewMaxSize(@Nullable final Integer curMax, final Integer newMin) {
+    public static Integer calculateNewMaxSize(final @Nullable Integer curMax, final Integer newMin) {
         return calculateNewMax(curMax, newMin, Constants.RANGE_ADJUSTMENT_PERCENTAGE);
     }
 
@@ -255,7 +255,7 @@ public final class NumberUtils {
         return value.compareTo(BigDecimal.ZERO) == 0;
     }
 
-    public static @Nullable BigDecimal toBigDecimal(final Number n) {
+    public static @Nullable BigDecimal toBigDecimal(final @Nullable Number n) {
         if (n instanceof BigDecimal bd) {
             return bd;
         }

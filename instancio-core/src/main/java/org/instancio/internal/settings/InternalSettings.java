@@ -19,6 +19,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.StringConverters;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
@@ -205,7 +206,7 @@ public final class InternalSettings implements Settings {
     }
 
     private static <T> T convertValueToKeyType(final SettingKey<T> key, final Object value) {
-        final Function<String, T> fn = StringConverters.getConverter(key.type());
+        final Function<String, T> fn = StringConverters.getConverter(Verify.notNull(key.type(), "key type is null"));
         try {
             return fn.apply(value.toString());
         } catch (NumberFormatException ex) {

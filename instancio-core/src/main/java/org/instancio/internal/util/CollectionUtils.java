@@ -16,7 +16,6 @@
 package org.instancio.internal.util;
 
 import org.instancio.Random;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -48,19 +47,19 @@ public final class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <T> List<T> asUnmodifiableList(final T... values) {
+    public static <T> List<T> asUnmodifiableList(final T @Nullable ... values) {
         return Collections.unmodifiableList(asArrayList(values));
     }
 
-    public static <T> List<T> asUnmodifiableList(final List<T> list) {
+    public static <T> List<T> asUnmodifiableList(final @Nullable List<T> list) {
         return list == null ? Collections.emptyList() : Collections.unmodifiableList(list);
     }
 
-    public static <T> Set<T> asUnmodifiableSet(final Set<T> set) {
+    public static <T> Set<T> asUnmodifiableSet(final @Nullable Set<T> set) {
         return set == null ? Collections.emptySet() : Collections.unmodifiableSet(set);
     }
 
-    public static <K, V> Map<K, V> asUnmodifiableMap(final Map<K, V> map) {
+    public static <K, V> Map<K, V> asUnmodifiableMap(final @Nullable Map<K, V> map) {
         return map == null ? Collections.emptyMap() : Collections.unmodifiableMap(map);
     }
 
@@ -86,23 +85,23 @@ public final class CollectionUtils {
         return copy;
     }
 
-    public static <K, V> Map<K, V> newLinkedHashMapIfNull(final Map<K, V> map) {
+    public static <K, V> Map<K, V> newLinkedHashMapIfNull(final @Nullable Map<K, V> map) {
         return map != null ? map : new LinkedHashMap<>(DEFAULT_INITIAL_CAPACITY);
     }
 
-    public static <T> Set<T> newLinkedHashSetIfNull(final Set<T> set) {
+    public static <T> Set<T> newLinkedHashSetIfNull(final @Nullable Set<T> set) {
         return set != null ? set : new LinkedHashSet<>(DEFAULT_INITIAL_CAPACITY);
     }
 
     @SafeVarargs
-    public static <T> List<T> asArrayList(final T... values) {
+    public static <T> List<T> asArrayList(final T @Nullable... values) {
         return values == null
                 ? new ArrayList<>(DEFAULT_INITIAL_CAPACITY)
                 : new ArrayList<>(Arrays.asList(values));
     }
 
     @SafeVarargs
-    public static <T> Set<T> asSet(@Nullable final T... values) {
+    public static <T> Set<T> asSet(final @Nullable T @Nullable ... values) {
         if (values == null) {
             return Collections.emptySet();
         }
@@ -112,7 +111,7 @@ public final class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <K, V> Map<K, V> asLinkedHashMap(final Function<V, K> keyFn, @Nullable final V... values) {
+    public static <K, V> Map<K, V> asLinkedHashMap(final Function<V, K> keyFn, final V @Nullable ... values) {
         if (values == null) return Collections.emptyMap();
         final Map<K, V> map = new LinkedHashMap<>(values.length);
         for (V value : values) {
@@ -142,7 +141,7 @@ public final class CollectionUtils {
 
     // same as List.indexOf() but using '==' instead of equals()
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
-    public static int identityIndexOf(final Object obj, @NonNull final List<?> list) {
+    public static int identityIndexOf(final @Nullable Object obj, final List<?> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) == obj) {
                 return i;

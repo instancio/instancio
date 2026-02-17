@@ -15,7 +15,6 @@
  */
 package org.instancio.internal.util;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -33,18 +32,9 @@ public final class StringUtils {
     }
 
     public static boolean isBlank(@Nullable final String s) {
-        if (isEmpty(s)) {
-            return true;
-        }
-        for (int i = 0, length = s.length(); i < length; i++) {
-            if (!Character.isWhitespace(s.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
+        return s == null || s.isBlank();
     }
 
-    @NonNull
     public static String trimToEmpty(@Nullable final String s) {
         return s == null ? "" : s.trim();
     }
@@ -82,7 +72,7 @@ public final class StringUtils {
         return false;
     }
 
-    public static String concatNonNull(@Nullable final String... values) {
+    public static String concatNonNull(final @Nullable String @Nullable ... values) {
         final StringBuilder sb = new StringBuilder();
         if (values != null) {
             for (String val : values) {
@@ -94,7 +84,7 @@ public final class StringUtils {
         return sb.toString();
     }
 
-    public static String capitalise(@Nullable final String s) {
+    public static @Nullable String capitalise(@Nullable final String s) {
         if (s == null || s.isEmpty()) {
             return s;
         }
@@ -161,7 +151,7 @@ public final class StringUtils {
      * @return an immutable list of tokens or an empty list if none
      */
     public static List<String> split(@Nullable String str) {
-        if (isBlank(str)) {
+        if (str == null || str.isBlank()) {
             return Collections.emptyList();
         }
 

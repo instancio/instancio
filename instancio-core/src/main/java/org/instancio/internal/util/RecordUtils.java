@@ -50,7 +50,7 @@ public final class RecordUtils {
         return args;
     }
 
-    private static <T> Constructor<T> getCanonicalConstructor(final Class<T> recordClass) {
+    private static <T> @Nullable Constructor<T> getCanonicalConstructor(final Class<T> recordClass) {
         final Class<?>[] componentTypes = getComponentTypes(recordClass);
         try {
             return recordClass.getDeclaredConstructor(componentTypes);

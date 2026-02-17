@@ -18,6 +18,7 @@ package org.instancio.internal.assigners;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -38,7 +39,7 @@ public class AssignerImpl implements Assigner {
 
     private static Assigner resolveAssigner(final ModelContext context) {
         final Settings settings = context.getSettings();
-        final AssignmentType assignment = settings.get(Keys.ASSIGNMENT_TYPE);
+        final AssignmentType assignment = Verify.notNull(settings.get(Keys.ASSIGNMENT_TYPE), "assignmentType is null");
 
         if (assignment == AssignmentType.FIELD) {
             return new FieldAssigner(settings);

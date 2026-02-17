@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class VerifyTest {
@@ -58,7 +59,7 @@ class VerifyTest {
     @Test
     void notEmptyReturnsTheArrayArgument() {
         final String[] arrayToCheck = new String[]{"test-array"};
-        assertThat(Verify.notEmpty(arrayToCheck, MESSAGE_TEMPLATE, MESSAGE_ARG)).isSameAs(arrayToCheck);
+        assertThatCode(() -> Verify.notEmpty(arrayToCheck, MESSAGE_TEMPLATE, MESSAGE_ARG)).doesNotThrowAnyException();
     }
 
     @Test

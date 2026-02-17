@@ -95,7 +95,10 @@ class CollectionUtilsTest {
         final Map<String, List<Integer>> mutableMapCopy = CollectionUtils.copyAsLinkedHashMap(
                 Collections.unmodifiableMap(map));
 
-        mutableMapCopy.get("foo").add(123);
+        final List<Integer> fooList = mutableMapCopy.get("foo");
+        assertThat(fooList).isNotNull();
+        fooList.add(123);
+
         assertThat(mutableMapCopy).containsValue(List.of(42, 43, 123));
 
         mutableMapCopy.put("bar", Arrays.asList(567));
@@ -130,6 +133,7 @@ class CollectionUtilsTest {
 
         final List<Integer> listCopy = mapCopy.get("foo");
 
+        assertThat(listCopy).isNotNull();
         assertThatThrownBy(() -> listCopy.add(123))
                 .isInstanceOf(UnsupportedOperationException.class);
     }

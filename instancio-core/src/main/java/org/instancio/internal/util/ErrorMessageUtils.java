@@ -213,7 +213,7 @@ public final class ErrorMessageUtils {
         return getTypeMismatchErrorMessage(value, node, null);
     }
 
-    public static String getTypeMismatchErrorMessage(final Object value, final InternalNode node, @Nullable final Throwable cause) {
+    public static String getTypeMismatchErrorMessage(final @Nullable Object value, final InternalNode node, @Nullable final Throwable cause) {
         final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE)
                 .append("error assigning value to: ").append(nodePathToRootBlock(node)).append(NL)
                 .append(NL).append(NL);
@@ -427,10 +427,10 @@ public final class ErrorMessageUtils {
 
 
     private static void appendTypeMismatchDetails(
-            final Object value, final InternalNode node, final StringBuilder sb) {
+            final @Nullable Object value, final InternalNode node, final StringBuilder sb) {
 
         final String nodeDescription = formatNode(node);
-        final String argType = withoutPackage(value.getClass());
+        final String argType = value == null ? "n/a" : withoutPackage(value.getClass());
         final String argValue = StringUtils.quoteStringValue(value);
 
         sb.append("Type mismatch:").append(NL).append(NL);
@@ -446,7 +446,7 @@ public final class ErrorMessageUtils {
     }
 
     public static String incompatibleField(
-            final Object value,
+            final @Nullable Object value,
             final Field field,
             final Throwable cause,
             final Settings settings) {
@@ -515,8 +515,8 @@ public final class ErrorMessageUtils {
     }
 
     public static String getSetterInvocationErrorMessage(
-            final Object value,
-            final String method,
+            final @Nullable Object value,
+            final @Nullable String method,
             final Throwable cause,
             final Settings settings) {
 
@@ -814,7 +814,7 @@ public final class ErrorMessageUtils {
                 .collect(Collectors.joining(", "));
 
         final String onFeedPropertyUnmatchedKey = keyDesc(Keys.ON_FEED_PROPERTY_UNMATCHED);
-        final String currentOnFeedPropertyUnmatched = settings.get(Keys.ON_FEED_PROPERTY_UNMATCHED).toString();
+        final OnFeedPropertyUnmatched currentOnFeedPropertyUnmatched = settings.get(Keys.ON_FEED_PROPERTY_UNMATCHED);
 
         return """
                 unmapped feed properties
@@ -951,8 +951,8 @@ public final class ErrorMessageUtils {
         return "Keys." + keyName;
     }
 
-    private static String enumValueDesc(final Enum<?> e) {
-        return String.format("%s.%s", e.getDeclaringClass().getSimpleName(), e.name());
+    private static String enumValueDesc(@Nullable final Enum<?> e) {
+        return e == null ? "n/a" : String.format("%s.%s", e.getDeclaringClass().getSimpleName(), e.name());
     }
 
     private static Throwable getRootCause(final Throwable t) {

@@ -112,7 +112,7 @@ public final class Format {
         return sb.append('>').toString();
     }
 
-    public static @Nullable String formatField(final Field field) {
+    public static @Nullable String formatField(final @Nullable Field field) {
         return field == null ? null : String.format("%s %s (in %s)",
                 withoutPackage(ObjectUtils.defaultIfNull(field.getGenericType(), field.getType())),
                 field.getName(),
@@ -125,7 +125,7 @@ public final class Format {
      * @param method setter method with exactly one argument
      * @return method formatted as a string
      */
-    public static @Nullable String formatSetterMethod(final Method method) {
+    public static @Nullable String formatSetterMethod(final @Nullable Method method) {
         return method == null ? null : String.format("%s.%s(%s)",
                 withoutPackage(method.getDeclaringClass()),
                 method.getName(),

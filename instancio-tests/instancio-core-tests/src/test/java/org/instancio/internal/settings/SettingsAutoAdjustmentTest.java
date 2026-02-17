@@ -146,6 +146,7 @@ class SettingsAutoAdjustmentTest {
         void newMinIsGreaterThanMax(SettingKey<Number> minSetting) {
             final Optional<SettingKey<Number>> maxSetting = SettingsSupport.getAutoAdjustable(minSetting);
             assertThat(maxSetting).isPresent();
+            assertThat(minSetting.type()).isNotNull();
 
             final Number max = NumberUtils.longConverter(minSetting.type()).apply(50L);
             final Number newMin = NumberUtils.longConverter(minSetting.type()).apply(60L);
@@ -164,6 +165,7 @@ class SettingsAutoAdjustmentTest {
         void newMaxIsLessThanMin(SettingKey<Number> maxSetting) {
             final Optional<SettingKey<Number>> minSetting = SettingsSupport.getAutoAdjustable(maxSetting);
             assertThat(minSetting).isPresent();
+            assertThat(maxSetting.type()).isNotNull();
 
             final Number min = NumberUtils.longConverter(maxSetting.type()).apply(120L);
             final Number newMax = NumberUtils.longConverter(maxSetting.type()).apply(100L);

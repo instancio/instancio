@@ -131,7 +131,7 @@ public final class ReflectionUtils {
         }
     }
 
-    public static @Nullable Object tryGetFieldValueOrElseNull(final Field field, final Object target) {
+    public static @Nullable Object tryGetFieldValueOrElseNull(final Field field, final @Nullable Object target) {
         try {
             setAccessible(field);
             return field.get(target);
@@ -145,7 +145,7 @@ public final class ReflectionUtils {
         }
     }
 
-    public static Object getFieldValue(final Field field, final Object target) {
+    public static @Nullable Object getFieldValue(final Field field, final Object target) {
         try {
             setAccessible(field);
             return field.get(target);
