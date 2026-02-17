@@ -31,7 +31,7 @@ public class InternalValueOfOriginDestinationPredicate
 
     private final TargetSelector origin;
     private final TargetSelector destination;
-    private @Nullable final RandomFunction<?, ?> valueMapper;
+    private final @Nullable RandomFunction<?, ?> valueMapper;
     private @Nullable Predicate<?> predicate;
 
     public InternalValueOfOriginDestinationPredicate(

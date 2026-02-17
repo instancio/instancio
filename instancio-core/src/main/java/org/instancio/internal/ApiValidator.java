@@ -15,7 +15,6 @@
  */
 package org.instancio.internal;
 
-import jakarta.validation.constraints.NotNull;
 import org.instancio.Node;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;

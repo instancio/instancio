@@ -255,17 +255,17 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                 }
             } else if (spec instanceof CollectionGeneratorSpec<?> collectionSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.COLLECTION_MAX_SIZE),"collectionMaxSize is null"));
+                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.COLLECTION_MAX_SIZE), "collectionMaxSize is null"));
 
                 collectionSpec.minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof MapGeneratorSpec<?, ?> mapSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.MAP_MAX_SIZE),"mapMaxSize is null"));
+                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.MAP_MAX_SIZE), "mapMaxSize is null"));
 
                 mapSpec.minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof ArrayGeneratorSpec<?> arraySpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.ARRAY_MAX_LENGTH),"arrayMaxLength is null"));
+                        getMin(annotation), getMax(annotation), Verify.notNull(settings.get(Keys.ARRAY_MAX_LENGTH), "arrayMaxLength is null"));
 
                 arraySpec.minLength(range.min()).maxLength(range.max());
             }
@@ -289,7 +289,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
             } else if (spec instanceof ArrayGenerator<?> arraySpec) {
                 arraySpec
                         .nullable(false)
-                        .minLength(Verify.notNull(settings.get(Keys.ARRAY_MIN_LENGTH),"arrayMinLength is null"));
+                        .minLength(Verify.notNull(settings.get(Keys.ARRAY_MIN_LENGTH), "arrayMinLength is null"));
 
             } else if (spec instanceof CollectionGenerator<?> collectionSpec) {
                 collectionSpec

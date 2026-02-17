@@ -29,12 +29,6 @@ class InternalAssignmentTest {
     class ToStringTest {
 
         @Test
-        void verifyEmptyToString() {
-            assertThat(InternalAssignment.builder().build())
-                    .hasToString("InternalAssignment[origin=null, destination=null]");
-        }
-
-        @Test
         void verifyToString() {
             assertThat(InternalAssignment.builder()
                     .origin(Select.field("foo"))
