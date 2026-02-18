@@ -38,10 +38,10 @@ public final class InternalNode implements Node {
     private final Type type;
     private final Class<?> rawType;
     private final Class<?> targetClass;
-    private final Field field;
-    private final Method setter;
-    private final InternalNode parent;
-    private final NodeKind nodeKind;
+    private final @Nullable Field field;
+    private final @Nullable Method setter;
+    private final @Nullable InternalNode parent;
+    private final @Nullable NodeKind nodeKind;
     private final boolean cyclic;
     private final NodeTypeMap nodeTypeMap;
     private List<InternalNode> children;
@@ -51,18 +51,18 @@ public final class InternalNode implements Node {
     private InternalNode(final Builder builder) {
         type = builder.type;
         rawType = builder.rawType;
-        targetClass = builder.targetClass;
+        targetClass = Verify.notNull(builder.targetClass, "targetClass is null");
         field = builder.field;
         setter = builder.setter;
         parent = builder.parent;
         nodeKind = builder.nodeKind;
         cyclic = builder.cyclic;
-        nodeTypeMap = builder.nodeTypeMap;
+        nodeTypeMap = Verify.notNull(builder.nodeTypeMap, "nodeTypeMap is null");
         children = CollectionUtils.asUnmodifiableList(builder.children);
         depth = parent == null ? 0 : parent.depth + 1;
     }
 
-    public NodeKind getNodeKind() {
+    public @Nullable NodeKind getNodeKind() {
         return nodeKind;
     }
 
@@ -124,7 +124,7 @@ public final class InternalNode implements Node {
      * @return field, if present, or {@code null}
      */
     @Override
-    public Field getField() {
+    public @Nullable Field getField() {
         return field;
     }
 
@@ -134,12 +134,12 @@ public final class InternalNode implements Node {
      * @return setter, if present, or {@code null}
      */
     @Override
-    public Method getSetter() {
+    public @Nullable Method getSetter() {
         return setter;
     }
 
     @Override
-    public InternalNode getParent() {
+    public @Nullable InternalNode getParent() {
         return parent;
     }
 
@@ -232,7 +232,10 @@ public final class InternalNode implements Node {
             sb.append(Format.withoutPackage(targetClass));
         } else {
             if (field != null) {
-                sb.append(Format.withoutPackage(parent.targetClass)).append('.').append(field.getName());
+                if (parent != null) {
+                    sb.append(Format.withoutPackage(parent.targetClass));
+                }
+                sb.append('.').append(field.getName());
                 if (setter != null) {
                     sb.append(", ");
                 }
@@ -310,14 +313,14 @@ public final class InternalNode implements Node {
         private final Type type;
         private final Class<?> rawType;
         private final RootType rootType;
-        private Class<?> targetClass;
-        private Field field;
-        private Method setter;
-        private InternalNode parent;
-        private List<InternalNode> children;
-        private NodeKind nodeKind;
+        private @Nullable Class<?> targetClass;
+        private @Nullable Field field;
+        private @Nullable Method setter;
+        private @Nullable InternalNode parent;
+        private @Nullable List<InternalNode> children;
+        private @Nullable NodeKind nodeKind;
         private boolean cyclic;
-        private NodeTypeMap nodeTypeMap;
+        private @Nullable NodeTypeMap nodeTypeMap;
         private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
 
         private Builder(

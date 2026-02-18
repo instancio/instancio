@@ -15,6 +15,8 @@
  */
 package org.instancio.internal.nodes;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.Field;
 
 class SetterMethodNameWithPrefixResolver implements MethodNameResolver {
@@ -26,7 +28,7 @@ class SetterMethodNameWithPrefixResolver implements MethodNameResolver {
     }
 
     @Override
-    public String resolveFor(final Field field) {
+    public @Nullable String resolveFor(final Field field) {
         return field.getType() == boolean.class || field.getType() == Boolean.class
                 ? getBooleanMethodNameWithPrefix(field)
                 : getMethodNameWithPrefix(field.getName());
@@ -38,7 +40,7 @@ class SetterMethodNameWithPrefixResolver implements MethodNameResolver {
         return prefix + new String(chars);
     }
 
-    private String getBooleanMethodNameWithPrefix(final Field field) {
+    private @Nullable String getBooleanMethodNameWithPrefix(final Field field) {
         final String fieldName = field.getName();
         if (fieldName.startsWith("is")) {
             if (fieldName.length() > 2) {

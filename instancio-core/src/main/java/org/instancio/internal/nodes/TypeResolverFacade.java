@@ -18,6 +18,7 @@ package org.instancio.internal.nodes;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.InstancioSpiException;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,7 @@ class TypeResolverFacade {
         return Optional.ofNullable(type);
     }
 
-    private Class<?> resolveViaSPI(final Class<?> typeToResolve) {
+    private @Nullable Class<?> resolveViaSPI(final Class<?> typeToResolve) {
         for (ProviderEntry<TypeResolver> entry : providerEntries) {
             final Class<?> resolved = entry.getProvider().getSubtype(typeToResolve);
 

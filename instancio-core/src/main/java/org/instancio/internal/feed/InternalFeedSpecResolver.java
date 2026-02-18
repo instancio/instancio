@@ -53,7 +53,7 @@ public class InternalFeedSpecResolver {
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public @Nullable FeedSpec<?> getSpec(final InternalNode node) {
         final Class<?> feedClass = feed.getFeedContext().getFeedClass();
-        final String nodeFieldName = node.getField().getName();
+        final String nodeFieldName = node.getField() != null ? node.getField().getName() : "";
         final boolean nodeMatchedFeedProperty = unmappedFeedProperties.remove(nodeFieldName);
         final Method customFeedSpecMethod = ReflectionUtils.getZeroArgMethod(feedClass, nodeFieldName);
 

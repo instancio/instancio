@@ -17,6 +17,7 @@ package org.instancio.internal.nodes;
 
 import org.instancio.internal.util.MethodUtils;
 import org.instancio.internal.util.SetterMethodComparator;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodUnmatched;
@@ -46,14 +47,14 @@ class DeclaredAndInheritedMemberCollector {
     private final DefaultSetterMethodResolver defaultSetterMethodResolver;
     private final boolean isMethodAssignmentEnabled;
     private final boolean ignoreUnmatchedSetters;
-    private final String setterPrefix;
+    private final @Nullable String setterPrefix;
     private final int setterExcludeModifiers;
 
     DeclaredAndInheritedMemberCollector(final Settings settings) {
         this.isMethodAssignmentEnabled = settings.get(Keys.ASSIGNMENT_TYPE) == AssignmentType.METHOD;
         this.ignoreUnmatchedSetters = settings.get(Keys.ON_SET_METHOD_UNMATCHED) == OnSetMethodUnmatched.IGNORE;
         this.setterPrefix = getSetterPrefix(settings.get(Keys.SETTER_STYLE));
-        this.setterExcludeModifiers = settings.get(Keys.SETTER_EXCLUDE_MODIFIER);
+        this.setterExcludeModifiers = Verify.notNull(settings.get(Keys.SETTER_EXCLUDE_MODIFIER), "setterExcludeModifier is null");
         this.defaultSetterMethodResolver = new DefaultSetterMethodResolver(settings);
     }
 
@@ -113,7 +114,7 @@ class DeclaredAndInheritedMemberCollector {
      * since there's no way to tell if a method is an actual setter,
      * e.g. {@code Photo.removeTag(String)} would be a false positive.
      */
-    private String getSetterPrefix(final SetterStyle setterStyle) {
+    private @Nullable String getSetterPrefix(final @Nullable SetterStyle setterStyle) {
         if (setterStyle == SetterStyle.SET) {
             return "set";
         } else if (setterStyle == SetterStyle.WITH) {

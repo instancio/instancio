@@ -447,7 +447,7 @@ public final class ErrorMessageUtils {
 
     public static String incompatibleField(
             final @Nullable Object value,
-            final Field field,
+            final @Nullable Field field,
             final Throwable cause,
             final Settings settings) {
 

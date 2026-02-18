@@ -65,7 +65,7 @@ public final class AnnotationExtractor {
 
         if (parentField != null && parentField.getAnnotatedType() instanceof AnnotatedParameterizedType) {
             final AnnotatedParameterizedType apt = (AnnotatedParameterizedType) parentField.getAnnotatedType();
-            final int childIndex = CollectionUtils.identityIndexOf(node, node.getParent().getChildren());
+            final int childIndex = CollectionUtils.identityIndexOf(node, Verify.notNull(node.getParent(), "parent is null").getChildren());
 
             if (childIndex != -1) {
                 final AnnotatedType[] annotatedTypes = apt.getAnnotatedActualTypeArguments();

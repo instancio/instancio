@@ -22,7 +22,7 @@ import org.instancio.internal.util.SealedClassUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ final class SubtypeResolver {
      *   <li>a generator's {@code subtype()} method, e.g. {@code gen.collection().subtype()}</li>
      * </ol>
      */
-    Optional<Class<?>> resolveSubtype(@NonNull final InternalNode node) {
+    Optional<Class<?>> resolveSubtype(final InternalNode node) {
         final Optional<Class<?>> subtype = getSubtype(node);
 
         if (subtype.isPresent()) {
@@ -85,10 +85,11 @@ final class SubtypeResolver {
                 : Optional.of(subtypeFromSettings);
     }
 
-    private static Class<?> resolveSubtypeFromAncestors(final InternalNode node) {
+    private static @Nullable Class<?> resolveSubtypeFromAncestors(final @Nullable InternalNode node) {
         InternalNode next = node;
+        Class<?> rawType = node == null ? null : node.getRawType();
         while (next != null) {
-            final Type actualType = next.getTypeMap().get(node.getRawType());
+            final Type actualType = next.getTypeMap().get(rawType);
             if (actualType != null) {
                 return TypeUtils.getRawType(actualType);
             }

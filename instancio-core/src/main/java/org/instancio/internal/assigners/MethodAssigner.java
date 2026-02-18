@@ -131,7 +131,7 @@ final class MethodAssigner implements Assigner {
         }
 
         // do not log or throw an error since final fields cannot have setters
-        if (Modifier.isFinal(node.getField().getModifiers())) {
+        if (node.getField() != null && Modifier.isFinal(node.getField().getModifiers())) {
             return;
         }
 

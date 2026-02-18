@@ -16,4 +16,7 @@
 /**
  * Contains node type resolvers.
  */
+@NullMarked
 package org.instancio.internal.nodes.resolvers;
+
+import org.jspecify.annotations.NullMarked;

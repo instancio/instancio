@@ -21,6 +21,7 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Constants;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 @InternalApi
@@ -48,13 +49,13 @@ public final class FeedSelectors {
     }
 
     public static InternalSelector forProperty(final InternalNode fieldNode) {
-        final String fieldName = fieldNode.getField().getName();
+        final String fieldName = fieldNode.getField() != null ? fieldNode.getField().getName() : "";
         final String description = String.format("forProperty(\"%s\")", fieldName);
 
         return new FeedSelector(candidate ->
                 candidate.getField() != null
                         && fieldName.equals(candidate.getField().getName())
-                        && fieldNode.getParent().equals(candidate.getParent()),
+                        && Objects.equals(fieldNode.getParent(), candidate.getParent()),
                 description);
     }
 

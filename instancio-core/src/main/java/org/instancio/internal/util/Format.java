@@ -87,7 +87,10 @@ public final class Format {
         if (node.getField() == null && node.getSetter() == null) {
             sb.append(withoutPackage(node.getTargetClass()));
         } else {
-            sb.append(withoutPackage(node.getParent().getTargetClass())).append(": ");
+            if (node.getParent() != null) {
+                sb.append(withoutPackage(node.getParent().getTargetClass()));
+            }
+            sb.append(": ");
 
             if (node.getField() != null) {
                 sb.append(withoutPackage(node.getType()))

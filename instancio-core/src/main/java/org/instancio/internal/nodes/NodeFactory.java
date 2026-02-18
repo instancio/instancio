@@ -21,9 +21,9 @@ import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.support.Log;
-import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -83,7 +83,7 @@ public final class NodeFactory {
             // these are applied to child nodes of POJOs or records
             feedSpecHandler.applyFeedSpecs(node);
         }
-        return root;
+        return Verify.notNull(root, "root node is null");
     }
 
     /**
@@ -94,15 +94,14 @@ public final class NodeFactory {
      * @param node to create children for
      * @return child nodes (without children), or an empty list if none.
      */
-    @NonNull
-    private List<InternalNode> createChildren(@NonNull final InternalNode node) {
+    private List<InternalNode> createChildren(final InternalNode node) {
         if (node.isIgnored()) {
             return List.of();
         }
 
         if (node.getDepth() >= modelContext.getMaxDepth()) {
-            final boolean failOnMaxDepthReached = modelContext.getSettings()
-                    .get(Keys.FAIL_ON_MAX_DEPTH_REACHED);
+            final boolean failOnMaxDepthReached = Boolean.TRUE.equals(modelContext.getSettings()
+                    .get(Keys.FAIL_ON_MAX_DEPTH_REACHED));
 
             if (failOnMaxDepthReached) {
                 throw Fail.withUsageError(maxDepthReached(node, modelContext.getMaxDepth()));
@@ -168,7 +167,7 @@ public final class NodeFactory {
             gcType = typeHelper.resolveTypeVariable((TypeVariable<?>) gcType, node);
         }
 
-        return createContainerNodeChildren(node, gcType);
+        return createContainerNodeChildren(node, Verify.notNull(gcType, "gcType is null"));
     }
 
     /**

@@ -26,7 +26,6 @@ import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +83,7 @@ class NodeCreator {
 
 
     @Nullable
-    InternalNode createNode(@NonNull final Type type,
+    InternalNode createNode(final Type type,
                             @Nullable final InternalNode parent) {
 
         return createNode(type, /* member = */ null, /* setter = */ null, parent);
@@ -132,7 +131,7 @@ class NodeCreator {
      * @return created node
      */
     @Nullable
-    InternalNode createNode(@NonNull final Type type,
+    InternalNode createNode(final Type type,
                             @Nullable final Member member,
                             @Nullable final Method setter,
                             @Nullable final InternalNode parent) {
@@ -179,7 +178,7 @@ class NodeCreator {
         return node;
     }
 
-    private InternalNode fromWildcardType(
+    private @Nullable InternalNode fromWildcardType(
             final WildcardType type,
             @Nullable final Member member,
             @Nullable final Method setter,
@@ -188,7 +187,7 @@ class NodeCreator {
         return createNode(type.getUpperBounds()[0], member, setter, parent);
     }
 
-    private InternalNode fromTypeVariable(
+    private @Nullable InternalNode fromTypeVariable(
             final TypeVariable<?> type,
             @Nullable final Member member,
             @Nullable final Method setter,
@@ -206,7 +205,7 @@ class NodeCreator {
     private InternalNode.Builder builderTemplate(
             final Type type,
             final Class<?> rawType,
-            final Member member) {
+            final @Nullable Member member) {
 
         return InternalNode.builder(type, rawType, modelContext.getRootType())
                 .member(member);
@@ -297,7 +296,7 @@ class NodeCreator {
 
     private InternalNode createArrayNodeWithSubtypeMapping(
             final Type arrayType,
-            final Type genericComponentType,
+            @Nullable final Type genericComponentType,
             @Nullable final Member member,
             @Nullable final Method setter,
             @Nullable final InternalNode parent) {

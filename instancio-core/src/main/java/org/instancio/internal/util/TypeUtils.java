@@ -59,7 +59,7 @@ public final class TypeUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Class<T> getRawType(final Type type) {
+    public static <T> Class<T> getRawType(final @Nullable Type type) {
         if (type instanceof Class) {
             return (Class<T>) type;
         } else if (type instanceof ParameterizedType parameterizedType) {
@@ -68,7 +68,7 @@ public final class TypeUtils {
             final Type genericComponentType = genericArrayType.getGenericComponentType();
             return getRawType(genericComponentType);
         }
-        throw Fail.withFataInternalError("Unhandled type: %s", type.getClass().getSimpleName());
+        throw Fail.withFataInternalError("Unhandled type: %s", type == null ? "n/a" : type.getClass().getSimpleName());
     }
 
     public static @Nullable Class<?> getGenericSuperclassTypeArgument(final Class<?> klass) {

@@ -37,7 +37,7 @@ public final class ExceptionUtils {
      * @param t    exception to log
      * @param args message arguments
      */
-    public static void logException(final String msg, final Throwable t, final Object... args) {
+    public static void logException(final String msg, final Throwable t, final @Nullable Object... args) {
         final String formatted = MessageFormatter.arrayFormat(msg, args).getMessage();
         if (LOG.isTraceEnabled()) {
             LOG.trace(formatted, t);

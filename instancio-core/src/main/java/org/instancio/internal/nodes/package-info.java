@@ -16,4 +16,7 @@
 /**
  * Implementation classes for converting types to node hierarchies.
  */
+@NullMarked
 package org.instancio.internal.nodes;
+
+import org.jspecify.annotations.NullMarked;

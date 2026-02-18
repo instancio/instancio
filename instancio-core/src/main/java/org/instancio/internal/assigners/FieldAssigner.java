@@ -21,6 +21,7 @@ import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetFieldError;
@@ -55,7 +56,7 @@ final class FieldAssigner implements Assigner {
     }
 
     private void setField(final InternalNode node, final Object target, final @Nullable Object arg) {
-        final Field field = node.getField();
+        final Field field = Verify.notNull(node.getField(), "field is null");
         final Object value = arg == null ? ObjectUtils.defaultValue(field.getType()) : arg;
 
         try {
