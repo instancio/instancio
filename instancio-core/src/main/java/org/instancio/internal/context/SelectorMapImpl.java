@@ -349,12 +349,12 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
 
             if (scope.getTarget() instanceof TargetField) {
                 matched = node.getField() != null
-                        && scope.getTargetClass().equals(node.getField().getDeclaringClass())
+                        && node.getField().getDeclaringClass().equals(scope.getTargetClass())
                         && scope.getField().equals(node.getField());
 
             } else if (scope.getTarget() instanceof TargetSetter) {
                 matched = node.getSetter() != null
-                        && scope.getTargetClass().equals(node.getSetter().getDeclaringClass())
+                        && node.getSetter().getDeclaringClass().equals(scope.getTargetClass())
                         && scope.getMethodName().equals(node.getSetter().getName())
                         && (scope.getParameterType() == null // param not specified
                         || scope.getParameterType().equals(node.getSetter().getParameterTypes()[0]));

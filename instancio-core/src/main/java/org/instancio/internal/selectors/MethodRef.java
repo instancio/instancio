@@ -20,6 +20,7 @@ import org.codehaus.groovy.runtime.MethodClosure;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
@@ -81,7 +82,7 @@ final class MethodRef {
             return IS_GROOVY_PRESENT;
         }
 
-        static MethodRef methodRef(final Object methodRef) {
+        static @Nullable MethodRef methodRef(final Object methodRef) {
             if (!(methodRef instanceof Proxy)) {
                 return null;
             }

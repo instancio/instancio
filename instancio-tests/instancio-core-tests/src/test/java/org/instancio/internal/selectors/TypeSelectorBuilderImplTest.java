@@ -71,6 +71,7 @@ class TypeSelectorBuilderImplTest {
         assertThat(build(selectorBuilder)).rejectsAll(toNodes(Person.class));
     }
 
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     @Test
     void validation() {
         assertThatThrownBy(() -> selectorBuilder.of(null))

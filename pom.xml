@@ -169,6 +169,7 @@
                                         -XepOpt:NullAway:JSpecifyMode
                                         -XepOpt:NullAway:HandleTestAssertionLibraries
                                         -XepOpt:NullAway:KnownInitializers=org.instancio.generator.Generator.init,org.instancio.spi.InstancioServiceProvider.init
+                                        -XepOpt:NullAway:ExcludedClasses=org.instancio.internal.selectors.MethodRefTest <!-- TODO Groovy stubs generation should add @Nullable annotations -->
                                     </arg>
                                 </compilerArgs>
                                 <annotationProcessorPaths>

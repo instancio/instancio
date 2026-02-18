@@ -17,6 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.TargetSelector;
 import org.instancio.settings.AssignmentType;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A holder class for a {@code setter()} selector.
@@ -25,13 +26,13 @@ import org.instancio.settings.AssignmentType;
  * the selector is not used with {@link AssignmentType#FIELD}.
  */
 public final class SetterSelectorHolder {
-    private TargetSelector setterSelector;
+    private @Nullable TargetSelector setterSelector;
 
     void withSetterSelector(final TargetSelector setterSelector) {
         this.setterSelector = setterSelector;
     }
 
-    public TargetSelector getSetterSelector() {
+    public @Nullable TargetSelector getSetterSelector() {
         return setterSelector;
     }
 }

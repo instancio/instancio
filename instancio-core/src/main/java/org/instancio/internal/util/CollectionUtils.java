@@ -94,7 +94,7 @@ public final class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <T> List<T> asArrayList(final T @Nullable... values) {
+    public static <T> List<T> asArrayList(final @Nullable T @Nullable... values) {
         return values == null
                 ? new ArrayList<>(DEFAULT_INITIAL_CAPACITY)
                 : new ArrayList<>(Arrays.asList(values));

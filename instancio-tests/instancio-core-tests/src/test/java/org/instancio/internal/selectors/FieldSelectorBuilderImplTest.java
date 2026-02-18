@@ -94,6 +94,7 @@ class FieldSelectorBuilderImplTest {
         assertThat(build(selectorBuilder)).accepts(createNode(Person.class, "name"));
     }
 
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     @Test
     void validation() {
         assertThatThrownBy(() -> selectorBuilder.named(null))

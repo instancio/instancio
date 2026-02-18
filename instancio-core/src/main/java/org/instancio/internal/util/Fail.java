@@ -19,6 +19,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.exception.UnresolvedAssignmentException;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class for constructing exceptions.
@@ -116,7 +117,7 @@ public final class Fail {
      * @param args error message arguments
      * @return an exception to be propagated to the user
      */
-    public static InstancioTerminatingException withFataInternalError(final String msg, final Object... args) {
+    public static InstancioTerminatingException withFataInternalError(final String msg, final @Nullable Object... args) {
         final ErrorArgs errorArgs = ErrorArgs.unpackArgs(args);
         final String msgWithArgs = String.format(msg, errorArgs.getArgs());
         final String fullErrorMsg = String.format("""

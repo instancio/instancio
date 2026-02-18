@@ -15,18 +15,20 @@
  */
 package org.instancio.internal.selectors;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Objects;
 
 public final class TargetClass implements Target {
 
-    private final Class<?> targetClass; // NOSONAR
+    private final @Nullable Class<?> targetClass; // NOSONAR
 
-    public TargetClass(final Class<?> targetClass) {
+    public TargetClass(final @Nullable Class<?> targetClass) {
         this.targetClass = targetClass;
     }
 
     @Override
-    public Class<?> getTargetClass() {
+    public @Nullable Class<?> getTargetClass() {
         return targetClass;
     }
 
@@ -50,6 +52,6 @@ public final class TargetClass implements Target {
 
     @Override
     public String toString() {
-        return "all(" + targetClass.getSimpleName() + ')';
+        return "all(" + (targetClass == null ? "n/a" : targetClass.getSimpleName()) + ')';
     }
 }

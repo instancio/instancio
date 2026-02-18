@@ -116,7 +116,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
 
     @Override
     public String toString() {
-        String str = API_METHOD_NAMES.get(primitive.getTargetClass());
+        String str = API_METHOD_NAMES.getOrDefault(primitive.getTargetClass(), "");
 
         // can have either scopes or depth, but not both
         if (!primitive.getScopes().isEmpty()) {

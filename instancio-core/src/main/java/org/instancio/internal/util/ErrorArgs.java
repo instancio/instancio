@@ -22,15 +22,15 @@ import java.util.List;
 @SuppressWarnings("ClassCanBeRecord")
 public final class ErrorArgs {
 
-    private final Object[] args;
+    private final @Nullable Object[] args;
     private final @Nullable Throwable throwable;
 
-    private ErrorArgs(final Object[] args, final @Nullable Throwable throwable) {
+    private ErrorArgs(final @Nullable Object[] args, final @Nullable Throwable throwable) {
         this.args = args;
         this.throwable = throwable;
     }
 
-    public static ErrorArgs unpackArgs(final Object... args) {
+    public static ErrorArgs unpackArgs(final @Nullable Object... args) {
         final int len = args.length;
         if (len > 0 && args[len - 1] instanceof Throwable throwable) {
             return new ErrorArgs(copyWithoutLastElement(args), throwable);
@@ -39,7 +39,7 @@ public final class ErrorArgs {
     }
 
     @SuppressWarnings("PMD.MethodReturnsInternalArray")
-    public Object[] getArgs() {
+    public @Nullable Object[] getArgs() {
         return args;
     }
 
@@ -47,7 +47,7 @@ public final class ErrorArgs {
         return throwable;
     }
 
-    private static Object[] copyWithoutLastElement(final Object... args) {
+    private static Object[] copyWithoutLastElement(final @Nullable Object... args) {
         final List<Object> list = CollectionUtils.asArrayList(args);
         list.remove(args.length - 1);
         return list.toArray();

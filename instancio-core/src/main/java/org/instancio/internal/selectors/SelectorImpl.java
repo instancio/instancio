@@ -23,7 +23,7 @@ import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
-import org.jspecify.annotations.NonNull;
+import org.instancio.internal.util.Verify;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
@@ -34,8 +34,8 @@ import java.util.Objects;
 public final class SelectorImpl extends BaseSelector implements Selector, GroupableSelector {
 
     private final Target target;
-    private final Selector parent;
-    private final Integer depth;
+    private final @Nullable Selector parent;
+    private final @Nullable Integer depth;
     private int hash;
 
     /**
@@ -49,11 +49,11 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
      * @param stackTraceHolder  stacktrace for reporting locations of unused selectors
      */
     private SelectorImpl(
-            final ApiMethodSelector apiMethodSelector,
+            final @Nullable ApiMethodSelector apiMethodSelector,
             final Target target,
-            @NonNull final List<Scope> scopes,
+            final List<Scope> scopes,
             @Nullable final Selector parent,
-            @NonNull final Throwable stackTraceHolder,
+            final Throwable stackTraceHolder,
             @Nullable final Integer depth,
             final boolean isLenient) {
 
@@ -66,7 +66,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
     private SelectorImpl(final Builder builder) {
         this(
                 builder.apiMethodSelector,
-                builder.target,
+                Verify.notNull(builder.target, "target is null"),
                 ObjectUtils.defaultIfNull(builder.scopes, Collections.emptyList()),
                 builder.parent,
                 ObjectUtils.defaultIfNull(builder.stackTraceHolder, Throwable::new),
@@ -100,7 +100,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
     }
 
     @Override
-    public Selector within(@NonNull final Scope... scopes) {
+    public Selector within(final Scope... scopes) {
         return toBuilder().scopes(Arrays.asList(scopes)).build();
     }
 
@@ -109,15 +109,15 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
         return new ScopeImpl(target, depth);
     }
 
-    public Selector getParent() {
+    public @Nullable Selector getParent() {
         return parent;
     }
 
-    public Class<?> getTargetClass() {
+    public @Nullable Class<?> getTargetClass() {
         return target.getTargetClass();
     }
 
-    public Integer getDepth() {
+    public @Nullable Integer getDepth() {
         return depth;
     }
 
@@ -191,18 +191,18 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
     }
 
     public static final class Builder {
-        private ApiMethodSelector apiMethodSelector;
-        private Target target;
-        private List<Scope> scopes;
-        private Selector parent;
-        private Throwable stackTraceHolder;
-        private Integer depth;
+        private @Nullable ApiMethodSelector apiMethodSelector;
+        private @Nullable Target target;
+        private @Nullable List<Scope> scopes;
+        private @Nullable Selector parent;
+        private @Nullable Throwable stackTraceHolder;
+        private @Nullable Integer depth;
         private boolean isLenient;
 
         private Builder() {
         }
 
-        public Builder apiMethodSelector(final ApiMethodSelector apiMethodSelector) {
+        public Builder apiMethodSelector(final @Nullable ApiMethodSelector apiMethodSelector) {
             this.apiMethodSelector = apiMethodSelector;
             return this;
         }

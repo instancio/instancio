@@ -186,7 +186,7 @@ class SelectorImplTest {
                     .target(new TargetFieldName(Person.class, "name"))
                     .scopes(Collections.singletonList(scope(List.class)))
                     .depth(1)
-                    .parent(SelectorImpl.builder().build())
+                    .parent(SelectorImpl.builder().target(TargetRoot.INSTANCE).build())
                     .stackTraceHolder(new Throwable())
                     .build();
 
@@ -197,7 +197,7 @@ class SelectorImplTest {
 
         @Test
         void empty() {
-            final SelectorImpl selector = SelectorImpl.builder().build();
+            final SelectorImpl selector = SelectorImpl.builder().target(TargetRoot.INSTANCE).build();
             final SelectorImpl copy = selector.toBuilder().build();
 
             assertThat(copy).usingRecursiveComparison().isEqualTo(selector);

@@ -23,6 +23,7 @@ import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -43,15 +44,15 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
 
     private final int priority;
     private final Predicate<InternalNode> nodePredicate;
-    private final SelectorDepth selectorDepth;
+    private final @Nullable SelectorDepth selectorDepth;
     private final String apiInvocationDescription;
 
     protected PredicateSelectorImpl(
-            final ApiMethodSelector apiMethodSelector,
+            final @Nullable ApiMethodSelector apiMethodSelector,
             final int priority,
             final Predicate<InternalNode> nodePredicate,
             final List<Scope> scopes,
-            final SelectorDepth selectorDepth,
+            final @Nullable SelectorDepth selectorDepth,
             final boolean isLenient,
             final boolean isHiddenFromVerboseOutput,
             final String apiInvocationDescription,
@@ -159,20 +160,20 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
     }
 
     public static final class Builder {
-        private ApiMethodSelector apiMethodSelector;
+        private @Nullable ApiMethodSelector apiMethodSelector;
         private int priority;
         private Predicate<InternalNode> nodePredicate = Objects::nonNull;
         private List<Scope> scopes = new ArrayList<>(0);
-        private SelectorDepth selectorDepth;
+        private @Nullable SelectorDepth selectorDepth;
         private boolean isLenient;
         private boolean isHiddenFromVerboseOutput;
-        private String apiInvocationDescription;
-        private Throwable stackTraceHolder;
+        private @Nullable String apiInvocationDescription;
+        private @Nullable Throwable stackTraceHolder;
 
         private Builder() {
         }
 
-        public Builder apiMethodSelector(final ApiMethodSelector apiMethodSelector) {
+        public Builder apiMethodSelector(final @Nullable ApiMethodSelector apiMethodSelector) {
             this.apiMethodSelector = apiMethodSelector;
             return this;
         }

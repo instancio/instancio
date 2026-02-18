@@ -24,6 +24,7 @@ import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.util.ErrorMessageUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,8 +38,8 @@ abstract class PredicateSelectorBuilderTemplate<T>
 
     private final List<Predicate<T>> predicates = new ArrayList<>(3);
     private final StringBuilder description = new StringBuilder(128);
-    private ApiMethodSelector apiMethodSelector;
-    private List<Scope> scopes;
+    private @Nullable ApiMethodSelector apiMethodSelector;
+    private @Nullable List<Scope> scopes;
     private boolean isLenient;
 
     PredicateSelectorBuilderTemplate() {

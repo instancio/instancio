@@ -18,7 +18,6 @@ package org.instancio.internal.selectors;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -26,19 +25,19 @@ import java.util.Objects;
 
 public final class TargetFieldName implements Target {
 
-    private final Class<?> targetClass;
+    private final @Nullable Class<?> targetClass;
     private final String fieldName;
 
     public TargetFieldName(
             @Nullable final Class<?> targetClass,
-            @NonNull final String fieldName) {
+            final String fieldName) {
 
         this.targetClass = targetClass;
         this.fieldName = fieldName;
     }
 
     @Override
-    public Class<?> getTargetClass() {
+    public @Nullable Class<?> getTargetClass() {
         return targetClass;
     }
 
