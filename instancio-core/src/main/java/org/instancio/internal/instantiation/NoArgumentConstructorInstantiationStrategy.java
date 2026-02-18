@@ -37,7 +37,7 @@ class NoArgumentConstructorInstantiationStrategy implements InstantiationStrateg
         }
     }
 
-    private static Constructor<?> getDefaultConstructor(final Class<?> klass) {
+    private static @Nullable Constructor<?> getDefaultConstructor(final Class<?> klass) {
         for (Constructor<?> ctor : klass.getDeclaredConstructors()) {
             if (ctor.getParameterCount() == 0) {
                 return ctor;

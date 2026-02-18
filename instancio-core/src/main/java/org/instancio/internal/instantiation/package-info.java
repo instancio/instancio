@@ -16,4 +16,7 @@
 /**
  * Implementation classes providing support for instantiation.
  */
+@NullMarked
 package org.instancio.internal.instantiation;
+
+import org.jspecify.annotations.NullMarked;

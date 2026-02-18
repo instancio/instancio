@@ -47,7 +47,7 @@ class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStr
 
         final Constructor<?> constructor = ReflectionUtils.setAccessible(ctor);
         final Parameter[] params = constructor.getParameters();
-        final Object[] args = new Object[params.length];
+        final @Nullable Object[] args = new Object[params.length];
 
         for (int i = 0; i < args.length; i++) {
             args[i] = ObjectUtils.defaultValue(params[i].getType());

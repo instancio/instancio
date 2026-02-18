@@ -30,6 +30,7 @@ class ReflectionFactoryInstantiationStrategyTest {
 
     private static final Class<?> CLASS_WITHOUT_DEFAULT_CTOR = IntegerHolderWithoutDefaultConstructor.class;
 
+    @SuppressWarnings("NullAway") // TODO NullAway reports an error when used by IntelliJ
     @Spy
     @InjectMocks
     private ReflectionFactoryInstantiationStrategy strategy;

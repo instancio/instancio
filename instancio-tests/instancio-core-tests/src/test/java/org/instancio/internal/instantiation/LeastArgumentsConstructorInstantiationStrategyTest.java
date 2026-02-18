@@ -29,6 +29,7 @@ class LeastArgumentsConstructorInstantiationStrategyTest {
     void instantiate() {
         final WithMultipleConstructors result = strategy.createInstance(WithMultipleConstructors.class);
 
+        assertThat(result).isNotNull();
         assertThat(result.invokedConstructor).isEqualTo(EXPECTED_CONSTRUCTOR);
     }
 
