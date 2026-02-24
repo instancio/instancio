@@ -57,7 +57,7 @@
         <version.guava>33.5.0-jre</version.guava>
         <version.hibernate.validator>9.1.0.Final</version.hibernate.validator>
         <version.highlight.js>11.11.1</version.highlight.js>
-        <version.jackson>3.0.4</version.jackson>
+        <version.jackson>3.1.0</version.jackson>
         <version.groovy>5.0.4</version.groovy>
         <version.jakarta.persistence>3.2.0</version.jakarta.persistence>
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
