@@ -25,7 +25,7 @@
         <version.mockito>5.21.0</version.mockito>
         <!-- plugins -->
         <version.maven-failsafe-plugin>3.5.5</version.maven-failsafe-plugin>
-        <version.maven-surefire-plugin>3.5.4</version.maven-surefire-plugin>
+        <version.maven-surefire-plugin>3.5.5</version.maven-surefire-plugin>
         <version.maven-dependency-plugin>3.10.0</version.maven-dependency-plugin>
         <version.byte.buddy>1.18.5</version.byte.buddy>
     </properties>
