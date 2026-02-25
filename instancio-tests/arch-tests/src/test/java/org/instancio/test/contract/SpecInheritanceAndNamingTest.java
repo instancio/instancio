@@ -55,6 +55,7 @@ class SpecInheritanceAndNamingTest {
     void specNaming() {
         classes()
                 .that().resideInAPackage("..specs..").and().doNotHaveSimpleName("package-info")
+                .and().areNotAnonymousClasses()
                 .should().haveSimpleNameEndingWith("Spec")
                 .check(classes);
     }
