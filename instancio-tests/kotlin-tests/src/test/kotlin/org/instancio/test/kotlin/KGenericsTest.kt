@@ -53,7 +53,7 @@ internal class KGenericsTest {
             .set(allLongs(), expectedLong)
             .create();
 
-        assertThat(result).isNotEmpty
+        assertThat(result).isNotEmpty()
         result.forEach {
             assertThat(it.left).isIn("foo", "bar")
             assertThat(it.right).isEqualTo(expectedLong)

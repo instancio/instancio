@@ -53,11 +53,11 @@ class KAssignmentTypeTest {
     fun assignmentViaField() {
         val result = Instancio.create(baseModel())
 
-        assertThat(result.stringProperty).isNotBlank
-        assertThat(result.booleanProperty).isTrue
+        assertThat(result.stringProperty).isNotBlank()
+        assertThat(result.booleanProperty).isTrue()
         // flags
-        assertThat(result.viaSetter_stringProperty).isFalse
-        assertThat(result.viaSetter_booleanProperty).isFalse
+        assertThat(result.viaSetter_stringProperty).isFalse()
+        assertThat(result.viaSetter_booleanProperty).isFalse()
     }
 
     @Test
@@ -66,11 +66,11 @@ class KAssignmentTypeTest {
             .withSettings(Settings.create().set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD))
             .create()
 
-        assertThat(result.stringProperty).isNotBlank
-        assertThat(result.booleanProperty).isTrue
+        assertThat(result.stringProperty).isNotBlank()
+        assertThat(result.booleanProperty).isTrue()
         // flags
-        assertThat(result.viaSetter_stringProperty).isTrue
-        assertThat(result.viaSetter_booleanProperty).isTrue
+        assertThat(result.viaSetter_stringProperty).isTrue()
+        assertThat(result.viaSetter_booleanProperty).isTrue()
     }
 
     @Suppress("PropertyName")

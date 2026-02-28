@@ -43,11 +43,11 @@ internal class KSealedClassTest {
             .subtype(all(SealedClass::class.java), Subclass::class.java)
             .create()
 
-        assertThat(result).isNotNull
-        assertThat(result.sealedClass.foo).isNotBlank
+        assertThat(result).isNotNull()
+        assertThat(result.sealedClass.foo).isNotBlank()
         assertThat(result.sealedClass).isExactlyInstanceOf(Subclass::class.java)
 
         val subclass = result.sealedClass as Subclass
-        assertThat(subclass.bar).isNotBlank
+        assertThat(subclass.bar).isNotBlank()
     }
 }

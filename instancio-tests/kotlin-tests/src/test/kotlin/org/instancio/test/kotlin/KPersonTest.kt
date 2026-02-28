@@ -44,14 +44,14 @@ internal class KPersonTest {
     @Test
     fun create() {
         val result = Instancio.create(KPerson::class.java)
-        assertThatObject(result).isFullyPopulated
+        assertThatObject(result).isFullyPopulated()
     }
 
     @Test
     fun createArray() {
         val results: Array<KPerson> = Instancio.create(Array<KPerson>::class.java)
         assertThat(results).isNotEmpty
-            .allSatisfy { result: KPerson? -> assertThatObject(result).isFullyPopulated }
+            .allSatisfy { result: KPerson? -> assertThatObject(result).isFullyPopulated() }
     }
 
     @Test
@@ -62,7 +62,7 @@ internal class KPersonTest {
             }
             .create();
 
-        assertThat(result.address?.phoneNumbers).isNotEmpty
+        assertThat(result.address?.phoneNumbers).isNotEmpty()
 
         result.address?.phoneNumbers?.forEach {
             assertThat(it.number).hasSize(7).containsOnlyDigits()
@@ -76,8 +76,8 @@ internal class KPersonTest {
             .ignore(fields().named("phoneNumbers").declaredIn(KAddress::class.java))
             .create()
 
-        assertThat(result.age).isZero
-        assertThat(result.address).isNotNull
+        assertThat(result.age).isZero()
+        assertThat(result.address).isNotNull()
 
         val address = result.address!!
         assertAllNulls(
@@ -100,7 +100,7 @@ internal class KPersonTest {
 
         assertThat(result.address?.city).isEqualTo(city)
         assertThat(result.address?.address).startsWith(streetPrefix).hasSizeGreaterThan(streetPrefix.length)
-        assertThat(callbackCount[0]).isOne
+        assertThat(callbackCount[0]).isOne()
     }
 
     @Test
@@ -110,13 +110,13 @@ internal class KPersonTest {
         Instancio.of(KPerson::class.java)
             .set(field(KAddress::class.java, "city"), "foo")
             .onComplete(all(KAddress::class.java)) { address: KAddress ->
-                assertThatObject(address).isFullyPopulated
+                assertThatObject(address).isFullyPopulated()
                 assertThat(address.city).isEqualTo("foo")
                 callbackCount[0]++
             }
             .create()
 
-        assertThat(callbackCount[0]).isOne
+        assertThat(callbackCount[0]).isOne()
     }
 
     @Test

@@ -61,7 +61,8 @@ internal class KSelectorsTest {
             .create()
 
         assertThat(result.address?.phoneNumbers)
-            .isNotEmpty.containsOnly(expected)
+            .isNotEmpty()
+            .containsOnly(expected)
     }
 
     /**
