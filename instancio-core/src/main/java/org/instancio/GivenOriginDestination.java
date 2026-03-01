@@ -19,6 +19,7 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -48,7 +49,7 @@ public interface GivenOriginDestination {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <S, T> GivenOriginDestinationAction generate(Predicate<S> predicate, GeneratorSpecProvider<T> gen);
+    <S, T extends @Nullable Object> GivenOriginDestinationAction generate(Predicate<S> predicate, GeneratorSpecProvider<T> gen);
 
     /**
      * Generates values using arbitrary generator specs.
@@ -63,7 +64,7 @@ public interface GivenOriginDestination {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <S, T> GivenOriginDestinationAction generate(Predicate<S> predicate, GeneratorSpec<T> spec);
+    <S, T extends @Nullable Object> GivenOriginDestinationAction generate(Predicate<S> predicate, GeneratorSpec<T> spec);
 
     /**
      * Sets a value to matching selector targets.
@@ -78,7 +79,7 @@ public interface GivenOriginDestination {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <S, T> GivenOriginDestinationAction set(Predicate<S> predicate, T value);
+    <S, T extends @Nullable Object> GivenOriginDestinationAction set(Predicate<S> predicate, T value);
 
     /**
      * Supplies an object using a {@link Generator} to matching selector targets.
@@ -93,7 +94,7 @@ public interface GivenOriginDestination {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <S, T> GivenOriginDestinationAction supply(Predicate<S> predicate, Generator<T> generator);
+    <S, T extends @Nullable Object> GivenOriginDestinationAction supply(Predicate<S> predicate, Generator<T> generator);
 
     /**
      * Supplies an object using a {@link Supplier}.
@@ -108,6 +109,6 @@ public interface GivenOriginDestination {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <S, T> GivenOriginDestinationAction supply(Predicate<S> predicate, Supplier<T> supplier);
+    <S, T extends @Nullable Object> GivenOriginDestinationAction supply(Predicate<S> predicate, Supplier<T> supplier);
 
 }

@@ -53,8 +53,6 @@ class FormatTest {
 
         assertThat(Format.formatField(ReflectionUtils.getField(Nested1.Nested2.class, "nested")))
                 .isEqualTo("String nested (in org.instancio.internal.util.FormatTest$Nested1$Nested2)");
-
-        assertThat(Format.formatField(null)).isNull();
     }
 
     @Test
@@ -64,8 +62,6 @@ class FormatTest {
 
         assertThat(Format.formatSetterMethod(Nested1.Nested2.class.getMethod("setNested", String.class)))
                 .isEqualTo("FormatTest$Nested1$Nested2.setNested(String)");
-
-        assertThat(Format.formatSetterMethod(null)).isNull();
     }
 
     @Test

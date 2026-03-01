@@ -16,18 +16,22 @@
 package org.instancio.internal.generator.shuffle;
 
 import org.instancio.Random;
+import org.instancio.documentation.Initializer;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.ShuffleSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.CollectionUtils;
+import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class ShuffleGenerator<T> extends AbstractGenerator<Collection<T>>
+@SuppressWarnings(Sonar.NULL_MARKED_NULL_VALUE)
+public class ShuffleGenerator<T extends @Nullable Object> extends AbstractGenerator<Collection<T>>
         implements ShuffleSpec<T> {
 
     private List<T> items;
@@ -36,6 +40,7 @@ public class ShuffleGenerator<T> extends AbstractGenerator<Collection<T>>
         super(context);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         // no validation is needed because this spec
@@ -43,14 +48,16 @@ public class ShuffleGenerator<T> extends AbstractGenerator<Collection<T>>
         return null;
     }
 
+    @Initializer
     @Override
     @SafeVarargs
-    public final ShuffleGenerator<T> shuffle(final T... array) {
+    public final ShuffleGenerator<T> shuffle(@Nullable final T... array) {
         ApiValidator.notNull(array, "array must not be null");
         items = CollectionUtils.asUnmodifiableList(array);
         return this;
     }
 
+    @Initializer
     @Override
     public ShuffleGenerator<T> shuffle(final Collection<T> collection) {
         ApiValidator.notNull(collection, "collection must not be null");

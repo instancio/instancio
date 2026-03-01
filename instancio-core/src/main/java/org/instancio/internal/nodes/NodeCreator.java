@@ -26,8 +26,7 @@ import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +83,7 @@ class NodeCreator {
 
 
     @Nullable
-    InternalNode createNode(@NotNull final Type type,
+    InternalNode createNode(final Type type,
                             @Nullable final InternalNode parent) {
 
         return createNode(type, /* member = */ null, /* setter = */ null, parent);
@@ -132,7 +131,7 @@ class NodeCreator {
      * @return created node
      */
     @Nullable
-    InternalNode createNode(@NotNull final Type type,
+    InternalNode createNode(final Type type,
                             @Nullable final Member member,
                             @Nullable final Method setter,
                             @Nullable final InternalNode parent) {
@@ -179,6 +178,7 @@ class NodeCreator {
         return node;
     }
 
+    @Nullable
     private InternalNode fromWildcardType(
             final WildcardType type,
             @Nullable final Member member,
@@ -188,6 +188,16 @@ class NodeCreator {
         return createNode(type.getUpperBounds()[0], member, setter, parent);
     }
 
+    private InternalNode.Builder builderTemplate(
+            final Type type,
+            final Class<?> rawType,
+            @Nullable final Member member) {
+
+        return InternalNode.builder(type, rawType, modelContext.getRootType())
+                .member(member);
+    }
+
+    @Nullable
     private InternalNode fromTypeVariable(
             final TypeVariable<?> type,
             @Nullable final Member member,
@@ -201,15 +211,6 @@ class NodeCreator {
             return null;
         }
         return createNode(resolvedType, member, setter, parent);
-    }
-
-    private InternalNode.Builder builderTemplate(
-            final Type type,
-            final Class<?> rawType,
-            final Member member) {
-
-        return InternalNode.builder(type, rawType, modelContext.getRootType())
-                .member(member);
     }
 
     private InternalNode createNodeWithSubtypeMapping(
@@ -292,6 +293,8 @@ class NodeCreator {
         if (gcType instanceof TypeVariable) {
             gcType = typeHelper.resolveTypeVariable((TypeVariable<?>) gcType, parent);
         }
+
+        Verify.notNull(gcType, "generic component type is null");
         return createArrayNodeWithSubtypeMapping(type, gcType, member, setter, parent);
     }
 
@@ -314,8 +317,8 @@ class NodeCreator {
         final Class<?> targetClassComponentType = targetClass.getComponentType();
 
         if (!rawComponentType.isPrimitive()
-                && targetClassComponentType != null
-                && rawComponentType != targetClassComponentType) {
+            && targetClassComponentType != null
+            && rawComponentType != targetClassComponentType) {
 
             ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
 

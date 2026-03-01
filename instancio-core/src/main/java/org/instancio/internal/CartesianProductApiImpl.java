@@ -33,6 +33,7 @@ import org.instancio.internal.reflect.ParameterizedTypeImpl;
 import org.instancio.internal.util.CartesianList;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
 
     @SafeVarargs
     @Override
-    public final <V> InstancioCartesianProductApi<T> with(final TargetSelector selector, final V... values) {
+    public final <V> InstancioCartesianProductApi<T> with(final TargetSelector selector, @Nullable final V... values) {
         ApiValidator.notEmpty(values, "with() requires a non-empty array, but got: %s", Arrays.toString(values));
         final CartesianValues cv = new CartesianValues(selector, (Object[]) values);
         cartesianValues.add(cv);
@@ -273,7 +274,7 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
         private final TargetSelector selector;
         private final List<Object> values;
 
-        CartesianValues(TargetSelector selector, Object... values) {
+        CartesianValues(TargetSelector selector, @Nullable Object... values) {
             this.selector = selector;
             this.values = Arrays.asList(values);
         }

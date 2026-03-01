@@ -19,6 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -39,6 +40,7 @@ class EmailGeneratorTest {
         assertThat(result).contains("@");
     }
 
+    @SuppressWarnings("NullAway")
     @Test
     void asEmailObject() {
         final Contact result = Instancio.of(Contact.class)
@@ -46,18 +48,19 @@ class EmailGeneratorTest {
                 .create();
 
         final Email email = result.email;
+        assertThat(email).isNotNull();
         assertThat(email.email).contains("@");
     }
 
     private static class Email {
-        final String email;
+        final @Nullable String email;
 
-        Email(String email) {
+        Email(@Nullable String email) {
             this.email = email;
         }
     }
 
     private static class Contact {
-        Email email;
+        @Nullable Email email;
     }
 }

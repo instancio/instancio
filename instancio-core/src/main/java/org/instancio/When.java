@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -32,13 +33,13 @@ public final class When {
      * A predicate that returns {@code true} if values are equal
      * using {@link Objects#equals(Object, Object)}.
      *
-     * @param value to compare with
+     * @param value the value to compare against
      * @param <T>   value type
      * @return predicate that checks that values are equal
      * @since 3.0.0
      */
     @ExperimentalApi
-    public static <T> Predicate<T> is(final T value) {
+    public static <T extends @Nullable Object> Predicate<T> is(final T value) {
         return v -> Objects.equals(v, value);
     }
 
@@ -46,13 +47,13 @@ public final class When {
      * A predicate that returns {@code true} if values are <b>not</b> equal
      * using {@link Objects#equals(Object, Object)}.
      *
-     * @param value to compare with
+     * @param value the value to compare against
      * @param <T>   value type
      * @return predicate that checks that values are not equal
      * @since 3.0.0
      */
     @ExperimentalApi
-    public static <T> Predicate<T> isNot(final T value) {
+    public static <T extends @Nullable Object> Predicate<T> isNot(final T value) {
         return v -> !Objects.equals(v, value);
     }
 
@@ -64,7 +65,7 @@ public final class When {
      * @since 3.0.0
      */
     @ExperimentalApi
-    public static <T> Predicate<T> isNull() {
+    public static <T extends @Nullable Object> Predicate<T> isNull() {
         return Objects::isNull;
     }
 
@@ -76,7 +77,7 @@ public final class When {
      * @since 3.0.0
      */
     @ExperimentalApi
-    public static <T> Predicate<T> isNotNull() {
+    public static <T extends @Nullable Object> Predicate<T> isNotNull() {
         return Objects::nonNull;
     }
 
@@ -84,7 +85,7 @@ public final class When {
      * A predicate that checks whether a value is equal to any element in
      * the {@code values} array using {@link Objects#equals(Object, Object)}.
      *
-     * @param values to compare with
+     * @param values the value to compare against
      * @param <T>    value type
      * @return predicate that checks if a value is equal to
      * any element of the input array
@@ -92,7 +93,7 @@ public final class When {
      */
     @SafeVarargs
     @ExperimentalApi
-    public static <T> Predicate<T> isIn(final T... values) {
+    public static <T extends @Nullable Object> Predicate<T> isIn(final T... values) {
         return value -> {
             for (T v : values) {
                 if (Objects.equals(v, value)) {

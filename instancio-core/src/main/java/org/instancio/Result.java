@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A result containing a created object and seed that was used for populating its values.
  * A result can be obtained by calling the {@link InstancioApi#asResult()} method.
@@ -32,7 +34,7 @@ package org.instancio;
  * @param <T> the result type
  * @since 1.5.1
  */
-public interface Result<T> {
+public interface Result<T extends @Nullable Object> {
 
     /**
      * Returns the created object.

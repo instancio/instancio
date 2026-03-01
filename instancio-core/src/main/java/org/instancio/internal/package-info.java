@@ -19,6 +19,9 @@
  * <p><b>Classes within this package are not part of the public API.</b></p>
  */
 @InternalApi
+@NullMarked
 package org.instancio.internal;
+
+import org.jspecify.annotations.NullMarked;
 
 import org.instancio.documentation.InternalApi;

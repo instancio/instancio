@@ -16,6 +16,7 @@
 package org.instancio.internal.generator;
 
 import org.instancio.documentation.InternalApi;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Creates an instances of a container, or container's builder.
@@ -35,5 +36,5 @@ public interface ContainerCreateFunction<T> {
      * @param arguments if any, required to instantiate an instance
      * @return container (or its builder) instance
      */
-    T create(Object... arguments);
+    T create(@Nullable Object... arguments);
 }

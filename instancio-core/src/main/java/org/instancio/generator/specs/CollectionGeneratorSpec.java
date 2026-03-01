@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 
 /**
@@ -22,7 +24,7 @@ import java.util.Collection;
  *
  * @param <T> element type
  */
-public interface CollectionGeneratorSpec<T>
+public interface CollectionGeneratorSpec<T extends @Nullable Object>
         extends SizeGeneratorSpec<Collection<T>>,
         NullableGeneratorSpec<Collection<T>>,
         SubtypeGeneratorSpec<Collection<T>> {
@@ -116,6 +118,7 @@ public interface CollectionGeneratorSpec<T>
      * @param elements to add
      * @return spec builder
      */
-    CollectionGeneratorSpec<T> with(T... elements);
+    @SuppressWarnings("unchecked")
+    CollectionGeneratorSpec<T> with(@Nullable T... elements);
 
 }

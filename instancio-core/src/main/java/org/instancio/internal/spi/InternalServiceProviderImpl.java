@@ -16,7 +16,7 @@
 package org.instancio.internal.spi;
 
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.EnumMap;
@@ -40,6 +40,7 @@ public final class InternalServiceProviderImpl implements InternalServiceProvide
         private static final String GET_PREFIX = "get";
         private static final String IS_PREFIX = "is";
 
+        @Nullable
         @Override
         public Field resolveField(final Class<?> declaringClass, final String methodName) {
             if (hasPrefix(GET_PREFIX, methodName)) {
@@ -72,6 +73,7 @@ public final class InternalServiceProviderImpl implements InternalServiceProvide
 
     private static final class InternalContainerFactoryProviderImpl implements InternalContainerFactoryProvider {
 
+        @Nullable
         @Override
         @SuppressWarnings({"rawtypes", "unchecked"})
         public <S, T> Function<S, T> getMappingFunction(

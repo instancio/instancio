@@ -20,6 +20,7 @@ import org.instancio.RandomFunction;
 import org.instancio.TargetSelector;
 import org.instancio.ValueOfOriginDestinationPredicate;
 import org.instancio.internal.Flattener;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,14 +31,14 @@ public class InternalValueOfOriginDestinationPredicate
 
     private final TargetSelector origin;
     private final TargetSelector destination;
-    private final RandomFunction<?, ?> valueMapper;
-    private Predicate<?> predicate;
+    private final @Nullable RandomFunction<?, ?> valueMapper;
+    private @Nullable Predicate<?> predicate;
 
     public InternalValueOfOriginDestinationPredicate(
             final TargetSelector origin,
             final TargetSelector destination,
-            final Predicate<?> predicate,
-            final RandomFunction<?, ?> valueMapper) {
+            @Nullable final Predicate<?> predicate,
+            @Nullable final RandomFunction<?, ?> valueMapper) {
 
         this.origin = origin;
         this.destination = destination;
@@ -46,7 +47,7 @@ public class InternalValueOfOriginDestinationPredicate
     }
 
     @Override
-    public <T> Assignment when(final Predicate<T> predicate) {
+    public <T> Assignment when(@Nullable final Predicate<T> predicate) {
         this.predicate = predicate;
         return this;
     }

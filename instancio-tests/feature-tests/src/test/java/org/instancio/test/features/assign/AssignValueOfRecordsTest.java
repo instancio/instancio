@@ -41,6 +41,7 @@ class AssignValueOfRecordsTest {
         assertThat(result.a()).isEqualTo("A");
     }
 
+    @SuppressWarnings("NullAway")
     @Test
     @DisplayName("With null predicate")
     void nullPredicate() {

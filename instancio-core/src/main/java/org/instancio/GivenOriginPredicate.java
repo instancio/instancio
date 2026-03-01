@@ -19,6 +19,7 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -45,7 +46,7 @@ public interface GivenOriginPredicate {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <T> GivenOriginPredicateAction generate(TargetSelector selector, GeneratorSpecProvider<T> gen);
+    <T extends @Nullable Object> GivenOriginPredicateAction generate(TargetSelector selector, GeneratorSpecProvider<T> gen);
 
     /**
      * Generates values using arbitrary generator specs.
@@ -59,7 +60,7 @@ public interface GivenOriginPredicate {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <T> GivenOriginPredicateAction generate(TargetSelector selector, GeneratorSpec<T> spec);
+    <T extends @Nullable Object> GivenOriginPredicateAction generate(TargetSelector selector, GeneratorSpec<T> spec);
 
     /**
      * Sets a value to matching selector targets.
@@ -73,7 +74,7 @@ public interface GivenOriginPredicate {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <T> GivenOriginPredicateAction set(TargetSelector selector, T value);
+    <T extends @Nullable Object> GivenOriginPredicateAction set(TargetSelector selector, T value);
 
     /**
      * Supplies an object using a {@link Generator} to matching selector targets.
@@ -87,7 +88,7 @@ public interface GivenOriginPredicate {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <T> GivenOriginPredicateAction supply(TargetSelector selector, Generator<T> generator);
+    <T extends @Nullable Object> GivenOriginPredicateAction supply(TargetSelector selector, Generator<T> generator);
 
     /**
      * Supplies an object using a {@link Supplier}.
@@ -101,5 +102,5 @@ public interface GivenOriginPredicate {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <T> GivenOriginPredicateAction supply(TargetSelector selector, Supplier<T> supplier);
+    <T extends @Nullable Object> GivenOriginPredicateAction supply(TargetSelector selector, Supplier<T> supplier);
 }

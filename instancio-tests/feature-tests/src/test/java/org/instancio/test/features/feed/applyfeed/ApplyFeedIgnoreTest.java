@@ -26,6 +26,7 @@ import org.instancio.test.support.conditions.Conditions;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -60,6 +61,7 @@ class ApplyFeedIgnoreTest {
         assertThat(result.getFour()).is(Conditions.RANDOM_STRING);
     }
 
+    @SuppressWarnings("NullAway")
     @Test
     void withIgnoredPojo() {
         class Container {

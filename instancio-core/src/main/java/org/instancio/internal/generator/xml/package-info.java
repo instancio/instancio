@@ -16,4 +16,7 @@
 /**
  * Provides generators for {@code javax.xml.*} types.
  */
+@NullMarked
 package org.instancio.internal.generator.xml;
+
+import org.jspecify.annotations.NullMarked;

@@ -18,6 +18,7 @@ package org.instancio.internal;
 import org.instancio.documentation.InternalApi;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 interface NodePopulationFilter {
@@ -30,7 +31,7 @@ interface NodePopulationFilter {
      * @param owner         the object created from the parent of the {@code node}
      * @return result indicating what the action should be
      */
-    NodeFilterResult filter(InternalNode node, AfterGenerate afterGenerate, Object owner);
+    NodeFilterResult filter(InternalNode node, AfterGenerate afterGenerate, @Nullable Object owner);
 
     /**
      * The result determines what should happen to a given node.

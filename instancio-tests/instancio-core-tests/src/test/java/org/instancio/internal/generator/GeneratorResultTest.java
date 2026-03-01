@@ -25,7 +25,6 @@ class GeneratorResultTest {
     @Test
     void isNull() {
         final GeneratorResult result = GeneratorResult.nullResult();
-        assertThat(result.containsNull()).isTrue();
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.isIgnored()).isFalse();
     }
@@ -33,7 +32,6 @@ class GeneratorResultTest {
     @Test
     void isEmpty() {
         final GeneratorResult result = GeneratorResult.emptyResult();
-        assertThat(result.containsNull()).isTrue();
         assertThat(result.isEmpty()).isTrue();
         assertThat(result.isIgnored()).isFalse();
     }
@@ -41,7 +39,6 @@ class GeneratorResultTest {
     @Test
     void isIgnored() {
         final GeneratorResult result = GeneratorResult.ignoredResult();
-        assertThat(result.containsNull()).isTrue();
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.isIgnored()).isTrue();
     }
@@ -49,7 +46,6 @@ class GeneratorResultTest {
     @Test
     void create() {
         final GeneratorResult result = GeneratorResult.create("foo", Hints.builder().build());
-        assertThat(result.containsNull()).isFalse();
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.isIgnored()).isFalse();
     }

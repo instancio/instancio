@@ -16,13 +16,14 @@
 package org.instancio.internal;
 
 import org.instancio.OnCompleteCallback;
+import org.instancio.documentation.VisibleForTesting;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generation.GenerationListener;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.internal.util.Sonar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,6 +115,7 @@ class CallbackHandler implements GenerationListener {
     }
 
     //@formatter:off
+    @SuppressWarnings({"NullAway", "DataFlowIssue", Sonar.ANNOTATE_PARAMETER_NULLABLE})
     @VisibleForTesting
     static final class NoopCallbackHandler extends CallbackHandler {
         NoopCallbackHandler() { super(null); }

@@ -19,6 +19,7 @@ import org.example.spi.CustomGeneratorProvider;
 import org.example.spi.CustomGeneratorProvider.InitCountingPojo;
 import org.instancio.Instancio;
 import org.instancio.generator.Generator;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -35,6 +36,7 @@ import static org.instancio.Select.field;
  *
  * @see CustomGeneratorProvider#INIT_COUNTING_GENERATOR
  */
+@SuppressWarnings("NullAway")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SpiGeneratorInitTest {
 

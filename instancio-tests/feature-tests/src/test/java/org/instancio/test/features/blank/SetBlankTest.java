@@ -101,6 +101,7 @@ class SetBlankTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void setBlankNestedPojo() {
         @Getter
         class Container {
@@ -141,7 +142,7 @@ class SetBlankTest {
 
     @Getter
     @Setter
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    @SuppressWarnings({"NullAway", "OptionalUsedAsFieldOrParameterType"})
     private static final class Pojo {
         private String string;
         private int primitive;

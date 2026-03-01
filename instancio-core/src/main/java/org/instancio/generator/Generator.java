@@ -22,6 +22,7 @@ import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A class for generating values of a specific type.
@@ -30,7 +31,7 @@ import org.instancio.settings.Settings;
  * @since 1.0.1
  */
 @FunctionalInterface
-public interface Generator<T> extends GeneratorSpec<T> {
+public interface Generator<T extends @Nullable Object> extends GeneratorSpec<T> {
 
     /**
      * An optional method for generators that need to initialise state before
@@ -102,6 +103,7 @@ public interface Generator<T> extends GeneratorSpec<T> {
      * @see AfterGenerate
      * @since 2.0.0
      */
+    @Nullable
     default Hints hints() {
         return null;
     }

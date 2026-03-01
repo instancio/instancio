@@ -16,6 +16,7 @@
 package org.instancio.settings;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A setting key represents a configuration item that can be
@@ -26,7 +27,7 @@ import org.instancio.documentation.ExperimentalApi;
  * @see Settings
  * @since 1.0.1
  */
-public interface SettingKey<T> {
+public interface SettingKey<T extends @Nullable Object> {
 
     /**
      * The type of value associated with this key.
@@ -55,9 +56,7 @@ public interface SettingKey<T> {
      * @return default value, or {@code null} if not defined
      * @since 1.0.1
      */
-    default T defaultValue() {
-        return null;
-    }
+    T defaultValue();
 
     /**
      * Indicates whether the value for this key can be set to {@code null}.
@@ -78,7 +77,7 @@ public interface SettingKey<T> {
      * @since 2.12.0
      */
     @ExperimentalApi
-    interface SettingKeyBuilder<T> {
+    interface SettingKeyBuilder<T extends @Nullable Object> {
 
         /**
          * Specifies the value's type.

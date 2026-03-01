@@ -78,6 +78,7 @@ class ShuffleSpecTest extends AbstractValueSpecTestTemplate<Collection<String>> 
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void shuffleNullVararg() {
         final InstancioGenApi api = Instancio.gen();
 
@@ -87,6 +88,7 @@ class ShuffleSpecTest extends AbstractValueSpecTestTemplate<Collection<String>> 
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void shuffleNullCollection() {
         final InstancioGenApi api = Instancio.gen();
 

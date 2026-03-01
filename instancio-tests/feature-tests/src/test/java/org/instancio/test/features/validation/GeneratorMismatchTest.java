@@ -26,6 +26,7 @@ import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +40,7 @@ class GeneratorMismatchTest {
 
     private static class TypeToCreate {
         // Can use field of any type that is not compatible with the generators under test
-        private CharacterHolder holder;
+        private @Nullable CharacterHolder holder;
     }
 
     @Test

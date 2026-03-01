@@ -22,7 +22,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodUnmatched;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -46,7 +46,7 @@ class DeclaredAndInheritedMemberCollector {
     private final DefaultSetterMethodResolver defaultSetterMethodResolver;
     private final boolean isMethodAssignmentEnabled;
     private final boolean ignoreUnmatchedSetters;
-    private final String setterPrefix;
+    private final @Nullable String setterPrefix;
     private final int setterExcludeModifiers;
 
     DeclaredAndInheritedMemberCollector(final Settings settings) {
@@ -113,6 +113,7 @@ class DeclaredAndInheritedMemberCollector {
      * since there's no way to tell if a method is an actual setter,
      * e.g. {@code Photo.removeTag(String)} would be a false positive.
      */
+    @Nullable
     private String getSetterPrefix(final SetterStyle setterStyle) {
         if (setterStyle == SetterStyle.SET) {
             return "set";

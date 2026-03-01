@@ -15,22 +15,22 @@
  */
 package org.instancio.internal.settings;
 
+import org.instancio.documentation.Initializer;
 import org.instancio.internal.ApiValidator;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public final class InternalKey<T>
+public final class InternalKey<T extends @Nullable Object>
         implements SettingKey<T>, AutoAdjustable, Comparable<InternalKey<T>> {
 
     private final String propertyKey;
     private final Class<?> type;
-    private final Object defaultValue;
-    private final RangeAdjuster rangeAdjuster;
+    private final T defaultValue;
+    private final @Nullable RangeAdjuster rangeAdjuster;
     private final boolean allowsNullValue;
     private final boolean allowsNegative;
 
@@ -47,7 +47,7 @@ public final class InternalKey<T>
      */
     public InternalKey(final String propertyKey,
                        final Class<?> type,
-                       @Nullable final Object defaultValue,
+                       final T defaultValue,
                        @Nullable final RangeAdjuster rangeAdjuster,
                        final boolean allowsNullValue,
                        final boolean allowsNegative) {
@@ -72,9 +72,8 @@ public final class InternalKey<T>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T defaultValue() {
-        return (T) defaultValue;
+        return defaultValue;
     }
 
     @Override
@@ -89,8 +88,8 @@ public final class InternalKey<T>
     @Override
     @SuppressWarnings("unchecked")
     public <N extends Number & Comparable<N>> void autoAdjust(
-            @NotNull final Settings settings,
-            @NotNull final N otherValue) {
+            final Settings settings,
+            final N otherValue) {
 
         if (rangeAdjuster != null) {
             final SettingKey<N> key = (SettingKey<N>) this;
@@ -126,9 +125,9 @@ public final class InternalKey<T>
         return new InternalKeyBuilder<>(type);
     }
 
-    public static final class InternalKeyBuilder<T> implements SettingKeyBuilder<T> {
+    public static final class InternalKeyBuilder<T extends @Nullable Object> implements SettingKeyBuilder<T> {
         private final Class<T> type;
-        private String propertyKey;
+        private @Nullable String propertyKey;
 
         private InternalKeyBuilder(final Class<T> type) {
             this.type = ApiValidator.notNull(type, "type must not be null");
@@ -145,16 +144,14 @@ public final class InternalKey<T>
             return this;
         }
 
+        @SuppressWarnings("NullAway") // TODO
+        @Initializer
         @Override
         public SettingKey<T> create() {
-            final String key;
-            if (propertyKey == null) {
-                key = "custom.key." + UUID.randomUUID().toString()
-                        .replace("-", "")
-                        .substring(0, 20);
-            } else {
-                key = propertyKey;
-            }
+            final String key = Objects.requireNonNullElseGet(propertyKey, () -> "custom.key." + UUID.randomUUID().toString()
+                    .replace("-", "")
+                    .substring(0, 20));
+
             return new InternalKey<>(key, type, null, null, true, false);
         }
     }

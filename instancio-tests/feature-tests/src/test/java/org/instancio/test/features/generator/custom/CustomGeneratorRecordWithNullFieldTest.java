@@ -46,6 +46,7 @@ import static org.instancio.Select.allBooleans;
  * Since records are immutable, verify there's no error trying
  * to generate and assign those fields.
  */
+@SuppressWarnings("NullAway")
 @FeatureTag(Feature.AFTER_GENERATE)
 @ExtendWith(InstancioExtension.class)
 class CustomGeneratorRecordWithNullFieldTest {

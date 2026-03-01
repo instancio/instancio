@@ -44,9 +44,9 @@ class ExceptionUtilsTest {
 
             assertThat(ExceptionUtils.getCausedBy(ex))
                     .isEqualTo(String.format("%n" +
-                            " => caused by: InstancioException: \"top\"%n" +
-                            " => caused by: RuntimeException: \"cause\"%n" +
-                            " => caused by: NullPointerException: \"root\""));
+                                             " => caused by: InstancioException: \"top\"%n" +
+                                             " => caused by: RuntimeException: \"cause\"%n" +
+                                             " => caused by: NullPointerException: \"root\""));
         }
 
         @Test
@@ -57,9 +57,9 @@ class ExceptionUtilsTest {
 
             assertThat(ExceptionUtils.getCausedBy(ex))
                     .isEqualTo(String.format("%n" +
-                            " => caused by: InstancioException: \"top\"%n" +
-                            " => caused by: RuntimeException: \"java.lang.NullPointerException\"%n" +
-                            " => caused by: NullPointerException"));
+                                             " => caused by: InstancioException: \"top\"%n" +
+                                             " => caused by: RuntimeException: \"java.lang.NullPointerException\"%n" +
+                                             " => caused by: NullPointerException"));
         }
     }
 }

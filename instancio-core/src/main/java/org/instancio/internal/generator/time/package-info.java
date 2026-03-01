@@ -16,4 +16,7 @@
 /**
  * Provides generators for {@code java.time.*} types.
  */
+@NullMarked
 package org.instancio.internal.generator.time;
+
+import org.jspecify.annotations.NullMarked;

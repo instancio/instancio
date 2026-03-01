@@ -25,6 +25,7 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,7 +140,7 @@ public interface BaseApi<T> {
      * @see #supply(TargetSelector, Supplier)
      * @since 4.0.0
      */
-    <V> BaseApi<T> set(TargetSelector selector, V value);
+    <V extends @Nullable Object> BaseApi<T> set(TargetSelector selector, V value);
 
     /**
      * Applies given {@code model} to the specified {@code selector}.
@@ -225,7 +226,7 @@ public interface BaseApi<T> {
      * @see #supply(TargetSelector, Generator)
      * @since 4.0.0
      */
-    <V> BaseApi<T> supply(TargetSelector selector, Supplier<V> supplier);
+    <V extends @Nullable Object> BaseApi<T> supply(TargetSelector selector, Supplier<V> supplier);
 
     /**
      * Supplies an object using a {@link Generator} to matching selector targets.
@@ -273,7 +274,7 @@ public interface BaseApi<T> {
      * @see Keys#AFTER_GENERATE_HINT
      * @since 4.0.0
      */
-    <V> BaseApi<T> supply(TargetSelector selector, Generator<V> generator);
+    <V extends @Nullable Object> BaseApi<T> supply(TargetSelector selector, Generator<V> generator);
 
     /**
      * Customises values using built-in generators provided by the {@code gen}
@@ -296,7 +297,7 @@ public interface BaseApi<T> {
      * @see #generate(TargetSelector, GeneratorSpec)
      * @see Generators
      */
-    <V> BaseApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
+    <V extends @Nullable Object> BaseApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
 
     /**
      * Customises values using arbitrary generator specs.
@@ -317,7 +318,7 @@ public interface BaseApi<T> {
      * @see #generate(TargetSelector, GeneratorSpecProvider)
      * @since 4.0.0
      */
-    <V> BaseApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
+    <V extends @Nullable Object> BaseApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
 
     /**
      * A callback that gets invoked after the root object has been fully populated.

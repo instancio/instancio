@@ -60,7 +60,7 @@ public abstract class AbstractNumericSequenceSpecTestTemplate<T extends Number &
         assertThat(actual).containsExactly(5L, 10L, 20L, 40L, 80L);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"NullAway", "unchecked"})
     private T asT(final long value) {
         final Class<?> numberType = TypeUtils.getGenericSuperclassTypeArgument(getClass());
         assertThat(numberType).isNotNull();

@@ -24,6 +24,7 @@ import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.FeedFormatType;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An API for customising the properties of a {@link Feed}.
@@ -121,7 +122,7 @@ public interface InstancioFeedApi<F extends Feed> extends
      */
     @Override
     @ExperimentalApi
-    <V> InstancioFeedApi<F> withSetting(SettingKey<V> key, V value);
+    <V extends @Nullable Object> InstancioFeedApi<F> withSetting(SettingKey<V> key, V value);
 
     /**
      * {@inheritDoc}

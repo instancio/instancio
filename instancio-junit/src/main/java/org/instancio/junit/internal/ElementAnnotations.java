@@ -18,6 +18,7 @@ package org.instancio.junit.internal;
 import org.instancio.internal.ApiValidator;
 import org.instancio.junit.Given;
 import org.instancio.junit.GivenProvider;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -38,11 +39,12 @@ public class ElementAnnotations {
                 .collect(Collectors.toList());
     }
 
+    @Nullable
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
         final List<Annotation> results = annotations.stream()
                 .filter(a -> a.annotationType() == annotationType)
-                .collect(Collectors.toList());
+                .toList();
 
         if (results.isEmpty()) {
             return null;

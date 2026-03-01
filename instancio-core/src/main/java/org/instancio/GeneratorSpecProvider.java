@@ -17,6 +17,7 @@ package org.instancio;
 
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides access to built-in generators that support customisation
@@ -26,7 +27,7 @@ import org.instancio.generators.Generators;
  * @since 2.2.0
  */
 @FunctionalInterface
-public interface GeneratorSpecProvider<V> {
+public interface GeneratorSpecProvider<V extends @Nullable Object> {
 
     /**
      * Returns a generator spec.

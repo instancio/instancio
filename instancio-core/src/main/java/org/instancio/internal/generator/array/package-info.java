@@ -16,4 +16,8 @@
 /**
  * Provides array generators.
  */
+@NullMarked
 package org.instancio.internal.generator.array;
+
+import org.jspecify.annotations.NullMarked;
+

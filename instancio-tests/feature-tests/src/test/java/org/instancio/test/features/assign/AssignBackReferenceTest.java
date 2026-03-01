@@ -25,6 +25,7 @@ import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainPojoContainer;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -180,7 +181,7 @@ class AssignBackReferenceTest {
     void optionalContainer() {
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         class Container {
-            Optional<Container> optional;
+            @Nullable Optional<Container> optional;
         }
 
         final Container result = Instancio.of(Container.class)
@@ -193,7 +194,7 @@ class AssignBackReferenceTest {
     @Test
     void arrayContainer() {
         class Container {
-            Container[] array;
+            Container @Nullable [] array;
         }
 
         final Container result = Instancio.of(Container.class)
@@ -208,7 +209,7 @@ class AssignBackReferenceTest {
     @Test
     void listContainer() {
         class Container {
-            List<Container> list;
+            @Nullable List<Container> list;
         }
 
         final Container result = Instancio.of(Container.class)
@@ -223,14 +224,15 @@ class AssignBackReferenceTest {
     @Test
     void mapContainer() {
         class Container {
-            Map<String, Container> map;
+            @Nullable Map<String, Container> map;
         }
 
         final Container result = Instancio.of(Container.class)
                 .assign(Assign.valueOf(root()).to(all(Container.class).within(scope(Map.class))))
                 .create();
 
-        assertThat(result.map.values())
+        assertThat(result.map)
+                .values()
                 .isNotEmpty()
                 .allSatisfy(value -> assertThat(value).isSameAs(result));
     }

@@ -23,6 +23,7 @@ import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -38,20 +39,20 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
     private static final int FIELD_PRIORITY = 1;
     private static final int TYPE_PRIORITY = 2;
     private static final String DEFAULT_SELECTOR_DESCRIPTION = "<selector>";
-    private static final Predicate<Field> NON_NULL_FIELD = Objects::nonNull;
-    private static final Predicate<Class<?>> NON_NULL_TYPE = Objects::nonNull;
+    private static final Predicate<@Nullable Field> NON_NULL_FIELD = Objects::nonNull;
+    private static final Predicate<@Nullable Class<?>> NON_NULL_TYPE = Objects::nonNull;
 
     private final int priority;
-    private final Predicate<InternalNode> nodePredicate;
-    private final SelectorDepth selectorDepth;
+    private final Predicate<@Nullable InternalNode> nodePredicate;
+    private final @Nullable SelectorDepth selectorDepth;
     private final String apiInvocationDescription;
 
     protected PredicateSelectorImpl(
-            final ApiMethodSelector apiMethodSelector,
+            @Nullable final ApiMethodSelector apiMethodSelector,
             final int priority,
-            final Predicate<InternalNode> nodePredicate,
+            final Predicate<@Nullable InternalNode> nodePredicate,
             final List<Scope> scopes,
-            final SelectorDepth selectorDepth,
+            @Nullable final SelectorDepth selectorDepth,
             final boolean isLenient,
             final boolean isHiddenFromVerboseOutput,
             final String apiInvocationDescription,
@@ -91,7 +92,7 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
         return apiInvocationDescription;
     }
 
-    public Predicate<InternalNode> getNodePredicate() {
+    public Predicate<@Nullable InternalNode> getNodePredicate() {
         return nodePredicate;
     }
 
@@ -125,10 +126,8 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
         String s = apiInvocationDescription;
 
         if (selectorDepth != null) {
-            final String depth = selectorDepth.getDepth() == null
-                    ? "Predicate<Integer>"
-                    : selectorDepth.getDepth().toString();
-
+            final Integer d = selectorDepth.getDepth();
+            final String depth = d == null ? "Predicate<Integer>" : d.toString();
             s += ".atDepth(" + depth + ")";
         }
         if (!getScopes().isEmpty()) {
@@ -159,15 +158,15 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
     }
 
     public static final class Builder {
-        private ApiMethodSelector apiMethodSelector;
+        private @Nullable ApiMethodSelector apiMethodSelector;
         private int priority;
-        private Predicate<InternalNode> nodePredicate = Objects::nonNull;
+        private Predicate<@Nullable InternalNode> nodePredicate = Objects::nonNull;
         private List<Scope> scopes = new ArrayList<>(0);
-        private SelectorDepth selectorDepth;
+        private @Nullable SelectorDepth selectorDepth;
         private boolean isLenient;
         private boolean isHiddenFromVerboseOutput;
-        private String apiInvocationDescription;
-        private Throwable stackTraceHolder;
+        private @Nullable String apiInvocationDescription;
+        private @Nullable Throwable stackTraceHolder;
 
         private Builder() {
         }

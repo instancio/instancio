@@ -19,4 +19,7 @@
  * @see org.instancio.Instancio
  * @see org.instancio.InstancioApi
  */
+@NullMarked
 package org.instancio;
+
+import org.jspecify.annotations.NullMarked;

@@ -24,6 +24,7 @@ import org.instancio.settings.FillType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -84,7 +85,7 @@ public interface InstancioObjectApi<T> extends
      * @since 5.3.0
      */
     @Override
-    <V> InstancioObjectApi<T> set(TargetSelector selector, V value);
+    <V extends @Nullable Object> InstancioObjectApi<T> set(TargetSelector selector, V value);
 
     /**
      * {@inheritDoc}
@@ -101,7 +102,7 @@ public interface InstancioObjectApi<T> extends
      * @since 5.3.0
      */
     @Override
-    <V> InstancioObjectApi<T> supply(TargetSelector selector, Supplier<V> supplier);
+    <V extends @Nullable Object> InstancioObjectApi<T> supply(TargetSelector selector, Supplier<V> supplier);
 
     /**
      * {@inheritDoc}
@@ -109,7 +110,7 @@ public interface InstancioObjectApi<T> extends
      * @since 5.3.0
      */
     @Override
-    <V> InstancioObjectApi<T> supply(TargetSelector selector, Generator<V> generator);
+    <V extends @Nullable Object> InstancioObjectApi<T> supply(TargetSelector selector, Generator<V> generator);
 
     /**
      * {@inheritDoc}
@@ -117,7 +118,7 @@ public interface InstancioObjectApi<T> extends
      * @since 5.3.0
      */
     @Override
-    <V> InstancioObjectApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
+    <V extends @Nullable Object> InstancioObjectApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
 
     /**
      * {@inheritDoc}
@@ -126,7 +127,7 @@ public interface InstancioObjectApi<T> extends
      */
     @Override
     @ExperimentalApi
-    <V> InstancioObjectApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
+    <V extends @Nullable Object> InstancioObjectApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
 
     /**
      * {@inheritDoc}
@@ -185,7 +186,7 @@ public interface InstancioObjectApi<T> extends
      * @since 5.3.0
      */
     @Override
-    <V> InstancioObjectApi<T> withSetting(SettingKey<V> key, V value);
+    <V extends @Nullable Object> InstancioObjectApi<T> withSetting(SettingKey<V> key, V value);
 
     /**
      * {@inheritDoc}

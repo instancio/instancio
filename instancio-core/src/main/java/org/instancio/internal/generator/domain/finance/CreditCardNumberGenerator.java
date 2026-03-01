@@ -16,14 +16,16 @@
 package org.instancio.internal.generator.domain.finance;
 
 import org.instancio.Random;
+import org.instancio.documentation.VisibleForTesting;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CreditCardSpec;
 import org.instancio.internal.generator.checksum.BaseModCheckGenerator;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.internal.util.Verify;
+import org.jspecify.annotations.Nullable;
 
 public class CreditCardNumberGenerator extends BaseModCheckGenerator implements CreditCardSpec {
 
-    private CCTypeImpl cardType;
+    private @Nullable CCTypeImpl cardType;
 
     public CreditCardNumberGenerator(final GeneratorContext context) {
         super(context);
@@ -58,7 +60,10 @@ public class CreditCardNumberGenerator extends BaseModCheckGenerator implements 
 
     @Override
     protected String payload(final Random random) {
-        cardType = cardType == null ? random.oneOf(CCTypeImpl.values()) : cardType;
+        if (cardType == null) {
+            cardType = random.oneOf(CCTypeImpl.values());
+        }
+
         final String payload = super.payload(random);
         final String prefix = random.oneOf(cardType.getPrefixes()).toString();
         return prefix + payload.substring(prefix.length());
@@ -66,6 +71,6 @@ public class CreditCardNumberGenerator extends BaseModCheckGenerator implements 
 
     @Override
     protected int payloadLength() {
-        return cardType.getLength() - 1;
+        return Verify.notNull(cardType, "cardType is null").getLength() - 1;
     }
 }

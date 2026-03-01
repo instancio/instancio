@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalContainerHint;
+import org.jspecify.annotations.Nullable;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -30,13 +31,14 @@ public class MapEntryGenerator<K, V> extends AbstractGenerator<Map.Entry<K, V>> 
         super(context);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;
     }
 
     @Override
-    public Map.Entry<K, V> tryGenerateNonNull(final Random random) {
+    public Map.@Nullable Entry<K, V> tryGenerateNonNull(final Random random) {
         return null; // must be null to delegate creation to the engine
     }
 

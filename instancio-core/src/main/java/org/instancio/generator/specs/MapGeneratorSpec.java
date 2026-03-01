@@ -15,6 +15,8 @@
  */
 package org.instancio.generator.specs;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Map;
 
 /**
@@ -23,7 +25,7 @@ import java.util.Map;
  * @param <K> key type
  * @param <V> value type
  */
-public interface MapGeneratorSpec<K, V>
+public interface MapGeneratorSpec<K extends @Nullable Object, V extends @Nullable Object>
         extends SizeGeneratorSpec<Map<K, V>>,
         NullableGeneratorSpec<Map<K, V>>,
         SubtypeGeneratorSpec<Map<K, V>> {
@@ -107,7 +109,7 @@ public interface MapGeneratorSpec<K, V>
      * @see #withKeys(Object[])
      * @since 2.0.0
      */
-    MapGeneratorSpec<K, V> with(K key, V value);
+    MapGeneratorSpec<K, V> with(@Nullable K key, @Nullable V value);
 
     /**
      * Adds given keys to the map  in the order they are provided.

@@ -22,8 +22,11 @@ import org.instancio.internal.nodes.NodeKind;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodNotFound;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
+import java.lang.reflect.Field;
+
+import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.util.ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue;
 import static org.instancio.internal.util.ReflectionUtils.hasNonNullValue;
 
@@ -53,17 +56,21 @@ final class NodeFilter implements NodePopulationFilter {
             return NodeFilterResult.SKIP;
         }
 
+        final Field field = node.getField();
+
         // If method assignment is enabled and there's no setter method, skip the node
         if (isMethodAssignment
-                && node.getSetter() == null
-                && node.getField() != null
-                && onSetMethodNotFound == OnSetMethodNotFound.IGNORE) {
+            && node.getSetter() == null
+            && field != null
+            && onSetMethodNotFound == OnSetMethodNotFound.IGNORE) {
             return NodeFilterResult.SKIP;
         }
 
+        final InternalNode parent = requireNonNull(node.getParent());
+
         // Record fields are immutable, so we cannot generate and assign a new value.
         // However, a record might contain a POJO, in which case we can populate it
-        if (node.getParent().is(NodeKind.RECORD)) {
+        if (parent.is(NodeKind.RECORD)) {
             return NodeFilterResult.POPULATE;
         }
 
@@ -73,24 +80,24 @@ final class NodeFilter implements NodePopulationFilter {
             return NodeFilterResult.GENERATE;
         }
 
-        if (node.getParent().is(NodeKind.ARRAY)) {
+        if (parent.is(NodeKind.ARRAY)) {
             return arrayNodeFilter.filter(node, afterGenerate, owner);
         }
 
-        if (!overwriteExistingValues && node.getField() != null
-                && hasNonNullOrNonDefaultPrimitiveValue(node.getField(), owner)) {
+        if (!overwriteExistingValues && field != null
+            && hasNonNullOrNonDefaultPrimitiveValue(field, owner)) {
             return getResultForNode(node);
         }
 
         if (afterGenerate == AfterGenerate.POPULATE_NULLS) {
-            if (node.getField() != null && hasNonNullValue(node.getField(), owner)) {
+            if (field != null && hasNonNullValue(field, owner)) {
                 return getResultForNode(node);
             }
             return NodeFilterResult.GENERATE;
         }
 
         if (afterGenerate == AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES) {
-            if (node.getField() != null && hasNonNullOrNonDefaultPrimitiveValue(node.getField(), owner)) {
+            if (field != null && hasNonNullOrNonDefaultPrimitiveValue(field, owner)) {
                 return getResultForNode(node);
             }
             return NodeFilterResult.GENERATE;

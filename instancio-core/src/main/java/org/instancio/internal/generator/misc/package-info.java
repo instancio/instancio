@@ -16,4 +16,7 @@
 /**
  * Miscellaneous generators.
  */
+@NullMarked
 package org.instancio.internal.generator.misc;
+
+import org.jspecify.annotations.NullMarked;

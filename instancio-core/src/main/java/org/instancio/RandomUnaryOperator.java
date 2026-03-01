@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a unary operator that produces a result of the same type
@@ -28,7 +29,7 @@ import org.instancio.documentation.ExperimentalApi;
  */
 @ExperimentalApi
 @FunctionalInterface
-public interface RandomUnaryOperator<T> extends RandomFunction<T, T> {
+public interface RandomUnaryOperator<T extends @Nullable Object> extends RandomFunction<T, T> {
 
     /**
      * Applies this operator to the given operand,

@@ -22,6 +22,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -79,7 +80,8 @@ class ArrayGeneratorWithElementTest {
         assertValidation();
     }
 
-    private void assertValidation(final Object... arg) {
+    @SuppressWarnings("NullAway")
+    private void assertValidation(final Object @Nullable ... arg) {
         final InstancioApi<ArrayLong> api = Instancio.of(ArrayLong.class)
                 .generate(all(long[].class), gen -> gen.array().with(arg));
 

@@ -16,6 +16,7 @@
 package org.instancio.internal.generator;
 
 import org.instancio.documentation.InternalApi;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A function for adding objects to a container.
@@ -35,5 +36,5 @@ public interface ContainerAddFunction<T> {
      * @param container arguments will be added to
      * @param arguments to add
      */
-    void addTo(T container, Object... arguments);
+    void addTo(T container, @Nullable Object... arguments);
 }

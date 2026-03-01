@@ -16,27 +16,21 @@
 package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.RecordComponent;
 
 public final class RecordUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(RecordUtils.class);
 
-    public static <T> T instantiate(final Class<T> recordClass, final Object... args) {
-        Verify.isTrue(recordClass.isRecord(), "Class '%s' is not a record!", recordClass.getName());
-
+    public static <T> T instantiate(final Class<T> recordClass, @Nullable final Object... args) {
         try {
+            Verify.isTrue(recordClass.isRecord(), "Class '%s' is not a record!", recordClass.getName());
             final Constructor<T> ctor = getCanonicalConstructor(recordClass);
-            if (ctor == null) {
-                return null;
-            }
             ReflectionUtils.setAccessible(ctor);
             return ctor.newInstance(args);
         } catch (Exception ex) {
-            throw new InstancioException("Error creating a record: " + recordClass, ex);
+            throw new InstancioException("Error instantiating a record: " + recordClass, ex);
         }
     }
 
@@ -49,14 +43,9 @@ public final class RecordUtils {
         return args;
     }
 
-    private static <T> Constructor<T> getCanonicalConstructor(final Class<T> recordClass) {
+    private static <T> Constructor<T> getCanonicalConstructor(final Class<T> recordClass) throws NoSuchMethodException {
         final Class<?>[] componentTypes = getComponentTypes(recordClass);
-        try {
-            return recordClass.getDeclaredConstructor(componentTypes);
-        } catch (NoSuchMethodException ex) {
-            LOG.debug("Unable to resolve canonical constructor for record {}", recordClass);
-            return null;
-        }
+        return recordClass.getDeclaredConstructor(componentTypes);
     }
 
     private RecordUtils() {

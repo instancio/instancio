@@ -16,4 +16,7 @@
 /**
  * Implementations classes for {@code org.instancio.generators}.
  */
+@NullMarked
 package org.instancio.internal.generators;
+
+import org.jspecify.annotations.NullMarked;

@@ -15,15 +15,17 @@
  */
 package org.instancio.internal.util;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 
 @SuppressWarnings("ClassCanBeRecord")
 public final class ErrorArgs {
 
     private final Object[] args;
-    private final Throwable throwable;
+    private final @Nullable Throwable throwable;
 
-    private ErrorArgs(final Object[] args, final Throwable throwable) {
+    private ErrorArgs(final Object[] args, @Nullable final Throwable throwable) {
         this.args = args;
         this.throwable = throwable;
     }
@@ -41,6 +43,7 @@ public final class ErrorArgs {
         return args;
     }
 
+    @Nullable
     public Throwable getThrowable() {
         return throwable;
     }

@@ -16,6 +16,7 @@
 package org.instancio.internal.spi;
 
 import org.instancio.spi.InstancioServiceProvider;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public final class ProviderEntry<P> {
 
     public static <P> List<ProviderEntry<P>> from(
             final List<InstancioServiceProvider> instancioServiceProviders,
-            final Function<InstancioServiceProvider, P> fn) {
+            final Function<InstancioServiceProvider, @Nullable P> fn) {
 
         if (instancioServiceProviders.isEmpty()) {
             return Collections.emptyList();

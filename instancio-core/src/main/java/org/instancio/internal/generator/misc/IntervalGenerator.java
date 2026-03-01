@@ -23,20 +23,22 @@ import org.instancio.generator.specs.IntervalSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.PropertyBitSet;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public class IntervalGenerator<T> extends AbstractGenerator<IntervalSupplier<T>> implements IntervalSpec<T> {
 
     private final T startingValue;
-    private RandomUnaryOperator<T> nextStartFunction;
-    private RandomUnaryOperator<T> nextEndFunction;
+    private @Nullable RandomUnaryOperator<T> nextStartFunction;
+    private @Nullable RandomUnaryOperator<T> nextEndFunction;
 
     public IntervalGenerator(final GeneratorContext context, final T startingValue) {
         super(context);
         this.startingValue = ApiValidator.notNull(startingValue, "starting value must not be null");
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         // no validation needed for this method since
@@ -64,10 +66,11 @@ public class IntervalGenerator<T> extends AbstractGenerator<IntervalSupplier<T>>
 
     @Override
     protected IntervalSupplier<T> tryGenerateNonNull(final Random random) {
-        ApiValidator.notNull(nextStartFunction, "'nextStart' function must not be null");
-        ApiValidator.notNull(nextEndFunction, "'nextEnd' function must not be null");
-
-        return new IntervalSupplierImpl<>(random, startingValue, nextStartFunction, nextEndFunction);
+        return new IntervalSupplierImpl<>(
+                random,
+                startingValue,
+                ApiValidator.notNull(nextStartFunction, "'nextStart' function must not be null"),
+                ApiValidator.notNull(nextEndFunction, "'nextEnd' function must not be null"));
     }
 
     private static final class IntervalSupplierImpl<T> implements IntervalSupplier<T> {

@@ -19,13 +19,14 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.can.SinSpec;
 import org.instancio.internal.generator.checksum.LuhnGenerator;
+import org.jspecify.annotations.Nullable;
 
 public class SinGenerator extends LuhnGenerator implements SinSpec {
 
     private static final int SIN_LENGTH = 9;
 
-    private Type type;
-    private String separator;
+    private @Nullable Type type;
+    private @Nullable String separator;
 
     public SinGenerator(final GeneratorContext context) {
         super(context);

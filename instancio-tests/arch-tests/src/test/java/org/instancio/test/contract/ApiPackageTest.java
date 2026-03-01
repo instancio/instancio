@@ -20,6 +20,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.documentation.InternalApi;
 import org.instancio.test.contract.condition.UnconditionalModuleExportCondition;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
@@ -37,6 +38,13 @@ class ApiPackageTest {
     private static final JavaClasses classes = new ClassFileImporter().importPackages("org.instancio");
 
     private static final UnconditionalModuleExportCondition beUnconditionallyExported = new UnconditionalModuleExportCondition();
+
+    @Test
+    void allPackageInfosShouldBeAnnotatedWithNullMarked() {
+        classes().that().haveSimpleName("package-info")
+                .should().beAnnotatedWith(NullMarked.class)
+                .check(classes);
+    }
 
     @Test
     void internalApisShouldResideWithinInternalPackage() {

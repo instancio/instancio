@@ -15,6 +15,7 @@
  */
 package org.instancio.junit;
 
+import org.instancio.Random;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
 import org.instancio.junit.internal.ElementAnnotations;
@@ -48,6 +49,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static org.instancio.junit.internal.Constants.INSTANCIO_NAMESPACE;
 import static org.instancio.junit.internal.Constants.INSTANCIO_SOURCE_STATE;
 
@@ -161,6 +163,10 @@ public class InstancioExtension implements
         final FieldAnnotationMap annotationMap = context.getStore(INSTANCIO_NAMESPACE)
                 .get(testClass, FieldAnnotationMap.class);
 
+        if (annotationMap == null) {
+            return;
+        }
+
         for (Field field : testClass.getDeclaredFields()) {
             final List<Annotation> annotations = annotationMap.get(field);
 
@@ -172,7 +178,8 @@ public class InstancioExtension implements
             }
 
             final ElementAnnotations elementAnnotations = new ElementAnnotations(annotations);
-            final Object fieldValue = new ObjectCreator(threadLocalSettings.get(), threadLocalRandom.get())
+            final Random random = requireNonNull(threadLocalRandom.get());
+            final Object fieldValue = new ObjectCreator(threadLocalSettings.get(), random)
                     .createObject(field, field.getGenericType(), elementAnnotations);
 
             ReflectionUtils.setAccessible(field).set(testInstance, fieldValue);
@@ -208,7 +215,7 @@ public class InstancioExtension implements
             final Method testMethod = context.getRequiredTestMethod();
 
             // Should be safe to cast since we don't expect any other implementations of Random.
-            final DefaultRandom random = (DefaultRandom) threadLocalRandom.get();
+            final DefaultRandom random = (DefaultRandom) requireNonNull(threadLocalRandom.get());
 
             final InstancioSourceState instancioSourceState = context.getStore(INSTANCIO_NAMESPACE)
                     .get(INSTANCIO_SOURCE_STATE, InstancioSourceState.class);
@@ -276,8 +283,9 @@ public class InstancioExtension implements
 
         final Type targetType = parameter.getParameterizedType();
 
-        return new ObjectCreator(threadLocalSettings.get(), threadLocalRandom.get())
-                .createObject(parameter, targetType, elementAnnotations);
+        final Random random = requireNonNull(threadLocalRandom.get());
+        return new ObjectCreator(threadLocalSettings.get(), random)
+                .createObject(parameter, targetType, requireNonNull(elementAnnotations));
     }
 
     private static boolean containsAnnotation(

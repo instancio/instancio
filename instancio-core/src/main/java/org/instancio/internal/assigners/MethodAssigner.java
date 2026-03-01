@@ -29,12 +29,15 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.util.ExceptionUtils.logException;
 
 final class MethodAssigner implements Assigner {
@@ -59,7 +62,7 @@ final class MethodAssigner implements Assigner {
     }
 
     @Override
-    public void assign(final InternalNode node, final Object target, final Object arg) {
+    public void assign(final InternalNode node, final Object target, @Nullable final Object arg) {
         final Method method = getSetterMethod(node);
 
         if (method == null) {
@@ -83,7 +86,7 @@ final class MethodAssigner implements Assigner {
         }
     }
 
-    private Method getSetterMethod(final InternalNode node) {
+    private @Nullable Method getSetterMethod(final InternalNode node) {
         final Method method = setterMethodResolverFacade.resolveSetterMethod(node);
         return method == null ? node.getSetter() : method;
     }
@@ -91,7 +94,7 @@ final class MethodAssigner implements Assigner {
     private void handleMethodInvocationError(
             final InternalNode node,
             final Object target,
-            final Object arg,
+            @Nullable final Object arg,
             final Method method,
             final Exception ex) {
 
@@ -118,25 +121,26 @@ final class MethodAssigner implements Assigner {
     private void handleMethodNotFoundError(
             final InternalNode node,
             final Object target,
-            final Object arg) {
+            @Nullable final Object arg) {
 
         final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
+        final Field field = requireNonNull(node.getField());
 
         if (onSetMethodNotFound == OnSetMethodNotFound.ASSIGN_FIELD) {
-            LOG.trace("Could not resolve setter method, assigning value using field: {}", node.getField());
+            LOG.trace("Could not resolve setter method, assigning value using field: {}", field);
             fieldAssigner.assign(node, target, arg);
             return;
         }
 
         // do not log or throw an error since final fields cannot have setters
-        if (Modifier.isFinal(node.getField().getModifiers())) {
+        if (Modifier.isFinal(field.getModifiers())) {
             return;
         }
 
         if (onSetMethodNotFound == OnSetMethodNotFound.FAIL) {
             throw new InstancioApiException(ErrorMessageUtils.setterNotFound(node, settings));
         } else if (onSetMethodNotFound == OnSetMethodNotFound.IGNORE) {
-            LOG.debug("{}: could not resolve setter method for field: {}", OnSetMethodNotFound.IGNORE, node.getField());
+            LOG.debug("{}: could not resolve setter method for field: {}", OnSetMethodNotFound.IGNORE, field);
         }
     }
 

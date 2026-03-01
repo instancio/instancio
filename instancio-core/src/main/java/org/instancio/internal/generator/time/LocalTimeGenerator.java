@@ -16,10 +16,10 @@
 package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
+import org.instancio.documentation.VisibleForTesting;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.internal.ApiValidator;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import java.time.LocalTime;
 import java.time.temporal.TemporalUnit;

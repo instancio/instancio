@@ -16,13 +16,13 @@
 package org.instancio.internal;
 
 import org.instancio.Result;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-public final class InternalResult<T> implements Result<T> {
+public final class InternalResult<T extends @Nullable Object> implements Result<T> {
     private final T object;
     private final long seed;
 
-    public InternalResult(@Nullable final T object, final long seed) {
+    public InternalResult(final T object, final long seed) {
         this.object = object;
         this.seed = seed;
     }

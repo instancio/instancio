@@ -17,6 +17,7 @@ package org.instancio.internal.util;
 
 import org.instancio.Scope;
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -27,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static org.instancio.internal.util.Constants.NL;
 
@@ -36,6 +38,7 @@ public final class Format {
     private static final String METHOD_PADDING = "  │ ";
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("\\w+\\.");
 
+    @Nullable
     public static String formatNode(final InternalNode node) {
         return node.getField() == null
                 ? withoutPackage(node.getType())
@@ -83,22 +86,26 @@ public final class Format {
         final StringBuilder sb = new StringBuilder(SB_SMALL);
         sb.append('<').append(node.getDepth()).append(':');
 
-        if (node.getField() == null && node.getSetter() == null) {
+        final Field field = node.getField();
+        final Method setter = node.getSetter();
+
+        if (field == null && setter == null) {
             sb.append(withoutPackage(node.getTargetClass()));
         } else {
-            sb.append(withoutPackage(node.getParent().getTargetClass())).append(": ");
+            final InternalNode parent = requireNonNull(node.getParent());
+            sb.append(withoutPackage(parent.getTargetClass())).append(": ");
 
-            if (node.getField() != null) {
+            if (field != null) {
                 sb.append(withoutPackage(node.getType()))
                         .append(' ')
-                        .append(node.getField().getName());
+                        .append(field.getName());
             }
-            if (node.getSetter() != null) {
-                if (node.getField() != null) {
+            if (setter != null) {
+                if (field != null) {
                     sb.append("; ");
                 }
-                final Type paramType = node.getSetter().getGenericParameterTypes()[0];
-                sb.append(node.getSetter().getName())
+                final Type paramType = setter.getGenericParameterTypes()[0];
+                sb.append(setter.getName())
                         .append('(').append(withoutPackage(paramType)).append(')');
             }
         }
@@ -111,12 +118,11 @@ public final class Format {
         return sb.append('>').toString();
     }
 
-
     public static String formatField(final Field field) {
-        return field == null ? null : String.format("%s %s (in %s)",
-                withoutPackage(ObjectUtils.defaultIfNull(field.getGenericType(), field.getType())),
-                field.getName(),
-                field.getDeclaringClass().getName());
+        return String.format("%s %s (in %s)",
+                        withoutPackage(ObjectUtils.defaultIfNull(field.getGenericType(), field.getType())),
+                        field.getName(),
+                        field.getDeclaringClass().getName());
     }
 
     /**
@@ -126,7 +132,7 @@ public final class Format {
      * @return method formatted as a string
      */
     public static String formatSetterMethod(final Method method) {
-        return method == null ? null : String.format("%s.%s(%s)",
+        return String.format("%s.%s(%s)",
                 withoutPackage(method.getDeclaringClass()),
                 method.getName(),
                 withoutPackage(method.getParameterTypes()[0]));
@@ -190,8 +196,8 @@ public final class Format {
         for (StackTraceElement element : throwable.getStackTrace()) {
             final String className = element.getClassName();
             if (!className.startsWith("org.instancio")
-                    && !className.startsWith("java.")
-                    && !className.contains("$Proxy")) {
+                && !className.startsWith("java.")
+                && !className.contains("$Proxy")) {
                 return element.toString();
             }
         }

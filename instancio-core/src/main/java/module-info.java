@@ -1,4 +1,5 @@
 module org.instancio.core {
+    requires org.jspecify;
     requires org.slf4j;
 
     requires static jakarta.persistence;
@@ -8,7 +9,6 @@ module org.instancio.core {
     requires static jdk.unsupported;
     requires static org.apache.groovy;
     requires static org.hibernate.validator;
-    requires static org.jetbrains.annotations;
     requires static tools.jackson.databind;
 
     exports org.instancio;

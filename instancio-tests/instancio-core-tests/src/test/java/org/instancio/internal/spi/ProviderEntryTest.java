@@ -19,7 +19,6 @@ import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioServiceProvider.GeneratorProvider;
 import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -83,7 +82,6 @@ class ProviderEntryTest {
         assertThat(fn.count).isEqualTo(2);
     }
 
-    @NotNull
     private static InstancioServiceProvider createProvider() {
         return new InstancioServiceProvider() {
             @Override

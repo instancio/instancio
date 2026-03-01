@@ -26,7 +26,7 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +49,7 @@ public class GeneratorResolver {
      *
      * @see #getCached(InternalNode)
      */
+    @Nullable
     @SuppressWarnings({"rawtypes", "unchecked"})
     public Generator<?> get(final InternalNode node) {
         final Class<?> klass = node.getTargetClass();
@@ -75,6 +76,7 @@ public class GeneratorResolver {
      *
      * @see #get(InternalNode)
      */
+    @Nullable
     @SuppressWarnings(Sonar.MAP_COMPUTE_IF_ABSENT)
     public Generator<?> getCached(final InternalNode node) {
         final Class<?> targetClass = node.getTargetClass();
@@ -118,7 +120,7 @@ public class GeneratorResolver {
             final GeneratorContext context,
             final String generatorClassName) {
 
-        final Class<?> generatorClass = ReflectionUtils.loadClass(generatorClassName);
+        final Class<?> generatorClass = ReflectionUtils.loadRequiredClass(generatorClassName);
         return instantiateInternalGenerator(generatorClass, context);
     }
 
@@ -126,6 +128,7 @@ public class GeneratorResolver {
      * Since this method returns a cached generator,
      * callers must not update the generator's state.
      */
+    @Nullable
     @SuppressWarnings(Sonar.MAP_COMPUTE_IF_ABSENT)
     public Generator<?> getCachedBuiltInGenerator(final Class<?> targetClass) {
         Generator<?> generator = cache.get(targetClass);
@@ -138,6 +141,7 @@ public class GeneratorResolver {
         return generator;
     }
 
+    @Nullable
     private Generator<?> getBuiltInGenerator(final Class<?> targetClass) {
         final Class<?> genClass = GeneratorResolverMaps.getGenerator(targetClass);
         if (genClass == null) {

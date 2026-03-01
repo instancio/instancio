@@ -19,6 +19,8 @@ public final class Sonar {
 
     public static final String ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED = "java:S3011";
     public static final String ADD_ASSERTION = "java:S2699";
+    public static final String ANNOTATE_PARAMETER_NULLABLE = "java:S4449";
+    public static final String CALL_LEADS_TO_ILLEGAL_ARGUMENT_EXCEPTION = "javabugs:S6416";
     public static final String CATCH_EXCEPTION_INSTEAD_OF_THROWABLE = "java:S1181";
     public static final String COGNITIVE_COMPLEXITY_OF_METHOD = "java:S3776";
     public static final String DEFINE_DEDICATED_EXCEPTION = "java:S112";
@@ -32,6 +34,7 @@ public final class Sonar {
     public static final String NULL_OPTIONAL = "java:S2789";
     public static final String NUMBER_OF_PARENTS = "java:S110";
     public static final String ONE_METHOD_WHEN_TESTING_EXCEPTIONS = "java:S5778";
+    public static final String NULL_MARKED_NULL_VALUE = "java:S2637";
     public static final String OVERRIDE_EQUALS = "java:S2160";
     public static final String RAW_USE_OF_PARAMETERIZED_CLASS = "java:S3740";
     public static final String RETURN_EMPTY_COLLECTION = "java:S1168";

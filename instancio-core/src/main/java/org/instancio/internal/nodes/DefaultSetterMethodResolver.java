@@ -18,6 +18,7 @@ package org.instancio.internal.nodes;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,7 @@ final class DefaultSetterMethodResolver {
         this.setterNameResolver = getMethodNameResolver(settings.get(Keys.SETTER_STYLE));
     }
 
+    @Nullable
     Method getSetter(final Field field) {
         final String methodName = setterNameResolver.resolveFor(field);
 

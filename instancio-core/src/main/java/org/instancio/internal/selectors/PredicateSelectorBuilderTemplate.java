@@ -23,15 +23,17 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
+import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ErrorMessageUtils;
+import org.jspecify.annotations.NullUnmarked;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+@NullUnmarked
 abstract class PredicateSelectorBuilderTemplate<T>
         implements SelectorBuilder, DepthSelector, DepthPredicateSelector, Flattener<TargetSelector> {
 
@@ -88,11 +90,12 @@ abstract class PredicateSelectorBuilderTemplate<T>
                 "scopes must not be null.",
                 "within", description().toString(), new Throwable()));
 
-        ApiValidator.doesNotContainNull(scopes, () -> ErrorMessageUtils.selectorNotNullErrorMessage(
-                "scopes vararg must not contain null.",
-                "within", description().toString(), new Throwable()));
+        final Scope[] nonNullScopes = ApiValidator.doesNotContainNull(scopes,
+                () -> ErrorMessageUtils.selectorNotNullErrorMessage(
+                        "scopes vararg must not contain null.",
+                        "within", description().toString(), new Throwable()));
 
-        this.scopes = Arrays.asList(scopes);
+        this.scopes = CollectionUtils.asUnmodifiableList(nonNullScopes);
 
         // do not append scopes to the description field (this is done by toString())
     }

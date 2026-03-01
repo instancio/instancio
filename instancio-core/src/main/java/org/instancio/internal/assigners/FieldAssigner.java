@@ -25,11 +25,13 @@ import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
+import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.util.ExceptionUtils.logException;
 
 final class FieldAssigner implements Assigner {
@@ -44,7 +46,7 @@ final class FieldAssigner implements Assigner {
     }
 
     @Override
-    public void assign(final InternalNode node, final Object target, final Object value) {
+    public void assign(final InternalNode node, final Object target, @Nullable final Object value) {
         final Field field = node.getField();
 
         // can't assign null to a primitive
@@ -53,8 +55,8 @@ final class FieldAssigner implements Assigner {
         }
     }
 
-    private void setField(final InternalNode node, final Object target, final Object arg) {
-        final Field field = node.getField();
+    private void setField(final InternalNode node, final Object target, @Nullable final Object arg) {
+        final Field field = requireNonNull(node.getField());
         final Object value = arg == null ? ObjectUtils.defaultValue(field.getType()) : arg;
 
         try {
@@ -63,17 +65,17 @@ final class FieldAssigner implements Assigner {
         } catch (IllegalArgumentException ex) {
             // Wrong type is being assigned to a field.
             // Always propagate type mismatch errors as it's most likely a user error.
-            String msg = ErrorMessageUtils.getTypeMismatchErrorMessage(value, node, ex);
 
+            requireNonNull(value); // since it's a type mismatch, value can't be null
+            String msg = ErrorMessageUtils.getTypeMismatchErrorMessage(value, node, ex);
             throw Fail.withUsageError(msg, ex);
         } catch (Exception ex) {
-            handleError(node, value, ex);
+            handleError(field, value, ex);
         }
     }
 
-    private void handleError(final InternalNode node, final Object value, final Exception ex) {
+    private void handleError(final Field field, @Nullable final Object value, final Exception ex) {
         final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
-        final Field field = node.getField();
         if (onSetFieldError == OnSetFieldError.FAIL) {
             final String msg = ErrorMessageUtils.incompatibleField(value, field, ex, settings);
             throw new InstancioApiException(msg, ex);

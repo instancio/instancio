@@ -16,6 +16,7 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.documentation.InternalApi;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 
@@ -33,6 +34,7 @@ interface MethodNameResolver {
      * @param field to resolve method for
      * @return resolved method name, or {@code null} if it could not be resolved
      */
+    @Nullable
     String resolveFor(Field field);
 
 }

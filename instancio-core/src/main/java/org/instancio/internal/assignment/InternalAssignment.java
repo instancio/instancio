@@ -22,24 +22,27 @@ import org.instancio.documentation.InternalApi;
 import org.instancio.generator.Generator;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static java.util.Objects.requireNonNull;
+
 @InternalApi
 public final class InternalAssignment implements Assignment, Flattener<InternalAssignment> {
     private final TargetSelector origin;
-    private final Predicate<?> originPredicate;
     private final TargetSelector destination;
-    private final GeneratorHolder generatorHolder;
-    private final Generator<?> generator;
-    private final RandomFunction<?, ?> valueMapper;
+    private final @Nullable Predicate<?> originPredicate; // null for unconditional assignments
+    private final @Nullable GeneratorHolder generatorHolder; // null for `from(selectorA).to(selectorB)` assignments
+    private final @Nullable Generator<?> generator;
+    private final @Nullable RandomFunction<?, ?> valueMapper;
 
     private InternalAssignment(final Builder builder) {
-        origin = builder.origin;
+        origin = requireNonNull(builder.origin);
+        destination = requireNonNull(builder.destination);
         originPredicate = builder.originPredicate;
-        destination = builder.destination;
         generatorHolder = builder.generatorHolder;
         generator = builder.generator;
         valueMapper = builder.valueMapper;
@@ -49,26 +52,30 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
         return origin;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> Predicate<T> getOriginPredicate() {
-        return (Predicate<T>) originPredicate;
-    }
-
     public TargetSelector getDestination() {
         return destination;
     }
 
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <T extends @Nullable Object> Predicate<T> getOriginPredicate() {
+        return (Predicate<T>) originPredicate;
+    }
+
+
+    @Nullable
     public GeneratorHolder getGeneratorHolder() {
         return generatorHolder;
     }
 
+    @Nullable
     @SuppressWarnings("unchecked")
     public <T> Generator<T> getGenerator() {
         return (Generator<T>) generator;
     }
 
     @SuppressWarnings("unchecked")
-    public <S, T> RandomFunction<S, T> getValueMapper() {
+    public <S extends @Nullable Object, T extends @Nullable Object> @Nullable RandomFunction<S, T> getValueMapper() {
         return (RandomFunction<S, T>) valueMapper;
     }
 
@@ -84,8 +91,8 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
     public Builder toBuilder() {
         Builder builder = new Builder();
         builder.origin = this.origin;
-        builder.originPredicate = this.originPredicate;
         builder.destination = this.destination;
+        builder.originPredicate = this.originPredicate;
         builder.generatorHolder = this.generatorHolder;
         builder.generator = this.generator;
         builder.valueMapper = this.valueMapper;
@@ -93,12 +100,12 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
     }
 
     public static final class Builder {
-        private TargetSelector origin;
-        private Predicate<?> originPredicate;
-        private TargetSelector destination;
-        private GeneratorHolder generatorHolder;
-        private Generator<?> generator;
-        private RandomFunction<?, ?> valueMapper;
+        private @Nullable TargetSelector origin;
+        private @Nullable Predicate<?> originPredicate;
+        private @Nullable TargetSelector destination;
+        private @Nullable GeneratorHolder generatorHolder;
+        private @Nullable Generator<?> generator;
+        private @Nullable RandomFunction<?, ?> valueMapper;
 
         private Builder() {
         }
@@ -108,13 +115,13 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
             return this;
         }
 
-        public <T> Builder originPredicate(final Predicate<T> originPredicate) {
-            this.originPredicate = originPredicate;
+        public Builder destination(final TargetSelector destination) {
+            this.destination = ApiValidator.notNull(destination, "destination selector must not be null");
             return this;
         }
 
-        public Builder destination(final TargetSelector destination) {
-            this.destination = ApiValidator.notNull(destination, "destination selector must not be null");
+        public <T> Builder originPredicate(@Nullable final Predicate<T> originPredicate) {
+            this.originPredicate = originPredicate;
             return this;
         }
 
@@ -128,7 +135,7 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
             return this;
         }
 
-        public Builder valueMapper(final RandomFunction<?, ?> valueMapper) {
+        public Builder valueMapper(@Nullable final RandomFunction<?, ?> valueMapper) {
             this.valueMapper = valueMapper;
             return this;
         }

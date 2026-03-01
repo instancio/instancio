@@ -23,6 +23,7 @@ import org.instancio.junit.Seed;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -49,10 +50,10 @@ class ModelWithoutSeedAssignedToFieldTest {
 
     private static final int SEED = 1;
 
-    private static Phone referencePhone;
+    private static @Nullable Phone referencePhone;
 
     private final Model<Phone> model = Instancio.of(Phone.class)
-            .set(field(Phone::getNumber), "12345")
+            .set(field(org.instancio.test.support.pojo.person.Phone::getNumber), "12345")
             .toModel();
 
     @Test

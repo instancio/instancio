@@ -27,6 +27,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -60,9 +61,9 @@ class CustomMapGeneratorSizeTest {
     private static class CustomMap<K, V> extends HashMap<K, V> {}
 
     private static class CustomMapGenerator implements Generator<CustomMap<String, Integer>> {
-        private final Hints hints;
+        private final @Nullable Hints hints;
 
-        private CustomMapGenerator(final Hints hints) {
+        private CustomMapGenerator(@Nullable final Hints hints) {
             this.hints = hints;
         }
 
@@ -73,6 +74,7 @@ class CustomMapGeneratorSizeTest {
             return map;
         }
 
+        @Nullable
         @Override
         public Hints hints() {
             return hints;
@@ -211,7 +213,7 @@ class CustomMapGeneratorSizeTest {
                 .containsKey(EXISTING_KEY);
     }
 
-    private static CustomMap<String, Integer> createMap(final Hints hints) {
+    private static CustomMap<String, Integer> createMap(@Nullable final Hints hints) {
         return Instancio.of(new TypeToken<CustomMap<String, Integer>>() {})
                 .supply(types().of(Map.class), new CustomMapGenerator(hints))
                 .create();

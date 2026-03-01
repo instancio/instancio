@@ -16,11 +16,13 @@
 package org.instancio.internal.instantiation;
 
 import org.instancio.internal.util.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 
 class NoArgumentConstructorInstantiationStrategy implements InstantiationStrategy {
 
+    @Nullable
     @Override
     @SuppressWarnings("unchecked")
     public <T> T createInstance(final Class<T> klass) {
@@ -36,6 +38,7 @@ class NoArgumentConstructorInstantiationStrategy implements InstantiationStrateg
         }
     }
 
+    @Nullable
     private static Constructor<?> getDefaultConstructor(final Class<?> klass) {
         for (Constructor<?> ctor : klass.getDeclaredConstructors()) {
             if (ctor.getParameterCount() == 0) {

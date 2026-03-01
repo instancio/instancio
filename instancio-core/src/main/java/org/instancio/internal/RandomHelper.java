@@ -21,7 +21,7 @@ import org.instancio.support.DefaultRandom;
 import org.instancio.support.Global;
 import org.instancio.support.Seeds;
 import org.instancio.support.ThreadLocalRandom;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public final class RandomHelper {
@@ -59,8 +59,9 @@ public final class RandomHelper {
         }
 
         // If running under JUnit extension, use the Random instance supplied by the extension
-        if (ThreadLocalRandom.getInstance().get() != null) {
-            return ThreadLocalRandom.getInstance().get();
+        final Random tlRandom = ThreadLocalRandom.getInstance().get();
+        if (tlRandom != null) {
+            return tlRandom;
         }
 
         if (configuredRandom != null) {

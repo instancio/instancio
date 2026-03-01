@@ -16,6 +16,7 @@
 package org.instancio.internal.reflect;
 
 import org.instancio.internal.util.Format;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -26,11 +27,11 @@ import java.util.stream.Stream;
 
 public final class ParameterizedTypeImpl implements ParameterizedType {
 
-    private final Type ownerType;
+    private final @Nullable Type ownerType;
     private final Class<?> rawType;
     private final Type[] typeArguments;
 
-    private ParameterizedTypeImpl(final Type ownerType, final Class<?> rawType, final Type... typeArguments) {
+    private ParameterizedTypeImpl(@Nullable final Type ownerType, final Class<?> rawType, final Type... typeArguments) {
         this.ownerType = ownerType;
         this.rawType = rawType;
         this.typeArguments = typeArguments;
@@ -40,6 +41,7 @@ public final class ParameterizedTypeImpl implements ParameterizedType {
         this(null, rawType, typeArguments);
     }
 
+    @Nullable
     @Override
     public Type getOwnerType() {
         return ownerType;
@@ -61,8 +63,8 @@ public final class ParameterizedTypeImpl implements ParameterizedType {
         if (!(o instanceof ParameterizedTypeImpl that)) return false;
 
         return Objects.equals(ownerType, that.ownerType)
-                && Objects.equals(rawType, that.rawType)
-                && Arrays.equals(typeArguments, that.typeArguments);
+               && Objects.equals(rawType, that.rawType)
+               && Arrays.equals(typeArguments, that.typeArguments);
     }
 
     @Override

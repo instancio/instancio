@@ -17,6 +17,7 @@ package org.instancio.generator.specs;
 
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.GeneratorSpec;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import java.util.Map;
  * @since 2.12.0
  */
 @ExperimentalApi
-public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
+public interface EmitGeneratorSpec<T extends @Nullable Object> extends GeneratorSpec<T> {
 
     /**
      * Emit given {@code items}.
@@ -41,6 +42,7 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      * @see #item(Object, int)
      * @since 2.12.0
      */
+    @SuppressWarnings("unchecked")
     EmitGeneratorSpec<T> items(T... items);
 
     /**

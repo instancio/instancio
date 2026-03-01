@@ -75,6 +75,7 @@ import org.instancio.internal.generator.util.MapGeneratorSpecImpl;
 import org.instancio.internal.generator.util.OneOfCollectionGenerator;
 import org.instancio.internal.generator.util.OptionalGenerator;
 import org.instancio.internal.generator.util.UUIDGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -160,18 +161,18 @@ public final class BuiltInGenerators implements Generators, ValueSpecs {
 
     @SafeVarargs
     @Override
-    public final <T> OneOfArrayGenerator<T> oneOf(T... choices) { // NOPMD
+    public final <T extends @Nullable Object> OneOfArrayGenerator<T> oneOf(@Nullable T... choices) { // NOPMD
         return new OneOfArrayGenerator<T>(context).oneOf(choices);
     }
 
     @Override
-    public <T> OneOfCollectionGenerator<T> oneOf(Collection<T> choices) {
+    public <T extends @Nullable Object> OneOfCollectionGenerator<T> oneOf(Collection<T> choices) {
         return new OneOfCollectionGenerator<T>(context).oneOf(choices);
     }
 
     @Override
     @SafeVarargs
-    public final <T> ShuffleSpec<T> shuffle(final T... array) {
+    public final <T extends @Nullable Object> ShuffleSpec<T> shuffle(@Nullable final T... array) {
         // Available only via Instancio.gen()
         return new ShuffleGenerator<T>(context).shuffle(array);
     }
@@ -208,7 +209,7 @@ public final class BuiltInGenerators implements Generators, ValueSpecs {
     }
 
     @Override
-    public <T> EmitGeneratorSpec<T> emit() {
+    public <T extends @Nullable Object> EmitGeneratorSpec<T> emit() {
         return new EmitGenerator<>(context);
     }
 

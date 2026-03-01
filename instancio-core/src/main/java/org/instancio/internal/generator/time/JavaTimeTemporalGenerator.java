@@ -19,6 +19,8 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
@@ -31,7 +33,7 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
 
     protected T min;
     protected T max;
-    protected TemporalUnit truncateTo;
+    protected @Nullable TemporalUnit truncateTo;
 
     JavaTimeTemporalGenerator(final GeneratorContext context, final T min, final T max) {
         super(context);
@@ -62,19 +64,19 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
     }
 
     @Override
-    public TemporalGeneratorSpec<T> min(final T min) {
+    public TemporalGeneratorSpec<T> min(final @NonNull T min) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<T> max(final T max) {
+    public TemporalGeneratorSpec<T> max(final @NonNull T max) {
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;
     }
 
     @Override
-    public TemporalGeneratorSpec<T> range(final T min, final T max) {
+    public TemporalGeneratorSpec<T> range(final @NonNull T min, final @NonNull T max) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         validateRange();

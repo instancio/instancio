@@ -22,6 +22,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -101,7 +102,7 @@ public interface InstancioCartesianProductApi<T> extends
      */
     @ExperimentalApi
     @SuppressWarnings("unchecked")
-    <V> InstancioCartesianProductApi<T> with(TargetSelector selector, V... values);
+    <V extends @Nullable Object> InstancioCartesianProductApi<T> with(TargetSelector selector, V... values);
 
     /**
      * Returns he Cartesian product generated from values specified via
@@ -135,7 +136,7 @@ public interface InstancioCartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    <V> InstancioCartesianProductApi<T> set(TargetSelector selector, V value);
+    <V extends @Nullable Object> InstancioCartesianProductApi<T> set(TargetSelector selector, V value);
 
     /**
      * {@inheritDoc}
@@ -152,7 +153,7 @@ public interface InstancioCartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    <V> InstancioCartesianProductApi<T> supply(TargetSelector selector, Supplier<V> supplier);
+    <V extends @Nullable Object> InstancioCartesianProductApi<T> supply(TargetSelector selector, Supplier<V> supplier);
 
     /**
      * {@inheritDoc}
@@ -160,7 +161,7 @@ public interface InstancioCartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    <V> InstancioCartesianProductApi<T> supply(TargetSelector selector, Generator<V> generator);
+    <V extends @Nullable Object> InstancioCartesianProductApi<T> supply(TargetSelector selector, Generator<V> generator);
 
     /**
      * {@inheritDoc}
@@ -168,7 +169,7 @@ public interface InstancioCartesianProductApi<T> extends
      * @since 4.0.0
      */
     @Override
-    <V> InstancioCartesianProductApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
+    <V extends @Nullable Object> InstancioCartesianProductApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
 
     /**
      * {@inheritDoc}
@@ -177,7 +178,7 @@ public interface InstancioCartesianProductApi<T> extends
      */
     @Override
     @ExperimentalApi
-    <V> InstancioCartesianProductApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
+    <V extends @Nullable Object> InstancioCartesianProductApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
 
     /**
      * {@inheritDoc}
@@ -263,7 +264,7 @@ public interface InstancioCartesianProductApi<T> extends
      * @since 4.3.1
      */
     @Override
-    <V> InstancioCartesianProductApi<T> withSetting(SettingKey<V> key, V value);
+    <V extends @Nullable Object> InstancioCartesianProductApi<T> withSetting(SettingKey<V> key, V value);
 
     /**
      * {@inheritDoc}

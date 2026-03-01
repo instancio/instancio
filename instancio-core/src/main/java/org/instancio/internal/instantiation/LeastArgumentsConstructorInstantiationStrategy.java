@@ -18,7 +18,7 @@ package org.instancio.internal.instantiation;
 import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
@@ -36,6 +36,7 @@ class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStr
     private static final Predicate<Constructor<?>> NOT_BUILDER = c ->
             !(c.getParameterCount() == 1 && "Builder".equals(c.getParameterTypes()[0].getSimpleName()));
 
+    @Nullable
     @Override
     @SuppressWarnings("unchecked")
     public <T> T createInstance(final Class<T> klass) {
@@ -47,7 +48,7 @@ class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStr
 
         final Constructor<?> constructor = ReflectionUtils.setAccessible(ctor);
         final Parameter[] params = constructor.getParameters();
-        final Object[] args = new Object[params.length];
+        final @Nullable Object[] args = new Object[params.length];
 
         for (int i = 0; i < args.length; i++) {
             args[i] = ObjectUtils.defaultValue(params[i].getType());

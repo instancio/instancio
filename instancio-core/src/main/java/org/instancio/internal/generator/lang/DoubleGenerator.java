@@ -23,6 +23,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.math.BigDecimalGenerator;
 import org.instancio.internal.generator.specs.InternalFractionalNumberGeneratorSpec;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 
@@ -112,13 +113,9 @@ public class DoubleGenerator extends AbstractGenerator<Double>
         return delegate.isNullable();
     }
 
+    @Nullable
     @Override
     protected Double tryGenerateNonNull(final Random random) {
-        return delegate.tryGenerateNonNull(random).doubleValue();
-    }
-
-    @Override
-    public Double generate(final Random random) {
         final BigDecimal result = delegate.generate(random);
         return result == null ? null : result.doubleValue();
     }

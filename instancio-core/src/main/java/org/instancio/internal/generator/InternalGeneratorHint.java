@@ -21,6 +21,7 @@ import org.instancio.generator.Hint;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
+import org.jspecify.annotations.Nullable;
 
 import java.util.StringJoiner;
 
@@ -35,7 +36,7 @@ import java.util.StringJoiner;
  */
 @InternalApi
 public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> {
-    private final Class<?> targetClass;
+    private final @Nullable Class<?> targetClass;
     private final boolean excludeFromCallbacks;
     private final boolean nullableResult;
     private final boolean emptyResult;
@@ -59,6 +60,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
      * @return target class
      * @since 2.0.0
      */
+    @Nullable
     public Class<?> targetClass() {
         return targetClass;
     }
@@ -124,7 +126,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
     }
 
     public static final class Builder {
-        private Class<?> targetClass;
+        private @Nullable Class<?> targetClass;
         private boolean excludeFromCallbacks;
         private boolean nullableResult;
         private boolean emptyResult;
@@ -133,7 +135,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
         private Builder() {
         }
 
-        public Builder targetClass(final Class<?> targetClass) {
+        public Builder targetClass(@Nullable final Class<?> targetClass) {
             this.targetClass = targetClass;
             return this;
         }

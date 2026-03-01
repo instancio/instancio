@@ -18,17 +18,22 @@ package org.instancio.internal.assignment;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.generators.Generators;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public final class GeneratorHolder {
 
-    private final Generator<?> generator;
-    private final GeneratorSpecProvider<?> specProvider;
+    private final @Nullable Generator<?> generator;
+    private final @Nullable GeneratorSpecProvider<?> specProvider;
 
-    private GeneratorHolder(final Generator<?> generator, final GeneratorSpecProvider<?> specProvider) {
+    private GeneratorHolder(
+            @Nullable final Generator<?> generator,
+            @Nullable final GeneratorSpecProvider<?> specProvider) {
+
         this.generator = generator;
         this.specProvider = specProvider;
     }
@@ -59,13 +64,12 @@ public final class GeneratorHolder {
         return of(supplier);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> Generator<T> getGenerator() {
-        return (Generator<T>) generator;
-    }
+    // Either generator or specProvider guaranteed to be not null
+    @SuppressWarnings({"unchecked", "NullAway"})
+    public <T> Generator<T> getGenerator(final Generators generators) {
+        return generator != null
+                ? (Generator<T>) generator
+                : (Generator<T>) specProvider.getSpec(generators);
 
-    @SuppressWarnings("unchecked")
-    public <T> GeneratorSpecProvider<T> getSpecProvider() {
-        return (GeneratorSpecProvider<T>) specProvider;
     }
 }

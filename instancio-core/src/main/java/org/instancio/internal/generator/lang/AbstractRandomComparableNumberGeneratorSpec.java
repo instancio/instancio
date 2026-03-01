@@ -22,6 +22,7 @@ import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.NumericBounds;
+import org.jspecify.annotations.NonNull;
 
 import java.math.BigDecimal;
 
@@ -41,7 +42,7 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
      * the {@code max} value will be updated to a value higher than the given {@code min}.
      */
     @Override
-    public NumberGeneratorSpec<T> min(final T min) {
+    public NumberGeneratorSpec<T> min(final @NonNull T min) {
         super.min(min);
         super.max(NumberUtils.calculateNewMax(getMax(), min, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
         return this;
@@ -54,14 +55,14 @@ public abstract class AbstractRandomComparableNumberGeneratorSpec<T extends Numb
      * the {@code min} value will be updated to a value lower than the given {@code max}.
      */
     @Override
-    public NumberGeneratorSpec<T> max(final T max) {
+    public NumberGeneratorSpec<T> max(final @NonNull T max) {
         super.max(max);
         super.min(NumberUtils.calculateNewMin(getMin(), max, Constants.RANGE_ADJUSTMENT_PERCENTAGE));
         return this;
     }
 
     @Override
-    public NumberGeneratorSpec<T> range(final T min, final T max) {
+    public NumberGeneratorSpec<T> range(final @NonNull T min, final @NonNull T max) {
         super.range(min, max); // validates that neither is null
         ApiValidator.isTrue(min.compareTo(max) <= 0,
                 "invalid 'range(%s, %s)': lower bound must be less than or equal to upper bound", min, max);

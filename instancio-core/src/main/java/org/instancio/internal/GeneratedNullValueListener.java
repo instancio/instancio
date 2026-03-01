@@ -48,7 +48,7 @@ final class GeneratedNullValueListener implements GenerationListener {
 
     @Override
     public void objectCreated(final InternalNode node, final GeneratorResult result) {
-        if (!result.containsNull()) {
+        if (result.getValue() != null) {
             return;
         }
 
@@ -59,7 +59,7 @@ final class GeneratedNullValueListener implements GenerationListener {
 
             if (result.isIgnored()) {
                 context.isIgnored(current);
-            } else if (result.containsNull()) {
+            } else {
                 /*
                  A null result was generated for this node.
                  There might be selectors targeting the node's descendants.

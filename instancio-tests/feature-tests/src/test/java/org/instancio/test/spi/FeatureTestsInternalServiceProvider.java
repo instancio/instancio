@@ -18,6 +18,7 @@ package org.instancio.test.spi;
 import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.test.support.pojo.containers.BuildableList;
 import org.instancio.test.support.pojo.containers.OptionalLike;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
@@ -27,6 +28,7 @@ public class FeatureTestsInternalServiceProvider implements InternalServiceProvi
     @Override
     public InternalContainerFactoryProvider getContainerFactoryProvider() {
         return new InternalContainerFactoryProvider() {
+            @Nullable
             @Override
             public <T, R> Function<T, R> getMappingFunction(final Class<R> type, final List<Class<?>> typeArguments) {
                 return null; // none yet

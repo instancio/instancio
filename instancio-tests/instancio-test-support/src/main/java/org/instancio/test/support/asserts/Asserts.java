@@ -19,6 +19,7 @@ import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.instancio.test.support.pojo.basic.Numbers;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,11 +37,11 @@ public final class Asserts {
         // non-instantiable
     }
 
-    public static void assertAllNulls(final Object... objs) {
+    public static void assertAllNulls(@Nullable final Object... objs) {
         assertThat(objs).containsOnlyNulls();
     }
 
-    public static void assertNoNulls(final Object... objs) {
+    public static void assertNoNulls(@Nullable final Object... objs) {
         assertThat(objs).doesNotContainNull();
     }
 

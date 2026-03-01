@@ -15,22 +15,38 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.documentation.Contract;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
+@SuppressWarnings(Sonar.CALL_LEADS_TO_ILLEGAL_ARGUMENT_EXCEPTION)
 public final class Verify {
 
-    public static <T> T notNull(final T object, final String message, final Object... values) {
-        return Objects.requireNonNull(object, () -> String.format(message, values));
+    @Contract("null -> fail; _ -> param1")
+    public static <T> T notNull(@Nullable final T object, final String message, final Object... values) {
+        return requireNonNull(object, () -> String.format(message, values));
     }
 
-    public static <T> T[] notEmpty(final T[] array, final String message, final Object... values) {
+    @Contract("null, _, _ -> fail; !null, _, _ -> param1")
+    public static <T extends @Nullable Object> T[] notEmpty(
+            final T @Nullable [] array,
+            final String message,
+            final Object... values) {
+
         isTrue(array != null && array.length > 0, message, values);
         return array;
     }
 
-    public static <T> Collection<T> notEmpty(final Collection<T> collection, final String message, final Object... values) {
+    @Contract("null, _, _ -> fail; !null, _, _ -> param1")
+    public static <T extends @Nullable Object> Collection<T> notEmpty(
+            @Nullable final Collection<T> collection,
+            final String message,
+            final Object... values) {
+
         isTrue(collection != null && !collection.isEmpty(), message, values);
         return collection;
     }
@@ -41,18 +57,21 @@ public final class Verify {
         }
     }
 
+    @Contract("false, _, _ -> fail")
     public static void isTrue(final boolean condition, final String message, final Object... values) {
         if (!condition) {
             throw new IllegalArgumentException(String.format(message, values));
         }
     }
 
+    @Contract("true, _, _ -> fail")
     public static void isFalse(final boolean condition, final String message, final Object... values) {
         if (condition) {
             throw new IllegalArgumentException(String.format(message, values));
         }
     }
 
+    @Contract("false, _, _ -> fail")
     public static void state(final boolean condition, final String message, final Object... values) {
         if (!condition) {
             throw new IllegalStateException(String.format(message, values));
@@ -61,8 +80,8 @@ public final class Verify {
 
     public static void isNotArrayCollectionOrMap(final Class<?> klass) {
         if (klass.isArray()
-                || Collection.class.isAssignableFrom(klass)
-                || Map.class.isAssignableFrom(klass)) {
+            || Collection.class.isAssignableFrom(klass)
+            || Map.class.isAssignableFrom(klass)) {
 
             throw new IllegalArgumentException("Unexpected: " + klass);
         }

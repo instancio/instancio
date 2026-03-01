@@ -22,6 +22,7 @@ import org.instancio.test.support.pojo.cyclic.onetomany.DetailPojo;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -114,17 +115,17 @@ class EmitGeneratorCyclicPojoTest {
     // used via reflection
     @SuppressWarnings("unused")
     private static class Order {
-        private List<OrderItem> items;
-        private OrderStatus status;
+        private @Nullable List<OrderItem> items;
+        private @Nullable OrderStatus status;
 
-        OrderStatus getStatus() {
+        @Nullable OrderStatus getStatus() {
             return status;
         }
     }
 
     @SuppressWarnings("unused")
     private static class OrderItem {
-        private Order order;
+        private @Nullable Order order;
     }
 
     private enum OrderStatus {

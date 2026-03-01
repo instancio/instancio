@@ -17,6 +17,7 @@ package org.instancio.internal.generation;
 
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.Hints;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.annotation.AnnotationExtractor;
 import org.instancio.internal.annotation.AnnotationLibraries;
@@ -30,11 +31,12 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.settings.Keys;
 import org.instancio.spi.InstancioServiceProvider.AnnotationProcessor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Entry point for processing Bean Validation and JPA annotations,
@@ -92,9 +94,8 @@ final class AnnotationNodeHandler implements NodeHandler {
                 : NOOP_HANDLER;
     }
 
-    @NotNull
     @Override
-    public GeneratorResult getResult(@NotNull final InternalNode node) {
+    public GeneratorResult getResult(final InternalNode node) {
         final Annotation[] annotations = annotationExtractor.getAnnotations(node);
 
         if (annotations.length == 0) {
@@ -108,6 +109,10 @@ final class AnnotationNodeHandler implements NodeHandler {
         if (beanValidationOrJpaEnabled) {
             final AnnotationMap annotationMap = new AnnotationMap(annotations);
             generator = getGenerator(node, annotations, annotationMap);
+
+            if (generator == null) {
+                return GeneratorResult.emptyResult();
+            }
 
             for (AnnotationLibraryFacade lib : annotationLibraryFacades) {
                 lib.consumeAnnotations(annotationMap, generator, node.getTargetClass(), generatorContext);
@@ -139,11 +144,15 @@ final class AnnotationNodeHandler implements NodeHandler {
         // matching the target class, rather than the primary annotation
         else if (!isObjectAssignableToNode(node, obj)) {
             final Generator<?> builtInGenerator = generatorResolver.get(node);
+            if (builtInGenerator == null) {
+                return GeneratorResult.nullResult();
+            }
             obj = builtInGenerator.generate(modelContext.getRandom());
         }
 
         final Object processed = stringPostProcessor.process(obj, node, generator);
-        return GeneratorResult.create(processed, generator.hints());
+        final Hints hints = requireNonNull(generator.hints(), "Generator hints are null");
+        return GeneratorResult.create(processed, hints);
     }
 
     private void invokeAnnotationHandlerMethods(
@@ -161,13 +170,13 @@ final class AnnotationNodeHandler implements NodeHandler {
         }
     }
 
-    private static boolean isObjectAssignableToNode(final InternalNode node, final Object obj) {
+    private static boolean isObjectAssignableToNode(final InternalNode node, @Nullable final Object obj) {
         if (obj == null) {
             return true;
         }
         Class<?> targetClass = node.getTargetClass();
         if (targetClass.isPrimitive()) {
-            targetClass = PrimitiveWrapperBiLookup.getEquivalent(targetClass);
+            targetClass = requireNonNull(PrimitiveWrapperBiLookup.getEquivalent(targetClass));
         }
         return targetClass.isAssignableFrom(obj.getClass());
     }

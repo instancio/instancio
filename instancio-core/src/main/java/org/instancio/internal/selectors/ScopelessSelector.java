@@ -16,21 +16,21 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.TargetSelector;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Member;
 import java.util.Objects;
 
 public final class ScopelessSelector implements TargetSelector {
-    private final Class<?> targetClass;
-    private final Member member; // Field or Method
+    private final @Nullable Class<?> targetClass;
+    private final @Nullable Member member; // Field or Method
 
-    public ScopelessSelector(final Class<?> targetClass, @Nullable final Member member) {
+    public ScopelessSelector(@Nullable final Class<?> targetClass, @Nullable final Member member) {
         this.targetClass = targetClass;
         this.member = member;
     }
 
-    public ScopelessSelector(final Class<?> targetClass) {
+    public ScopelessSelector(@Nullable final Class<?> targetClass) {
         this(targetClass, null);
     }
 
