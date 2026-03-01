@@ -77,8 +77,7 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
     // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
     // which can be confused with the public API method 'Selector.root()'
     public static SelectorImpl createRootSelector() {
-        return builder()
-                .target(TargetRoot.INSTANCE)
+        return builder(TargetRoot.INSTANCE)
                 .depth(0)
                 .build();
     }
@@ -131,8 +130,8 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
         if (this == o) return true;
         if (!(o instanceof SelectorImpl that)) return false;
         return Objects.equals(getTarget(), that.getTarget())
-                && Objects.equals(getScopes(), that.getScopes())
-                && Objects.equals(getDepth(), that.getDepth());
+               && Objects.equals(getScopes(), that.getScopes())
+               && Objects.equals(getDepth(), that.getDepth());
     }
 
     @Override
@@ -174,10 +173,9 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
         return sb.toString();
     }
 
-    public Builder toBuilder() {
-        Builder builder = new Builder();
+    public Builder toBuilder(final Target target) {
+        Builder builder = new Builder(target);
         builder.apiMethodSelector = this.getApiMethodSelector();
-        builder.target = this.target;
         builder.scopes = this.getScopes();
         builder.parent = this.parent;
         builder.stackTraceHolder = this.getStackTraceHolder();
@@ -186,29 +184,29 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
         return builder;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public Builder toBuilder() {
+        return toBuilder(target);
+    }
+
+    public static Builder builder(final Target target) {
+        return new Builder(target);
     }
 
     public static final class Builder {
+        private final Target target;
         private ApiMethodSelector apiMethodSelector;
-        private Target target;
         private List<Scope> scopes;
         private Selector parent;
         private Throwable stackTraceHolder;
         private Integer depth;
         private boolean isLenient;
 
-        private Builder() {
+        private Builder(final Target target) {
+            this.target = target;
         }
 
         public Builder apiMethodSelector(final ApiMethodSelector apiMethodSelector) {
             this.apiMethodSelector = apiMethodSelector;
-            return this;
-        }
-
-        public Builder target(final Target target) {
-            this.target = target;
             return this;
         }
 

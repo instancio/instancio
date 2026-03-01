@@ -49,6 +49,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.util.Constants.NL;
 
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
@@ -220,8 +221,9 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         // which contains all(Integer.class) and all(int.class). If we only
         // match one, consider the equivalent to be matched as well.
         if (selector.getParent() instanceof PrimitiveAndWrapperSelectorImpl) {
-            final SelectorImpl equivalent = selector.toBuilder()
-                    .target(new TargetClass(PrimitiveWrapperBiLookup.getEquivalent(selector.getTargetClass())))
+            final Class<?> equivalentType = PrimitiveWrapperBiLookup.getEquivalent(selector.getTargetClass());
+
+            final SelectorImpl equivalent = selector.toBuilder(new TargetClass(requireNonNull(equivalentType)))
                     .build();
 
             unusedSelectors.remove(equivalent);

@@ -39,13 +39,11 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     private final SelectorImpl wrapper;
 
     public PrimitiveAndWrapperSelectorImpl(final Class<?> primitiveType, final Class<?> wrapperType) {
-        this.primitive = SelectorImpl.builder()
-                .target(new TargetClass(primitiveType))
+        this.primitive = SelectorImpl.builder(new TargetClass(primitiveType))
                 .parent(this)
                 .build();
 
-        this.wrapper = SelectorImpl.builder()
-                .target(new TargetClass(wrapperType))
+        this.wrapper = SelectorImpl.builder(new TargetClass(wrapperType))
                 .parent(this)
                 .build();
     }

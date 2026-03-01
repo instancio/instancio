@@ -59,8 +59,7 @@ class SelectorImplTest {
                 "org.example.ExpectedClass:2",
                 "org.instancio.Bar:3");
 
-        final SelectorImpl selector = SelectorImpl.builder()
-                .target(new TargetClass(Foo.class))
+        final SelectorImpl selector = SelectorImpl.builder(new TargetClass(Foo.class))
                 .stackTraceHolder(throwable)
                 .build();
 
@@ -105,8 +104,7 @@ class SelectorImplTest {
 
     @Test
     void withinReturnsANewSelectorInstance() {
-        final SelectorImpl selector = SelectorImpl.builder()
-                .target(new TargetClass(String.class))
+        final SelectorImpl selector = SelectorImpl.builder(new TargetClass(String.class))
                 .build();
 
         final SelectorImpl scopedSelector = (SelectorImpl) selector.within(scope(StringHolder.class));
@@ -182,11 +180,10 @@ class SelectorImplTest {
     class ToBuilderTest {
         @Test
         void complete() {
-            final SelectorImpl selector = SelectorImpl.builder()
-                    .target(new TargetFieldName(Person.class, "name"))
+            final SelectorImpl selector = SelectorImpl.builder(new TargetFieldName(Person.class, "name"))
                     .scopes(Collections.singletonList(scope(List.class)))
                     .depth(1)
-                    .parent(SelectorImpl.builder().build())
+                    .parent(SelectorImpl.builder(new TargetClass(Person.class)).build())
                     .stackTraceHolder(new Throwable())
                     .build();
 
@@ -197,7 +194,7 @@ class SelectorImplTest {
 
         @Test
         void empty() {
-            final SelectorImpl selector = SelectorImpl.builder().build();
+            final SelectorImpl selector = SelectorImpl.builder(TargetRoot.INSTANCE).build();
             final SelectorImpl copy = selector.toBuilder().build();
 
             assertThat(copy).usingRecursiveComparison().isEqualTo(selector);
@@ -246,8 +243,7 @@ class SelectorImplTest {
 
         @Test
         void equalsRootSelector() {
-            final SelectorImpl anotherRootInstance = SelectorImpl.builder()
-                    .target(TargetRoot.INSTANCE)
+            final SelectorImpl anotherRootInstance = SelectorImpl.builder(TargetRoot.INSTANCE)
                     .depth(0)
                     .build();
 
@@ -259,8 +255,7 @@ class SelectorImplTest {
 
         @Test
         void hashCodeRootSelector() {
-            final SelectorImpl anotherRootInstance = SelectorImpl.builder()
-                    .target(TargetRoot.INSTANCE)
+            final SelectorImpl anotherRootInstance = SelectorImpl.builder(TargetRoot.INSTANCE)
                     .depth(0)
                     .build();
 
