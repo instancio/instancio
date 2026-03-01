@@ -86,8 +86,7 @@ class NodeStatsTest {
 
     @Test
     void withIgnoredNode() {
-        final SelectorImpl fieldH = SelectorImpl.builder()
-                .target(new TargetField(ReflectionUtils.getField(StringsGhi.class, "h")))
+        final SelectorImpl fieldH = SelectorImpl.builder(new TargetField(ReflectionUtils.getField(StringsGhi.class, "h")))
                 .build();
 
         final ModelContext ctx = ModelContext.builder(StringsDef.class)

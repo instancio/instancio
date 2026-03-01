@@ -69,15 +69,13 @@ public final class SelectorProcessor {
             return processGroup(selectorGroup, apiMethodSelector);
 
         } else if (selector instanceof GetMethodSelector<?, ?> getMethodSelector) {
-            return process(SelectorImpl.builder()
+            return process(SelectorImpl.builder(new TargetGetterReference(getMethodSelector))
                     .apiMethodSelector(apiMethodSelector)
-                    .target(new TargetGetterReference(getMethodSelector))
                     .build(), apiMethodSelector);
 
         } else if (selector instanceof SetMethodSelector<?, ?>) {
-            return process(SelectorImpl.builder()
+            return process(SelectorImpl.builder(new TargetSetterReference((SetMethodSelector<?, ?>) selector))
                     .apiMethodSelector(apiMethodSelector)
-                    .target(new TargetSetterReference((SetMethodSelector<?, ?>) selector))
                     .build(), apiMethodSelector);
 
         } else if (selector instanceof PrimitiveAndWrapperSelectorImpl ps) {
@@ -122,9 +120,8 @@ public final class SelectorProcessor {
         final List<Scope> processedScopes = createScopeWithRootClass(selector.getScopes());
         final Target target = selector.getTarget().withRootClass(targetContext);
 
-        final SelectorImpl result = selector.toBuilder()
+        final SelectorImpl result = selector.toBuilder(target)
                 .apiMethodSelector(apiMethodSelector)
-                .target(target)
                 .scopes(processedScopes)
                 .build();
 

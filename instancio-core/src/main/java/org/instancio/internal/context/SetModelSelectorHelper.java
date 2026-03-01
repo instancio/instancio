@@ -96,8 +96,7 @@ final class SetModelSelectorHelper {
 
         if (internalModelSelector.isRootSelector()) {
             // convert root() to a regular class selector
-            return SelectorImpl.builder()
-                    .target(new TargetClass(rootClass))
+            return SelectorImpl.builder(new TargetClass(rootClass))
                     .scopes(scopes)
                     .apiMethodSelector(internalModelTarget.getApiMethodSelector())
                     .build();

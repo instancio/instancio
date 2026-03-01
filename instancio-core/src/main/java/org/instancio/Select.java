@@ -185,8 +185,7 @@ public final class Select {
      */
     public static Selector all(final Class<?> type) {
         ApiValidator.notNull(type, "Class must not be null");
-        return SelectorImpl.builder()
-                .target(new TargetClass(type))
+        return SelectorImpl.builder(new TargetClass(type))
                 .build();
     }
 
@@ -229,8 +228,7 @@ public final class Select {
         ApiValidator.notNull(declaringClass, "declaring class must not be null");
         ApiValidator.notNull(fieldName, "field name must not be null");
 
-        return SelectorImpl.builder()
-                .target(new TargetFieldName(declaringClass, fieldName))
+        return SelectorImpl.builder(new TargetFieldName(declaringClass, fieldName))
                 .build();
     }
 
@@ -254,8 +252,7 @@ public final class Select {
      */
     public static Selector field(final String fieldName) {
         ApiValidator.notNull(fieldName, "field name must not be null");
-        return SelectorImpl.builder()
-                .target(new TargetFieldName(null, fieldName))
+        return SelectorImpl.builder(new TargetFieldName(null, fieldName))
                 .build();
     }
 
@@ -313,8 +310,7 @@ public final class Select {
      */
     public static <T, R> Selector field(final GetMethodSelector<T, R> methodReference) {
         ApiValidator.notNull(methodReference, "getter method reference must not be null");
-        return SelectorImpl.builder()
-                .target(new TargetGetterReference(methodReference))
+        return SelectorImpl.builder(new TargetGetterReference(methodReference))
                 .build();
     }
 
@@ -385,8 +381,7 @@ public final class Select {
     @ExperimentalApi
     public static Selector setter(final Class<?> declaringClass, final String methodName, final Class<?> parameterType) {
         ApiValidator.notNull(methodName, "method name must not be null");
-        return SelectorImpl.builder()
-                .target(new TargetSetterName(declaringClass, methodName, parameterType))
+        return SelectorImpl.builder(new TargetSetterName(declaringClass, methodName, parameterType))
                 .build();
     }
 
@@ -411,8 +406,7 @@ public final class Select {
     @ExperimentalApi
     public static <T, U> Selector setter(final SetMethodSelector<T, U> methodReference) {
         ApiValidator.notNull(methodReference, "setter method reference must not be null");
-        return SelectorImpl.builder()
-                .target(new TargetSetterReference(methodReference))
+        return SelectorImpl.builder(new TargetSetterReference(methodReference))
                 .build();
     }
 
