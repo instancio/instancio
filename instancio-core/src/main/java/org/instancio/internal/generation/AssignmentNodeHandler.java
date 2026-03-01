@@ -15,6 +15,8 @@
  */
 package org.instancio.internal.generation;
 
+import org.instancio.RandomFunction;
+import org.instancio.documentation.VisibleForTesting;
 import org.instancio.generator.Generator;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.context.ModelContext;
@@ -22,8 +24,8 @@ import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Fail;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,20 +63,19 @@ class AssignmentNodeHandler implements NodeHandler {
                 : new NoopAssignmentNodeHandler();
     }
 
-    @NotNull
     @Override
-    public GeneratorResult getResult(@NotNull final InternalNode node) {
+    public GeneratorResult getResult(final InternalNode node) {
         final List<InternalAssignment> assignments = context.getAssignments(node);
 
         // loop from the end so that the last matching assignment wins
         for (int i = assignments.size() - 1; i >= 0; i--) {
             final InternalAssignment assignment = assignments.get(i);
-            final Predicate<Object> predicate = assignment.getOriginPredicate();
+            final Predicate<@Nullable Object> predicate = assignment.getOriginPredicate();
+            final Generator<Object> assignmentGenerator = assignment.getGenerator();
 
             // unconditional assignment
-            if (predicate == null && assignment.getGenerator() != null) {
-                final Generator<?> generator = assignment.getGenerator();
-                return userSuppliedGeneratorProcessor.getGeneratorResult(node, generator);
+            if (predicate == null && assignmentGenerator != null) {
+                return userSuppliedGeneratorProcessor.getGeneratorResult(node, assignmentGenerator);
             }
 
             final GeneratorResult candidateResult = assigmentObjectStore.getValue(assignment.getDestination());
@@ -93,11 +94,14 @@ class AssignmentNodeHandler implements NodeHandler {
 
                 // null generator means we're copying the result of one node to another
                 // i.e. assign valueOf(selectorA).to(selectorB)
-                if (assignment.getGenerator() == null) {
+                if (assignmentGenerator == null) {
                     Object destinationResult = candidateResult.getValue();
 
-                    if (assignment.getValueMapper() != null) {
-                        destinationResult = assignment.getValueMapper().apply(destinationResult, context.getRandom());
+                    // Add explicit @Nullable to make NullAway happens - seems to be a limitation
+                    final RandomFunction<@Nullable Object, Object> valueMapper = assignment.getValueMapper();
+
+                    if (valueMapper != null) {
+                        destinationResult = valueMapper.apply(destinationResult, context.getRandom());
                     }
 
                     // Since the same object instance is assigned to different fields,
@@ -105,8 +109,7 @@ class AssignmentNodeHandler implements NodeHandler {
                     // based on the original hint
                     return GeneratorResult.create(destinationResult, Constants.DO_NOT_MODIFY_HINT);
                 } else {
-                    final Generator<?> generator = assignment.getGenerator();
-                    return userSuppliedGeneratorProcessor.getGeneratorResult(node, generator);
+                    return userSuppliedGeneratorProcessor.getGeneratorResult(node, assignmentGenerator);
                 }
             }
         }
@@ -120,18 +123,20 @@ class AssignmentNodeHandler implements NodeHandler {
         return unresolvedAssignments;
     }
 
-    private static boolean isSatisfied(final Object object, final Predicate<Object> predicate) {
+    private static boolean isSatisfied(@Nullable final Object object, final Predicate<@Nullable Object> predicate) {
         try {
             return predicate.test(object);
         } catch (ClassCastException ex) {
+            final String typeName = object == null ? "null" : object.getClass().getTypeName();
             throw Fail.withUsageError(
                     "error invoking the predicate against generated object of type %s",
-                    object.getClass().getTypeName(), ex);
+                    typeName, ex);
         } catch (Exception ex) {
             throw Fail.withUsageError("error invoking the predicate", ex);
         }
     }
 
+    @SuppressWarnings({"NullAway", "DataFlowIssue", Sonar.ANNOTATE_PARAMETER_NULLABLE})
     @VisibleForTesting
     static final class NoopAssignmentNodeHandler extends AssignmentNodeHandler {
 
@@ -139,9 +144,8 @@ class AssignmentNodeHandler implements NodeHandler {
             super(null, null, null);
         }
 
-        @NotNull
         @Override
-        public GeneratorResult getResult(final @NotNull InternalNode node) {
+        public GeneratorResult getResult(final InternalNode node) {
             return GeneratorResult.emptyResult();
         }
 

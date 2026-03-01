@@ -16,4 +16,7 @@
 /**
  * Provides generators for {@code java.util.concurrent.*} types.
  */
+@NullMarked
 package org.instancio.internal.generator.util.concurrent;
+
+import org.jspecify.annotations.NullMarked;

@@ -16,4 +16,7 @@
 /**
  * Provides Internet-related generators.
  */
+@NullMarked
 package org.instancio.internal.generator.domain.internet;
+
+import org.jspecify.annotations.NullMarked;

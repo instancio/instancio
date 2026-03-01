@@ -27,6 +27,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -56,9 +57,9 @@ class CustomCollectionGeneratorSizeTest {
     private static class CustomList<T> extends ArrayList<T> {}
 
     private static class CustomListOfStringGenerator implements Generator<CustomList<String>> {
-        private final Hints hints;
+        private final @Nullable Hints hints;
 
-        private CustomListOfStringGenerator(final Hints hints) {
+        private CustomListOfStringGenerator(@Nullable final Hints hints) {
             this.hints = hints;
         }
 
@@ -69,6 +70,7 @@ class CustomCollectionGeneratorSizeTest {
             return list;
         }
 
+        @Nullable
         @Override
         public Hints hints() {
             return hints;
@@ -192,7 +194,7 @@ class CustomCollectionGeneratorSizeTest {
                 .hasSize(INITIAL_SIZE + GENERATE_ELEMENTS);
     }
 
-    private static CustomList<String> createList(final Hints hints) {
+    private static CustomList<String> createList(@Nullable final Hints hints) {
         return Instancio.of(new TypeToken<CustomList<String>>() {})
                 .supply(types().of(List.class), new CustomListOfStringGenerator(hints))
                 .create();

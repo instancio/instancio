@@ -20,6 +20,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.settings.FeedDataTrim;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import static java.lang.String.format;
 
@@ -70,7 +71,7 @@ public final class InternalCsvFormatOptions implements FormatOptionsProvider.For
 
         private String commentPrefix = DEFAULT_COMMENT_PREFIX;
         private char delimiter = DEFAULT_DELIMITER;
-        private FeedDataTrim feedDataTrim;
+        private @Nullable FeedDataTrim feedDataTrim;
 
         private Builder() {
             // instantiated via builder()

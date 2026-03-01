@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.reflect;
 
+import org.instancio.exception.InstancioException;
 import org.instancio.internal.util.RecordUtils;
 import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
 import org.instancio.test.support.pojo.record.AddressRecord;
@@ -40,6 +41,9 @@ class RecordUtilsTest {
     void instantiateNonRecordClass() {
         final Class<?> nonRecordClass = IntegerHolderWithoutDefaultConstructor.class;
         assertThatThrownBy(() -> RecordUtils.instantiate(nonRecordClass, 123, 345))
+                .isInstanceOf(InstancioException.class)
+                .hasMessage("Error instantiating a record: %s", nonRecordClass)
+                .rootCause()
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Class '%s' is not a record!", nonRecordClass.getName());
     }

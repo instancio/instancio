@@ -32,14 +32,17 @@ import org.instancio.settings.OnSetMethodNotFound;
 import org.instancio.settings.SetterStyle;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.util.Constants.NL;
 import static org.instancio.internal.util.Format.formatField;
 import static org.instancio.internal.util.Format.formatMethodWithFence;
@@ -115,7 +118,11 @@ public final class ErrorMessageUtils {
         );
     }
 
-    public static String filterPredicateErrorMessage(final Object value, final InternalNode node, final Throwable ex) {
+    public static String filterPredicateErrorMessage(
+            @Nullable final Object value,
+            final InternalNode node,
+            final Throwable ex) {
+
         final String argValue = StringUtils.quoteStringValue(value);
         return """
                 filter() predicate threw an exception
@@ -212,7 +219,11 @@ public final class ErrorMessageUtils {
         return getTypeMismatchErrorMessage(value, node, null);
     }
 
-    public static String getTypeMismatchErrorMessage(final Object value, final InternalNode node, final Throwable cause) {
+    public static String getTypeMismatchErrorMessage(
+            final Object value,
+            final InternalNode node,
+            @Nullable final Throwable cause) {
+
         final StringBuilder sb = new StringBuilder(INITIAL_SB_SIZE)
                 .append("error assigning value to: ").append(nodePathToRootBlock(node)).append(NL)
                 .append(NL).append(NL);
@@ -445,14 +456,17 @@ public final class ErrorMessageUtils {
     }
 
     public static String incompatibleField(
-            final Object value,
+            @Nullable final Object value,
             final Field field,
             final Throwable cause,
             final Settings settings) {
 
         final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
         final String fieldName = formatField(field);
-        final String argType = withoutPackage(value.getClass());
+        final String argType = Optional.ofNullable(value)
+                .map(it ->  withoutPackage(it.getClass()))
+                .orElse(null);
+
         final String argValue = StringUtils.quoteStringValue(value);
 
         return """
@@ -482,7 +496,7 @@ public final class ErrorMessageUtils {
     }
 
     public static String setterNotFound(final InternalNode node, final Settings settings) {
-        final String fieldName = formatField(node.getField());
+        final String fieldName = formatField(requireNonNull(node.getField()));
         final SetterStyle setterStyle = settings.get(Keys.SETTER_STYLE);
         final OnSetMethodNotFound onSetMethodNotFound = settings.get(Keys.ON_SET_METHOD_NOT_FOUND);
 
@@ -514,7 +528,7 @@ public final class ErrorMessageUtils {
     }
 
     public static String getSetterInvocationErrorMessage(
-            final Object value,
+            @Nullable final Object value,
             final String method,
             final Throwable cause,
             final Settings settings) {

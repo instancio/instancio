@@ -15,14 +15,16 @@
  */
 package org.instancio.internal.nodes;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 class MemberPair {
     private final Field field;
-    private final Method setter;
+    private final @Nullable Method setter;
 
-    MemberPair(final Field field, final Method setter) {
+    MemberPair(final Field field, @Nullable final Method setter) {
         this.field = field;
         this.setter = setter;
     }
@@ -31,6 +33,7 @@ class MemberPair {
         return field;
     }
 
+    @Nullable
     Method getSetter() {
         return setter;
     }

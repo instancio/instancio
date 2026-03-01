@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.internal.ApiValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public final class UnicodeBlocks {
     }
 
     public BlockRange getRange(final UnicodeBlock block) {
-        return blockRangeMap.get(block);
+        return ApiValidator.notNull(blockRangeMap.get(block), "Unsupported unicode block: " + block);
     }
 
     public static final class BlockRange {

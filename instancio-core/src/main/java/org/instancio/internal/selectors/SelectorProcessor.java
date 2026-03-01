@@ -22,7 +22,6 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.util.Verify;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,8 +57,8 @@ public final class SelectorProcessor {
      * @return a processed selector
      */
     public List<TargetSelector> process(
-            @NotNull final TargetSelector selector,
-            @NotNull final ApiMethodSelector apiMethodSelector) {
+            final TargetSelector selector,
+            final ApiMethodSelector apiMethodSelector) {
 
         if (selector instanceof SelectorImpl s) {
             final SelectorImpl result = processTargetAndScope(s, apiMethodSelector);
@@ -106,7 +105,6 @@ public final class SelectorProcessor {
         }
     }
 
-    @NotNull
     private SelectorImpl processTargetAndScope(
             final SelectorImpl selector,
             final ApiMethodSelector apiMethodSelector) {

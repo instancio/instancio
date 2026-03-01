@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.rus.InnSpec;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.Nullable;
 
 public class InnGenerator extends AbstractGenerator<String> implements InnSpec {
 
@@ -26,7 +27,7 @@ public class InnGenerator extends AbstractGenerator<String> implements InnSpec {
     private static final int[] INDIVIDUAL_WEIGHTS_12 = {3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8};
     private static final int[] JURIDICAL_WEIGHTS = {2, 4, 10, 3, 5, 9, 4, 6, 8};
 
-    private Type type;
+    private @Nullable Type type;
 
     public InnGenerator(final GeneratorContext context) {
         super(context);

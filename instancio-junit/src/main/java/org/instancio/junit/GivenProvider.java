@@ -18,6 +18,8 @@ package org.instancio.junit;
 import org.instancio.Random;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -152,7 +154,8 @@ public interface GivenProvider {
          *                               of the specified type is found
          * @since 5.0.0
          */
+        @NullUnmarked
         @ExperimentalApi
-        <A extends Annotation> A getAnnotation(Class<A> annotationType);
+        <A extends @Nullable Annotation> A getAnnotation(Class<A> annotationType);
     }
 }

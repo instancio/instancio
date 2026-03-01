@@ -15,8 +15,10 @@
  */
 package org.instancio.test.support.pojo.record;
 
+import org.jspecify.annotations.Nullable;
+
 public record PersonRecord(
-        String name,
+        @Nullable String name,
         int age,
-        AddressRecord address) {
+        @Nullable AddressRecord address) {
 }

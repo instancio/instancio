@@ -16,5 +16,8 @@
 /**
  * Contains internal classes.
  */
+@NullMarked
 package org.instancio.junit.internal;
+
+import org.jspecify.annotations.NullMarked;
 

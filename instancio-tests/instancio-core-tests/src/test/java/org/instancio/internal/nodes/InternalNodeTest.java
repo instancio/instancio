@@ -46,12 +46,13 @@ import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 @NodeTag
 class InternalNodeTest {
 
+    private static final NodeKind ANY_NODE_KIND = NodeKind.JDK;
     private static final NodeFactory NODE_FACTORY = new NodeFactory(Fixtures.modelContext());
 
     @Test
     void getNodeKind() {
         assertThat(NODE_FACTORY.createRootNode(Person.class).getNodeKind()).isEqualTo(NodeKind.POJO);
-        assertThat(NODE_FACTORY.createRootNode(int.class).getNodeKind()).isEqualTo(NodeKind.JDK);
+        assertThat(NODE_FACTORY.createRootNode(int.class).getNodeKind()).isEqualTo(ANY_NODE_KIND);
         assertThat(NODE_FACTORY.createRootNode(Person[].class).getNodeKind()).isEqualTo(NodeKind.ARRAY);
         assertThat(NODE_FACTORY.createRootNode(Types.LIST_STRING.get()).getNodeKind()).isEqualTo(NodeKind.COLLECTION);
         assertThat(NODE_FACTORY.createRootNode(Types.MAP_INTEGER_STRING.get()).getNodeKind()).isEqualTo(NodeKind.MAP);
@@ -112,6 +113,7 @@ class InternalNodeTest {
                             rawType,
                             Fixtures.modelContext().getRootType())
                     .targetClass(targetClass)
+                    .nodeKind(ANY_NODE_KIND)
                     .build();
 
             assertNode(node)
@@ -127,6 +129,7 @@ class InternalNodeTest {
                             Types.LIST_STRING.get(),
                             rawType,
                             Fixtures.modelContext().getRootType())
+                    .nodeKind(ANY_NODE_KIND)
                     .build();
 
             assertNode(node)
@@ -149,6 +152,7 @@ class InternalNodeTest {
                             typeBazInteger.get(),
                             Baz.class,
                             Fixtures.modelContext().getRootType())
+                    .nodeKind(ANY_NODE_KIND)
                     .build();
 
             assertThat(bazString)
@@ -339,6 +343,7 @@ class InternalNodeTest {
                         klass,
                         Fixtures.modelContext().getRootType())
                 .targetClass(klass)
+                .nodeKind(ANY_NODE_KIND)
                 .build();
     }
 }

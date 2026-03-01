@@ -24,6 +24,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.generics.basic.Triplet;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -47,7 +48,7 @@ class CartesianProductSeedTest {
     private static final long SEED = 123;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static List<Triplet<Boolean, Boolean, UUID>> first;
+    private static @Nullable List<Triplet<Boolean, Boolean, UUID>> first;
 
     @Seed(SEED)
     @Order(1)

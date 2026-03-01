@@ -24,8 +24,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.settings.FillType;
 import org.instancio.settings.Keys;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public final class ObjectFillingGenerator extends AbstractGenerator<Object> {
@@ -34,8 +33,8 @@ public final class ObjectFillingGenerator extends AbstractGenerator<Object> {
     private final AfterGenerate afterGenerate;
 
     public ObjectFillingGenerator(
-            @NotNull final GeneratorContext generatorContext,
-            @NotNull final Object object,
+            final GeneratorContext generatorContext,
+            final Object object,
             @Nullable final FillType fillType) {
 
         super(generatorContext);
@@ -43,6 +42,7 @@ public final class ObjectFillingGenerator extends AbstractGenerator<Object> {
         this.afterGenerate = resolveAfterGenerate(fillType);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;

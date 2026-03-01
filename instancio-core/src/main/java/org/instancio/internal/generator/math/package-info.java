@@ -16,4 +16,7 @@
 /**
  * Provides generators for {@code java.math.*} types.
  */
+@NullMarked
 package org.instancio.internal.generator.math;
+
+import org.jspecify.annotations.NullMarked;

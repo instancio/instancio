@@ -16,4 +16,7 @@
 /**
  * Contains internal classes for handling nodes.
  */
+@NullMarked
 package org.instancio.internal.generation;
+
+import org.jspecify.annotations.NullMarked;

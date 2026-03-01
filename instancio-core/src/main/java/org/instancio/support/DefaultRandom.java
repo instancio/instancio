@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.random.RandomDataGenerator;
 import org.instancio.internal.util.Verify;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -201,14 +202,14 @@ public class DefaultRandom implements Random {
 
     @SafeVarargs
     @Override
-    public final <T> T oneOf(final T... array) {
-        Verify.notEmpty(array, "Array must have at least one element");
+    public final <T extends @Nullable Object> T oneOf(final T... a) {
+        final T[] array = Verify.notEmpty(a, "Array must have at least one element");
         return array[intRange(0, array.length - 1)];
     }
 
     @Override
-    public <T> T oneOf(final Collection<T> collection) {
-        Verify.notEmpty(collection, "Collection must have at least one element");
+    public <T extends @Nullable Object> T oneOf(final Collection<T> c) {
+        final Collection<T> collection = Verify.notEmpty(c, "Collection must have at least one element");
 
         final int index = intRange(0, collection.size() - 1);
 

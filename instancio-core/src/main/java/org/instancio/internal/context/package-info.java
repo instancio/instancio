@@ -16,4 +16,7 @@
 /**
  * Contains context-related implementation classes.
  */
+@NullMarked
 package org.instancio.internal.context;
+
+import org.jspecify.annotations.NullMarked;

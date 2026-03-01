@@ -16,4 +16,7 @@
 /**
  * Provides generators for {@code java.nio.file.*} types.
  */
+@NullMarked
 package org.instancio.internal.generator.nio.file;
+
+import org.jspecify.annotations.NullMarked;

@@ -32,6 +32,7 @@ import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -39,15 +40,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
+import static java.util.Objects.requireNonNull;
+
+public class CollectionGenerator<T extends @Nullable Object>
+        extends AbstractGenerator<Collection<T>> implements CollectionGeneratorSpec<T> {
+
     private static final Class<?> DEFAULT_COLLECTION_TYPE = ArrayList.class; // NOPMD
 
     protected int minSize;
     protected int maxSize;
     private boolean nullableElements;
     private boolean unique;
-    private List<Object> withElements;
-    protected Class<?> collectionType;
+    private @Nullable List<Object> withElements;
+    protected @Nullable Class<?> collectionType;
 
     public CollectionGenerator(final GeneratorContext context) {
         super(context);
@@ -116,7 +121,7 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
 
     @SafeVarargs
     @Override
-    public final CollectionGenerator<T> with(final T... elements) {
+    public final CollectionGenerator<T> with(@Nullable final T... elements) {
         ApiValidator.notEmpty(elements, "'collection().with(...)' must contain at least one element");
         if (withElements == null) {
             withElements = new ArrayList<>();
@@ -125,9 +130,12 @@ public class CollectionGenerator<T> extends AbstractGenerator<Collection<T>> imp
         return this;
     }
 
+    @Nullable
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     protected Collection<T> tryGenerateNonNull(final Random random) {
+        requireNonNull(collectionType);
+
         try {
             Constructor<?> ctor = ReflectionUtils.setAccessible(collectionType.getDeclaredConstructor());
             return (Collection<T>) ctor.newInstance();

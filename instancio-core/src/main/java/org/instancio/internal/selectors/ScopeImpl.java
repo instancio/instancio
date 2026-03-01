@@ -17,8 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.Scope;
 import org.instancio.internal.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -27,9 +26,9 @@ import java.util.Objects;
 
 public final class ScopeImpl implements Scope {
     private final Target target;
-    private final Integer depth;
+    private final @Nullable Integer depth;
 
-    public ScopeImpl(@NotNull final Target target, @Nullable final Integer depth) {
+    public ScopeImpl(final Target target, @Nullable final Integer depth) {
         this.target = target;
         this.depth = depth;
     }
@@ -38,6 +37,7 @@ public final class ScopeImpl implements Scope {
         return target;
     }
 
+    @Nullable
     public Class<?> getTargetClass() {
         return target.getTargetClass();
     }
@@ -54,6 +54,7 @@ public final class ScopeImpl implements Scope {
         return ((TargetSetter) target).getParameterType();
     }
 
+    @Nullable
     public Integer getDepth() {
         return depth;
     }
@@ -63,7 +64,7 @@ public final class ScopeImpl implements Scope {
         if (this == o) return true;
         if (!(o instanceof ScopeImpl scope)) return false;
         return Objects.equals(target, scope.target)
-                && Objects.equals(depth, scope.depth);
+               && Objects.equals(depth, scope.depth);
     }
 
     @Override
@@ -77,8 +78,9 @@ public final class ScopeImpl implements Scope {
     public String toString() {
         final List<String> elements = new ArrayList<>(4);
 
-        if (target.getTargetClass() != null) {
-            elements.add(target.getTargetClass().getSimpleName());
+        final Class<?> targetClass = target.getTargetClass();
+        if (targetClass != null) {
+            elements.add(targetClass.getSimpleName());
         }
         if (target instanceof final TargetField t) {
             elements.add(StringUtils.quoteStringValue(t.getField().getName()));
@@ -88,14 +90,13 @@ public final class ScopeImpl implements Scope {
         }
         if (target instanceof final TargetSetter t) {
             String methodName = t.getSetter().getName();
-            elements.add(t.getParameterType() == null
-                    ? methodName
-                    : String.format("%s(%s)", methodName, t.getParameterType().getSimpleName()));
+            elements.add(String.format("%s(%s)", methodName, t.getParameterType().getSimpleName()));
         }
         if (target instanceof final TargetSetterName t) {
-            elements.add(t.getParameterType() == null
+            final Class<?> parameterType = t.getParameterType();
+            elements.add(parameterType == null
                     ? t.getMethodName()
-                    : String.format("%s(%s)", t.getMethodName(), t.getParameterType().getSimpleName()));
+                    : String.format("%s(%s)", t.getMethodName(), parameterType.getSimpleName()));
         }
         if (depth != null) {
             elements.add(String.format("atDepth(%s)", depth));

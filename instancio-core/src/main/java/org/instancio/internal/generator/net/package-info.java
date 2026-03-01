@@ -18,4 +18,7 @@
  *
  * @since 2.3.0
  */
+@NullMarked
 package org.instancio.internal.generator.net;
+
+import org.jspecify.annotations.NullMarked;

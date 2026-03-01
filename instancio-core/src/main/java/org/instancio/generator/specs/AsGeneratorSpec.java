@@ -15,8 +15,11 @@
  */
 package org.instancio.generator.specs;
 
+import org.instancio.Random;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -26,7 +29,7 @@ import java.util.function.Function;
  * @param <T> generated type
  * @since 2.11.0
  */
-public interface AsGeneratorSpec<T> extends GeneratorSpec<T> {
+public interface AsGeneratorSpec<T extends @Nullable Object> extends GeneratorSpec<T> {
 
     /**
      * Converts the generated value to a {@code String}.
@@ -36,7 +39,7 @@ public interface AsGeneratorSpec<T> extends GeneratorSpec<T> {
      * @since 2.11.0
      */
     default GeneratorSpec<String> asString() {
-        return as(Object::toString);
+        return as(t -> t == null ? "<null>" : t.toString());
     }
 
     /**
@@ -57,12 +60,17 @@ public interface AsGeneratorSpec<T> extends GeneratorSpec<T> {
      * @return generator spec with mapped result
      * @since 2.11.0
      */
+    @NullUnmarked
     @SuppressWarnings("unchecked")
-    default <R> GeneratorSpec<R> as(Function<T, R> mappingFunction) {
-        return (Generator<R>) random -> {
-            final Generator<T> generator = (Generator<T>) this;
-            final T result = generator.generate(random);
-            return mappingFunction.apply(result);
+    default <R extends @Nullable Object> GeneratorSpec<R> as(Function<? super T, ? extends R> mappingFunction) {
+        return new Generator<>() {
+
+            @Override
+            public R generate(final Random random) {
+                final Generator<T> generator = (Generator<T>) AsGeneratorSpec.this;
+                final T result = generator.generate(random);
+                return mappingFunction.apply(result);
+            }
         };
     }
 }

@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ExtendWith(InstancioExtension.class)
 class FillErrorHandlingTest {
 
+    @SuppressWarnings("NullAway")
     @Test
     void ofObjectWithNull() {
         assertThatThrownBy(() -> Instancio.ofObject(null))
@@ -41,6 +42,7 @@ class FillErrorHandlingTest {
                 .hasMessageContaining("object to populate must not be null");
     }
 
+    @SuppressWarnings("NullAway")
     @Test
     void populateWithNull() {
         assertThatThrownBy(() -> Instancio.fill(null))

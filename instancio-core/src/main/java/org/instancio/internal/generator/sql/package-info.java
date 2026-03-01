@@ -16,4 +16,7 @@
 /**
  * Provides generators for {@code java.sql.*} types.
  */
+@NullMarked
 package org.instancio.internal.generator.sql;
+
+import org.jspecify.annotations.NullMarked;

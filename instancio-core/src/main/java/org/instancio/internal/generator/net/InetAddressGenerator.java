@@ -18,6 +18,7 @@ package org.instancio.internal.generator.net;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.util.ExceptionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -28,11 +29,13 @@ public class InetAddressGenerator extends AbstractURIGenerator<InetAddress> {
         super(context);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;
     }
 
+    @Nullable
     @Override
     protected InetAddress tryGenerateNonNull(final Random random) {
         try {

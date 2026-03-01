@@ -18,6 +18,7 @@ package org.instancio.internal.selectors;
 import org.instancio.Scope;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.PersonName;
@@ -39,6 +40,8 @@ import static org.instancio.Select.scope;
 import static org.instancio.internal.util.ReflectionUtils.getField;
 
 class FieldSelectorBuilderImplTest {
+
+    private static final NodeKind ANY_NODE_KIND = NodeKind.JDK;
 
     private final FieldSelectorBuilderImpl selectorBuilder = new FieldSelectorBuilderImpl();
 
@@ -95,6 +98,7 @@ class FieldSelectorBuilderImplTest {
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void validation() {
         assertThatThrownBy(() -> selectorBuilder.named(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -159,7 +163,8 @@ class FieldSelectorBuilderImplTest {
                     .within(scope(Person.class), fields().ofType(Phone.class).toScope())
                     .toString();
 
-            assertThat(result).isEqualTo("fields().atDepth(Predicate<Integer>)"
+            assertThat(result).isEqualTo(
+                    "fields().atDepth(Predicate<Integer>)"
                     + ".within(scope(Person), scope(fields().ofType(Phone)))");
         }
 
@@ -176,7 +181,8 @@ class FieldSelectorBuilderImplTest {
                     .within(scope(List.class))
                     .toString();
 
-            assertThat(result).isEqualTo("fields().named(\"name\").matching(\"regex\").ofType(String)"
+            assertThat(result).isEqualTo(
+                    "fields().named(\"name\").matching(\"regex\").ofType(String)"
                     + ".declaredIn(Person).annotated(Pojo).annotated(PersonName).atDepth(5)"
                     + ".within(scope(List))");
         }
@@ -186,6 +192,7 @@ class FieldSelectorBuilderImplTest {
     private static InternalNode createNode(final Class<?> type, final String field) {
         return InternalNode.builder(type, type, Fixtures.modelContext().getRootType())
                 .member(getField(type, field))
+                .nodeKind(ANY_NODE_KIND)
                 .build();
     }
 

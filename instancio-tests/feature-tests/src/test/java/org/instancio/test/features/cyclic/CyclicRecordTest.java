@@ -65,11 +65,4 @@ class CyclicRecordTest {
                 .isNotEmpty()
                 .allSatisfy(child -> assertThat(child.parent()).isNull());
     }
-
-    record Rec(Pojo pojo) {}
-
-    static class Pojo {
-        Rec rec;
-    }
-
 }

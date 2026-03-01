@@ -26,6 +26,7 @@ import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -160,11 +161,11 @@ class OnCompleteWithScopeNumberOfCallbackInvocationsTest {
         assertPhoneFieldsContainOnly(result.getRichPerson().getAddress1().getPhoneNumbers(), FOO);
     }
 
-    private void assertPhoneFieldsContainOnly(final List<Phone> phones, final String expected) {
+    private void assertPhoneFieldsContainOnly(final List<Phone> phones, @Nullable final String expected) {
         assertThat(phones).isNotEmpty().allSatisfy(p -> assertPhoneFieldsContainOnly(p, expected));
     }
 
-    private void assertPhoneFieldsContainOnly(final Phone phone, final String expected) {
+    private void assertPhoneFieldsContainOnly(final Phone phone, @Nullable final String expected) {
         assertThat(phone.getCountryCode()).isEqualTo(expected);
         assertThat(phone.getNumber()).isEqualTo(expected);
     }

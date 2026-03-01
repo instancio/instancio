@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.array;
 
 import org.instancio.Random;
+import org.instancio.documentation.Initializer;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
@@ -23,7 +24,10 @@ import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
+@SuppressWarnings({"NotNullFieldNotInitialized", Sonar.NULL_MARKED_NULL_VALUE})
 public class OneOfArrayGenerator<T> extends AbstractGenerator<T>
         implements OneOfArrayGeneratorSpec<T>, OneOfArraySpec<T> {
 
@@ -34,7 +38,7 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T>
                     .build())
             .build();
 
-    private T[] values;
+    private @Nullable T[] values;
     private boolean allowRandomValues;
 
     public OneOfArrayGenerator(final GeneratorContext context) {
@@ -46,9 +50,10 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T>
         return "oneOf()";
     }
 
+    @Initializer
     @SafeVarargs
     @Override
-    public final OneOfArrayGenerator<T> oneOf(final T... values) {
+    public final OneOfArrayGenerator<T> oneOf(@Nullable final T... values) {
         this.values = ApiValidator.notEmpty(values, "Array must have at least one element");
         return this;
     }
@@ -65,6 +70,7 @@ public class OneOfArrayGenerator<T> extends AbstractGenerator<T>
         return this;
     }
 
+    @Nullable
     @Override
     public T tryGenerateNonNull(final Random random) {
         return random.oneOf(values);

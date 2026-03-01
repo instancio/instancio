@@ -15,12 +15,15 @@
  */
 package org.instancio.generator.specs;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Generator spec for arrays.
  *
  * @param <T> array type
  */
-public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T>, SubtypeGeneratorSpec<T> {
+public interface ArrayGeneratorSpec<T extends @Nullable Object>
+        extends NullableGeneratorSpec<T>, SubtypeGeneratorSpec<T> {
 
     /**
      * length of array to generate.
@@ -77,5 +80,6 @@ public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T>, Subtype
      * @param elements to add
      * @return spec builder
      */
+    @SuppressWarnings("unchecked")
     ArrayGeneratorSpec<T> with(T... elements);
 }

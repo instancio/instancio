@@ -22,6 +22,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.collections.lists.TwoListsOfInteger;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -48,7 +49,7 @@ class CustomSpecLikeIntegerGeneratorTest {
         }
 
         @Override
-        public Integer generate(final Random random) {
+        public Integer generate(final @NonNull Random random) {
             return random.intRange(min, max);
         }
     }

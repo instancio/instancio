@@ -46,6 +46,7 @@ import com.google.common.collect.TreeMultimap;
 import com.google.common.collect.TreeMultiset;
 import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.util.CollectionUtils;
+import org.jspecify.annotations.NullUnmarked;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -125,6 +126,7 @@ public class GuavaInternalServiceProvider implements InternalServiceProvider {
     @Override
     public InternalContainerFactoryProvider getContainerFactoryProvider() {
         return new InternalContainerFactoryProvider() {
+            @NullUnmarked
             @Override
             @SuppressWarnings("unchecked")
             public <T, R> Function<T, R> getMappingFunction(Class<R> type, List<Class<?>> typeArguments) {

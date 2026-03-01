@@ -61,8 +61,10 @@ class RecordSelectorsTest {
                 .set(types().of(PhoneRecord.class), expected)
                 .create();
 
-        assertThat(result.address().phoneNumbers())
-                .isNotEmpty().containsOnly(expected);
+        assertThat(result.address()).isNotNull()
+                .satisfies(address -> {
+                    assertThat(address.phoneNumbers()).containsOnly(expected);
+                });
     }
 
     @Test
@@ -82,8 +84,12 @@ class RecordSelectorsTest {
                 .set(allStrings().within(all(PhoneRecord.class).toScope()), "foo")
                 .create();
 
-        assertThat(result.address().city()).isNotEqualTo("foo");
-        assertThat(result.address().phoneNumbers()).isNotEmpty()
-                .allSatisfy(phone -> assertThatObject(phone).hasAllFieldsOfTypeEqualTo(String.class, "foo"));
+        assertThat(result).isNotNull();
+        assertThat(result.address()).isNotNull().satisfies(address -> {
+            assertThat(address.city()).isNotEqualTo("foo");
+            assertThat(address.phoneNumbers()).isNotEmpty()
+                    .allSatisfy(phone -> assertThatObject(phone).hasAllFieldsOfTypeEqualTo(String.class, "foo"));
+
+        });
     }
 }

@@ -18,20 +18,17 @@ package org.instancio.internal.generation;
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
 
 @InternalApi
 interface NodeHandler {
 
     NodeHandler NOOP_HANDLER = new NodeHandler() {
-        @NotNull
         @Override
-        public GeneratorResult getResult(@NotNull final InternalNode node) {
+        public GeneratorResult getResult(final InternalNode node) {
             return GeneratorResult.emptyResult();
         }
     };
 
-    @NotNull
-    GeneratorResult getResult(@NotNull InternalNode node);
+    GeneratorResult getResult(InternalNode node);
 
 }

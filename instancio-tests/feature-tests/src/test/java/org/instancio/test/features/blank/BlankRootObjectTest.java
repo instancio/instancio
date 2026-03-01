@@ -32,6 +32,8 @@ import org.instancio.test.support.pojo.misc.StringsAbc;
 import org.instancio.test.support.pojo.nested.OuterClass;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -175,7 +177,7 @@ class BlankRootObjectTest {
         @Test
         void rootObjectIsAPojo() {
             class Container {
-                List<OuterClass> list;
+                @Nullable List<OuterClass> list;
             }
 
             final Container result = Instancio.ofBlank(Container.class)
@@ -192,7 +194,7 @@ class BlankRootObjectTest {
 
     @Getter
     @Setter
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    @SuppressWarnings({"NullAway", "OptionalUsedAsFieldOrParameterType"})
     private static final class Pojo {
         private String string;
         private int primitive;

@@ -21,10 +21,11 @@ import org.instancio.generator.specs.Ip4Spec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Fail;
+import org.jspecify.annotations.Nullable;
 
 public class Ip4Generator extends AbstractGenerator<String> implements Ip4Spec {
 
-    private String cidr;
+    private @Nullable String cidr;
 
     public Ip4Generator(final GeneratorContext context) {
         super(context);
@@ -53,7 +54,7 @@ public class Ip4Generator extends AbstractGenerator<String> implements Ip4Spec {
             return generateAny(random);
         }
         try {
-            return generateFromCidr(random);
+            return generateFromCidr(random, cidr);
         } catch (Exception ex) {
             throw Fail.withUsageError(
                     "error generating IPv4 address from: '%s'", cidr, ex);
@@ -69,7 +70,7 @@ public class Ip4Generator extends AbstractGenerator<String> implements Ip4Spec {
     }
 
     // Source: https://stackoverflow.com/questions/62124452
-    private String generateFromCidr(final Random random) {
+    private static String generateFromCidr(final Random random, final String cidr) {
         final String[] cidrValue = cidr.split("/");
         final String[] buf = cidrValue[0].split("\\.");
         final byte[] ip = {

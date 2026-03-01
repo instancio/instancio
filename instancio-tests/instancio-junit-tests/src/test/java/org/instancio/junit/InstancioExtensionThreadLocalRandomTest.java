@@ -28,6 +28,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.platform.testkit.engine.EngineTestKit;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
@@ -153,7 +154,7 @@ class InstancioExtensionThreadLocalRandomTest {
     }
 
     private static void assertSeed(long expectedSeed, Seeds.Source expectedSource) {
-        final DefaultRandom random = (DefaultRandom) ThreadLocalRandom.getInstance().get();
+        final DefaultRandom random = (DefaultRandom) requireNonNull(ThreadLocalRandom.getInstance().get());
 
         try {
             assertThat(random.getSeed()).as("seed").isEqualTo(expectedSeed);
@@ -164,7 +165,7 @@ class InstancioExtensionThreadLocalRandomTest {
     }
 
     private static void assertRandomSeed() {
-        final DefaultRandom random = (DefaultRandom) ThreadLocalRandom.getInstance().get();
+        final DefaultRandom random = (DefaultRandom) requireNonNull(ThreadLocalRandom.getInstance().get());
 
         try {
             assertThat(random.getSeed()).as("expected a positive random seed").isPositive();

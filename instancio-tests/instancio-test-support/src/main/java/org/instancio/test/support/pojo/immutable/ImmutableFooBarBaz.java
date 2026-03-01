@@ -17,7 +17,9 @@ package org.instancio.test.support.pojo.immutable;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jspecify.annotations.NullUnmarked;
 
+@NullUnmarked
 public class ImmutableFooBarBaz implements FooBarBazInterface {
     private final String foo;
     private final String bar;

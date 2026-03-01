@@ -17,6 +17,7 @@ package org.instancio.spi.tests;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +29,10 @@ import static org.instancio.Select.field;
 class GetterMethodFieldResolverTest {
 
     private static class Pojo {
-        private String foo_;
+        @SuppressWarnings("unused")
+        private @Nullable String foo_;
 
+        @Nullable
         String getFoo() {
             return foo_;
         }

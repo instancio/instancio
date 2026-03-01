@@ -62,10 +62,15 @@ class ContainerFactoriesHandler {
             final Function<Object, ?> fn = cfp.getMappingFunction(node.getTargetClass(), typeArgs);
 
             if (fn != null) {
-                final Object replacement = fn.apply(result.getValue());
+                final Object replacement = applyFunction(fn, result);
                 return GeneratorResult.create(replacement, result.getHints());
             }
         }
         return result;
+    }
+
+    @SuppressWarnings("NullAway")
+    private static Object applyFunction(final Function<Object, ?> fn, final GeneratorResult result) {
+        return fn.apply(result.getValue());
     }
 }

@@ -22,6 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.ValueOfOriginDestination;
 import org.instancio.ValueOfOriginDestinationPredicate;
 import org.instancio.internal.Flattener;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,8 +34,8 @@ public class InternalValueOfOriginDestination
 
     private final TargetSelector origin;
     private final TargetSelector destination;
-    private Predicate<?> predicate;
-    private RandomFunction<?, ?> valueMapper;
+    private @Nullable Predicate<?> predicate;
+    private @Nullable RandomFunction<?, ?> valueMapper;
 
     public InternalValueOfOriginDestination(final TargetSelector origin, final TargetSelector destination) {
         this.origin = origin;
@@ -42,19 +43,19 @@ public class InternalValueOfOriginDestination
     }
 
     @Override
-    public <T, R> ValueOfOriginDestinationPredicate as(final Function<T, R> f) {
+    public <T extends @Nullable Object, R extends @Nullable Object> ValueOfOriginDestinationPredicate as(final Function<T, R> f) {
         this.valueMapper = (T arg, Random random) -> f.apply(arg);
         return new InternalValueOfOriginDestinationPredicate(origin, destination, predicate, valueMapper);
     }
 
     @Override
-    public <T, R> ValueOfOriginDestinationPredicate as(final RandomFunction<T, R> valueMapper) {
+    public <T extends @Nullable Object, R extends @Nullable Object> ValueOfOriginDestinationPredicate as(final RandomFunction<T, R> valueMapper) {
         this.valueMapper = valueMapper;
         return new InternalValueOfOriginDestinationPredicate(origin, destination, predicate, valueMapper);
     }
 
     @Override
-    public <T> Assignment when(final Predicate<T> predicate) {
+    public <T extends @Nullable Object> Assignment when(final Predicate<T> predicate) {
         this.predicate = predicate;
         return this;
     }

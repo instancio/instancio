@@ -26,19 +26,23 @@ import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<Set<E>> implements EnumSetGeneratorSpec<E> {
+import static java.util.Objects.requireNonNull;
 
-    private final Class<E> enumClass;
+public class EnumSetGenerator<E extends Enum<E>>
+        extends AbstractGenerator<Set<E>> implements EnumSetGeneratorSpec<E> {
+
+    private final @Nullable Class<E> enumClass;
     private final int generateEntriesHint;
     private Integer minSize = 1;
-    private Integer maxSize;
-    private Set<E> including;
-    private Set<E> excluding;
+    private @Nullable Integer maxSize;
+    private @Nullable Set<E> including;
+    private @Nullable Set<E> excluding;
 
     public EnumSetGenerator(final GeneratorContext context, final Class<E> enumClass) {
         super(context);
@@ -95,6 +99,7 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<Set<E
         return this;
     }
 
+    @Nullable
     @Override
     @SuppressWarnings({"PMD.ReturnEmptyCollectionRatherThanNull", Sonar.RETURN_EMPTY_COLLECTION})
     protected Set<E> tryGenerateNonNull(final Random random) {
@@ -161,7 +166,8 @@ public class EnumSetGenerator<E extends Enum<E>> extends AbstractGenerator<Set<E
                 .with(InternalContainerHint.builder()
                         .generateEntries(generateEntriesHint)
                         .createFunction(args -> {
-                            final Class<E> klass = ((E) args[0]).getDeclaringClass();
+                            final E arg = (E) requireNonNull(args[0]);
+                            final Class<E> klass = arg.getDeclaringClass();
                             return EnumSet.noneOf(klass);
                         })
                         .addFunction((Set<E> enumSet, Object... args) -> enumSet.add((E) args[0]))

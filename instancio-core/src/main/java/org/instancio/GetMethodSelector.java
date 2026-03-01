@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.function.Function;
 
@@ -29,5 +31,6 @@ import java.util.function.Function;
  * @see Select
  * @since 2.3.0
  */
-public interface GetMethodSelector<T, R> extends TargetSelector, Function<T, R>, Serializable {
+public interface GetMethodSelector<T, R extends @Nullable Object> extends
+        TargetSelector, Function<T, @Nullable R>, Serializable {
 }

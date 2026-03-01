@@ -22,6 +22,7 @@ import org.instancio.generator.Generator;
 import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -91,7 +92,7 @@ class GivenParameterSeedAnnotationTest {
 
         class UUIDGenerator implements Generator<UUID> {
             @Override
-            public UUID generate(final Random random) {
+            public UUID generate(final @NonNull Random random) {
                 final String uuid = String.format("%s-%s-%s-%s-%s",
                         random.digits(8),
                         random.digits(4),

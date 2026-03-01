@@ -18,6 +18,7 @@ package org.instancio.internal.selectors;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
@@ -28,7 +29,7 @@ import java.util.function.Predicate;
  */
 final class SelectorDepth {
 
-    private final Integer depth;
+    private final @Nullable Integer depth;
     private final Predicate<InternalNode> depthPredicate;
 
     SelectorDepth(final int depth) {
@@ -47,6 +48,7 @@ final class SelectorDepth {
         return n -> p.test(n.getDepth());
     }
 
+    @Nullable
     Integer getDepth() {
         return depth;
     }

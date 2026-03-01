@@ -18,6 +18,7 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.Predicate;
@@ -41,6 +42,7 @@ class PredicateSelectorMap {
         return selectorMap;
     }
 
+    @Nullable
     @SuppressWarnings("unchecked")
     Predicate<Object> getPredicate(final InternalNode node) {
         return (Predicate<Object>) selectorMap.getValue(node).orElse(null);

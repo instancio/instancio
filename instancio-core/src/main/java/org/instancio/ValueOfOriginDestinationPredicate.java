@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
@@ -38,6 +39,6 @@ public interface ValueOfOriginDestinationPredicate extends Assignment {
      * @return an assignment
      * @since 3.0.0
      */
-    <T> Assignment when(Predicate<T> predicate);
+    <T extends @Nullable Object> Assignment when(Predicate<T> predicate);
 
 }

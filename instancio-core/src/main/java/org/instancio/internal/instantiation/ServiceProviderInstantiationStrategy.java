@@ -18,6 +18,7 @@ package org.instancio.internal.instantiation;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioSpiException;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ class ServiceProviderInstantiationStrategy implements InstantiationStrategy {
         this.providerEntries = providerEntries;
     }
 
+    @Nullable
     @Override
     public <T> T createInstance(final Class<T> klass) {
         for (ProviderEntry<InstancioServiceProvider.TypeInstantiator> entry : providerEntries) {

@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * NOTE: this test fails in IntelliJ, run it using Maven
  */
+@SuppressWarnings("NullAway")
 @FeatureTag(Feature.MAX_DEPTH)
 @ExtendWith(InstancioExtension.class)
 class MaxDepthWithRecordTest {
@@ -59,8 +60,8 @@ class MaxDepthWithRecordTest {
     void depth2() {
         final PersonRecord result = createWithDepth(2);
 
-        assertThat(result).hasNoNullFieldsOrProperties();
         assertThat(result.age()).isNotZero();
+        assertThat(result).hasNoNullFieldsOrProperties();
         assertThat(result.address()).hasNoNullFieldsOrProperties();
         assertThat(result.address().phoneNumbers()).isEmpty();
     }

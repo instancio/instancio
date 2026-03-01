@@ -27,6 +27,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.arrays.object.WithStringArray;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -55,9 +56,9 @@ class CustomArrayGeneratorWithElementsTest {
     private static final String EXISTING_ELEMENT = "original-value";
 
     private static class ArrayGenerator implements Generator<String[]> {
-        private final Hints hints;
+        private final @Nullable Hints hints;
 
-        private ArrayGenerator(final Hints hints) {
+        private ArrayGenerator(@Nullable final Hints hints) {
             this.hints = hints;
         }
 
@@ -68,6 +69,7 @@ class CustomArrayGeneratorWithElementsTest {
             return array;
         }
 
+        @Nullable
         @Override
         public Hints hints() {
             return hints;
@@ -225,7 +227,7 @@ class CustomArrayGeneratorWithElementsTest {
                 .build());
     }
 
-    private static void assertArrayIsPopulated(final Hints hints) {
+    private static void assertArrayIsPopulated(@Nullable final Hints hints) {
         final WithStringArray result = Instancio.of(WithStringArray.class)
                 .supply(all(String[].class), new ArrayGenerator(hints))
                 .withSettings(Settings.create()
@@ -237,7 +239,7 @@ class CustomArrayGeneratorWithElementsTest {
                 .doesNotContainNull();
     }
 
-    private static WithStringArray createArray(final Hints hints) {
+    private static WithStringArray createArray(@Nullable final Hints hints) {
         return Instancio.of(WithStringArray.class)
                 .supply(all(String[].class), new ArrayGenerator(hints))
                 .create();

@@ -21,9 +21,12 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.pol.PeselSpec;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.NumberUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 public class PeselGenerator extends WeightsModCheckGenerator implements PeselSpec {
 
@@ -31,7 +34,7 @@ public class PeselGenerator extends WeightsModCheckGenerator implements PeselSpe
     private static final int GENDER_DIGIT_POSITION = 9;
 
     private final PeselDateGenerator peselDateGenerator;
-    private Gender gender;
+    private @Nullable Gender gender;
 
     public PeselGenerator(final GeneratorContext context) {
         super(context);
@@ -45,11 +48,12 @@ public class PeselGenerator extends WeightsModCheckGenerator implements PeselSpe
 
     @Override
     protected String payload(final Random random) {
-        final String birthdate = peselDateGenerator.tryGenerateNonNull(random);
+        final String birthdate = requireNonNull(peselDateGenerator.tryGenerateNonNull(random));
         final String serialNumber = random.digits(payloadLength() - birthdate.length());
         final Gender selectedGender = gender == null ? random.oneOf(Gender.values()) : gender;
         final StringBuilder payload = new StringBuilder(birthdate).append(serialNumber);
-        payload.setCharAt(GENDER_DIGIT_POSITION, random.oneOf(selectedGender.digits));
+        final Character ch = random.oneOf(selectedGender.digits);
+        payload.setCharAt(GENDER_DIGIT_POSITION, ch);
         return payload.toString();
     }
 

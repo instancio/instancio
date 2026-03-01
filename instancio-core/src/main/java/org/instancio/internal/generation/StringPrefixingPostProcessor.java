@@ -18,6 +18,7 @@ package org.instancio.internal.generation;
 import org.instancio.generator.Generator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.StringUtils;
+import org.jspecify.annotations.Nullable;
 
 class StringPrefixingPostProcessor implements GeneratedValuePostProcessor {
 
@@ -27,8 +28,9 @@ class StringPrefixingPostProcessor implements GeneratedValuePostProcessor {
         this.stringFieldPrefixEnabled = stringFieldPrefixEnabled;
     }
 
+    @Nullable
     @Override
-    public Object process(final Object value, final InternalNode node, final Generator<?> generator) {
+    public Object process(@Nullable final Object value, final InternalNode node, final Generator<?> generator) {
         if (stringFieldPrefixEnabled
                 && node.getField() != null
                 && node.getTargetClass() == String.class

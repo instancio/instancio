@@ -16,4 +16,7 @@
 /**
  * Generators for shuffling elements.
  */
+@NullMarked
 package org.instancio.internal.generator.shuffle;
+
+import org.jspecify.annotations.NullMarked;

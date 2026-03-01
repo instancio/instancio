@@ -26,6 +26,7 @@ import org.instancio.test.support.pojo.containers.OptionalLike;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -36,8 +37,10 @@ import static org.instancio.Select.all;
 @ExtendWith(InstancioExtension.class)
 class OptionalLikeTest {
 
-    private static <T> Generator<OptionalLike<T>> generator() {
-        return new Generator<OptionalLike<T>>() {
+    private static <T extends @Nullable Object> Generator<@Nullable OptionalLike<T>> generator() {
+        return new Generator<@Nullable OptionalLike<T>>() {
+
+            @Nullable
             @Override
             public OptionalLike<T> generate(final Random random) {
                 return null; // delegates to the engine via createFunction hint

@@ -18,4 +18,7 @@
  *
  * @since 2.13.0
  */
+@NullMarked
 package org.instancio.guava;
+
+import org.jspecify.annotations.NullMarked;

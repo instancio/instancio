@@ -136,6 +136,7 @@ class MapGeneratorWithKeysTest {
         }
     }
 
+    @SuppressWarnings("NullAway")
     @Test
     void validation() {
         final InstancioApi<?> api = Instancio.of(MAP_TYPE_TOKEN)

@@ -21,9 +21,9 @@ import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.support.Log;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.util.ErrorMessageUtils.maxDepthReached;
 
 /**
@@ -62,7 +63,8 @@ public final class NodeFactory {
     }
 
     public InternalNode createRootNode(final Type type) {
-        final InternalNode root = nodeCreator.createNode(type, /* parent = */ null);
+        // root node can't be null
+        final InternalNode root = requireNonNull(nodeCreator.createNode(type, /* parent = */ null));
 
         final Queue<InternalNode> nodeQueue = new ArrayDeque<>();
         nodeQueue.offer(root);
@@ -94,8 +96,7 @@ public final class NodeFactory {
      * @param node to create children for
      * @return child nodes (without children), or an empty list if none.
      */
-    @NotNull
-    private List<InternalNode> createChildren(@NotNull final InternalNode node) {
+    private List<InternalNode> createChildren(final InternalNode node) {
         if (node.isIgnored()) {
             return List.of();
         }
@@ -168,6 +169,7 @@ public final class NodeFactory {
             gcType = typeHelper.resolveTypeVariable((TypeVariable<?>) gcType, node);
         }
 
+        Verify.notNull(gcType, "generic component type is null");
         return createContainerNodeChildren(node, gcType);
     }
 

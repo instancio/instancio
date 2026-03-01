@@ -35,7 +35,7 @@ import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -53,6 +53,7 @@ import static org.instancio.internal.util.ErrorMessageUtils.errorMappingStringTo
 import static org.instancio.internal.util.ErrorMessageUtils.feedComponentMethodNotFound;
 import static org.instancio.internal.util.ErrorMessageUtils.feedWithInvalidMethodName;
 import static org.instancio.internal.util.ErrorMessageUtils.invalidFunctionSpecHandlerMethod;
+import static org.instancio.internal.util.ReflectionUtils.getRequiredZeroArgMethod;
 import static org.instancio.internal.util.ReflectionUtils.getZeroArgMethod;
 import static org.instancio.internal.util.ReflectionUtils.setAccessible;
 import static org.instancio.internal.util.StringConverters.getConverter;
@@ -63,12 +64,12 @@ public abstract class AbstractFeed<R> implements InternalFeed {
 
     private final DataStore<R> dataStore;
     private final InternalFeedContext<?> feedContext;
-    private final String tagValue;
+    private final @Nullable String tagValue;
     private final GeneratorContext generatorContext;
     private final PropertyBitSet propertyBitSet;
     private final Class<?> feedClass;
     private final AtomicInteger sequentialAccessIndex = new AtomicInteger(-1);
-    private R currentEntry;
+    private @Nullable R currentEntry;
 
     protected AbstractFeed(
             final InternalFeedContext<?> feedContext,
@@ -90,6 +91,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
      * or {@code null} if a value is not present
      * @throws InstancioApiException if the data store does not contain the given property
      */
+    @Nullable
     protected abstract String getValue(String propertyKey);
 
     @Override
@@ -121,6 +123,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         return createSpecWithPostProcessors(supplier, Collections.emptyList(), false);
     }
 
+    @Nullable
     protected final R getCurrentEntry() {
         return currentEntry;
     }
@@ -174,7 +177,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
     }
 
     private <T> FeedSpec<T> createFeedSpecInternal(final SpecMethod specMethod) {
-        return createSpecInternal(specMethod, /* args = */ null, !UPDATE_BITSET);
+        return createSpecInternal(specMethod, /*args=*/ new Object[0], !UPDATE_BITSET);
     }
 
     /**
@@ -183,7 +186,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
      * but with no post-processors applied.
      */
     @SuppressWarnings("unchecked")
-    private <T> Supplier<T> getValueSupplier(
+    private <T extends @Nullable Object> Supplier<T> getValueSupplier(
             final SpecMethod specMethod,
             final Object[] args,
             final boolean updateBitSet) {
@@ -224,17 +227,22 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         // Handle user-defined spec methods declared in a Feed subclass
         final String key = specMethod.getDataPropertyName();
 
-        if (specMethod.getGeneratedSpec() != null) {
+        final FeedSpecAnnotations.GeneratedSpec generatedSpec = specMethod.getGeneratedSpec();
+        if (generatedSpec != null) {
             return () -> updateState(key, updateBitSet)
-                    .getGeneratedSpecValue(specMethod.getGeneratedSpec().value());
+                    .getGeneratedSpecValue(generatedSpec.value());
         }
-        if (specMethod.getFunctionSpec() != null) {
+
+        final FeedSpecAnnotations.FunctionSpec functionSpec = specMethod.getFunctionSpec();
+        if (functionSpec != null) {
             return () -> updateState(key, updateBitSet)
-                    .getFunctionSpecValue(specMethod, specMethod.getFunctionSpec());
+                    .getFunctionSpecValue(specMethod, functionSpec);
         }
-        if (specMethod.getTemplateSpec() != null) {
+
+        final TemplateSpec templateSpec = specMethod.getTemplateSpec();
+        if (templateSpec != null) {
             return () -> updateState(key, updateBitSet)
-                    .getTemplateSpecValue(specMethod.getTemplateSpec());
+                    .getTemplateSpecValue(templateSpec);
         }
 
         final WithStringMapper withStringMapper = specMethod.getAnnotation(WithStringMapper.class);
@@ -246,7 +254,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         return createSupplier(key, converter, updateBitSet);
     }
 
-    private <T> Supplier<T> createSupplier(
+    private <T extends @Nullable Object> Supplier<T> createSupplier(
             final String propertyKey,
             final Function<String, T> converter,
             final boolean updateBitSet) {
@@ -278,6 +286,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> List<PostProcessor<T>> getPostProcessors(final SpecMethod specMethod) {
         final WithPostProcessor withPostProcessor = specMethod.getAnnotation(WithPostProcessor.class);
 
@@ -293,6 +302,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         return list;
     }
 
+    @Nullable
     @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     private <T> T getGeneratedSpecValue(final Class<?> generatorClass) {
         final Generator<T> generator = (Generator<T>) ReflectionUtils.newInstance(generatorClass);
@@ -310,7 +320,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         final boolean declaresRandom = params[params.length - 1] == Random.class;
         final String[] componentProperties = functionSpec.params();
         final int argsLength = declaresRandom ? componentProperties.length + 1 : componentProperties.length;
-        final Object[] args = new Object[argsLength];
+        final @Nullable Object[] args = new Object[argsLength];
 
         if (declaresRandom) {
             args[argsLength - 1] = getGeneratorContext().random();
@@ -332,6 +342,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
 
         try {
             final FunctionProvider provider = ReflectionUtils.newInstance(providerClass);
+            //noinspection unchecked
             return (T) setAccessible(functionSpecHandler).invoke(provider, args);
         } catch (Exception ex) {
             throw Fail.withUsageError(errorInvokingFunctionSpecHandlerMethod(
@@ -339,7 +350,6 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         }
     }
 
-    @NotNull
     private Method resolveFunctionSpecHandler(
             final SpecMethod parentSpecMethod,
             final Class<?> providerClass) {
@@ -376,7 +386,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
             if (dataStore.contains(component)) {
                 value = getValue(component);
             } else {
-                final Method method = getZeroArgMethod(feedClass, component);
+                final Method method = getRequiredZeroArgMethod(feedClass, component);
                 value = (String) createFeedSpecInternal(new SpecMethod(method)).get();
             }
             final String replacement = value == null ? "" : value;

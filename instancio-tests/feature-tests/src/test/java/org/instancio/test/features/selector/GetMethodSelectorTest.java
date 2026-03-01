@@ -34,6 +34,7 @@ import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -207,7 +208,7 @@ class GetMethodSelectorTest {
                     .isExactlyInstanceOf(InstancioApiException.class)
                     .hasMessageContaining(String.format(
                             "Unable to resolve the field from method reference:%n" +
-                                    "-> ItemInterface::getValue"));
+                            "-> ItemInterface::getValue"));
         }
 
         @Test
@@ -225,14 +226,14 @@ class GetMethodSelectorTest {
     @Nested
     class OverloadedGetterTest {
         static class Pojo {
-            String foo;
+            @Nullable String foo;
 
-            String getFoo() {
+            @Nullable String getFoo() {
                 return foo;
             }
 
             @SuppressWarnings("unused")
-            String getFoo(String defaultFoo) {
+            @Nullable String getFoo(@Nullable String defaultFoo) {
                 return foo == null ? defaultFoo : foo;
             }
         }

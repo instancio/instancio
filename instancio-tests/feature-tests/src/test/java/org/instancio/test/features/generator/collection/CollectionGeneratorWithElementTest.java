@@ -24,6 +24,7 @@ import org.instancio.test.support.pojo.collections.lists.ListLong;
 import org.instancio.test.support.pojo.collections.sets.SetLong;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -83,7 +84,8 @@ class CollectionGeneratorWithElementTest {
         assertValidation();
     }
 
-    private void assertValidation(final Object... arg) {
+    @SuppressWarnings("NullAway")
+    private void assertValidation(final Object @Nullable ... arg) {
         final InstancioApi<ListLong> api = Instancio.of(ListLong.class)
                 .generate(all(List.class), gen -> gen.collection().with(arg));
 

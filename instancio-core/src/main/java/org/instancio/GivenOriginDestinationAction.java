@@ -19,6 +19,7 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -40,7 +41,7 @@ public interface GivenOriginDestinationAction extends GivenOriginDestination, As
      * @return a complete assignment
      * @since 3.0.0
      */
-    <T> Assignment elseGenerate(GeneratorSpecProvider<T> gen);
+    <T extends @Nullable Object> Assignment elseGenerate(GeneratorSpecProvider<T> gen);
 
     /**
      * Generates values using arbitrary generator specs.
@@ -50,7 +51,7 @@ public interface GivenOriginDestinationAction extends GivenOriginDestination, As
      * @return a complete assignment
      * @since 3.0.0
      */
-    <T> Assignment elseGenerate(GeneratorSpec<T> spec);
+    <T extends @Nullable Object> Assignment elseGenerate(GeneratorSpec<T> spec);
 
     /**
      * Sets a value to matching selector targets.
@@ -60,7 +61,7 @@ public interface GivenOriginDestinationAction extends GivenOriginDestination, As
      * @return a complete assignment
      * @since 3.0.0
      */
-    <T> Assignment elseSet(T value);
+    <T extends @Nullable Object> Assignment elseSet(T value);
 
     /**
      * Supplies an object using a {@link Generator} to matching selector targets.
@@ -70,7 +71,7 @@ public interface GivenOriginDestinationAction extends GivenOriginDestination, As
      * @return a complete assignment
      * @since 3.0.0
      */
-    <T> Assignment elseSupply(Generator<T> generator);
+    <T extends @Nullable Object> Assignment elseSupply(Generator<T> generator);
 
     /**
      * Supplies an object using a {@link Supplier}.
@@ -80,5 +81,5 @@ public interface GivenOriginDestinationAction extends GivenOriginDestination, As
      * @return a complete assignment
      * @since 3.0.0
      */
-    <T> Assignment elseSupply(Supplier<T> supplier);
+    <T extends @Nullable Object> Assignment elseSupply(Supplier<T> supplier);
 }

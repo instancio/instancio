@@ -25,6 +25,7 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class EmitGenerator<T> extends AbstractGenerator<T>
+public class EmitGenerator<T extends @Nullable Object> extends AbstractGenerator<T>
         implements EmitGeneratorSpec<T> {
 
     // Keep a copy of the original items to support RECYCLE
@@ -55,6 +56,7 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
         super(context);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         // return null because there's no validation of the target class
@@ -62,8 +64,9 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
         return null;
     }
 
+    @SafeVarargs
     @Override
-    public EmitGenerator<T> items(final T... items) {
+    public final EmitGenerator<T> items(final T... items) {
         ApiValidator.notNull(items, "'items' array must not be null");
         Collections.addAll(this.originalItems, items);
         Collections.addAll(this.items, items);
@@ -79,11 +82,6 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
         return this;
     }
 
-    private void addItem(final T item) {
-        this.originalItems.add(item);
-        this.items.add(item);
-    }
-
     @Override
     public EmitGenerator<T> item(final T item, final int emitCount) {
         ApiValidator.isTrue(emitCount >= 0, "Emit count must not be negative: " + emitCount);
@@ -91,6 +89,11 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
             addItem(item);
         }
         return this;
+    }
+
+    private void addItem(final T item) {
+        this.originalItems.add(item);
+        this.items.add(item);
     }
 
     @Override

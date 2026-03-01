@@ -24,6 +24,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -41,8 +42,8 @@ class AssignUnresolvedTest {
     void unresolvedCollectionElement() {
         @Data
         class Pojo {
-            Collection<IntegerHolder> collection;
-            String a, b;
+            @Nullable Collection<IntegerHolder> collection;
+            @Nullable String a, b;
         }
 
         final InstancioApi<Pojo> api = Instancio.of(Pojo.class)

@@ -23,7 +23,6 @@ import org.instancio.internal.instantiation.Instantiator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.NotNull;
 
 class InstantiatingHandler implements NodeHandler {
 
@@ -38,9 +37,8 @@ class InstantiatingHandler implements NodeHandler {
 
     }
 
-    @NotNull
     @Override
-    public GeneratorResult getResult(@NotNull final InternalNode node) {
+    public GeneratorResult getResult(final InternalNode node) {
         if (node.is(NodeKind.RECORD) && !node.getChildren().isEmpty()) {
             // If a record has args, it must be populated
             // via the canonical constructor by the engine

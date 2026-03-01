@@ -16,13 +16,24 @@
 package org.instancio.generator.specs;
 
 import org.instancio.generator.ValueSpec;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Spec for generating {@link Number} types.
  *
  * @since 2.6.0
  */
-public interface NumberSpec<T extends Number> extends ValueSpec<T>, NumberGeneratorSpec<T> {
+public interface NumberSpec<T extends @Nullable Number> extends ValueSpec<T>, NumberGeneratorSpec<T> {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.6.0
+     *
+     */
+    @Override
+    NumberSpec<T> min(@NonNull T min);
 
     /**
      * {@inheritDoc}
@@ -30,7 +41,7 @@ public interface NumberSpec<T extends Number> extends ValueSpec<T>, NumberGenera
      * @since 2.6.0
      */
     @Override
-    NumberSpec<T> min(T min);
+    NumberSpec<T> max(@NonNull T max);
 
     /**
      * {@inheritDoc}
@@ -38,15 +49,7 @@ public interface NumberSpec<T extends Number> extends ValueSpec<T>, NumberGenera
      * @since 2.6.0
      */
     @Override
-    NumberSpec<T> max(T max);
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.6.0
-     */
-    @Override
-    NumberSpec<T> range(T min, T max);
+    NumberSpec<T> range(@NonNull T min, @NonNull T max);
 
     /**
      * {@inheritDoc}

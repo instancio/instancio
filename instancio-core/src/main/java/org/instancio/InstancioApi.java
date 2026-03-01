@@ -22,6 +22,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -105,7 +106,7 @@ public interface InstancioApi<T> extends
      * @since 4.8.0
      */
     @ExperimentalApi
-    default <R> R as(Function<T, R> function) {
+    default <R extends @Nullable Object> R as(Function<@Nullable T, R> function) {
         return function.apply(create());
     }
 
@@ -208,7 +209,7 @@ public interface InstancioApi<T> extends
      * @since 1.2.3
      */
     @Override
-    <V> InstancioApi<T> set(TargetSelector selector, V value);
+    <V extends @Nullable Object> InstancioApi<T> set(TargetSelector selector, V value);
 
     /**
      * {@inheritDoc}
@@ -225,7 +226,7 @@ public interface InstancioApi<T> extends
      * @since 1.0.1
      */
     @Override
-    <V> InstancioApi<T> supply(TargetSelector selector, Supplier<V> supplier);
+    <V extends @Nullable Object> InstancioApi<T> supply(TargetSelector selector, Supplier<V> supplier);
 
     /**
      * {@inheritDoc}
@@ -233,7 +234,7 @@ public interface InstancioApi<T> extends
      * @since 1.0.1
      */
     @Override
-    <V> InstancioApi<T> supply(TargetSelector selector, Generator<V> generator);
+    <V extends @Nullable Object> InstancioApi<T> supply(TargetSelector selector, Generator<V> generator);
 
     /**
      * {@inheritDoc}
@@ -241,7 +242,7 @@ public interface InstancioApi<T> extends
      * @since 2.2.0
      */
     @Override
-    <V> InstancioApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
+    <V extends @Nullable Object> InstancioApi<T> generate(TargetSelector selector, GeneratorSpecProvider<V> gen);
 
     /**
      * {@inheritDoc}
@@ -250,7 +251,7 @@ public interface InstancioApi<T> extends
      */
     @Override
     @ExperimentalApi
-    <V> InstancioApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
+    <V extends @Nullable Object> InstancioApi<T> generate(TargetSelector selector, GeneratorSpec<V> spec);
 
     /**
      * {@inheritDoc}
@@ -309,7 +310,7 @@ public interface InstancioApi<T> extends
      * @since 4.3.1
      */
     @Override
-    <V> InstancioApi<T> withSetting(SettingKey<V> key, V value);
+    <V extends @Nullable Object> InstancioApi<T> withSetting(SettingKey<V> key, V value);
 
     /**
      * {@inheritDoc}

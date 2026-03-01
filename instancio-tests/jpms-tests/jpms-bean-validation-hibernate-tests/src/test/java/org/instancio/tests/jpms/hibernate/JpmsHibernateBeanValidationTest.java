@@ -23,6 +23,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -49,12 +50,12 @@ class JpmsHibernateBeanValidationTest {
     private static class PersonBV {
 
         @Length(min = 10, max = 10)
-        private String name;
+        private @Nullable String name;
 
         @Range(min = 18, max = 99)
         private int age;
 
         @Past
-        private LocalDate dateOfBirth;
+        private @Nullable LocalDate dateOfBirth;
     }
 }

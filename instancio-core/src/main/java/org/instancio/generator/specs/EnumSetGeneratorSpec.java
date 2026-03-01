@@ -61,6 +61,7 @@ public interface EnumSetGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<S
      * @return spec builder
      * @since 2.0.0
      */
+    @SuppressWarnings("unchecked")
     EnumSetGeneratorSpec<E> of(E... elements);
 
     /**
@@ -70,5 +71,6 @@ public interface EnumSetGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<S
      * @return spec builder
      * @since 2.0.0
      */
+    @SuppressWarnings("unchecked")
     EnumSetGeneratorSpec<E> excluding(E... elements);
 }

@@ -69,13 +69,16 @@ class PersonRecordTest {
                 .generate(field(PhoneRecord.class, "number"), gen -> gen.string().digits().length(7))
                 .create();
 
-        assertThat(result.address().phoneNumbers())
-                .isNotEmpty()
-                .extracting(PhoneRecord::number)
-                .allSatisfy(number -> assertThat(number).hasSize(7).containsOnlyDigits());
+        assertThat(result.address()).isNotNull().satisfies(address -> {
+            assertThat(address.phoneNumbers())
+                    .isNotEmpty()
+                    .extracting(PhoneRecord::number)
+                    .allSatisfy(number -> assertThat(number).hasSize(7).containsOnlyDigits());
+        });
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void ignore() {
         final PersonRecord result = Instancio.of(PersonRecord.class)
                 .ignore(all(
@@ -105,9 +108,13 @@ class PersonRecordTest {
                 .onComplete(all(AddressRecord.class), (AddressRecord address) -> callbackCount[0]++)
                 .create();
 
-        assertThat(result.address().city()).isEqualTo(city);
-        assertThat(result.address().street()).startsWith(streetPrefix).hasSizeGreaterThan(streetPrefix.length());
         assertThat(callbackCount[0]).isOne();
+
+        assertThat(result).isNotNull();
+        assertThat(result.address()).isNotNull().satisfies(address -> {
+            assertThat(address.city()).isEqualTo(city);
+            assertThat(address.street()).startsWith(streetPrefix).hasSizeGreaterThan(streetPrefix.length());
+        });
     }
 
     @Test

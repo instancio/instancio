@@ -27,6 +27,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.RunWith;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,10 +54,10 @@ class OnSetMethodNotFoundTest {
     }
 
     private static class BooleanWithIsMethod {
-        private Boolean is;
+        private @Nullable Boolean is;
         private boolean populatedViaSetter;
 
-        public void is(final Boolean is) {
+        public void is(@Nullable final Boolean is) {
             this.is = is;
             populatedViaSetter = true;
         }

@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.testkit.engine.EngineTestKit;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
@@ -67,8 +68,8 @@ class InstancioExtensionThreadLocalSeedCleanupTest {
         @Test
         @DisplayName("Dummy test method to verify thread local is cleared in afterAll()")
         void dummy() {
-            final long seed1 = ThreadLocalRandom.getInstance().get().getSeed();
-            final long seed2 = ThreadLocalRandom.getInstance().get().getSeed();
+            final long seed1 = requireNonNull(ThreadLocalRandom.getInstance().get()).getSeed();
+            final long seed2 = requireNonNull(ThreadLocalRandom.getInstance().get()).getSeed();
             assertThat(seed1)
                     .as("Same seed should be used within the test method")
                     .isEqualTo(seed2);

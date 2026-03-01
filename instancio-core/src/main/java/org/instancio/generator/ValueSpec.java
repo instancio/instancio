@@ -16,6 +16,7 @@
 package org.instancio.generator;
 
 import org.instancio.Instancio;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ import java.util.stream.Stream;
  * @param <T> the type of generated values
  * @since 2.6.0
  */
-public interface ValueSpec<T> extends GeneratorSpec<T>, Supplier<T> {
+public interface ValueSpec<T extends @Nullable Object> extends GeneratorSpec<T>, Supplier<T> {
 
     /**
      * Generates a single value.
@@ -97,7 +98,7 @@ public interface ValueSpec<T> extends GeneratorSpec<T>, Supplier<T> {
      * @return the result of the mapping function
      * @since 2.6.0
      */
-    default <R> R map(final Function<T, R> fn) {
+    default <R extends @Nullable Object> R map(final Function<T, R> fn) {
         return fn.apply(get());
     }
 

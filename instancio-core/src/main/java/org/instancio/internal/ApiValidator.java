@@ -19,6 +19,7 @@ import org.instancio.Node;
 import org.instancio.SelectorGroup;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
+import org.instancio.documentation.Contract;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
@@ -30,19 +31,20 @@ import org.instancio.internal.util.Format;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.SettingKey;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNestedGenerics;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNonGenericClass;
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
 import static org.instancio.internal.util.ErrorMessageUtils.createSetterSelectorWithFieldAssignmentErrorMessage;
 
-@SuppressWarnings("PMD.GodClass")
+@SuppressWarnings({"PMD.GodClass", "PMD.CyclomaticComplexity"})
 public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
@@ -61,10 +63,9 @@ public final class ApiValidator {
             \tPerson person = Instancio.of(Person.class).create();""";
 
     public static void validateRootClass(@Nullable final Type type) {
-        isTrue(type != null,
-                "class must not be null"
-                        + "%n -> Please provide a valid class%n%n"
-                        + CREATE_CLASS_HELP);
+        notNull(type, "class must not be null"
+                      + "%n -> Please provide a valid class%n%n"
+                      + CREATE_CLASS_HELP);
     }
 
     public static Type validateTypeToken(final TypeTokenSupplier<?> typeTokenSupplier) {
@@ -93,7 +94,7 @@ public final class ApiValidator {
     }
 
     public static <T> Class<T> validateOfCollectionElementType(final Class<T> elementType, final String method) {
-        isTrue(elementType != null, "%s element type must not be null", method);
+        notNull(elementType, "%s element type must not be null", method);
 
         if (TypeUtils.getTypeParameterCount(elementType) > 0) {
             throw Fail.withUsageError(ApiValidatorMessageHelper.ofCollectionElementType(elementType, method));
@@ -102,7 +103,7 @@ public final class ApiValidator {
     }
 
     public static <T> Class<T> validateOfMapKeyOrValueType(final Class<T> keyOrValueType) {
-        isTrue(keyOrValueType != null, "ofMap() key/value type must not be null");
+        notNull(keyOrValueType, "ofMap() key/value type must not be null");
 
         if (TypeUtils.getTypeParameterCount(keyOrValueType) > 0) {
             throw Fail.withUsageError(ApiValidatorMessageHelper.ofMapKeyOrValueType(keyOrValueType));
@@ -140,21 +141,23 @@ public final class ApiValidator {
     public static void validateKeyValue(final SettingKey<?> key, @Nullable final Object value) {
         notNull(key, "setting key must not be null");
         if (!key.allowsNullValue()) {
-            isTrue(value != null, "setting value for key '%s' must not be null", key.propertyKey());
+            notNull(value, "setting value for key '%s' must not be null", key.propertyKey());
         }
     }
 
-    public static <T> T[] notEmpty(@Nullable final T[] array, final String message, final Object... values) {
+    public static <T> @Nullable T[] notEmpty(@Nullable final T @Nullable [] array, final String message, final Object... values) {
         isTrue(array != null && array.length > 0, message, values);
         return array;
     }
 
     public static <T> Collection<T> notEmpty(@Nullable final Collection<T> collection, final String message, final Object... values) {
-        isTrue(collection != null && !collection.isEmpty(), message, values);
+        if (collection == null || collection.isEmpty()) {
+            throw Fail.withUsageError(message, values);
+        }
         return collection;
     }
 
-    public static void validateGeneratorUsage(final Node node, final Generator<?> generator) {
+    public static void validateGeneratorUsage(final Node node, @Nullable final Generator<?> generator) {
         final AbstractGenerator<?> absGen = GeneratorSupport.unpackAbstractGenerator(generator);
         if (absGen == null) return;
 
@@ -171,7 +174,7 @@ public final class ApiValidator {
                 + (node.getField() == null ? "" : "%n -> Field: " + node.getField());
     }
 
-    public static void validateGenerateSecondArgument(final Object arg) {
+    public static void validateGenerateSecondArgument(@Nullable final Object arg) {
         isFalse(arg == null, """
                 the second argument of 'generate()' method must not be null
                  -> To generate a null value, use 'set(TargetSelector, null)'
@@ -217,34 +220,49 @@ public final class ApiValidator {
         isTrue(min.compareTo(max) <= 0, "start must not exceed end: %s, %s", min, max);
     }
 
+    @Contract("null -> fail; _ -> param1")
     public static <T> T notNull(@Nullable final T obj, final String message) {
         if (obj == null) throw Fail.withUsageError(message);
         return obj;
     }
 
+    @Contract("null, _, _ -> fail; _, _, _ -> param1")
+    public static <T> T notNull(@Nullable final T obj, final String message, final Object... values) {
+        if (obj == null) throw Fail.withUsageError(String.format(message, values));
+        return obj;
+    }
+
+    @Contract("null -> fail; _ -> param1")
     public static <T> T notNull(@Nullable final T obj, final Supplier<String> supplier) {
         if (obj == null) throw Fail.withUsageError(supplier.get());
         return obj;
     }
 
-    public static <T> void doesNotContainNull(final T[] array, final Supplier<String> supplier) {
+    // https://github.com/uber/NullAway/issues/1476
+    @SuppressWarnings("NullAway")
+    public static <T> T[] doesNotContainNull(@Nullable final T[] array, final Supplier<String> supplier) {
         for (T e : array) {
             if (e == null) throw Fail.withUsageError(supplier.get());
         }
+        return array;
     }
 
+    @Contract("false, _, _ -> fail")
     public static void isTrue(final boolean condition, final String message, final Object... values) {
         if (!condition) throw Fail.withUsageError(message, values);
     }
 
+    @Contract("false, _ -> fail")
     public static void isTrue(final boolean condition, final Supplier<String> message) {
         if (!condition) throw Fail.withUsageError(message.get());
     }
 
+    @Contract("true, _, _ -> fail")
     public static void isFalse(final boolean condition, final String message, final Object... values) {
         if (condition) throw Fail.withUsageError(message, values);
     }
 
+    @Contract("true, _ -> fail")
     public static void isFalse(final boolean condition, final Supplier<String> message) {
         if (condition) throw Fail.withUsageError(message.get());
     }
@@ -273,8 +291,8 @@ public final class ApiValidator {
 
                             Please specify the type explicitly, for example: 'all(%s.class)' or 'all(%s.class)'""",
                     selector,
-                    pw.getWrapper().getTargetClass().getSimpleName(),
-                    pw.getPrimitive().getTargetClass().getSimpleName());
+                    requireNonNull(pw.getWrapper().getTargetClass()).getSimpleName(),
+                    requireNonNull(pw.getPrimitive().getTargetClass()).getSimpleName());
         }
     }
 
@@ -291,7 +309,7 @@ public final class ApiValidator {
 
     public static void validateValueIsAssignableToElementNode(
             final String errorMsg,
-            final Object value,
+            @Nullable final Object value,
             final InternalNode containerNode,
             final InternalNode elementNode) {
 
@@ -305,7 +323,7 @@ public final class ApiValidator {
                 ? PrimitiveWrapperBiLookup.getEquivalent(elementType)
                 : elementType;
 
-        if (targetClass.isAssignableFrom(valueClass)) {
+        if (requireNonNull(targetClass).isAssignableFrom(valueClass)) {
             return;
         }
 
@@ -317,7 +335,7 @@ public final class ApiValidator {
 
     public static void failIfMethodSelectorIsUsedWithFieldAssignment(
             final AssignmentType assignmentType,
-            final TargetSelector setMethodSelector) {
+            @Nullable final TargetSelector setMethodSelector) {
 
         if (assignmentType == AssignmentType.FIELD && setMethodSelector != null) {
             UnusedSelectorDescription desc = (UnusedSelectorDescription) setMethodSelector;

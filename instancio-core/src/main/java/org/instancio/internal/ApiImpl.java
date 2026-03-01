@@ -34,6 +34,7 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.settings.FillType;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.NullUnmarked;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -231,6 +232,7 @@ public class ApiImpl<T> implements InstancioApi<T>, InstancioObjectApi<T> {
         return createModel();
     }
 
+    @NullUnmarked
     @Override
     public T create() {
         return createRootObject(createModel());

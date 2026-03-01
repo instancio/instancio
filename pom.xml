@@ -61,10 +61,11 @@
         <version.groovy>5.0.4</version.groovy>
         <version.jakarta.persistence>3.2.0</version.jakarta.persistence>
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
-        <version.jetbrains.annotations>26.0.2-1</version.jetbrains.annotations>
+        <version.jspecify>1.0.0</version.jspecify>
         <version.junit>6.0.3</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
-        <version.error_prone_core>2.47.0</version.error_prone_core>
+        <version.error.prone.core>2.47.0</version.error.prone.core>
+        <version.nullaway>0.13.1</version.nullaway>
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.10.0</version.central-publishing-maven-plugin>
         <version.jacoco-maven-plugin>0.8.14</version.jacoco-maven-plugin>
@@ -132,7 +133,9 @@
         <profile>
             <id>error-prone</id>
             <activation>
-                <jdk>[21,)</jdk>
+                <file>
+                    <exists>${basedir}/.run-error-prone</exists>
+                </file>
             </activation>
             <build>
                 <pluginManagement>
@@ -148,6 +151,14 @@
                                     <arg>--should-stop=ifError=FLOW</arg>
                                     <arg>
                                         -Xplugin:ErrorProne
+                                        -Xep:NullAway:ERROR
+                                        -XepExcludedPaths:.*/target/generated-sources/.*
+                                        -XepOpt:NullAway:AnnotatedPackages=org.instancio
+                                        -XepOpt:NullAway:CustomContractAnnotations=org.instancio.documentation.Contract
+                                        -XepOpt:NullAway:ExcludedClassAnnotations=lombok.Data,lombok.Builder
+                                        -XepOpt:NullAway:ExcludedFieldAnnotations=org.instancio.junit.Given,org.instancio.junit.WithSettings
+                                        -XepOpt:NullAway:JSpecifyMode=true
+                                        -XepOpt:NullAway:TreatGeneratedAsUnannotated=true
                                         -Xep:AnnotateFormatMethod:OFF
                                         -Xep:BooleanLiteral:OFF
                                         -Xep:CharacterGetNumericValue:OFF
@@ -159,6 +170,7 @@
                                         -Xep:JavaTimeDefaultTimeZone:OFF
                                         -Xep:MissingSummary:OFF
                                         -Xep:MixedMutabilityReturnType:OFF
+                                        -Xep:NullArgumentForNonNullParameter:OFF
                                         -Xep:StaticAssignmentOfThrowable:OFF
                                         -Xep:StringSplitter:OFF
                                         -Xep:UnusedMethod:OFF
@@ -169,7 +181,12 @@
                                     <path>
                                         <groupId>com.google.errorprone</groupId>
                                         <artifactId>error_prone_core</artifactId>
-                                        <version>${version.error_prone_core}</version>
+                                        <version>${version.error.prone.core}</version>
+                                    </path>
+                                    <path>
+                                        <groupId>com.uber.nullaway</groupId>
+                                        <artifactId>nullaway</artifactId>
+                                        <version>${version.nullaway}</version>
                                     </path>
                                 </annotationProcessorPaths>
                             </configuration>
@@ -486,6 +503,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${version.jspecify}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${version.slf4j}</version>
@@ -523,12 +545,6 @@
                 <artifactId>groovy</artifactId>
                 <version>${version.groovy}</version>
                 <scope>provided</scope>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.jetbrains</groupId>
-                <artifactId>annotations</artifactId>
-                <version>${version.jetbrains.annotations}</version>
                 <optional>true</optional>
             </dependency>
             <dependency>

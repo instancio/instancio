@@ -32,6 +32,7 @@ import org.instancio.internal.selectors.TargetSetterName;
 import org.instancio.internal.selectors.TargetSetterReference;
 import org.instancio.internal.selectors.TypeSelectorBuilderImpl;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.function.Predicate;
@@ -339,7 +340,7 @@ public final class Select {
      */
     @ExperimentalApi
     public static Selector setter(final String methodName) {
-        return setter(null, methodName, null);
+        return setterInternal(null, methodName, null);
     }
 
     /**
@@ -361,7 +362,7 @@ public final class Select {
      */
     @ExperimentalApi
     public static Selector setter(final Class<?> declaringClass, final String methodName) {
-        return setter(declaringClass, methodName, null);
+        return setterInternal(declaringClass, methodName, null);
     }
 
     /**
@@ -380,6 +381,15 @@ public final class Select {
      */
     @ExperimentalApi
     public static Selector setter(final Class<?> declaringClass, final String methodName, final Class<?> parameterType) {
+        ApiValidator.notNull(parameterType, "parameterType must not be null");
+        return setterInternal(declaringClass, methodName, parameterType);
+    }
+
+    private static Selector setterInternal(
+            @Nullable final Class<?> declaringClass,
+            final String methodName,
+            @Nullable final Class<?> parameterType) {
+
         ApiValidator.notNull(methodName, "method name must not be null");
         return SelectorImpl.builder(new TargetSetterName(declaringClass, methodName, parameterType))
                 .build();

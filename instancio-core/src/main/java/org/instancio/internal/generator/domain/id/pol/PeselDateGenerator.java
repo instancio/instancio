@@ -21,6 +21,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.time.LocalDateGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +48,7 @@ class PeselDateGenerator extends AbstractGenerator<String> {
         localDateGenerator = new LocalDateGenerator(context).range(MIN, MAX);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;
@@ -60,7 +62,7 @@ class PeselDateGenerator extends AbstractGenerator<String> {
                 .replace(MONTH_LITERAL, codedMonthFromDate(localDate));
     }
 
-    PeselDateGenerator withLocalDate(final Generator<LocalDate> localDateGenerator) {
+    PeselDateGenerator withLocalDate(@Nullable final Generator<LocalDate> localDateGenerator) {
         if (localDateGenerator != null) {
             this.localDateGenerator = localDateGenerator;
         }

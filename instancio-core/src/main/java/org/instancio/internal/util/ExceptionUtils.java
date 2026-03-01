@@ -15,7 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.documentation.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
@@ -36,7 +37,7 @@ public final class ExceptionUtils {
      * @param t    exception to log
      * @param args message arguments
      */
-    public static void logException(final String msg, final Throwable t, final Object... args) {
+    public static void logException(final String msg, final Throwable t, @Nullable final Object... args) {
         final String formatted = MessageFormatter.arrayFormat(msg, args).getMessage();
         if (LOG.isTraceEnabled()) {
             LOG.trace(formatted, t);

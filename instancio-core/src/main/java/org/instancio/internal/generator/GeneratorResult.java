@@ -18,10 +18,9 @@ package org.instancio.internal.generator;
 import org.instancio.TargetSelector;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 public final class GeneratorResult {
     private static final Hints EMPTY_HINTS = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
@@ -34,13 +33,13 @@ public final class GeneratorResult {
         NULL, EMPTY, IGNORED, DELAYED, NORMAL
     }
 
-    private final Object value;
+    private final @Nullable Object value;
     private final Hints hints;
     private final Type type;
 
-    private GeneratorResult(@Nullable final Object value, @NotNull final Hints hints, final Type type) {
+    private GeneratorResult(@Nullable final Object value, final Hints hints, final Type type) {
         this.value = value;
-        this.hints = Objects.requireNonNull(hints, "null hints");
+        this.hints = requireNonNull(hints, "null hints");
         this.type = type;
     }
 
@@ -48,6 +47,7 @@ public final class GeneratorResult {
         return new GeneratorResult(value, hints, Type.NORMAL);
     }
 
+    @Nullable
     public Object getValue() {
         return value;
     }
@@ -102,10 +102,6 @@ public final class GeneratorResult {
     public boolean hasEmitNullHint() {
         final InternalGeneratorHint hint = hints.get(InternalGeneratorHint.class);
         return hint != null && hint.emitNull();
-    }
-
-    public boolean containsNull() {
-        return value == null;
     }
 
     public boolean isNormal() {

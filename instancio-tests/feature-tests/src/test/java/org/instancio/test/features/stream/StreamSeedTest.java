@@ -22,6 +22,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -43,7 +44,7 @@ class StreamSeedTest {
     private static final int SAMPLE_SIZE = 10;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static Set<UUID> first;
+    private static @Nullable Set<UUID> first;
 
     @Seed(SEED)
     @Order(1)
