@@ -237,15 +237,20 @@ by becoming a [sponsor](https://github.com/sponsors/instancio).
 
 A big thank you to the current project sponsors:
 
+<a href="https://cybozu.co.jp/en/company/" target="_blank">
+  <img src="https://www.instancio.org/assets/logo-cybozu.png" width="240" alt="Cybozu"/>
+</a>
+
+and individual backers:
+
 - [@darthblonderss](https://github.com/darthblonderss)
 - [@mauravan](https://github.com/mauravan)
 - [@mevlana14](https://github.com/mevlana14)
 
-Thanks to [JetBrains](https://jb.gg/OpenSource) and [YourKit](https://www.yourkit.com)
-for supporting this project with their open source licenses.
+Thanks to [JetBrains](https://jb.gg/OpenSource) for supporting this project with their open source licenses.
 
 <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width="150px" alt="JetBrains logo">
-<img src="https://www.yourkit.com/images/yklogo.png" width="140px" alt="YourKit logo">
+
 
 ## For Enterprise
 
