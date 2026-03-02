@@ -1,15 +1,36 @@
-<!-- Custom HTML site displayed as the Home chapter -->
-
 {% extends "main.html" %}
 
 {% block tabs %}
 {{ super() }}
 <style>
-    body {
-        background-color: rgb(238, 238, 238);
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap');
+
+    :root {
+        --green-deep: #1a3d2b;
+        --green-mid: #2d6a4f;
+        --green-bright: #40916c;
+        --green-light: #74c69d;
+        --green-pale: #b7e4c7;
+        --cream: #f8f5ee;
+        --ink: #1c1c1c;
+        --ink-muted: #4a4a4a;
+        --orange-accent: #ff9100;
+        --gold: #e8c547;
     }
+
+    body {
+        background-color: var(--green-deep);
+    }
+
+    /* Prevent MkDocs page wrapper from showing through below the custom footer */
+    .md-container,
+    .md-main,
+    .md-main__inner {
+        background: transparent;
+    }
+
     .md-main {
-        flex-grow: 0
+        flex-grow: 0;
     }
 
     .md-main__inner {
@@ -17,251 +38,865 @@
         height: 100%;
     }
 
+    /* ── HERO ── */
     .tx-container {
-        padding-top: .0rem;
-        background: linear-gradient(to bottom, var(--md-primary-fg-color), hsla(160deg,47%,55%,1) 99%,#fff 99%)
+        position: relative;
+        overflow: hidden;
+        background: var(--green-deep);
+        padding: 0;
+    }
+
+    .tx-container::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(rgba(116, 198, 157, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(116, 198, 157, 0.06) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+    }
+
+    .tx-container::after {
+        content: '';
+        position: absolute;
+        right: -120px;
+        top: -120px;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(64, 145, 108, 0.25) 0%, transparent 70%);
+        pointer-events: none;
     }
 
     .tx-hero {
-        margin: 32px 2.8rem;
-        color: var(--md-primary-bg-color);
-        justify-content: center;
-    }
-
-    .tx-hero h1 {
-        margin-bottom: 1rem;
-        color: currentColor;
-        font-weight: 700
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: minmax(280px, 2fr) minmax(420px, 3fr);
+        gap: 3rem;
+        max-width: 1260px;
+        margin: 0 auto;
+        padding: 80px 2rem 80px;
+        align-items: center;
+        min-height: 480px;
     }
 
     .tx-hero__content {
-        padding-bottom: 1rem;
+        padding-right: 3rem;
+    }
+
+    .tx-hero__badge {
+        display: inline-block;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.65rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--green-light);
+        background: rgba(116, 198, 157, 0.12);
+        border: 1px solid rgba(116, 198, 157, 0.25);
+        padding: 5px 12px;
+        border-radius: 2px;
+        margin-bottom: 1.5rem;
+    }
+
+    .tx-hero h1 {
+        font-family: 'Fraunces', serif;
+        font-size: clamp(3rem, 6vw, 5.5rem);
+        font-weight: 600;
+        color: #fff;
+        line-height: 0.95;
+        margin: 0 0 1.5rem;
+        letter-spacing: -0.02em;
+        font-style: normal;
+    }
+
+    .tx-hero__sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.7;
+        margin-bottom: 2.5rem;
+        max-width: 380px;
+    }
+
+    .tx-hero__sub strong {
+        color: var(--green-pale);
+        font-weight: 500;
+    }
+
+    .tx-hero__actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 28px;
+        background: var(--green-light);
+        color: var(--green-deep);
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background: #fff;
+        color: var(--green-deep);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 400;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 28px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 2px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Code snippet panel */
+    .tx-hero__code {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(116, 198, 157, 0.2);
+        border-radius: 6px;
+        overflow: hidden;
+        backdrop-filter: blur(4px);
+        min-width: 0;
+        width: 100%;
+    }
+
+    .code-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border-bottom: 1px solid rgba(116, 198, 157, 0.12);
+    }
+
+    .code-dots {
+        display: flex;
+        gap: 6px;
+    }
+
+    .code-dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+
+    .code-dots span:nth-child(1) {
+        background: #ff5f57;
+    }
+
+    .code-dots span:nth-child(2) {
+        background: #febc2e;
+    }
+
+    .code-dots span:nth-child(3) {
+        background: #28c840;
+    }
+
+    .code-label {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.62rem;
+        color: rgba(255, 255, 255, 0.35);
+        letter-spacing: 0.08em;
+    }
+
+    .code-body {
+        padding: 20px 20px 24px;
+        overflow-x: auto;
+    }
+
+    .code-body pre {
+        margin: 0;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.78rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.85);
+        white-space: pre;
+        min-width: max-content;
+    }
+
+    .c-comment {
+        color: rgba(116, 198, 157, 0.55);
+    }
+
+    .c-type {
+        color: #79d5b5;
+    }
+
+    .c-method {
+        color: #f0c87a;
+    }
+
+    .c-string {
+        color: #ff9567;
+    }
+
+    .c-keyword {
+        color: #c39ee8;
+    }
+
+    .c-var {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .info-strip {
+        background: var(--green-mid);
+        padding: 14px 2rem;
+    }
+
+    .info-inner {
+        display: flex;
+        gap: 32px;
+        max-width: 1260px;
+        margin: 0 auto;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        letter-spacing: 0.03em;
+    }
+
+    .info-item svg {
+        width: 14px;
+        height: 14px;
+        opacity: 0.7;
+        flex-shrink: 0;
+    }
+
+    a.info-item:hover {
+        color: #fff;
+    }
+
+    a.info-item:hover svg {
+        opacity: 1;
+    }
+
+    .info-badge {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.68rem;
+        padding: 2px 8px;
+        border-radius: 10px;
+        letter-spacing: 0.05em;
+    }
+
+    .features-section {
+        background: var(--cream);
+        padding: 80px 2rem;
+    }
+
+    .features-inner {
+        max-width: 1100px;
         margin: 0 auto;
     }
 
-    .tx-hero__image{
-        width:17rem;
-        height:17rem;
-        order:1;
-        padding-right: 2.5rem;
-    }
-
-    .tx-hero .md-button {
-        margin-top: .5rem;
-        margin-right: .5rem;
-        color: var(--md-primary-bg-color)
-    }
-
-    .tx-hero .md-button--primary {
-        background-color: #ccc;
-        color: hsla(280deg, 10%, 20%, 1);
-        border-color: var(--md-primary-bg-color)
-    }
-
-    .tx-hero .md-button:focus,
-    .tx-hero .md-button:hover {
-        background-color: var(--md-accent-fg-color);
-        color: var(--md-default-bg-color);
-        border-color: var(--md-accent-fg-color)
-    }
-
-    .feature-item h2 svg {
-        height: 30px;
-        float: left;
-        margin-right: 10px;
-        transform: translateY(10%);
-    }
-
-    .top-hr {
-        margin-top: 42px;
-    }
-
-    .feature-item {
-        font-family: 'Lato', sans-serif;
-        font-weight: 300;
-        box-sizing: border-box;
-        padding: 0 15px;
-        word-break: break-word
-    }
-
-    .feature-item h2 {
-        color: #333;
-        font-weight: 300;
-        font-size: 25px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: normal;
-        margin-top: 20px;
-        margin-bottom: 10px;
-        font-family: inherit;
-    }
-
-    .feature-item p {
-        font-size: 16px;
-        line-height: 1.8em;
-        text-rendering: optimizeLegibility;
-        -webkit-font-smoothing: antialiased;
-        color: #111;
-        margin: 0 0 10px;
+    .section-eyebrow {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--green-bright);
+        margin-bottom: 12px;
         display: block;
     }
 
-    @media screen and (max-width:30em) {
-        .tx-hero h1 {
-            font-size: 1.4rem
-        }
-    }
-
-    @media screen and (min-width:60em) {
-        .md-sidebar--secondary {
-            display: none
-        }
-
-        .tx-hero {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .tx-hero__content {
-            max-width: 22rem;
-            margin-top: 3.5rem;
-            margin-bottom: 3.5rem;
-            margin-left: 1.0rem;
-            margin-right: 4.0rem;
-            align-items: center;
-        }
-    }
-
-    @media screen and (min-width:76.25em) {
-        .md-sidebar--primary {
-            display: none
-        }
-
-        .top-hr {
-            width: 100%;
-            display: flex;
-            max-width: 61rem;
-            margin-right: auto;
-            margin-left: auto;
-            padding: 0 .2rem;
-        }
-
-        .bottom-hr {
-            margin-top: 10px;
-            width: 100%;
-            display: flex;
-            max-width: 61rem;
-            margin-right: auto;
-            margin-left: auto;
-            padding: 0 .2rem;
-        }
-
-        .feature-item {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .feature-item:hover {
-            background-color: #526cfe47;
-            border-radius: 3px;
-        }
-    }
-
-    .hr {
-        border-bottom: 1px solid #eee;
-        width: 100%;
-        margin: 20px 0;
-    }
-
-    .text-center {
-        text-align: center;
-        padding-right: 15px;
-        padding-left: 15px;
-        margin-right: auto;
-        margin-left: auto;
-        margin-top: 15px;
-        font-family: 'Lato', sans-serif;
-        font-size: 23px;
+    .section-title {
+        font-family: 'Fraunces', serif;
+        font-size: clamp(1.8rem, 3.5vw, 2.6rem);
         font-weight: 300;
-        padding-bottom: 10px;
+        color: var(--ink);
+        line-height: 1.15;
+        margin: 0 0 60px;
+        max-width: 520px;
     }
 
-    .logos {
+    .section-title em {
+        font-style: italic;
+        color: var(--green-bright);
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .feature-card {
+        background: var(--cream);
+        padding: 36px 32px;
+        position: relative;
+        transition: background 0.2s ease;
+    }
+
+    .feature-card:hover {
+        background: #fff;
+    }
+
+    .feature-card::before {
+        content: attr(data-num);
+        position: absolute;
+        top: 28px;
+        right: 28px;
+        font-family: 'Fraunces', serif;
+        font-size: 3rem;
+        font-weight: 300;
+        color: rgba(64, 145, 108, 0.1);
+        line-height: 1;
+    }
+
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--green-deep);
+        border-radius: 2px;
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-flow: row wrap;
+        margin-bottom: 20px;
+    }
+
+    .feature-icon svg {
+        width: 20px;
+        height: 20px;
+        color: var(--green-light);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .feature-card h3 {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--ink);
+        margin: 0 0 12px;
+        letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 300;
+        color: var(--ink-muted);
+        line-height: 1.75;
+        margin: 0;
+    }
+
+    .supporters-section {
+        background: #fff;
+        padding: 48px 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .supporters-inner {
+        max-width: 1100px;
         margin: 0 auto;
     }
 
-    .logos img {
-        flex: 1 1 auto;
-        padding: 25px;
-        max-height: 130px;
-        vertical-align: middle;
+    .supporters-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 40px;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
     }
 
-    .hr-logos {
-        margin-top: 0;
-        margin-bottom: 30px;
+    .supporters-text p {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 300;
+        color: var(--ink-muted);
+        line-height: 1.7;
+        margin: 0;
+        max-width: 480px;
     }
 
-    .md-footer-meta__inner {
+    .supporters-text p a {
+        color: var(--green-bright);
+        text-decoration: none;
+        font-weight: 400;
+    }
+
+    .supporters-text p a:hover {
+        text-decoration: underline;
+    }
+
+    .supporters-cta {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 11px 22px;
+        background: transparent;
+        color: var(--green-bright);
+        border: 1px solid var(--green-bright);
+        border-radius: 2px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+
+    .supporters-cta:hover {
+        background: var(--green-bright);
+        color: #fff;
+    }
+
+    .supporters-logos {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
-        margin-top: 1.0rem;
+        gap: 20px;
+        align-items: center;
     }
 
-    .md-footer-social {
-        padding-top: 20px;
+    .supporters-logo-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 24px;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 4px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .supporters-logo-item:hover {
+        border-color: var(--green-light);
+        box-shadow: 0 2px 12px rgba(64, 145, 108, 0.08);
+    }
+
+    .supporters-logo-item img {
+        width: 280px;
+        max-width: 100%;
+        height: auto;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+        display: block;
+    }
+
+    .supporters-logo-item:hover img {
+        opacity: 1;
+    }
+
+    .quicklinks-section {
+        background: var(--green-deep);
+        padding: 0 2rem;
+    }
+
+    .quicklinks-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        align-items: stretch;
+    }
+
+    .quicklink-item {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 28px 24px;
+        text-decoration: none;
+        transition: background 0.2s ease;
+    }
+
+    .quicklink-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .quicklink-item:hover .quicklink-arrow {
+        transform: translateX(4px);
+        color: var(--green-light);
+    }
+
+    .quicklink-icon {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        border: 1px solid rgba(116, 198, 157, 0.25);
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--green-light);
+    }
+
+    .quicklink-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .quicklink-text {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        flex: 1;
+    }
+
+    .quicklink-label {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #fff;
+        letter-spacing: -0.01em;
+    }
+
+    .quicklink-desc {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.45);
+    }
+
+    .quicklink-arrow {
+        width: 16px;
+        height: 16px;
+        color: rgba(255, 255, 255, 0.25);
+        flex-shrink: 0;
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .quicklink-divider {
+        width: 1px;
+        background: rgba(116, 198, 157, 0.1);
+        margin: 16px 0;
+    }
+
+    .site-footer {
+        background: var(--green-deep);
+        border-top: 1px solid rgba(116, 198, 157, 0.1);
+        padding: 14px 2rem;
+        text-align: center;
+        line-height: 1;
+    }
+
+    .site-footer__copy {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.28);
+        letter-spacing: 0.04em;
+    }
+
+    @media screen and (max-width: 900px) {
+        .tx-hero {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            padding: 60px 1.5rem;
+        }
+
+        .tx-hero__content {
+            padding-right: 0;
+        }
+
+        .tx-hero__code {
+            display: none;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .info-inner {
+            gap: 16px;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        .tx-hero h1 {
+            font-size: 2.8rem;
+        }
+
+        .features-section {
+            padding: 50px 1.5rem;
+        }
+
+        .quicklinks-inner {
+            flex-direction: column;
+        }
+
+        .quicklink-divider {
+            width: auto;
+            height: 1px;
+            margin: 0 16px;
+        }
+    }
+
+    @media screen and (min-width: 60em) {
+        .md-sidebar--secondary {
+            display: none;
+        }
+    }
+
+    @media screen and (min-width: 76.25em) {
+        .md-sidebar--primary {
+            display: none;
+        }
     }
 </style>
 
-<!-- Main site Entry button descriptions -->
 <section class="tx-container">
-    <div class="md-grid md-typeset">
-      <div class="tx-hero">
-        <div class="tx-hero__image">
-          <!-- <img src="assets/instancio-logo-sm.png" draggable="false"> -->
-        </div>
+    <div class="tx-hero">
         <div class="tx-hero__content">
-          <h1>Instancio</h1>
-          <p>A Java library for <b>automating data setup</b> in unit tests.</p>
-          <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | striptags }}" class="md-button md-button--primary">
-            Get started
-          </a>
-          <a href="user-guide" title="User Guide" class="md-button md-button--primary">
-            User Guide
-          </a>
+            <span class="tx-hero__badge">Java Testing Library</span>
+            <h1>Instancio</h1>
+            <p class="tx-hero__sub">
+                A Java library for automating test data setup. Creates fully-populated objects with random data so you
+                can spend less time writing boilerplate and more time writing tests.
+            </p>
+            <div class="tx-hero__actions">
+                <a href="{{ page.next_page.url | url }}" class="btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                    Get Started
+                </a>
+                <a href="user-guide" class="btn-secondary">
+                    User Guide
+                </a>
+            </div>
         </div>
-      </div>
+
+        <div class="tx-hero__code">
+            <div class="code-header">
+                <div class="code-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="code-body">
+                <pre><span class="c-comment">// Inject a random Person using @Given</span>
+<span class="c-keyword">@ExtendWith</span>(<span class="c-type">InstancioExtension</span>.class)
+<span class="c-keyword">class</span> <span class="c-type">PersonMapperTest</span> {
+
+    <span class="c-keyword">@Test</span>
+    <span class="c-keyword">void</span> <span class="c-method">shouldMapToDto</span>(<span
+                            class="c-keyword">@Given</span> <span class="c-type">Person</span> <span class="c-var">person</span>) {
+        <span class="c-type">PersonDto</span> <span class="c-var">dto</span> = <span class="c-type">PersonMapper</span>.<span
+                            class="c-method">toDto</span>(<span class="c-var">person</span>);
+        <span class="c-method">assertThat</span>(<span class="c-var">dto</span>.<span class="c-method">getName</span>()).<span
+                            class="c-method">isEqualTo</span>(<span class="c-var">person</span>.<span class="c-method">getName</span>());
+        <span class="c-method">assertThat</span>(<span class="c-var">dto</span>.<span class="c-method">getEmail</span>()).<span
+                            class="c-method">isEqualTo</span>(<span class="c-var">person</span>.<span class="c-method">getEmail</span>());
+    }
+}
+<span class="c-comment">// Or create manually with overrides</span>
+<span class="c-type">Person</span> <span class="c-var">person</span> = <span class="c-type">Instancio</span>.<span
+                            class="c-method">of</span>(<span class="c-type">Person</span>.class)
+    .<span class="c-method">set</span>(<span class="c-method">field</span>(<span class="c-type">Person</span>::<span
+                            class="c-method">getName</span>), <span class="c-string">"Alice"</span>)
+    .<span class="c-method">generate</span>(<span class="c-method">field</span>(<span
+                            class="c-type">Person</span>::<span class="c-method">getAge</span>),
+        <span class="c-var">gen</span> -> <span class="c-var">gen</span>.<span class="c-method">ints</span>().<span
+                            class="c-method">range</span>(<span class="c-string">18</span>, <span
+                            class="c-string">65</span>))
+    .<span class="c-method">create</span>();</pre>
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- Main site box descriptions -->
-<div class="top-hr">
-    <div class="feature-item">
-        <h2>What is it?</h2>
-        <p>Instancio is a library for instantiating and populating objects with random data, making your tests more dynamic. Each test run is against a new set of inputs.</p>
-    </div>
-    <div class="feature-item">
-        <h2>Why use it?</h2>
-        <p>The goal is to reduce the time and lines of code spent on manual data setup in unit tests, and potentially to uncover bugs that may have gone unnoticed with static test data.</p>
-    </div>
-    <div class="feature-item">
-        <h2>How does it work?</h2>
-        <p>Instancio uses reflection to populate objects, including nested objects and collections. A single method call provides you with a fully populated instance of a class, ready to be used as an input to your test case.</p>
-    </div>
-</div>
-
-<div class="top-hr">
-    <div class="hr">
+<div class="info-strip">
+    <div class="info-inner">
+        <span class="info-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Latest release
+            <span class="info-badge">v{{ config.latest_release }}</span>
+        </span>
+        <a href="https://twitter.com/instancio_java" target="_blank" class="info-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            @instancio_java
+        </a>
     </div>
 </div>
 
+<div class="supporters-section">
+    <div class="supporters-inner">
+        <div class="supporters-header">
+            <div class="supporters-text">
+                <p>Instancio is free and open-source. If it's saved you time writing boilerplate, please consider <a
+                        href="https://github.com/sponsors/instancio" target="_blank">sponsoring the project</a> — it
+                    helps keep development going. A huge thank you to everyone who already has.</p>
+            </div>
+            <a href="https://github.com/sponsors/instancio" target="_blank" class="supporters-cta">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                Become a supporter
+            </a>
+        </div>
+        <div class="supporters-logos">
+            <a href="https://cybozu.co.jp/en/company/" target="_blank" class="supporters-logo-item">
+                <img src="assets/logo-cybozu.png" alt="Cybozu"/>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="features-inner">
+        <h2 class="section-title">How Instancio works</h2>
+        <div class="features-grid">
+            <div class="feature-card" data-num="01">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        <path d="M17.5 14v6M14 17.5h6"/>
+                    </svg>
+                </div>
+                <h3>Object graph population</h3>
+                <p>Uses reflection to populate every field in a class, including nested objects, generics, and
+                    collections. A single method call returns a fully-initialised instance ready for use in a test.</p>
+            </div>
+            <div class="feature-card" data-num="02">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+                    </svg>
+                </div>
+                <h3>Randomised inputs</h3>
+                <p>Each test run uses a different set of values. This can surface edge cases and bugs that wouldn't be
+                    caught with a fixed dataset. A seed is printed on failure so runs are reproducible.</p>
+            </div>
+            <div class="feature-card" data-num="03">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
+                </div>
+                <h3>Selective overrides</h3>
+                <p>Override specific fields using <code>set()</code>, <code>generate()</code>, or <code>supply()</code>.
+                    Fields that aren't relevant to a test can be ignored. Everything else is handled automatically.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="quicklinks-section">
+    <div class="quicklinks-inner">
+        <a href="user-guide" class="quicklink-item">
+            <div class="quicklink-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+                </svg>
+            </div>
+            <div class="quicklink-text">
+                <span class="quicklink-label">User Guide</span>
+                <span class="quicklink-desc">Full reference documentation</span>
+            </div>
+            <svg class="quicklink-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </a>
+        <div class="quicklink-divider"></div>
+        <a href="https://github.com/instancio/instancio/discussions" target="_blank" class="quicklink-item">
+            <div class="quicklink-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                </svg>
+            </div>
+            <div class="quicklink-text">
+                <span class="quicklink-label">Discussions</span>
+                <span class="quicklink-desc">Ask questions &amp; share ideas</span>
+            </div>
+            <svg class="quicklink-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </a>
+        <div class="quicklink-divider"></div>
+        <a href="https://javadoc.io/doc/org.instancio/instancio-core" target="_blank" class="quicklink-item">
+            <div class="quicklink-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"/>
+                    <polyline points="8 6 2 12 8 18"/>
+                </svg>
+            </div>
+            <div class="quicklink-text">
+                <span class="quicklink-label">Javadocs</span>
+                <span class="quicklink-desc">Browse the API reference</span>
+            </div>
+            <svg class="quicklink-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </a>
+        <div class="quicklink-divider"></div>
+        <a href="https://github.com/instancio/instancio" target="_blank" class="quicklink-item">
+            <div class="quicklink-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+                </svg>
+            </div>
+            <div class="quicklink-text">
+                <span class="quicklink-label">GitHub</span>
+                <span class="quicklink-desc">Source code &amp; issues</span>
+            </div>
+            <svg class="quicklink-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </a>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <span class="site-footer__copy">{{ config.copyright }}</span>
+</footer>
 
 {% endblock %}
 {% block content %}{% endblock %}
