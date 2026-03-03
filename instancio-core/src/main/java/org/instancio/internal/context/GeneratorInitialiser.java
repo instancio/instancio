@@ -19,6 +19,7 @@ import org.instancio.TargetSelector;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.generator.Hints;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.settings.Keys;
@@ -41,10 +42,13 @@ final class GeneratorInitialiser {
         g.init(context);
 
         final Generator<T> generator = GeneratorDecorator.decorateIfNullAfterGenerate(g, defaultAfterGenerate);
-        final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
+        final Hints hints = generator.hints();
+        if (hints != null) {
+            final InternalGeneratorHint hint = hints.get(InternalGeneratorHint.class);
 
-        if (hint != null && hint.targetClass() != null) {
-            subtypeMap.put(targetSelector, hint.targetClass());
+            if (hint != null && hint.targetClass() != null) {
+                subtypeMap.put(targetSelector, hint.targetClass());
+            }
         }
 
         return generator;

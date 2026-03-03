@@ -23,13 +23,14 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Objects.requireNonNull;
 
 public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattener<TargetSelector> {
 
@@ -86,7 +87,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
     }
 
     @Override
-    public Selector within(@NotNull final Scope... scopes) {
+    public Selector within(final Scope... scopes) {
         final List<Scope> scopeList = Arrays.asList(scopes);
         return new PrimitiveAndWrapperSelectorImpl(
                 primitive.toBuilder().scopes(scopeList).build(),
@@ -122,7 +123,7 @@ public final class PrimitiveAndWrapperSelectorImpl implements Selector, Flattene
         } else if (primitive.getDepth() != null) {
             str += ".atDepth(" + primitive.getDepth() + ")";
         }
-        return str;
+        return requireNonNull(str);
     }
 
     private static Map<Class<?>, String> getApiMethodNames() {

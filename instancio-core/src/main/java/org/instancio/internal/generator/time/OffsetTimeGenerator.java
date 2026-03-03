@@ -16,11 +16,11 @@
 package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
+import org.instancio.documentation.VisibleForTesting;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.OffsetTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import java.time.OffsetTime;
 import java.time.ZoneOffset;

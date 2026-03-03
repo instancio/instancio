@@ -17,7 +17,6 @@ package org.instancio.internal.settings;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a setting that can be auto-adjusted based on the value
@@ -39,7 +38,5 @@ public interface AutoAdjustable {
      * @param <N>        a comparable number
      * @since 2.11.0
      */
-    <N extends Number & Comparable<N>> void autoAdjust(
-            @NotNull Settings settings,
-            @NotNull N otherValue);
+    <N extends Number & Comparable<N>> void autoAdjust(Settings settings, N otherValue);
 }
