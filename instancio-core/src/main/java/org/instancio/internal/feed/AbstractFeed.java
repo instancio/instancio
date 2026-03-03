@@ -278,6 +278,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> List<PostProcessor<T>> getPostProcessors(final SpecMethod specMethod) {
         final WithPostProcessor withPostProcessor = specMethod.getAnnotation(WithPostProcessor.class);
 
@@ -332,6 +333,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
 
         try {
             final FunctionProvider provider = ReflectionUtils.newInstance(providerClass);
+            //noinspection unchecked
             return (T) setAccessible(functionSpecHandler).invoke(provider, args);
         } catch (Exception ex) {
             throw Fail.withUsageError(errorInvokingFunctionSpecHandlerMethod(

@@ -41,6 +41,7 @@ public interface EmitGeneratorSpec<T> extends GeneratorSpec<T> {
      * @see #item(Object, int)
      * @since 2.12.0
      */
+    @SuppressWarnings("unchecked")
     EmitGeneratorSpec<T> items(T... items);
 
     /**

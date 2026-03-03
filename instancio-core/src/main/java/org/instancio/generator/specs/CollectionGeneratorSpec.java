@@ -116,6 +116,7 @@ public interface CollectionGeneratorSpec<T>
      * @param elements to add
      * @return spec builder
      */
+    @SuppressWarnings("unchecked")
     CollectionGeneratorSpec<T> with(T... elements);
 
 }

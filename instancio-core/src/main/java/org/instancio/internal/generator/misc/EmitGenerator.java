@@ -62,6 +62,7 @@ public class EmitGenerator<T> extends AbstractGenerator<T>
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public EmitGenerator<T> items(final T... items) {
         ApiValidator.notNull(items, "'items' array must not be null");

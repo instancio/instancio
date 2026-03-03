@@ -77,5 +77,6 @@ public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T>, Subtype
      * @param elements to add
      * @return spec builder
      */
+    @SuppressWarnings("unchecked")
     ArrayGeneratorSpec<T> with(T... elements);
 }
