@@ -55,9 +55,8 @@ public abstract class AbstractDataStore<R> implements DataStore<R> {
     @Override
     public final List<R> get(final String tagValue) {
         final List<R> tagData = groupedByTag.get(tagValue);
-        ApiValidator.notNull(tagData, () -> String.format(
+        return ApiValidator.notNull(tagData, () -> String.format(
                 "no data found with tag value: '%s' (tagKey is set to: '%s')", tagValue, tagKey));
-        return tagData;
     }
 
     @Override

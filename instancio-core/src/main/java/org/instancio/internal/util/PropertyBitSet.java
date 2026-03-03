@@ -37,7 +37,8 @@ public class PropertyBitSet {
     }
 
     public void set(final String property) {
-        bitSet.set(propertyIndexMap.get(property));
+        final Integer bitIndex = propertyIndexMap.get(property);
+        bitSet.set(Verify.notNull(bitIndex, "Null bit index for property %s", property));
     }
 
     public void clear() {

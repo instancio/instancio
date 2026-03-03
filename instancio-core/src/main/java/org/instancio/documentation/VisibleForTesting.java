@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generation;
+package org.instancio.documentation;
 
-import org.instancio.documentation.InternalApi;
-import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.nodes.InternalNode;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@InternalApi
-interface NodeHandler {
-
-    NodeHandler NOOP_HANDLER = new NodeHandler() {
-        @Override
-        public GeneratorResult getResult(final InternalNode node) {
-            return GeneratorResult.emptyResult();
-        }
-    };
-
-    GeneratorResult getResult(InternalNode node);
-
+/**
+ * Marks an element whose visibility is broader than necessary only to support testing.
+ *
+ * @since 6.0.0
+ */
+@Documented
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.TYPE})
+public @interface VisibleForTesting {
 }

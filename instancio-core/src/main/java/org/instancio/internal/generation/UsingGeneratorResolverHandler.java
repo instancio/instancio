@@ -16,12 +16,13 @@
 package org.instancio.internal.generation;
 
 import org.instancio.generator.Generator;
+import org.instancio.generator.Hints;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
-import org.jetbrains.annotations.NotNull;
 
 class UsingGeneratorResolverHandler implements NodeHandler {
 
@@ -39,9 +40,8 @@ class UsingGeneratorResolverHandler implements NodeHandler {
                 context.getSettings().get(Keys.STRING_FIELD_PREFIX_ENABLED));
     }
 
-    @NotNull
     @Override
-    public GeneratorResult getResult(@NotNull final InternalNode node) {
+    public GeneratorResult getResult(final InternalNode node) {
         final Generator<?> generator = generatorResolver.getCached(node);
 
         if (generator == null) {
@@ -50,6 +50,7 @@ class UsingGeneratorResolverHandler implements NodeHandler {
 
         final Object value = generator.generate(context.getRandom());
         final Object processed = stringPostProcessor.process(value, node, generator);
-        return GeneratorResult.create(processed, generator.hints());
+        final Hints hints = Verify.notNull(generator.hints(), "Built-in generator hints are null");
+        return GeneratorResult.create(processed, hints);
     }
 }

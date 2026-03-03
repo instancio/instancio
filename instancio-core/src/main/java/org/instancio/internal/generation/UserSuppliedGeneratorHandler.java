@@ -19,7 +19,6 @@ import org.instancio.generator.Generator;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -47,9 +46,8 @@ final class UserSuppliedGeneratorHandler implements NodeHandler {
      * If the context has enough information to generate a value for the field, then do so.
      * If not, return an empty {@link Optional} and proceed with the main generation flow.
      */
-    @NotNull
     @Override
-    public GeneratorResult getResult(@NotNull final InternalNode node) {
+    public GeneratorResult getResult(final InternalNode node) {
         final Optional<Generator<?>> generatorOpt = modelContext.getGenerator(node);
 
         //noinspection OptionalIsPresent
