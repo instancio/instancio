@@ -3,6 +3,7 @@ module org.instancio.junit {
 
   requires static org.junit.jupiter.params;
 
+  requires org.jspecify;
   requires org.junit.jupiter.api;
   requires org.slf4j;
 

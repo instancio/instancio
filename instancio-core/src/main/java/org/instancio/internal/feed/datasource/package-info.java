@@ -16,4 +16,7 @@
 /**
  * Contains {@link org.instancio.feed.DataSource} implementations.
  */
+@NullMarked
 package org.instancio.internal.feed.datasource;
+
+import org.jspecify.annotations.NullMarked;

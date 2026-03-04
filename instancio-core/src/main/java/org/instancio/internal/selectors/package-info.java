@@ -16,4 +16,7 @@
 /**
  * Provides selector API implementation.
  */
+@NullMarked
 package org.instancio.internal.selectors;
+
+import org.jspecify.annotations.NullMarked;

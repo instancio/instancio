@@ -16,4 +16,7 @@
 /**
  * Provides finance-related generators.
  */
+@NullMarked
 package org.instancio.internal.generator.domain.finance;
+
+import org.jspecify.annotations.NullMarked;

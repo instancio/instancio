@@ -19,6 +19,9 @@
  * <p>This package is not part of the public API.
  */
 @InternalApi
+@NullMarked
 package org.instancio.support;
+
+import org.jspecify.annotations.NullMarked;
 
 import org.instancio.documentation.InternalApi;

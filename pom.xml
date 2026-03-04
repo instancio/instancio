@@ -62,6 +62,7 @@
         <version.jakarta.persistence>3.2.0</version.jakarta.persistence>
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
         <version.jetbrains.annotations>26.0.2-1</version.jetbrains.annotations>
+        <version.jspecify>1.0.0</version.jspecify>
         <version.junit>6.0.3</version.junit>
         <version.slf4j>2.0.17</version.slf4j>
         <version.error_prone_core>2.48.0</version.error_prone_core>
@@ -485,6 +486,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${version.jspecify}</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>

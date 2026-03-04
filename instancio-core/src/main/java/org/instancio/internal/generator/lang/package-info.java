@@ -16,4 +16,7 @@
 /**
  * Provides generators for {@code java.lang.*} types.
  */
+@NullMarked
 package org.instancio.internal.generator.lang;
+
+import org.jspecify.annotations.NullMarked;

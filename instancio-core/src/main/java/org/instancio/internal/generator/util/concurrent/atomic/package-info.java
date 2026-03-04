@@ -16,4 +16,7 @@
 /**
  * Provides generators for {@code java.util.concurrent.atomic.*} types.
  */
+@NullMarked
 package org.instancio.internal.generator.util.concurrent.atomic;
+
+import org.jspecify.annotations.NullMarked;

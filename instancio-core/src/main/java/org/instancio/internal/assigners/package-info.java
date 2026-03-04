@@ -16,4 +16,7 @@
 /**
  * Implements how values are assigned: fields or methods.
  */
+@NullMarked
 package org.instancio.internal.assigners;
+
+import org.jspecify.annotations.NullMarked;

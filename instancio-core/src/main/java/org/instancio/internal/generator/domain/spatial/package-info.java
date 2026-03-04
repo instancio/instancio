@@ -16,4 +16,7 @@
 /**
  * Provides Spatial-related generators.
  */
+@NullMarked
 package org.instancio.internal.generator.domain.spatial;
+
+import org.jspecify.annotations.NullMarked;

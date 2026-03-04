@@ -16,4 +16,7 @@
 /**
  * Provides numeric sequence generators.
  */
+@NullMarked
 package org.instancio.internal.generator.sequence;
+
+import org.jspecify.annotations.NullMarked;

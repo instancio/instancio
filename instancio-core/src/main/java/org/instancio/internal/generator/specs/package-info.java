@@ -16,4 +16,7 @@
 /**
  * Contains internal generator specs.
  */
+@NullMarked
 package org.instancio.internal.generator.specs;
+
+import org.jspecify.annotations.NullMarked;

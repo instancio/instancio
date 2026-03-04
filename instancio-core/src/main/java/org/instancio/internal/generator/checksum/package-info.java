@@ -16,4 +16,7 @@
 /**
  * Provides generators for checksum-valid numbers.
  */
+@NullMarked
 package org.instancio.internal.generator.checksum;
+
+import org.jspecify.annotations.NullMarked;

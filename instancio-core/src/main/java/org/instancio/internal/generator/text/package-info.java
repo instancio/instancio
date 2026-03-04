@@ -16,4 +16,7 @@
 /**
  * Provides text generators.
  */
+@NullMarked
 package org.instancio.internal.generator.text;
+
+import org.jspecify.annotations.NullMarked;

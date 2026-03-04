@@ -16,5 +16,8 @@
 /**
  * Contains exception classes thrown by Instancio.
  */
+@NullMarked
 package org.instancio.exception;
+
+import org.jspecify.annotations.NullMarked;
 

@@ -46,11 +46,11 @@ internal class KSelectorsTest {
 
     @Test
     fun selectRoot() {
-        val result = Instancio.of(KPerson::class.java)
-            .set(root(), null)
+        val result = Instancio.of(String::class.java)
+            .set(root(), "foo")
             .create()
 
-        assertThat(result).isNull()
+        assertThat(result).isEqualTo("foo")
     }
 
     @Test
