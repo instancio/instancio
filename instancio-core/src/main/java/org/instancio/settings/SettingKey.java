@@ -55,9 +55,7 @@ public interface SettingKey<T> {
      * @return default value, or {@code null} if not defined
      * @since 1.0.1
      */
-    default T defaultValue() {
-        return null;
-    }
+    T defaultValue();
 
     /**
      * Indicates whether the value for this key can be set to {@code null}.
