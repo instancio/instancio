@@ -16,4 +16,7 @@
 /**
  * Implementation classes for generating random values.
  */
+@NullMarked
 package org.instancio.internal.random;
+
+import org.jspecify.annotations.NullMarked;

@@ -2,6 +2,7 @@ module org.instancio.guava {
     requires transitive org.instancio.core;
 
     requires com.google.common;
+    requires org.jspecify;
 
     exports org.instancio.guava;
     exports org.instancio.guava.generator.specs;

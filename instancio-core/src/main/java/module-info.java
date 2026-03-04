@@ -1,4 +1,5 @@
 module org.instancio.core {
+    requires org.jspecify;
     requires org.slf4j;
 
     requires static jakarta.persistence;

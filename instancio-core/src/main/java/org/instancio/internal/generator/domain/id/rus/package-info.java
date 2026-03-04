@@ -18,4 +18,7 @@
  *
  * @since 5.0.0
  */
+@NullMarked
 package org.instancio.internal.generator.domain.id.rus;
+
+import org.jspecify.annotations.NullMarked;

@@ -16,4 +16,7 @@
 /**
  * Provides generators for various types of hashes.
  */
+@NullMarked
 package org.instancio.internal.generator.domain.hash;
+
+import org.jspecify.annotations.NullMarked;

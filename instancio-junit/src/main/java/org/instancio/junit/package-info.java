@@ -16,5 +16,8 @@
 /**
  * Provides Instancio JUnit 5 support.
  */
+@NullMarked
 package org.instancio.junit;
+
+import org.jspecify.annotations.NullMarked;
 

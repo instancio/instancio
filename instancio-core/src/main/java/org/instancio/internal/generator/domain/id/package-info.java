@@ -16,4 +16,7 @@
 /**
  * Provides generators for various types of identifiers.
  */
+@NullMarked
 package org.instancio.internal.generator.domain.id;
+
+import org.jspecify.annotations.NullMarked;

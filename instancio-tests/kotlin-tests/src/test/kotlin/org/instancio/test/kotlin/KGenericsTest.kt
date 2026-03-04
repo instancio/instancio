@@ -29,9 +29,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(InstancioExtension::class)
 internal class KGenericsTest {
 
-    private inline fun <reified T> genericType() = object : TypeToken<T> {}
+    private inline fun <reified T : Any> genericType() = object : TypeToken<T> {}
 
-    private class KPair<L, R>(val left: L, val right: R) {}
+    private class KPair<L, R>(val left: L, val right: R)
 
     @Test
     fun genericPair() {

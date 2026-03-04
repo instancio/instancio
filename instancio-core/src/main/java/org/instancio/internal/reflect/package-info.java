@@ -16,4 +16,7 @@
 /**
  * Implementation classes providing support for reflection.
  */
+@NullMarked
 package org.instancio.internal.reflect;
+
+import org.jspecify.annotations.NullMarked;
