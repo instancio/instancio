@@ -757,7 +757,7 @@ public final class Instancio {
     }
 
     /**
-     * Builder API for generating a {@link Set} using the specified model for list elements.
+     * Builder API for generating a {@link Set} using the specified model for set elements.
      *
      * @param elementModel a model for creating set elements
      * @param <T>          element type
@@ -769,7 +769,7 @@ public final class Instancio {
     }
 
     /**
-     * Builder API for generating a {@link Map} that allowss customisation of generated values.
+     * Builder API for generating a {@link Map} that allows customisation of generated values.
      *
      * @param keyType   class to generate as map keys
      * @param valueType class to generate as map values
