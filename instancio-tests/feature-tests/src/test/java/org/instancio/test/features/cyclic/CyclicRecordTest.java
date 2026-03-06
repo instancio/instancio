@@ -30,9 +30,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @FeatureTag(Feature.CYCLIC)
 @ExtendWith(InstancioExtension.class)
 class CyclicRecordTest {

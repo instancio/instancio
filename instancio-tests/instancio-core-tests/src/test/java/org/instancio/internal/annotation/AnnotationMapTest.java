@@ -101,20 +101,6 @@ class AnnotationMapTest {
         }
 
         @Test
-        void getRemovePrimary() {
-            final Annotation bar = getAnnotation(Bar.class);
-            map.setPrimary(bar);
-
-            final Annotation removed = map.removePrimary();
-
-            assertThat(removed).isEqualTo(bar);
-            assertThat(map.getAnnotations())
-                    .containsExactly(getAnnotation(Foo.class), getAnnotation(Baz.class));
-
-            assertThat(map.removePrimary()).isNull();
-        }
-
-        @Test
         void getValues() {
             assertThat(map.getAnnotations()).containsExactly(ANNOTATIONS);
         }
@@ -140,11 +126,6 @@ class AnnotationMapTest {
         @Test
         void getRemainingExceptPrimary() {
             assertThat(emptyMap.getAnnotations()).isEmpty();
-        }
-
-        @Test
-        void getRemovePrimary() {
-            assertThat(emptyMap.removePrimary()).isNull();
         }
 
         @Test

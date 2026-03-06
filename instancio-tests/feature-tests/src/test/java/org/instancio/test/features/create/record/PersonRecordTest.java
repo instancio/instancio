@@ -35,9 +35,6 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @FeatureTag({
         Feature.IGNORE,
         Feature.GENERATE,

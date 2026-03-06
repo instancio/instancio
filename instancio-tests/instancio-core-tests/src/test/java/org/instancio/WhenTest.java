@@ -15,9 +15,11 @@
  */
 package org.instancio;
 
+import org.instancio.exception.InstancioApiException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class WhenTest {
     private static final Object[] NULL_ELEMENT = {null};
@@ -59,5 +61,13 @@ class WhenTest {
         assertThat(When.isIn("foo", "bar", "baz"))
                 .rejects(null, "gaz")
                 .accepts("foo", "bar", "baz");
+    }
+
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    void isIn_rejectsNullArray() {
+        assertThatThrownBy(() -> When.isIn((Object[]) null))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("isIn() 'values' may contain null but array must not be null");
     }
 }

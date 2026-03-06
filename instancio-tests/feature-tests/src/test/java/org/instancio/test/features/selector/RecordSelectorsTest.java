@@ -32,9 +32,6 @@ import static org.instancio.Select.root;
 import static org.instancio.Select.types;
 import static org.instancio.test.support.asserts.ReflectionAssert.assertThatObject;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @FeatureTag({
         Feature.SELECTOR,
         Feature.PREDICATE_SELECTOR,

@@ -32,9 +32,6 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @ExtendWith(InstancioExtension.class)
 class SealedAbstractTypeTest {
 

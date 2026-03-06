@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.instancio.internal.ApiValidator;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
@@ -94,6 +95,7 @@ public final class When {
     @SafeVarargs
     @ExperimentalApi
     public static <T extends @Nullable Object> Predicate<T> isIn(final T... values) {
+        ApiValidator.notNull(values, "isIn() 'values' may contain null but array must not be null");
         return value -> {
             for (T v : values) {
                 if (Objects.equals(v, value)) {

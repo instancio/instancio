@@ -46,7 +46,6 @@ import java.util.Map;
 public class AnnotationMap {
 
     private final Map<Class<?>, Annotation> map;
-    private @Nullable Annotation primary;
 
     public AnnotationMap(final Annotation... annotations) {
         this.map = CollectionUtils.asLinkedHashMap(Annotation::annotationType, annotations);
@@ -64,17 +63,7 @@ public class AnnotationMap {
     }
 
     public void setPrimary(final Annotation annotation) {
-        primary = annotation;
-        map.remove(primary.annotationType());
-    }
-
-    @Nullable
-    Annotation removePrimary() {
-        final Annotation p = primary;
-        if (primary != null) {
-            primary = null; // NOPMD
-        }
-        return p;
+        map.remove(annotation.annotationType());
     }
 
     void remove(final Class<?> key) {

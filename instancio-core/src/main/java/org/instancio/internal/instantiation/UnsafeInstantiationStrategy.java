@@ -35,10 +35,11 @@ final class UnsafeInstantiationStrategy implements InstantiationStrategy {
         if (!isUnsafeAvailable) {
             // Verbose message, but should be logged only once since this class is a singleton
             // Note: this issue can also occur within an OSGi container
-            LOG.debug(String.format(
-                    "sun.misc.Unsafe is unavailable. This may result in nulls being generated%n" +
-                            "for POJO classes that do not provide a default (no-argument) constructor.%n" +
-                            "If using JPMS, consider adding 'requires jdk.unsupported' to module-info.java"));
+            LOG.debug("""
+                    sun.misc.Unsafe is unavailable. This may result in nulls being generated
+                    for POJO classes that do not provide a default (no-argument) constructor.
+                    If using JPMS, consider adding 'requires jdk.unsupported' to module-info.java
+                    """);
         }
     }
 

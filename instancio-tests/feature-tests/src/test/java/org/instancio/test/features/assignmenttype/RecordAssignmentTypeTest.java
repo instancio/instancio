@@ -32,9 +32,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @FeatureTag(Feature.ASSIGNMENT_TYPE)
 @ExtendWith(InstancioExtension.class)
 class RecordAssignmentTypeTest {

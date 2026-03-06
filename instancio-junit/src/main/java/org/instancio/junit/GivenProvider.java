@@ -35,40 +35,40 @@ import java.lang.reflect.Type;
  * <p>For example, we may want to define a custom annotation
  * for generating numeric strings:
  *
- * <pre>{@code
- * @ExtendWith(InstancioExtension.class)
+ * <pre><code>
+ * &#64;ExtendWith(InstancioExtension.class)
  * class ExampleTest {
  *
- *     @Test
- *     void example(@NumericString(length = 5) String digits) {
+ *     &#64;Test
+ *     void example(&#64;NumericString(length = 5) String digits) {
  *         // Possible value of digits: 04194
  *     }
  * }
- * }</pre>
+ * </code></pre>
  *
  * <p>To support the above use case, first we define the
  * {@code @NumericString} annotation:
  *
- * <pre>{@code
- * @Given(NumericStringProvider.class)
- * @Target({ElementType.FIELD, ElementType.PARAMETER})
- * @Retention(RetentionPolicy.RUNTIME)
- * @interface NumericString {
+ * <pre><code>
+ * &#64;Given(NumericStringProvider.class)
+ * &#64;Target({ElementType.FIELD, ElementType.PARAMETER})
+ * &#64;Retention(RetentionPolicy.RUNTIME)
+ * &#64;interface NumericString {
  *     int length();
  * }
- * }</pre>
+ * </code></pre>
  *
  * <p>where the {@code NumericStringProvider} can be implemented as:
  *
- * <pre>{@code
+ * <pre><code>
  * class NumericStringProvider implements GivenProvider {
- *     @Override
+ *     &#64;Override
  *     public Object provide(ElementContext context) {
  *         NumericString numericString = context.getAnnotation(NumericString.class);
  *         return context.random().digits(numericString.length());
  *     }
  * }
- * }</pre>
+ * </code></pre>
  *
  * @see Given
  * @since 5.0.0

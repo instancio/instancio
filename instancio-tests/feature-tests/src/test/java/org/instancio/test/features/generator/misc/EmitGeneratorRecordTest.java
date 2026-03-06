@@ -32,9 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @FeatureTag({Feature.GENERATOR, Feature.EMIT_GENERATOR})
 @ExtendWith(InstancioExtension.class)
 class EmitGeneratorRecordTest {

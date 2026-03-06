@@ -31,9 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatObject;
 import static org.instancio.Select.field;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @FeatureTag(Feature.OF_LIST)
 @ExtendWith(InstancioExtension.class)
 class RecordCollectionsTest {

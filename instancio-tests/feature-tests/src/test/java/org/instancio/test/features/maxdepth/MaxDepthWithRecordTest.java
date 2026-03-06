@@ -25,9 +25,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @SuppressWarnings("NullAway")
 @FeatureTag(Feature.MAX_DEPTH)
 @ExtendWith(InstancioExtension.class)

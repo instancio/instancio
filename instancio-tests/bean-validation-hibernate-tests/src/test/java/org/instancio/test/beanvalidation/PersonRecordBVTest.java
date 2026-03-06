@@ -29,9 +29,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DDD;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @FeatureTag(Feature.BEAN_VALIDATION)
 @ExtendWith(InstancioExtension.class)
 class PersonRecordBVTest {

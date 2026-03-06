@@ -26,9 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.fields;
 
-/**
- * NOTE: this test fails in IntelliJ, run it using Maven
- */
 @FeatureTag({Feature.IGNORE, Feature.WITH_NULLABLE, Feature.SET})
 @ExtendWith(InstancioExtension.class)
 class RecordWithPrimitiveFieldsTest {
