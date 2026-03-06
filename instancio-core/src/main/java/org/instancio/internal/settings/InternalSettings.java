@@ -22,8 +22,8 @@ import org.instancio.internal.util.StringConverters;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,6 +61,7 @@ public final class InternalSettings implements Settings {
         return settings;
     }
 
+    @SuppressWarnings("PMD.UseDiamondOperator")
     public static InternalSettings from(final Map<Object, Object> map) {
         final InternalSettings settings = new InternalSettings();
 
@@ -70,13 +71,16 @@ public final class InternalSettings implements Settings {
                 final String fromClass = key.replace(TYPE_MAPPING_PREFIX, "");
                 settings.mapType(ReflectionUtils.getClass(fromClass), ReflectionUtils.getClass(v.toString()));
             } else {
-                SettingKey<Object> settingKey = Keys.get(key);
+                final SettingKey<Object> settingKey = Keys.get(key);
 
                 if (settingKey == null) {
                     // If not defined in Keys, then this is a user-defined key
-                    // Since the type is unknown, default to null
-                    settingKey = new InternalKey<>(key, null, null, null, true, false);
-                    settings.set(settingKey, v);
+                    // Since the type is unknown, default to String type
+                    final Class<?> stringClass = String.class;
+                    final SettingKey<@Nullable Object> userDefinedSettingKey = new InternalKey<@Nullable Object>(
+                            key, stringClass, null, null, true, false);
+
+                    settings.set(userDefinedSettingKey, v);
                 } else {
                     settings.set(settingKey, convertValueToKeyType(settingKey, v));
                 }
@@ -105,9 +109,10 @@ public final class InternalSettings implements Settings {
         return merged;
     }
 
+    @NullUnmarked
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(@NotNull final SettingKey<T> key) {
+    public <T extends @Nullable Object> T get(final SettingKey<T> key) {
         final Object value = settingsMap.get(ApiValidator.notNull(key, "Key must not be null"));
 
         if (value == null || key.type() == null || key.type().isAssignableFrom(value.getClass())) {
@@ -118,7 +123,7 @@ public final class InternalSettings implements Settings {
     }
 
     @Override
-    public <T> InternalSettings set(final SettingKey<T> key, final T value) {
+    public <T extends @Nullable Object> InternalSettings set(final SettingKey<T> key, final T value) {
         return set(key, value, AUTO_ADJUST_ENABLED);
     }
 
@@ -149,7 +154,7 @@ public final class InternalSettings implements Settings {
     }
 
     @Override
-    public InternalSettings mapType(@NotNull final Class<?> type, @NotNull final Class<?> subtype) {
+    public InternalSettings mapType(final Class<?> type, final Class<?> subtype) {
         checkLockedForModifications();
         validateSubtype(type, subtype);
         subtypeMap.put(type, subtype);
@@ -185,8 +190,8 @@ public final class InternalSettings implements Settings {
     @Override
     public String toString() {
         return String.format("Settings[%nisLockedForModifications: %s" +
-                        "%nsettingsMap:%s" +
-                        "%nSettings subtypeMap:%s",
+                             "%nsettingsMap:%s" +
+                             "%nSettings subtypeMap:%s",
                 isLockedForModifications,
                 mapToString(new TreeMap<>(settingsMap)),
                 mapToString(subtypeMap));

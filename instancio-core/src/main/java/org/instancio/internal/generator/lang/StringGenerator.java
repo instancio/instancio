@@ -27,7 +27,7 @@ import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.UnicodeBlocks;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,8 +42,8 @@ public class StringGenerator extends AbstractGenerator<String>
     protected int maxLength;
     private long sequence;
     private boolean allowEmpty;
-    private String prefix;
-    private String suffix;
+    private @Nullable String prefix;
+    private @Nullable String suffix;
     private StringType stringType;
     private StringCase stringCase;
     private List<Character.UnicodeBlock> unicodeBlocks = Collections.emptyList();
@@ -53,7 +53,7 @@ public class StringGenerator extends AbstractGenerator<String>
      * If delegate is set, then it will be used for generating the value,
      * which is then converted {@code toString()}.
      */
-    private Generator<?> delegate;
+    private @Nullable Generator<?> delegate;
 
     public StringGenerator(final GeneratorContext context) {
         super(context);
@@ -206,6 +206,7 @@ public class StringGenerator extends AbstractGenerator<String>
     }
 
     // Hot path - benchmark when making changes.
+    @Nullable
     @Override
     public String tryGenerateNonNull(final Random random) {
         if (delegate != null) {
@@ -227,7 +228,6 @@ public class StringGenerator extends AbstractGenerator<String>
         return result;
     }
 
-    @NotNull
     private String generateString(final Random random) {
         if (stringType == StringType.NUMERIC_SEQUENCE) {
             return String.valueOf(++sequence);
@@ -239,7 +239,6 @@ public class StringGenerator extends AbstractGenerator<String>
                 : generateAsciiString(random, length);
     }
 
-    @NotNull
     private String generateAsciiString(final Random random, final int length) {
         final char[] fromChars = getStringCharacters();
         final char[] s = new char[length];

@@ -20,6 +20,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.Hint;
 import org.instancio.generator.Hints;
 import org.instancio.internal.ApiValidator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -200,7 +201,7 @@ public final class CollectionHint implements Hint<CollectionHint> {
         private boolean nullableElements;
         private boolean shuffle;
         private boolean unique;
-        private List<Object> withElements;
+        private @Nullable List<Object> withElements;
 
         private Builder() {
         }
@@ -267,7 +268,9 @@ public final class CollectionHint implements Hint<CollectionHint> {
          * @return builder instance
          * @since 2.0.0
          */
-        public <T> Builder withElements(final List<? extends T> elements) {
+        public <T extends @Nullable Object> Builder withElements(
+                @Nullable final List<? extends T> elements) {
+
             if (elements == null) {
                 return this;
             }

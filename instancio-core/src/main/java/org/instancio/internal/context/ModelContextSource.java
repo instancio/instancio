@@ -23,6 +23,7 @@ import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -31,9 +32,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static org.instancio.internal.util.CollectionUtils.asUnmodifiableLinkedHashMapOfLists;
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableList;
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableMap;
-import static org.instancio.internal.util.CollectionUtils.asUnmodifiableLinkedHashMapOfLists;
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableSet;
 
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
@@ -53,17 +54,17 @@ final class ModelContextSource {
 
     @SuppressWarnings({Sonar.TOO_MANY_PARAMETERS, "PMD.ExcessiveParameterList"})
     ModelContextSource(
-            final List<Type> withTypeParametersList,
-            final Map<TargetSelector, Class<?>> subtypeSelectors,
-            final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap,
-            final Map<TargetSelector, Generator<?>> generatorMap,
-            final Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap,
-            final Map<TargetSelector, Predicate<?>> filterMap,
-            final Map<TargetSelector, List<Assignment>> assignmentMap,
-            final Map<TargetSelector, ModelContext> setModelMap,
-            final Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap,
-            final Set<TargetSelector> ignoreSet,
-            final Set<TargetSelector> withNullableSet) {
+            @Nullable final List<Type> withTypeParametersList,
+            @Nullable final Map<TargetSelector, Class<?>> subtypeSelectors,
+            @Nullable final Map<TargetSelector, GeneratorSpecProvider<?>> generatorSpecMap,
+            @Nullable final Map<TargetSelector, Generator<?>> generatorMap,
+            @Nullable final Map<TargetSelector, OnCompleteCallback<?>> onCompleteMap,
+            @Nullable final Map<TargetSelector, Predicate<?>> filterMap,
+            @Nullable final Map<TargetSelector, List<Assignment>> assignmentMap,
+            @Nullable final Map<TargetSelector, ModelContext> setModelMap,
+            @Nullable final Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap,
+            @Nullable final Set<TargetSelector> ignoreSet,
+            @Nullable final Set<TargetSelector> withNullableSet) {
 
         this.withTypeParametersList = asUnmodifiableList(withTypeParametersList);
         this.subtypeMap = asUnmodifiableMap(subtypeSelectors);

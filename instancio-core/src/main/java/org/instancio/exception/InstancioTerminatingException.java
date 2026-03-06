@@ -15,6 +15,8 @@
  */
 package org.instancio.exception;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * This exception (and its subclasses) indicates an unrecoverable error
  * and propagates all the way up to the user.
@@ -27,7 +29,7 @@ public class InstancioTerminatingException extends InstancioException {
         super(message);
     }
 
-    public InstancioTerminatingException(String message, Throwable cause) {
+    public InstancioTerminatingException(String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 }

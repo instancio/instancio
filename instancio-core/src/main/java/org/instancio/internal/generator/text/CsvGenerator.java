@@ -22,6 +22,7 @@ import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.CsvSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class CsvGenerator extends AbstractGenerator<String> implements CsvSpec {
     private int minRows = 1;
     private int maxRows = 10;
     private boolean includeHeader = true;
-    private String wrapWith;
+    private @Nullable String wrapWith;
     private Predicate<Object> wrapIf = o -> true;
     private String delimiter = ",";
     private String lineSeparator = System.lineSeparator();

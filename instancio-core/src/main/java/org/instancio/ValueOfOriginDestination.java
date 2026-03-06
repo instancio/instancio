@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -39,7 +40,7 @@ public interface ValueOfOriginDestination extends Assignment {
      * @see #as(RandomFunction)
      * @since 3.0.0
      */
-    <T, R> ValueOfOriginDestinationPredicate as(Function<T, R> valueMapper);
+    <T extends @Nullable Object, R extends @Nullable Object> ValueOfOriginDestinationPredicate as(Function<T, R> valueMapper);
 
     /**
      * Specifies a function for mapping the value of the
@@ -52,7 +53,7 @@ public interface ValueOfOriginDestination extends Assignment {
      * @see #as(Function)
      * @since 5.0.0
      */
-    <T, R> ValueOfOriginDestinationPredicate as(RandomFunction<T, R> valueMapper);
+    <T extends @Nullable Object, R extends @Nullable Object> ValueOfOriginDestinationPredicate as(RandomFunction<T, R> valueMapper);
 
     /**
      * A predicate that must be satisfied by the value matched
@@ -63,5 +64,5 @@ public interface ValueOfOriginDestination extends Assignment {
      * @return an assignment
      * @since 3.0.0
      */
-    <T> Assignment when(Predicate<T> predicate);
+    <T extends @Nullable Object> Assignment when(Predicate<T> predicate);
 }

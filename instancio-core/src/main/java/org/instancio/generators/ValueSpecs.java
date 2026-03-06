@@ -35,6 +35,7 @@ import org.instancio.generator.specs.ShortSpec;
 import org.instancio.generator.specs.ShuffleSpec;
 import org.instancio.generator.specs.StringSpec;
 import org.instancio.generator.specs.UUIDSpec;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -152,7 +153,7 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      * @since 5.0.0
      */
     @SuppressWarnings("unchecked")
-    <T> OneOfArraySpec<T> oneOf(T... choices);
+    <T extends @Nullable Object> OneOfArraySpec<T> oneOf(@Nullable T... choices);
 
     /**
      * Picks a random value from the given choices.
@@ -162,7 +163,7 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      * @return API builder reference
      * @since 5.0.0
      */
-    <T> OneOfCollectionSpec<T> oneOf(Collection<T> choices);
+    <T extends @Nullable Object> OneOfCollectionSpec<T> oneOf(Collection<T> choices);
 
     /**
      * A spec for generating intervals of various types, such as
@@ -241,7 +242,7 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      */
     @ExperimentalApi
     @SuppressWarnings("unchecked")
-    <T> ShuffleSpec<T> shuffle(T... array);
+    <T extends @Nullable Object> ShuffleSpec<T> shuffle(@Nullable T... array);
 
     /**
      * Creates a copy of the specified collection and shuffles its elements.
@@ -252,7 +253,7 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      * @since 5.0.0
      */
     @ExperimentalApi
-    <T> ShuffleSpec<T> shuffle(Collection<T> collection);
+    <T extends @Nullable Object> ShuffleSpec<T> shuffle(Collection<T> collection);
 
     /**
      * {@inheritDoc}

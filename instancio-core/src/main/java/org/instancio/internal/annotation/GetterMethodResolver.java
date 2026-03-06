@@ -17,6 +17,7 @@ package org.instancio.internal.annotation;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 
@@ -28,5 +29,6 @@ import java.lang.reflect.Method;
 @InternalApi
 interface GetterMethodResolver {
 
+    @Nullable
     Method getGetter(InternalNode node);
 }

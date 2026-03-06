@@ -207,8 +207,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
 
     private List<Field> collectDeclaredFieldsOfType(final Class<?> fieldType) {
         return Arrays.stream(actual.getClass().getDeclaredFields())
-                .filter(f -> f.getType() == fieldType
-                        && !Modifier.isStatic(f.getModifiers()))
+                .filter(f -> f.getType() == fieldType && !Modifier.isStatic(f.getModifiers()))
                 .collect(toList());
     }
 
@@ -229,8 +228,8 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
 
     private static boolean shouldCollectFrom(final Class<?> next) {
         return next != null
-                && !next.isArray()
-                && next.getPackage() != null
-                && !Strings.CI.startsWithAny(next.getPackage().getName(), "java.", "javax.", "com.sun.", "sun.");
+               && !next.isArray()
+               && next.getPackage() != null
+               && !Strings.CI.startsWithAny(next.getPackage().getName(), "java.", "javax.", "com.sun.", "sun.");
     }
 }

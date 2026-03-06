@@ -19,6 +19,7 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generators.ValueSpecs;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A shorthand API for generating value types,
@@ -45,5 +46,5 @@ public interface InstancioGenApi extends SettingsApi, ValueSpecs {
      */
     @Override
     @ExperimentalApi
-    <V> InstancioGenApi withSetting(SettingKey<V> key, V value);
+    <V extends @Nullable Object> InstancioGenApi withSetting(SettingKey<V> key, V value);
 }

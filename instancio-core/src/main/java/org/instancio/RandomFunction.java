@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A function that accepts an argument and produces a randomised result.
@@ -27,7 +28,7 @@ import org.instancio.documentation.ExperimentalApi;
  */
 @ExperimentalApi
 @FunctionalInterface
-public interface RandomFunction<T, R> {
+public interface RandomFunction<T extends @Nullable Object, R extends @Nullable Object> {
 
     /**
      * Applies this function to the given {@code input}.

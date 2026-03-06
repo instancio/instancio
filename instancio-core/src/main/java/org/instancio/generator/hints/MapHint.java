@@ -20,6 +20,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.Hint;
 import org.instancio.generator.Hints;
 import org.instancio.internal.ApiValidator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -209,8 +210,8 @@ public final class MapHint implements Hint<MapHint> {
         private int generateEntries;
         private boolean nullableMapKeys;
         private boolean nullableMapValues;
-        private Map<Object, Object> withEntries;
-        private List<Object> withKeys;
+        private @Nullable Map<Object, Object> withEntries;
+        private @Nullable List<Object> withKeys;
 
         private Builder() {
         }
@@ -265,7 +266,9 @@ public final class MapHint implements Hint<MapHint> {
          * @return builder instance
          * @since 2.0.0
          */
-        public <K, V> Builder withEntries(final Map<? extends K, ? extends V> entries) {
+        public <K extends @Nullable Object, V extends @Nullable Object> Builder withEntries(
+                @Nullable final Map<? extends K, ? extends V> entries) {
+
             if (entries == null) {
                 return this;
             }
@@ -285,7 +288,9 @@ public final class MapHint implements Hint<MapHint> {
          * @return builder instance
          * @since 2.0.0
          */
-        public <K> Builder withKeys(final List<? extends K> keys) {
+        public <K extends @Nullable Object> Builder withKeys(
+                @Nullable final List<? extends K> keys) {
+
             if (keys == null) {
                 return this;
             }

@@ -15,8 +15,9 @@
  */
 package org.instancio.internal.instantiation;
 
+import org.instancio.documentation.VisibleForTesting;
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +42,7 @@ final class ReflectionFactoryInstantiationStrategy implements InstantiationStrat
         return Holder.INSTANCE;
     }
 
+    @Nullable
     @Override
     public <T> T createInstance(final Class<T> klass) {
         return isReflectionFactoryAvailable()

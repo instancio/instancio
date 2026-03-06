@@ -20,10 +20,12 @@ import org.instancio.feed.FeedSpec;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.Set;
+
+import static java.util.Objects.requireNonNull;
 
 public class InternalFeedSpecResolver {
 
@@ -54,12 +56,12 @@ public class InternalFeedSpecResolver {
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public FeedSpec<?> getSpec(final InternalNode node) {
         final Class<?> feedClass = feed.getFeedContext().getFeedClass();
-        final String nodeFieldName = node.getField().getName();
+        final String nodeFieldName = requireNonNull(node.getField()).getName();
         final boolean nodeMatchedFeedProperty = unmappedFeedProperties.remove(nodeFieldName);
         final Method customFeedSpecMethod = ReflectionUtils.getZeroArgMethod(feedClass, nodeFieldName);
 
         if (customFeedSpecMethod != null) {
-            return feed.createSpec(new SpecMethod(customFeedSpecMethod), /*args=*/ null);
+            return feed.createSpec(new SpecMethod(customFeedSpecMethod), /*args=*/ new Object[0]);
         }
 
         // If no explicit FeedSpec method defined, then attempt

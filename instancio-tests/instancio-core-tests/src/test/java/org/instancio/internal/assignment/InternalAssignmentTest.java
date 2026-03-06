@@ -25,23 +25,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class InternalAssignmentTest {
 
-    @Nested
-    class ToStringTest {
-
-        @Test
-        void verifyEmptyToString() {
-            assertThat(InternalAssignment.builder().build())
-                    .hasToString("InternalAssignment[origin=null, destination=null]");
-        }
-
-        @Test
-        void verifyToString() {
-            assertThat(InternalAssignment.builder()
-                    .origin(Select.field("foo"))
-                    .destination(Select.field("bar"))
-                    .build())
-                    .hasToString("InternalAssignment[origin=field(\"foo\"), destination=field(\"bar\")]");
-        }
+    @Test
+    void verifyToString() {
+        assertThat(InternalAssignment.builder()
+                .origin(Select.field("foo"))
+                .destination(Select.field("bar"))
+                .build())
+                .hasToString("InternalAssignment[origin=field(\"foo\"), destination=field(\"bar\")]");
     }
 
     @Nested
@@ -49,6 +39,7 @@ class InternalAssignmentTest {
         private final InternalAssignment.Builder builder = InternalAssignment.builder();
 
         @Test
+        @SuppressWarnings("DataFlowIssue")
         void origin() {
             assertThatThrownBy(() -> builder.origin(null))
                     .isExactlyInstanceOf(InstancioApiException.class)
@@ -56,6 +47,7 @@ class InternalAssignmentTest {
         }
 
         @Test
+        @SuppressWarnings("DataFlowIssue")
         void destination() {
             assertThatThrownBy(() -> builder.destination(null))
                     .isExactlyInstanceOf(InstancioApiException.class)

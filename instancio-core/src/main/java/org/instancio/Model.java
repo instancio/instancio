@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A model is a template for creating objects and contains all
  * the parameters for populating a class specified using Instancio API.
@@ -44,5 +46,5 @@ package org.instancio;
  * @since 1.0.1
  */
 @SuppressWarnings("unused")
-public interface Model<T> {
+public interface Model<T extends @Nullable Object> {
 }

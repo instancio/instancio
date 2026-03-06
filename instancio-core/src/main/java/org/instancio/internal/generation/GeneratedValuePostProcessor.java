@@ -18,6 +18,7 @@ package org.instancio.internal.generation;
 import org.instancio.documentation.InternalApi;
 import org.instancio.generator.Generator;
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Post-processor for generated values.
@@ -35,5 +36,6 @@ interface GeneratedValuePostProcessor {
      * @param generator that generated the value
      * @return processed value, or the same value if no processing was done
      */
-    Object process(Object value, InternalNode node, Generator<?> generator);
+    @Nullable
+    Object process(@Nullable Object value, InternalNode node, Generator<?> generator);
 }

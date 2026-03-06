@@ -17,6 +17,7 @@ package org.instancio.internal.generator;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.generator.Hint;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Hint containing details on how to build a container. Container represents
@@ -41,9 +42,9 @@ import org.instancio.generator.Hint;
 public final class InternalContainerHint implements Hint<InternalContainerHint> {
     private static final InternalContainerHint EMPTY_HINT = builder().build();
 
-    private final ContainerCreateFunction<?> createFunction;
-    private final ContainerAddFunction<?> addFunction;
-    private final ContainerBuildFunction<?, ?> buildFunction;
+    private final @Nullable ContainerCreateFunction<?> createFunction;
+    private final @Nullable ContainerAddFunction<?> addFunction;
+    private final @Nullable ContainerBuildFunction<?, ?> buildFunction;
     private final int generateEntries;
 
     /**
@@ -62,6 +63,7 @@ public final class InternalContainerHint implements Hint<InternalContainerHint> 
      * @param <C> container type
      * @return function for instantiating the container
      */
+    @Nullable
     @SuppressWarnings("unchecked")
     public <C> ContainerCreateFunction<C> createFunction() {
         return (ContainerCreateFunction<C>) createFunction;
@@ -73,6 +75,7 @@ public final class InternalContainerHint implements Hint<InternalContainerHint> 
      * @param <C> container type
      * @return function for adding items to the container
      */
+    @Nullable
     @SuppressWarnings("unchecked")
     public <C> ContainerAddFunction<C> addFunction() {
         return (ContainerAddFunction<C>) addFunction;
@@ -85,6 +88,7 @@ public final class InternalContainerHint implements Hint<InternalContainerHint> 
      * @param <C> container type
      * @return function for building the container.
      */
+    @Nullable
     @SuppressWarnings("unchecked")
     public <B, C> ContainerBuildFunction<B, C> buildFunction() {
         return (ContainerBuildFunction<B, C>) buildFunction;
@@ -112,9 +116,9 @@ public final class InternalContainerHint implements Hint<InternalContainerHint> 
     }
 
     public static final class Builder {
-        private ContainerCreateFunction<?> createFunction;
-        private ContainerAddFunction<?> addFunction;
-        private ContainerBuildFunction<?, ?> buildFunction;
+        private @Nullable ContainerCreateFunction<?> createFunction;
+        private @Nullable ContainerAddFunction<?> addFunction;
+        private @Nullable ContainerBuildFunction<?, ?> buildFunction;
         private int generateEntries;
 
         private Builder() {

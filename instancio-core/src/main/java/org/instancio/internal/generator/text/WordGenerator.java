@@ -21,6 +21,7 @@ import org.instancio.generator.specs.WordSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -35,7 +36,7 @@ public class WordGenerator extends AbstractGenerator<String> implements WordSpec
 
     private static final Map<WordClass, List<String>> CACHE = new EnumMap<>(WordClass.class);
 
-    private WordClass wordClass;
+    private @Nullable WordClass wordClass;
 
     public WordGenerator(GeneratorContext context) {
         super(context);
@@ -77,6 +78,7 @@ public class WordGenerator extends AbstractGenerator<String> implements WordSpec
         return this;
     }
 
+    @Nullable
     @Override
     protected String tryGenerateNonNull(final Random random) {
         final WordClass wc = ObjectUtils.defaultIfNull(
@@ -115,6 +117,7 @@ public class WordGenerator extends AbstractGenerator<String> implements WordSpec
             this.file = file;
         }
 
+        @Nullable
         static WordClass getByKey(final String k) {
             for (WordClass wc : values()) {
                 if (k.equals(wc.key)) {

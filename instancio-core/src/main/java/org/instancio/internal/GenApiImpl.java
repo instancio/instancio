@@ -51,6 +51,7 @@ import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
 import org.instancio.support.ThreadLocalSettings;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -140,7 +141,7 @@ public final class GenApiImpl implements InstancioGenApi {
 
     @SafeVarargs
     @Override
-    public final <T> OneOfArraySpec<T> oneOf(final T... choices) {
+    public final <T> OneOfArraySpec<T> oneOf(final @Nullable T... choices) {
         return generators().oneOf(choices);
     }
 
@@ -156,12 +157,12 @@ public final class GenApiImpl implements InstancioGenApi {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> ShuffleSpec<T> shuffle(final T... array) {
+    public <T extends @Nullable Object> ShuffleSpec<T> shuffle(@Nullable final T... array) {
         return generators().shuffle(array);
     }
 
     @Override
-    public <T> ShuffleSpec<T> shuffle(final Collection<T> collection) {
+    public <T extends @Nullable Object> ShuffleSpec<T> shuffle(final Collection<T> collection) {
         return generators().shuffle(collection);
     }
 

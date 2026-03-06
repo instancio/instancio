@@ -23,6 +23,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -89,6 +90,7 @@ class EmitGeneratorTest {
         assertThat(result).containsOnly(-1);
     }
 
+    @NullUnmarked
     @Test
     void emitNullCollectionElements() {
         final int size = 5;
@@ -100,6 +102,7 @@ class EmitGeneratorTest {
         assertThat(result).hasSize(size).containsOnlyNulls();
     }
 
+    @NullUnmarked
     @Test
     void emitNullArrayElements() {
         final int size = 5;
@@ -133,6 +136,7 @@ class EmitGeneratorTest {
         assertThat(result).containsOnly(1, null);
     }
 
+    @NullUnmarked
     @Test
     void emitNullMapValues() {
         final int size = 5;
@@ -144,6 +148,7 @@ class EmitGeneratorTest {
         assertThat(result.values()).hasSize(size).containsOnlyNulls();
     }
 
+    @NullUnmarked
     @Test
     @FeatureTag(Feature.UNSUPPORTED)
     @DisplayName("emit() null is not supported for map keys")
@@ -157,6 +162,7 @@ class EmitGeneratorTest {
         assertThat(result.keySet()).hasSize(size).doesNotContainNull();
     }
 
+    @NullUnmarked
     @Test
     void emitNull() {
         final int size = 5;

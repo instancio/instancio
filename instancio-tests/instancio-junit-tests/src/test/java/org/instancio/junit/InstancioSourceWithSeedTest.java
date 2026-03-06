@@ -16,6 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
+import org.instancio.Random;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.ThreadLocalRandom;
@@ -30,6 +31,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Execution(ExecutionMode.CONCURRENT)
@@ -50,8 +52,8 @@ class InstancioSourceWithSeedTest {
     @ParameterizedTest
     @DisplayName("Parameterized test: generate value using seed")
     void parameterizedWithSeed(final String value) {
-        LOG.debug("ThreadLocalRandom seed: {}", ThreadLocalRandom.getInstance().get().getSeed());
-        assertThat(ThreadLocalRandom.getInstance().get().getSeed()).isEqualTo(SEED);
+        LOG.debug("ThreadLocalRandom seed: {}", getThreadLocalSeed());
+        assertThat(getThreadLocalSeed()).isEqualTo(SEED);
         assertThat(value).isEqualTo(SOURCE_EXPECTED_STRING);
     }
 
@@ -59,8 +61,8 @@ class InstancioSourceWithSeedTest {
     @RepeatedTest(10)
     @DisplayName("Non-parameterized test: generate value using seed")
     void nonParameterizedWithSeed() {
-        LOG.debug("ThreadLocalRandom seed: {}", ThreadLocalRandom.getInstance().get().getSeed());
-        assertThat(ThreadLocalRandom.getInstance().get().getSeed()).isEqualTo(SEED);
+        LOG.debug("ThreadLocalRandom seed: {}", getThreadLocalSeed());
+        assertThat(getThreadLocalSeed()).isEqualTo(SEED);
         assertThat(Instancio.create(String.class)).isEqualTo(CREATE_EXPECTED_STRING);
     }
 
@@ -68,8 +70,13 @@ class InstancioSourceWithSeedTest {
     @InstancioSource(samples = 1)
     @ParameterizedTest
     void withSettings(final StringHolder holder) {
-        LOG.debug("ThreadLocalRandom seed: {}", ThreadLocalRandom.getInstance().get().getSeed());
-        assertThat(ThreadLocalRandom.getInstance().get().getSeed()).isNotEqualTo(SEED);
+        LOG.debug("ThreadLocalRandom seed: {}", getThreadLocalSeed());
+        assertThat(getThreadLocalSeed()).isNotEqualTo(SEED);
         assertThat(holder.getValue()).hasSizeGreaterThanOrEqualTo(STRING_MIN_LENGTH);
+    }
+
+    private static long getThreadLocalSeed() {
+        final Random random = requireNonNull(ThreadLocalRandom.getInstance().get());
+        return random.getSeed();
     }
 }

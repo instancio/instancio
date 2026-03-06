@@ -24,6 +24,7 @@ import org.instancio.junit.GivenProvider;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,11 +41,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GivenWithProviderTest {
 
     @CollectionSize(5)
-    private Set<String> setWithSize;
+    private @Nullable Set<String> setWithSize;
 
     @NullableElements
     @CollectionSize(100)
-    private List<String> listWithSizeNullableElements;
+    private @Nullable List<String> listWithSizeNullableElements;
 
     @Test
     void verifyFields() {

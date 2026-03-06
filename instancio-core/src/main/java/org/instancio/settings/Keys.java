@@ -25,8 +25,7 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.settings.InternalKey;
 import org.instancio.internal.settings.RangeAdjuster;
 import org.instancio.settings.SettingKey.SettingKeyBuilder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +45,7 @@ import static org.instancio.internal.util.Constants.NUMERIC_MIN;
  * @see Settings
  * @since 1.1.10
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public final class Keys {
 
     private static final RangeAdjuster MIN_ADJUSTER = RangeAdjuster.MIN_ADJUSTER;
@@ -604,7 +604,7 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<String> FEED_TAG_KEY = register(
+    public static final SettingKey<@Nullable String> FEED_TAG_KEY = Keys.<@Nullable String>register(
             "feed.tag.key", String.class, null, null, true, false);
 
     /**
@@ -615,7 +615,7 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<String> FEED_TAG_VALUE = register(
+    public static final SettingKey<@Nullable String> FEED_TAG_VALUE = Keys.<@Nullable String>register(
             "feed.tag.value", String.class, null, null, true, false);
 
     /**
@@ -638,7 +638,7 @@ public final class Keys {
      *
      * @since 1.5.1
      */
-    public static final SettingKey<Long> SEED = register(
+    public static final SettingKey<@Nullable Long> SEED = Keys.<@Nullable Long>register(
             "seed", Long.class, null, null, true, true);
 
     /**
@@ -834,8 +834,9 @@ public final class Keys {
      * @param key to lookup
      * @return the setting key, or {@code null} if none found
      */
+    @Nullable
     @SuppressWarnings("unchecked")
-    public static <T> SettingKey<T> get(@NotNull final String key) {
+    public static <T extends @Nullable Object> SettingKey<T> get(final String key) {
         return (SettingKey<T>) SETTING_KEY_MAP.get(key);
     }
 
@@ -858,10 +859,10 @@ public final class Keys {
         return InternalKey.builder(type);
     }
 
-    private static <T> SettingKey<T> register(
-            @NotNull final String propertyKey,
-            @NotNull final Class<T> type,
-            @Nullable final Object defaultValue,
+    private static <T extends @Nullable Object> SettingKey<T> register(
+            final String propertyKey,
+            final Class<?> type,
+            final T defaultValue,
             @Nullable final RangeAdjuster rangeAdjuster,
             final boolean allowsNullValue,
             final boolean allowsNegative) {
@@ -873,20 +874,20 @@ public final class Keys {
         return settingKey;
     }
 
-    private static <T> SettingKey<T> registerRequiredAdjustable(
-            @NotNull final String propertyKey,
-            @NotNull final Class<T> type,
-            @Nullable final Object defaultValue,
+    private static <T extends @Nullable Object> SettingKey<T> registerRequiredAdjustable(
+            final String propertyKey,
+            final Class<T> type,
+            final T defaultValue,
             @Nullable final RangeAdjuster rangeAdjuster,
             final boolean allowsNegative) {
 
         return register(propertyKey, type, defaultValue, rangeAdjuster, false, allowsNegative);
     }
 
-    private static <T> SettingKey<T> registerRequiredNonAdjustable(
-            @NotNull final String key,
-            @NotNull final Class<T> type,
-            @NotNull final Object defaultValue) {
+    private static <T extends @Nullable Object> SettingKey<T> registerRequiredNonAdjustable(
+            final String key,
+            final Class<T> type,
+            final T defaultValue) {
 
         return register(key, type, defaultValue, null, false, false);
     }

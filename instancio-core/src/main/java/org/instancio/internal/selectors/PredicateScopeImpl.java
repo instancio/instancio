@@ -18,20 +18,21 @@ package org.instancio.internal.selectors;
 import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
 public final class PredicateScopeImpl implements Scope {
 
     private final PredicateSelector predicateSelector;
-    private final Predicate<InternalNode> nodePredicate;
+    private final Predicate<@Nullable InternalNode> nodePredicate;
 
     public PredicateScopeImpl(final PredicateSelector predicateSelector) {
         this.predicateSelector = predicateSelector;
         this.nodePredicate = ((PredicateSelectorImpl) predicateSelector).getNodePredicate();
     }
 
-    public Predicate<InternalNode> getNodePredicate() {
+    public Predicate<@Nullable InternalNode> getNodePredicate() {
         return nodePredicate;
     }
 

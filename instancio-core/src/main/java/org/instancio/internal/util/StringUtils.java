@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.instancio.documentation.Contract;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,10 +28,12 @@ import static org.instancio.internal.util.ErrorMessageUtils.invalidStringTemplat
 @SuppressWarnings("PMD.GodClass")
 public final class StringUtils {
 
+    @Contract("null -> true")
     public static boolean isEmpty(@Nullable final String s) {
         return s == null || s.isEmpty();
     }
 
+    @Contract("null -> true")
     public static boolean isBlank(@Nullable final String s) {
         if (isEmpty(s)) {
             return true;
@@ -44,11 +46,12 @@ public final class StringUtils {
         return true;
     }
 
-    @NotNull
+    @Contract("_ -> !null")
     public static String trimToEmpty(@Nullable final String s) {
         return s == null ? "" : s.trim();
     }
 
+    @Contract("null -> null; !null -> _")
     @Nullable
     public static String trimToNull(@Nullable final String s) {
         if (s == null) {
@@ -84,7 +87,7 @@ public final class StringUtils {
         return false;
     }
 
-    public static String concatNonNull(final String... values) {
+    public static String concatNonNull(@Nullable final String @Nullable... values) {
         final StringBuilder sb = new StringBuilder();
         if (values != null) {
             for (String val : values) {
@@ -96,8 +99,8 @@ public final class StringUtils {
         return sb.toString();
     }
 
-    public static String capitalise(@Nullable final String s) {
-        if (s == null || s.isEmpty()) {
+    public static String capitalise(final String s) {
+        if (s.isEmpty()) {
             return s;
         }
         final String first = s.substring(0, 1).toUpperCase(Locale.getDefault());
@@ -112,8 +115,8 @@ public final class StringUtils {
      * Wraps the given {@code value} in quotes if it's a String,
      * otherwise returns a {@code toString()} representation.
      */
-    public static String quoteStringValue(final Object value) {
-        if (value == null) return null;
+    public static String quoteStringValue(@Nullable final Object value) {
+        if (value == null) return "<null>";
         if (value instanceof String s) {
             return '"' + s + '"';
         }
@@ -162,7 +165,7 @@ public final class StringUtils {
      * @param str to split
      * @return an immutable list of tokens or an empty list if none
      */
-    public static List<String> split(@Nullable String str) {
+    public static List<String> split(@Nullable final String str) {
         if (isBlank(str)) {
             return Collections.emptyList();
         }

@@ -17,21 +17,20 @@ package org.instancio.internal.selectors;
 
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
 
 public final class TargetSetterName implements Target {
 
-    private final Class<?> targetClass;
+    private final @Nullable Class<?> targetClass;
     private final String methodName;
-    private final Class<?> parameterType;
+    private final @Nullable Class<?> parameterType; // null unless explicitly specified by the user
 
     public TargetSetterName(
             @Nullable final Class<?> targetClass,
-            @NotNull final String methodName,
+            final String methodName,
             @Nullable final Class<?> parameterType) {
 
         this.targetClass = targetClass;
@@ -39,6 +38,7 @@ public final class TargetSetterName implements Target {
         this.parameterType = parameterType;
     }
 
+    @Nullable
     @Override
     public Class<?> getTargetClass() {
         return targetClass;
@@ -48,6 +48,7 @@ public final class TargetSetterName implements Target {
         return methodName;
     }
 
+    @Nullable
     public Class<?> getParameterType() {
         return parameterType;
     }

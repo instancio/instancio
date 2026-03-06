@@ -88,6 +88,7 @@ class InstancioExtensionTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void supportsParameterReturnsShouldForConstructor() throws NoSuchMethodException {
         final ParameterContext parameterContext = mock(ParameterContext.class);
         final Constructor<DummyTest> constructor = DummyTest.class.getConstructor();
@@ -227,6 +228,7 @@ class InstancioExtensionTest {
         assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
     }
 
+    @SuppressWarnings("NullAway")
     private static void assertApiExceptionWithMessage(final ThrowingCallable throwingCallable, final String expectedMsg) {
         assertThatThrownBy(throwingCallable)
                 .isInstanceOf(InstancioApiException.class)

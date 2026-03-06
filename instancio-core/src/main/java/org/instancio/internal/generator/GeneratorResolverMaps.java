@@ -65,6 +65,7 @@ import org.instancio.internal.generator.util.concurrent.atomic.AtomicBooleanGene
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicIntegerGenerator;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicLongGenerator;
 import org.instancio.internal.util.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -137,10 +138,12 @@ final class GeneratorResolverMaps {
     private static final Map<Class<?>, Class<?>> SUBTYPES = initSubtypes();
     private static final Map<Class<?>, Class<?>> GENERATORS = initGeneratorMap();
 
+    @Nullable
     static Class<?> getSubtype(final Class<?> klass) {
         return SUBTYPES.get(klass);
     }
 
+    @Nullable
     static Class<?> getGenerator(final Class<?> klass) {
         return GENERATORS.get(klass);
     }

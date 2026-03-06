@@ -21,16 +21,21 @@ import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.Range;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
+import static java.util.Objects.requireNonNull;
+
+public abstract class AbstractRandomNumberGeneratorSpec<T extends @Nullable Number>
         extends AbstractGenerator<T> implements NumberGeneratorSpec<T> {
 
     private T min;
     private T max;
-    private final List<Range<T>> rangeStack = new ArrayList<>();
+    private final List<Range<@NonNull T>> rangeStack = new ArrayList<>();
 
     protected AbstractRandomNumberGeneratorSpec(
             final GeneratorContext context, final T min, final T max, final boolean nullable) {
@@ -50,13 +55,13 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
-    public NumberGeneratorSpec<T> min(final T min) {
+    public NumberGeneratorSpec<T> min(final @NonNull T min) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         return this;
     }
 
     @Override
-    public NumberGeneratorSpec<T> max(final T max) {
+    public NumberGeneratorSpec<T> max(final @NonNull T max) {
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         return this;
     }
@@ -74,13 +79,14 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
     }
 
     @Override
-    public NumberGeneratorSpec<T> range(final T min, final T max) {
+    public NumberGeneratorSpec<T> range(final @NonNull T min, final @NonNull T max) {
         this.min = ApiValidator.notNull(min, "'min' must not be null");
         this.max = ApiValidator.notNull(max, "'max' must not be null");
         rangeStack.add(Range.of(min, max));
         return this;
     }
 
+    @NullUnmarked
     @Override
     public T generate(final Random random) {
         if (random.diceRoll(isNullable())) {
@@ -94,7 +100,7 @@ public abstract class AbstractRandomNumberGeneratorSpec<T extends Number>
         // if range() and min()/max() are used at the same time, range() takes precedence
         // therefore, it's ok to overwrite the min/max fields
         if (!rangeStack.isEmpty()) {
-            final Range<T> range = random.oneOf(rangeStack);
+            final Range<@NonNull T> range = requireNonNull(random.oneOf(rangeStack));
             min = range.min();
             max = range.max();
         }

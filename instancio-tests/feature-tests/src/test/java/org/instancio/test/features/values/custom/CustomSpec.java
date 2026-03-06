@@ -23,6 +23,7 @@ import org.instancio.internal.util.ObjectUtils;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.ThreadLocalRandom;
+import org.jspecify.annotations.Nullable;
 
 class CustomSpec extends AbstractGenerator<String> implements ValueSpec<String> {
 
@@ -40,6 +41,7 @@ class CustomSpec extends AbstractGenerator<String> implements ValueSpec<String> 
         length = getContext().random().intRange(DEFAULT_MIN_LENGTH, DEFAULT_MAX_LENGTH);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;

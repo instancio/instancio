@@ -28,9 +28,11 @@ import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.Sonar;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.spi.InstancioServiceProvider.GeneratorProvider;
 import org.instancio.spi.InstancioSpiException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +61,7 @@ public class SpiGeneratorResolver {
         this.afterGenerate = modelContext.getSettings().get(Keys.AFTER_GENERATE_HINT);
     }
 
+    @Nullable
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public Generator<?> getSpiGenerator(final InternalNode node) {
         for (ProviderEntry<GeneratorProvider> entry : providerEntries) {
@@ -91,8 +94,10 @@ public class SpiGeneratorResolver {
                 return g;
             }
 
-            final Hints hints = generator.hints();
-            final InternalGeneratorHint internalHint = hints.get(InternalGeneratorHint.class);
+            final Hints hints = Verify.notNull(generator.hints(), "SPI generator hints are null");
+            final InternalGeneratorHint internalHint = Verify.notNull(hints.get(InternalGeneratorHint.class),
+                    "InternalGeneratorHint is null");
+
             final Generator<?> delegate = generatorResolver.getCachedBuiltInGenerator(
                     defaultIfNull(internalHint.targetClass(), node.getTargetClass()));
 

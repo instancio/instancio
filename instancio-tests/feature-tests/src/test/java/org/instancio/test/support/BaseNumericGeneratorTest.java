@@ -28,6 +28,7 @@ import org.instancio.internal.util.TypeUtils;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SuppressWarnings("NullAway")
 @FeatureTag(Feature.GENERATOR)
 @ExtendWith(InstancioExtension.class)
 public abstract class BaseNumericGeneratorTest<T extends Number & Comparable<T>> {
@@ -188,6 +190,7 @@ public abstract class BaseNumericGeneratorTest<T extends Number & Comparable<T>>
     }
 
     @Test
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     final void minValidation() {
         final InstancioApi<T> api = Instancio.of(targetClass)
                 .generate(selector, gen -> spec(gen).min(null));
@@ -198,6 +201,7 @@ public abstract class BaseNumericGeneratorTest<T extends Number & Comparable<T>>
     }
 
     @Test
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     final void maxValidation() {
         final InstancioApi<T> api = Instancio.of(targetClass)
                 .generate(selector, gen -> spec(gen).max(null));
@@ -208,6 +212,7 @@ public abstract class BaseNumericGeneratorTest<T extends Number & Comparable<T>>
     }
 
     @Test
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     final void rangeValidationMin() {
         final InstancioApi<T> api = Instancio.of(targetClass)
                 .generate(selector, gen -> spec(gen).range(null, initialMax));
@@ -218,6 +223,7 @@ public abstract class BaseNumericGeneratorTest<T extends Number & Comparable<T>>
     }
 
     @Test
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     final void rangeValidationMax() {
         final InstancioApi<T> api = Instancio.of(targetClass)
                 .generate(selector, gen -> spec(gen).range(initialMin, null));

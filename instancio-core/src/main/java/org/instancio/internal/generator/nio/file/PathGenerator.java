@@ -25,6 +25,7 @@ import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.IOUtils;
 import org.instancio.internal.util.StringUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +36,6 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
-import java.util.Locale;
 
 public class PathGenerator extends AbstractGenerator<Path> implements PathSpec {
 
@@ -47,11 +47,11 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathSpec {
 
     private final List<String> directories;
     private boolean isTemp;
-    private String prefix;
-    private String suffix;
-    private Generator<String> nameGenerator;
-    private CreatePathType createPathType;
-    private InputStream inputStream;
+    private @Nullable String prefix;
+    private @Nullable String suffix;
+    private @Nullable Generator<String> nameGenerator;
+    private @Nullable CreatePathType createPathType;
+    private @Nullable InputStream inputStream;
 
     // Required constructor to instantiating generator via reflection
     public PathGenerator(final GeneratorContext context) {
@@ -129,21 +129,20 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathSpec {
         return createIfNeeded(directoryPath, completePath);
     }
 
-    private Path createIfNeeded(final Path directoryPath, final Path completePath) {
+    private Path createIfNeeded(@Nullable final Path directoryPath, final Path completePath) {
         try {
             return createPath(directoryPath, completePath);
         } catch (IOException ex) {
-            throw Fail.withUsageError("error generating %s: %s",
-                    createPathType.name().toLowerCase(Locale.ENGLISH), completePath, ex);
+            throw Fail.withUsageError("error generating '%s'", completePath, ex);
         }
     }
 
-    private Path createPath(final Path directoryPath, final Path completePath) throws IOException {
+    private Path createPath(@Nullable final Path directoryPath, final Path completePath) throws IOException {
         if (createPathType == null) {
             return completePath;
         }
 
-        if (!Files.exists(directoryPath)) {
+        if (directoryPath != null && !Files.exists(directoryPath)) {
             Files.createDirectories(directoryPath);
         }
         if (!Files.exists(completePath)) {
@@ -170,6 +169,7 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathSpec {
         return Paths.get(pathName);
     }
 
+    @Nullable
     private Path getDirectoryPath() {
         Path result = null;
 

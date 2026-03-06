@@ -25,6 +25,7 @@ import org.instancio.generators.Generators;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -111,6 +112,7 @@ public interface InstancioServiceProvider {
      * @return a custom generator provider, or {@code null} if not required
      * @since 2.11.0
      */
+    @Nullable
     default GeneratorProvider getGeneratorProvider() {
         return null;
     }
@@ -121,6 +123,7 @@ public interface InstancioServiceProvider {
      * @return a custom type resolver, or {@code null} if not required
      * @since 2.11.0
      */
+    @Nullable
     default TypeResolver getTypeResolver() {
         return null;
     }
@@ -131,6 +134,7 @@ public interface InstancioServiceProvider {
      * @return a custom type instantiator, or {@code null} if not required
      * @since 2.11.0
      */
+    @Nullable
     default TypeInstantiator getTypeInstantiator() {
         return null;
     }
@@ -141,6 +145,7 @@ public interface InstancioServiceProvider {
      * @return a custom setter method resolver, or {@code null} if not required
      * @since 3.2.0
      */
+    @Nullable
     @ExperimentalApi
     default SetterMethodResolver getSetterMethodResolver() {
         return null;
@@ -152,6 +157,7 @@ public interface InstancioServiceProvider {
      * @return a custom annotation processor, or {@code null} if not required
      * @since 4.5.0
      */
+    @Nullable
     @ExperimentalApi
     default AnnotationProcessor getAnnotationProcessor() {
         return null;
@@ -181,6 +187,7 @@ public interface InstancioServiceProvider {
          *                               does not implement {@link Generator}
          * @since 2.11.0
          */
+        @Nullable
         GeneratorSpec<?> getGenerator(Node node, Generators generators);
     }
 
@@ -221,6 +228,7 @@ public interface InstancioServiceProvider {
          *                               a subtype of the argument class
          * @since 2.11.0
          */
+        @Nullable
         Class<?> getSubtype(Class<?> type);
     }
 
@@ -255,6 +263,7 @@ public interface InstancioServiceProvider {
          *                               instance of the specified {@code type}
          * @since 2.11.0
          */
+        @Nullable
         Object instantiate(Class<?> type);
     }
 
@@ -280,6 +289,7 @@ public interface InstancioServiceProvider {
          * @return setter method or {@code null} if method was not resolved
          * @since 3.2.0
          */
+        @Nullable
         @ExperimentalApi
         Method getSetter(Node node);
     }

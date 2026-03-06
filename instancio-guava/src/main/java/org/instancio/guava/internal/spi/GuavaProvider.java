@@ -49,6 +49,7 @@ import com.google.common.collect.TreeMultiset;
 import com.google.common.net.HostAndPort;
 import com.google.common.net.InternetDomainName;
 import org.instancio.Node;
+import org.instancio.documentation.Initializer;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generators.Generators;
@@ -70,6 +71,7 @@ public class GuavaProvider implements InstancioServiceProvider {
 
     private GeneratorContext generatorContext;
 
+    @Initializer
     @Override
     public void init(final ServiceProviderContext providerContext) {
         this.generatorContext = new GeneratorContext(

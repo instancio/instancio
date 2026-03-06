@@ -16,10 +16,12 @@
 package org.instancio.internal.generation;
 
 import org.instancio.TargetSelector;
+import org.instancio.documentation.VisibleForTesting;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +82,7 @@ public class AssigmentObjectStore implements GenerationListener {
         }
     }
 
+    @Nullable
     public GeneratorResult getValue(final TargetSelector destination) {
         final Iterator<Object> iter = scopes.descendingIterator();
 
@@ -110,6 +113,7 @@ public class AssigmentObjectStore implements GenerationListener {
     }
 
     //@formatter:off
+    @SuppressWarnings({"NullAway", "DataFlowIssue", Sonar.ANNOTATE_PARAMETER_NULLABLE})
     @VisibleForTesting
     static final class NoopAssigmentObjectStore extends AssigmentObjectStore {
         NoopAssigmentObjectStore() { super(null); }

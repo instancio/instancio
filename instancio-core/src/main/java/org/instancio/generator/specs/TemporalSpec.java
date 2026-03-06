@@ -17,6 +17,8 @@ package org.instancio.generator.specs;
 
 import org.instancio.documentation.NonDeterministic;
 import org.instancio.generator.ValueSpec;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.time.temporal.Temporal;
 
@@ -26,7 +28,7 @@ import java.time.temporal.Temporal;
  * @param <T> temporal type
  * @since 2.6.0
  */
-public interface TemporalSpec<T> extends ValueSpec<T>, TemporalGeneratorSpec<T> {
+public interface TemporalSpec<T extends @Nullable Object> extends ValueSpec<T>, TemporalGeneratorSpec<T> {
 
     /**
      * {@inheritDoc}
@@ -48,7 +50,7 @@ public interface TemporalSpec<T> extends ValueSpec<T>, TemporalGeneratorSpec<T> 
      * @since 4.6.0
      */
     @Override
-    TemporalSpec<T> min(T min);
+    TemporalSpec<T> min(@NonNull T min);
 
     /**
      * {@inheritDoc}
@@ -56,13 +58,13 @@ public interface TemporalSpec<T> extends ValueSpec<T>, TemporalGeneratorSpec<T> 
      * @since 4.6.0
      */
     @Override
-    TemporalSpec<T> max(T max);
+    TemporalSpec<T> max(@NonNull T max);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    TemporalSpec<T> range(T min, T max);
+    TemporalSpec<T> range(@NonNull T min, @NonNull T max);
 
     /**
      * {@inheritDoc}

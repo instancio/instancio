@@ -17,8 +17,7 @@ package org.instancio.internal.nodes;
 
 import org.instancio.internal.RootType;
 import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
@@ -41,7 +40,7 @@ class PredefinedNodeCreator {
     }
 
     @Nullable
-    InternalNode createFromTemplate(@NotNull final Type type,
+    InternalNode createFromTemplate(final Type type,
                                     @Nullable final Member member,
                                     @Nullable final InternalNode parent) {
 
@@ -65,8 +64,8 @@ class PredefinedNodeCreator {
      * the child node. For this reason, the nodes are defined manually.
      */
     private InternalNode createOptional(
-            @NotNull final Class<?> type,
-            @NotNull final Class<?> childType,
+            final Class<?> type,
+            final Class<?> childType,
             @Nullable final Member member,
             @Nullable final InternalNode parent) {
 

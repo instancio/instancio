@@ -26,6 +26,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -147,6 +148,7 @@ class EmitGeneratorWhenEmptyTest {
                     .startsWith(-1, -2, -3, -1, -2, -3, -1, -2, -3, -1);
         }
 
+        @NullUnmarked
         @Test
         void withNulls() {
             final List<Integer> result = Instancio.ofList(Integer.class)

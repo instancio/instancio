@@ -20,6 +20,7 @@ import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -54,7 +55,7 @@ class IterableUsingCollectionGeneratorTest {
     @Test
     void assignCollectionToIterable() {
         class IterableHolder {
-            Iterable<String> iterable;
+            @Nullable Iterable<String> iterable;
         }
 
         final IterableHolder result = Instancio.of(IterableHolder.class)

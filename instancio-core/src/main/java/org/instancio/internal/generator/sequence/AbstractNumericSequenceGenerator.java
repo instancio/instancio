@@ -16,25 +16,29 @@
 package org.instancio.internal.generator.sequence;
 
 import org.instancio.Random;
+import org.instancio.documentation.Initializer;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.NumericSequenceSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.util.Sonar;
 
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+@SuppressWarnings(Sonar.NULL_MARKED_NULL_VALUE)
 public abstract class AbstractNumericSequenceGenerator<T extends Number & Comparable<T>>
         extends AbstractGenerator<T>
         implements NumericSequenceSpec<T> {
 
     private T seq;
-    private Function<T, T> next;
+    private Function<T, T> next = Function.identity();
 
     AbstractNumericSequenceGenerator(final GeneratorContext context) {
         super(context);
     }
 
+    @Initializer
     @Override
     public AbstractNumericSequenceGenerator<T> start(final T start) {
         this.seq = ApiValidator.notNull(start, "sequence 'start' value must not be null");

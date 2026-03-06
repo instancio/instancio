@@ -161,6 +161,7 @@ class CustomMapGeneratorTest {
                     .allSatisfy(key -> assertThat(key).isBetween(minKeyValue, maxKeyValue));
         }
 
+        @SuppressWarnings("NullAway")
         @Test
         @DisplayName("DO_NOT_MODIFY: should ignore matching selector")
         void doNotModify() {

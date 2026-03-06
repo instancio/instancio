@@ -34,6 +34,7 @@ import org.instancio.generator.specs.OneOfArrayGeneratorSpec;
 import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
 import org.instancio.generator.specs.OptionalGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -162,7 +163,7 @@ public interface Generators extends CommonGeneratorSpecs {
      * @since 1.0.1
      */
     @SuppressWarnings("unchecked")
-    <T> OneOfArrayGeneratorSpec<T> oneOf(T... choices);
+    <T extends @Nullable Object> OneOfArrayGeneratorSpec<T> oneOf(@Nullable T... choices);
 
     /**
      * Picks a random value from the given choices.
@@ -280,7 +281,7 @@ public interface Generators extends CommonGeneratorSpecs {
      * @since 2.12.0
      */
     @ExperimentalApi
-    <T> EmitGeneratorSpec<T> emit();
+    <T extends @Nullable Object> EmitGeneratorSpec<T> emit();
 
     /**
      * Provides access to atomic generators.

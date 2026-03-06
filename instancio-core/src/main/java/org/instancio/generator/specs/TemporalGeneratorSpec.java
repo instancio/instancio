@@ -16,6 +16,8 @@
 package org.instancio.generator.specs;
 
 import org.instancio.documentation.NonDeterministic;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Generator spec for {@link java.time.temporal.Temporal} types.
@@ -23,7 +25,7 @@ import org.instancio.documentation.NonDeterministic;
  * @param <T> temporal type
  * @since 1.1.2
  */
-public interface TemporalGeneratorSpec<T> extends
+public interface TemporalGeneratorSpec<T extends @Nullable Object> extends
         AsGeneratorSpec<T>,
         NullableGeneratorSpec<T> {
 
@@ -51,7 +53,7 @@ public interface TemporalGeneratorSpec<T> extends
      * @see #range(Object, Object)
      * @since 4.6.0
      */
-    TemporalGeneratorSpec<T> min(T min);
+    TemporalGeneratorSpec<T> min(@NonNull T min);
 
     /**
      * Specifies the upper bound.
@@ -61,7 +63,7 @@ public interface TemporalGeneratorSpec<T> extends
      * @see #range(Object, Object)
      * @since 4.6.0
      */
-    TemporalGeneratorSpec<T> max(T max);
+    TemporalGeneratorSpec<T> max(@NonNull T max);
 
     /**
      * Generate a value within the given range.
@@ -72,7 +74,7 @@ public interface TemporalGeneratorSpec<T> extends
      * @see #min(Object)
      * @see #max(Object)
      */
-    TemporalGeneratorSpec<T> range(T min, T max);
+    TemporalGeneratorSpec<T> range(@NonNull T min, @NonNull T max);
 
     /**
      * {@inheritDoc}

@@ -20,9 +20,12 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.util.CollectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 abstract class AbstractURIGenerator<T> extends AbstractGenerator<T> {
     private static final int DEFAULT_PORT = -1;
@@ -34,9 +37,9 @@ abstract class AbstractURIGenerator<T> extends AbstractGenerator<T> {
     private static final String DEFAULT_SCHEME = "http";
 
     private List<String> schemes = Collections.emptyList();
-    private Generator<String> hostGenerator;
+    private @Nullable Generator<String> hostGenerator;
     private int port = DEFAULT_PORT;
-    private Generator<String> pathGenerator;
+    private @Nullable Generator<String> pathGenerator;
 
     AbstractURIGenerator(final GeneratorContext context) {
         super(context);
@@ -65,10 +68,11 @@ abstract class AbstractURIGenerator<T> extends AbstractGenerator<T> {
     final String getHost(final Random random) {
         return hostGenerator == null
                 ? random.lowerCaseAlphabetic(random.intRange(HOST_MIN_LENGTH, HOST_MAX_LENGTH))
-                : hostGenerator.generate(random);
+                : requireNonNull(hostGenerator.generate(random), "generated hostName is null");
     }
 
-    final String getPath(final Random random, final String defaultValue) {
+    @Nullable
+    final String getPath(final Random random, @Nullable final String defaultValue) {
         return pathGenerator == null ? defaultValue : pathGenerator.generate(random);
     }
 

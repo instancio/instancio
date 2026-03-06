@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.function.BiConsumer;
 
@@ -29,5 +31,6 @@ import java.util.function.BiConsumer;
  * @see Select
  * @since 4.0.0
  */
-public interface SetMethodSelector<T, U> extends TargetSelector, BiConsumer<T, U>, Serializable {
+public interface SetMethodSelector<T, U extends @Nullable Object> extends
+        TargetSelector, BiConsumer<T, @Nullable U>, Serializable {
 }

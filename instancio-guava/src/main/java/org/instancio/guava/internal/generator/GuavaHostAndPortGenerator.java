@@ -17,11 +17,14 @@ package org.instancio.guava.internal.generator;
 
 import com.google.common.net.HostAndPort;
 import org.instancio.Random;
+import org.instancio.documentation.Initializer;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.internal.generator.domain.internet.Ip4Generator;
+
+import static java.util.Objects.requireNonNull;
 
 public class GuavaHostAndPortGenerator implements Generator<HostAndPort> {
 
@@ -30,6 +33,7 @@ public class GuavaHostAndPortGenerator implements Generator<HostAndPort> {
 
     private Ip4Generator ip4Generator;
 
+    @Initializer
     @Override
     public void init(final GeneratorContext context) {
         ip4Generator = new Ip4Generator(context);
@@ -37,7 +41,7 @@ public class GuavaHostAndPortGenerator implements Generator<HostAndPort> {
 
     @Override
     public HostAndPort generate(final Random random) {
-        final String host = ip4Generator.generate(random);
+        final String host = requireNonNull(ip4Generator.generate(random));
         final int port = random.intRange(MIN_PORT, MAX_PORT);
         return HostAndPort.fromParts(host, port);
     }

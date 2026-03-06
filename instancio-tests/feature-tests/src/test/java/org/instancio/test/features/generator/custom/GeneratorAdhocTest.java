@@ -30,6 +30,7 @@ import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -119,8 +120,8 @@ class GeneratorAdhocTest {
     void subtype() {
         @Data
         class Container {
-            StringHolderInterface holderOne;
-            StringHolderInterface holderTwo;
+            @Nullable StringHolderInterface holderOne;
+            @Nullable StringHolderInterface holderTwo;
         }
 
         final String expectedHolderOneValue = "one";

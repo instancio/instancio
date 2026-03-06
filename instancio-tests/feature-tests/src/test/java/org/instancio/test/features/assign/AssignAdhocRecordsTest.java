@@ -159,9 +159,9 @@ class AssignAdhocRecordsTest {
         // @formatter:off
         // Irrelevant filler classes to make the POJO more complicated:
         record F1 (String s, PrimitiveFields primitives) {}
-        class F2 {F1 f1; String s; SupportedNumericTypes numericTypes;}
-        class F3 {F2 f2; String s; SupportedTemporalTypes temporalTypes;}
-        class F4 {String s;}
+        @Data class F2 {F1 f1; String s; SupportedNumericTypes numericTypes;}
+        @Data class F3 {F2 f2; String s; SupportedTemporalTypes temporalTypes;}
+        @Data class F4 {String s;}
 
         // Classes under test ('String val' are the fields of interest):
         record A(String val) {}

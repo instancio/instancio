@@ -48,6 +48,7 @@ class FieldAssignmentUsingSetterSelectorTest {
         return Stream.of(
                 Arguments.of(Select.all(selectMethod)),
                 Arguments.of(Select.setter(StringHolder.class, "setValue")),
+                Arguments.of(Select.setter(StringHolder.class, "setValue", String.class)),
                 Arguments.of(selectMethod),
                 Arguments.of(setValueMethod),
                 Arguments.of(selectMethod.atDepth(1)),

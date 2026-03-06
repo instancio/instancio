@@ -20,6 +20,7 @@ import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.util.Constants;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.function.Predicate;
@@ -60,7 +61,7 @@ public final class BlankSelectors {
     }
 
     private static final class BlankSelector extends PredicateSelectorImpl {
-        private BlankSelector(final Predicate<InternalNode> predicate, final String description) {
+        private BlankSelector(final Predicate<@Nullable InternalNode> predicate, final String description) {
             super(ApiMethodSelector.NONE,
                     Constants.BLANK_SELECTOR_PRIORITY,
                     predicate,

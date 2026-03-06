@@ -274,7 +274,6 @@ class AssignPojoAndRecordTest {
         assertThat(result.rec.string).isEqualTo("R");
     }
 
-
     private static @Data class Root {
         private Rec rec;
         private String string1;

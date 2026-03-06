@@ -19,6 +19,7 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -75,7 +76,7 @@ public interface ValueOf {
      * @return an assignment
      * @since 3.0.0
      */
-    <T> Assignment generate(GeneratorSpecProvider<T> gen);
+    <T extends @Nullable Object> Assignment generate(GeneratorSpecProvider<T> gen);
 
     /**
      * Generates values using arbitrary generator specs.
@@ -88,7 +89,7 @@ public interface ValueOf {
      * @return an assignment
      * @since 3.0.0
      */
-    <T> Assignment generate(GeneratorSpec<T> spec);
+    <T extends @Nullable Object> Assignment generate(GeneratorSpec<T> spec);
 
     /**
      * Sets a value to matching selector targets.
@@ -101,7 +102,7 @@ public interface ValueOf {
      * @return an assignment
      * @since 3.0.0
      */
-    <T> Assignment set(T value);
+    <T extends @Nullable Object> Assignment set(T value);
 
     /**
      * Supplies an object using a {@link Generator} to matching selector targets.
@@ -114,7 +115,7 @@ public interface ValueOf {
      * @return an assignment
      * @since 3.0.0
      */
-    <T> Assignment supply(Generator<T> generator);
+    <T extends @Nullable Object> Assignment supply(Generator<T> generator);
 
     /**
      * Supplies an object using a {@link Supplier}.
@@ -127,6 +128,6 @@ public interface ValueOf {
      * @return an assignment
      * @since 3.0.0
      */
-    <T> Assignment supply(Supplier<T> supplier);
+    <T extends @Nullable Object> Assignment supply(Supplier<T> supplier);
 
 }

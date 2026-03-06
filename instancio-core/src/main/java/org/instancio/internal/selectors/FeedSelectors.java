@@ -19,15 +19,19 @@ import org.instancio.documentation.InternalApi;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Constants;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Predicate;
+
+import static java.util.Objects.requireNonNull;
 
 @InternalApi
 public final class FeedSelectors {
 
     private static final class FeedSelector extends PredicateSelectorImpl {
-        private FeedSelector(final Predicate<InternalNode> predicate, final String description) {
+        private FeedSelector(final Predicate<@Nullable InternalNode> predicate, final String description) {
             super(ApiMethodSelector.NONE,
                     Constants.FEED_SELECTOR_PRIORITY,
                     predicate,
@@ -48,13 +52,13 @@ public final class FeedSelectors {
     }
 
     public static InternalSelector forProperty(final InternalNode fieldNode) {
-        final String fieldName = fieldNode.getField().getName();
+        final String fieldName = requireNonNull(fieldNode.getField()).getName();
         final String description = String.format("forProperty(\"%s\")", fieldName);
 
         return new FeedSelector(candidate ->
                 candidate.getField() != null
-                        && fieldName.equals(candidate.getField().getName())
-                        && fieldNode.getParent().equals(candidate.getParent()),
+                && Objects.equals(fieldName, candidate.getField().getName())
+                && Objects.equals(fieldNode.getParent(), candidate.getParent()),
                 description);
     }
 

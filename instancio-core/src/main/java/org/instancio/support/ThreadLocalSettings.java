@@ -17,6 +17,7 @@ package org.instancio.support;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public final class ThreadLocalSettings {
@@ -29,6 +30,7 @@ public final class ThreadLocalSettings {
         // non-instantiable
     }
 
+    @Nullable
     public Settings get() {
         return SETTINGS.get();
     }

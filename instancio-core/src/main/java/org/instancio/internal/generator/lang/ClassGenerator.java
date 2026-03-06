@@ -18,6 +18,8 @@ package org.instancio.internal.generator.lang;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,12 +41,14 @@ public class ClassGenerator extends AbstractGenerator<Class<?>> {
         super(context);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;
     }
 
     @Override
+    @SuppressWarnings(Sonar.METHOD_OVERRIDES_SHOULD_NOT_CHANGE_CONTRACTS)
     protected Class<?> tryGenerateNonNull(final Random random) {
         return random.oneOf(CLASSES);
     }

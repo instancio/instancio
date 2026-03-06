@@ -16,7 +16,7 @@
 package org.instancio.internal.util;
 
 import org.instancio.exception.InstancioException;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +33,7 @@ import java.util.Optional;
 
 import static org.instancio.internal.util.ErrorMessageUtils.unableToGetValueFromField;
 
+@SuppressWarnings("PMD.GodClass")
 public final class ReflectionUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
 
@@ -40,12 +41,21 @@ public final class ReflectionUtils {
         // non-instantiable
     }
 
+    @Nullable
     public static Class<?> loadClass(final String fullyQualifiedName) {
         try {
             return Class.forName(fullyQualifiedName);
         } catch (Exception ex) {
             LOG.trace("Class not found: '{}'", fullyQualifiedName);
             return null;
+        }
+    }
+
+    public static Class<?> loadRequiredClass(final String fullyQualifiedName) {
+        try {
+            return Class.forName(fullyQualifiedName);
+        } catch (Exception ex) {
+            throw Fail.withInternalError("Class not found: '%s'", fullyQualifiedName, ex);
         }
     }
 
@@ -83,8 +93,20 @@ public final class ReflectionUtils {
         }
     }
 
+    public static Method getRequiredZeroArgMethod(final Class<?> klass, final String name) {
+        try {
+            return klass.getMethod(name);
+        } catch (NoSuchMethodException ex) {
+            throw Fail.withInternalError("Class %s has no method named '%s'", klass, name, ex);
+        }
+    }
+
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public static Method getSetterMethod(final Class<?> klass, final String methodName, final Class<?> parameterType) {
+    public static Method getSetterMethod(
+            final Class<?> klass,
+            final String methodName,
+            @Nullable final Class<?> parameterType) {
+
         if (parameterType == null) {
 
             // getDeclaredMethods() order is not guaranteed.
@@ -133,13 +155,19 @@ public final class ReflectionUtils {
         }
     }
 
-    public static Object tryGetFieldValueOrElseNull(final Field field, final Object target) {
+    @Nullable
+    public static Object tryGetFieldValueOrElseNull(@Nullable final Field field, @Nullable final Object target) {
+        if (field == null) {
+            return null;
+        }
+
         try {
             setAccessible(field);
             return field.get(target);
         } catch (Exception ex) {
             final String objectType = target == null ? null : target.getClass().getTypeName();
-            final String msg = String.format("Error getting field value." +
+            final String msg = String.format(
+                    "Error getting field value." +
                     "%n -> Field ........: %s" +
                     "%n -> Declared by ..: %s", field, objectType);
             ExceptionUtils.logException(msg, ex);
@@ -147,6 +175,7 @@ public final class ReflectionUtils {
         }
     }
 
+    @Nullable
     public static Object getFieldValue(final Field field, final Object target) {
         try {
             setAccessible(field);
@@ -158,11 +187,12 @@ public final class ReflectionUtils {
         }
     }
 
-    public static boolean hasNonNullValue(final Field field, final Object object) {
-        return getFieldValue(field, object) != null;
+    public static boolean hasNonNullValue(final Field field, @Nullable final Object object) {
+        return object != null && getFieldValue(field, object) != null;
     }
 
-    public static boolean hasNonNullOrNonDefaultPrimitiveValue(final Field field, final Object object) {
+    public static boolean hasNonNullOrNonDefaultPrimitiveValue(final Field field, @Nullable final Object object) {
+        if (object == null) return false;
         final Object fieldValue = getFieldValue(field, object);
         return neitherNullNorPrimitiveWithDefaultValue(field.getType(), fieldValue);
     }

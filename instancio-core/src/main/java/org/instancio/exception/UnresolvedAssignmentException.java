@@ -16,6 +16,7 @@
 package org.instancio.exception;
 
 import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Exception triggered as a result of an assignment expression
@@ -26,7 +27,7 @@ import org.instancio.internal.util.Sonar;
 @SuppressWarnings(Sonar.NUMBER_OF_PARENTS)
 public class UnresolvedAssignmentException extends InstancioApiException {
 
-    public UnresolvedAssignmentException(final String message, final Throwable cause) {
+    public UnresolvedAssignmentException(final String message, @Nullable final Throwable cause) {
         super(message, cause);
     }
 }

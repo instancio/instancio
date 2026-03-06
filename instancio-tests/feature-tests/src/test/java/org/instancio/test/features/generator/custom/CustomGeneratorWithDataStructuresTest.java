@@ -26,6 +26,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.generics.basic.Pair;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -53,10 +54,13 @@ class CustomGeneratorWithDataStructuresTest {
 
     private static final int INITIAL_BLANK_ARRAY_SIZE = 3;
 
+    // NOTE: Setters are used via reflection when feature-tests
+    // are run with assignment type METHOD
+    @SuppressWarnings({"LombokSetterMayBeUsed", "unused"})
     private static class Container {
-        List<String> list;
-        Map<String, Long> map;
-        Pair<String, Long>[] array;
+        @Nullable List<String> list;
+        @Nullable Map<String, Long> map;
+        Pair<String, Long> @Nullable [] array;
 
         List<String> blankList = new ArrayList<>();
         Map<String, Long> blankMap = new HashMap<>();
@@ -106,6 +110,7 @@ class CustomGeneratorWithDataStructuresTest {
         };
     }
 
+    @SuppressWarnings("NullAway")
     @Nested
     class WithoutSelectorsTest {
         private Container create(final Generator<?> generator) {
@@ -158,7 +163,7 @@ class CustomGeneratorWithDataStructuresTest {
 
         @Test
         @DisplayName("POPULATE_NULLS_AND_DEFAULT_PRIMITIVES: only null fields and primitives with default values " +
-                "should be populated; non-null fields and non-default primitives should not be modified")
+                     "should be populated; non-null fields and non-default primitives should not be modified")
         void populateNullsAndDefaultPrimitives() {
             final Container result = create(generator(AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES));
 
@@ -193,7 +198,7 @@ class CustomGeneratorWithDataStructuresTest {
     class WithSelectorsTest {
 
         // Anything bigger than default to ensure tests don't pass by luck
-        private final int NEW_SIZE = 15;
+        private static final int NEW_SIZE = 15;
 
         private Container create(final Generator<?> generator) {
             return Instancio.of(Container.class)

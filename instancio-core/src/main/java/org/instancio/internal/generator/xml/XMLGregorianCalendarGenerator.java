@@ -20,14 +20,14 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.time.LocalDateTimeGenerator;
+import org.instancio.internal.util.Fail;
+import org.jspecify.annotations.Nullable;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import static org.instancio.internal.util.ExceptionUtils.logException;
 
 public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregorianCalendar> {
 
@@ -40,20 +40,18 @@ public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregoria
         this.localDateTimeGenerator = new LocalDateTimeGenerator(context);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;
     }
 
+    @Nullable
     @Override
     protected XMLGregorianCalendar tryGenerateNonNull(final Random random) {
-        if (DATATYPE_FACTORY == null) {
-            return null;
-        }
-
         final LocalDateTime localDateTime = localDateTimeGenerator.generate(random);
 
-        return DATATYPE_FACTORY.newXMLGregorianCalendar(
+        return localDateTime == null ? null : DATATYPE_FACTORY.newXMLGregorianCalendar(
                 localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
@@ -61,8 +59,7 @@ public class XMLGregorianCalendarGenerator extends AbstractGenerator<XMLGregoria
         try {
             return DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException ex) {
-            logException("Error instantiating javax.xml.datatype.DatatypeFactory", ex);
-            return null;
+            throw Fail.withInternalError("Error instantiating javax.xml.datatype.DatatypeFactory", ex);
         }
     }
 }

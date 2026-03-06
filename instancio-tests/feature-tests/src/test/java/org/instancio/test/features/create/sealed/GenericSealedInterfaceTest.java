@@ -18,6 +18,7 @@ package org.instancio.test.features.create.sealed;
 import lombok.Setter;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,6 +29,7 @@ class GenericSealedInterfaceTest {
 
     private non-sealed interface BaseNonSealedInterface<T> extends BaseSealedInterface<T> {}
 
+    @SuppressWarnings("NullAway")
     @Setter
     private static class Holder<S, T extends BaseSealedInterface<S>> {
         private S valueOne;
@@ -36,7 +38,7 @@ class GenericSealedInterfaceTest {
 
     @Setter
     private static class Foo implements BaseNonSealedInterface<String> {
-        private String fooValue;
+        private @Nullable String fooValue;
     }
 
     @Test

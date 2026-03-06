@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -39,7 +40,7 @@ public interface GivenOrigin {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <T> GivenOriginPredicate satisfies(Predicate<T> predicate);
+    <T extends @Nullable Object> GivenOriginPredicate satisfies(Predicate<T> predicate);
 
     /**
      * Checks if the origin value is equal to given {@code value}
@@ -50,7 +51,7 @@ public interface GivenOrigin {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <T> GivenOriginPredicate is(T value);
+    <T extends @Nullable Object> GivenOriginPredicate is(T value);
 
     /**
      * Checks if the origin value is not equal to given {@code value}
@@ -61,7 +62,7 @@ public interface GivenOrigin {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <T> GivenOriginPredicate isNot(T value);
+    <T extends @Nullable Object> GivenOriginPredicate isNot(T value);
 
     /**
      * Checks if the origin value is equal to any of given {@code values}
@@ -72,5 +73,5 @@ public interface GivenOrigin {
      * @return assignment builder reference
      * @since 3.0.0
      */
-    <T> GivenOriginPredicate isIn(T... values);
+    <T extends @Nullable Object> GivenOriginPredicate isIn(T... values);
 }
