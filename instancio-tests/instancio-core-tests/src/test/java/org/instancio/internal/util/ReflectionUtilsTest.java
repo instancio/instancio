@@ -21,6 +21,7 @@ import org.instancio.exception.InstancioException;
 import org.instancio.test.support.pojo.assignment.NonSetter;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.PrimitiveFields;
+import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
@@ -42,6 +43,7 @@ class ReflectionUtilsTest {
     @Nested
     class GetClassTest {
         @Test
+        @SuppressWarnings("DataFlowIssue")
         void nullClassName() {
             assertThatThrownBy(() -> ReflectionUtils.getClass(null))
                     .isExactlyInstanceOf(InstancioApiException.class)
@@ -57,6 +59,7 @@ class ReflectionUtilsTest {
                     .hasMessageContaining("class not found: '%s'", invalidClass)
                     .hasCauseExactlyInstanceOf(ClassNotFoundException.class);
         }
+
     }
 
     @Test
@@ -64,6 +67,47 @@ class ReflectionUtilsTest {
         assertThat(ReflectionUtils.loadClass("foo")).isNull();
         assertThat(ReflectionUtils.loadClass("org.instancio.Instancio"))
                 .isEqualTo(Instancio.class);
+    }
+
+    @Test
+    void loadRequiredClass() {
+        assertThat(ReflectionUtils.loadRequiredClass("org.instancio.Instancio"))
+                .isEqualTo(Instancio.class);
+
+        assertThatThrownBy(() -> ReflectionUtils.loadRequiredClass("org.instancio.Foo"))
+                .isExactlyInstanceOf(InstancioException.class);
+    }
+
+    @Test
+    void getZeroArgMethod() {
+        assertThat(ReflectionUtils.getZeroArgMethod(StringHolder.class, "getValue")).isNotNull();
+        assertThat(ReflectionUtils.getZeroArgMethod(StringHolder.class, "getFoo")).isNull();
+    }
+
+    @Test
+    void getRequiredZeroArgMethod() {
+        assertThat(ReflectionUtils.getRequiredZeroArgMethod(StringHolder.class, "getValue")).isNotNull();
+
+        assertThatThrownBy(() -> ReflectionUtils.getRequiredZeroArgMethod(StringHolder.class, "getFoo"))
+                .isExactlyInstanceOf(InstancioException.class);
+    }
+
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    void getFieldOrNull() {
+        assertThat(ReflectionUtils.getFieldOrNull(StringHolder.class, "value"))
+                .extracting(Field::getName)
+                .isEqualTo("value");
+
+        assertThat(ReflectionUtils.getFieldOrNull(StringHolder.class, "foo")).isNull();
+    }
+
+    @Test
+    void newInstance() {
+        assertThat(ReflectionUtils.newInstance(StringHolder.class)).isInstanceOf(StringHolder.class);
+
+        assertThatThrownBy(() -> ReflectionUtils.newInstance(List.class))
+                .isExactlyInstanceOf(InstancioException.class);
     }
 
     @ValueSource(classes = {String.class, String[].class, List[].class})
@@ -166,11 +210,13 @@ class ReflectionUtilsTest {
 
         assertThat(ReflectionUtils.tryGetFieldValueOrElseNull(nameField, new Address())).isNull();
         assertThat(ReflectionUtils.tryGetFieldValueOrElseNull(nameField, null)).isNull();
+        assertThat(ReflectionUtils.tryGetFieldValueOrElseNull(null, null)).isNull();
     }
 
     @Test
     void hasNonNullValue() {
         final Field nameField = ReflectionUtils.getField(Person.class, "name");
+        assertThat(ReflectionUtils.hasNonNullValue(nameField, null)).isFalse();
         assertThat(ReflectionUtils.hasNonNullValue(nameField, new Person())).isFalse();
         assertThat(ReflectionUtils.hasNonNullValue(nameField, Person.builder().name("foo").build())).isTrue();
     }
@@ -178,6 +224,7 @@ class ReflectionUtilsTest {
     @Test
     void hasNonNullOrNonDefaultPrimitiveValue() {
         final Field nameField = ReflectionUtils.getField(Person.class, "name");
+        assertThat(ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(nameField, null)).isFalse();
         assertThat(ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(nameField, new Person())).isFalse();
         assertThat(ReflectionUtils.hasNonNullOrNonDefaultPrimitiveValue(nameField, Person.builder().name("foo").build())).isTrue();
     }

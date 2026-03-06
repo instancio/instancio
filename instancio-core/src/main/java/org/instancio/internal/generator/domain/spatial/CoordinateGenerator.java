@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.CoordinateSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.lang.DoubleGenerator;
+import org.jspecify.annotations.Nullable;
 
 public class CoordinateGenerator extends AbstractGenerator<Double> implements CoordinateSpec {
 
@@ -38,16 +39,6 @@ public class CoordinateGenerator extends AbstractGenerator<Double> implements Co
     }
 
     @Override
-    protected Double tryGenerateNonNull(final Random random) {
-        if (type == CoordinateType.LONGITUDE) {
-            return delegate.range(-180D, 180D).generate(random);
-        } else {
-            // Default to latitude
-            return delegate.range(-90D, 90D).generate(random);
-        }
-    }
-
-    @Override
     public CoordinateGenerator lat() {
         type = CoordinateType.LATITUDE;
         return this;
@@ -63,6 +54,17 @@ public class CoordinateGenerator extends AbstractGenerator<Double> implements Co
     public CoordinateGenerator nullable() {
         super.nullable();
         return this;
+    }
+
+    @Nullable
+    @Override
+    protected Double tryGenerateNonNull(final Random random) {
+        if (type == CoordinateType.LONGITUDE) {
+            return delegate.range(-180D, 180D).generate(random);
+        } else {
+            // Default to latitude
+            return delegate.range(-90D, 90D).generate(random);
+        }
     }
 
     private enum CoordinateType {

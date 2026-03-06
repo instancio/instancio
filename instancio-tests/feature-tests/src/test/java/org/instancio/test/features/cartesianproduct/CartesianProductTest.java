@@ -335,6 +335,8 @@ class CartesianProductTest {
 
     @Nested
     class NullTest {
+
+        @SuppressWarnings("NullAway")
         @Test
         void nullArray() {
             final InstancioCartesianProductApi<Pair<Integer, Boolean>> api = Instancio.ofCartesianProduct(new TypeToken<Pair<Integer, Boolean>>() {});
@@ -356,6 +358,7 @@ class CartesianProductTest {
         }
 
         @Test
+        @SuppressWarnings("NullAway")
         void withSingleNullObject() {
             final List<Pair<Integer, Boolean>> results = Instancio.ofCartesianProduct(new TypeToken<Pair<Integer, Boolean>>() {})
                     .with(allInts(), (Object) null)

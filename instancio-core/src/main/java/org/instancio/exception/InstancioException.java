@@ -15,6 +15,8 @@
  */
 package org.instancio.exception;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Base class for all exceptions thrown by Instancio.
  *
@@ -26,7 +28,7 @@ public class InstancioException extends RuntimeException {
         super(message);
     }
 
-    public InstancioException(String message, Throwable cause) {
+    public InstancioException(String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 }

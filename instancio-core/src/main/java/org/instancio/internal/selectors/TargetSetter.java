@@ -15,8 +15,6 @@
  */
 package org.instancio.internal.selectors;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -25,7 +23,7 @@ public final class TargetSetter implements Target {
     private final Method setter;
     private final Class<?> parameterType;
 
-    public TargetSetter(@NotNull final Method setter) {
+    public TargetSetter(final Method setter) {
         this.setter = setter;
         this.parameterType = setter.getParameterTypes()[0];
     }
@@ -58,7 +56,7 @@ public final class TargetSetter implements Target {
 
     @Override
     public int hashCode() {
-        return setter == null ? 0 : setter.hashCode();
+        return setter.hashCode();
     }
 
     @Override

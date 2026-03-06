@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.spi;
 
+import org.instancio.documentation.VisibleForTesting;
 import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioServiceProvider.AnnotationProcessor;
@@ -23,7 +24,6 @@ import org.instancio.spi.InstancioServiceProvider.SetterMethodResolver;
 import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.ServiceProviderContext;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
 

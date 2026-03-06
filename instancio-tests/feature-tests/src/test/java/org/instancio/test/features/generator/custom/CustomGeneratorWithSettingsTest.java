@@ -26,6 +26,8 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -43,18 +45,19 @@ class CustomGeneratorWithSettingsTest {
     private static final String ONE = "one";
 
     private static class StringFieldsGenerator implements Generator<StringFields> {
-        private final Hints hints;
+        private final @Nullable Hints hints;
 
-        private StringFieldsGenerator(final Hints hints) {
+        private StringFieldsGenerator(@Nullable final Hints hints) {
             this.hints = hints;
         }
 
         @Override
-        public StringFields generate(final Random random) {
+        public StringFields generate(final @NonNull Random random) {
             // remaining fields are null
             return StringFields.builder().one(ONE).build();
         }
 
+        @Nullable
         @Override
         public Hints hints() {
             return hints;

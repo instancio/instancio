@@ -25,6 +25,7 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.Collections;
 import java.util.function.Predicate;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @FeatureTag(Feature.PREDICATE_SELECTOR)
@@ -54,9 +56,10 @@ class CustomPredicateNodeSelectorTest {
                 .allSatisfy(phone -> assertThat(phone).hasNoNullFieldsOrProperties());
     }
 
+    @SuppressWarnings("NullAway")
     private static TargetSelector addressStringSelector() {
-        final Predicate<InternalNode> predicate = n -> n.getTargetClass() == String.class
-                && n.getParent().getTargetClass() == Address.class;
+        final Predicate<InternalNode> predicate = n ->
+                n.getTargetClass() == String.class && requireNonNull(n.getParent()).getTargetClass() == Address.class;
 
         return new AddressStringSelector(predicate, "addressStringsSelector()");
     }
@@ -64,7 +67,7 @@ class CustomPredicateNodeSelectorTest {
     private static class AddressStringSelector extends PredicateSelectorImpl {
         private static final int PRIORITY = Integer.MAX_VALUE; // lowest priority
 
-        AddressStringSelector(final Predicate<InternalNode> nodePredicate, final String apiInvocationDescription) {
+        AddressStringSelector(final Predicate<@Nullable InternalNode> nodePredicate, final String apiInvocationDescription) {
             super(ApiMethodSelector.NONE,
                     PRIORITY,
                     nodePredicate,

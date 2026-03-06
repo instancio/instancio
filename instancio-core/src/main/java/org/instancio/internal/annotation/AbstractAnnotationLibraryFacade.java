@@ -18,6 +18,8 @@ package org.instancio.internal.annotation;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
+import org.instancio.internal.util.Sonar;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +74,9 @@ abstract class AbstractAnnotationLibraryFacade implements AnnotationLibraryFacad
         }
     }
 
+    @Nullable
     @Override
+    @SuppressWarnings(Sonar.NULL_MARKED_NULL_VALUE)
     public Generator<?> resolveGenerator(Annotation annotation, GeneratorContext context) {
         AnnotationGeneratorFn fn = primaryAnnotations.get(annotation.annotationType());
         return fn == null ? null : fn.apply(annotation, context);

@@ -18,6 +18,7 @@ package org.instancio.test.features.create.sealed;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.util.Constants;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,8 +42,8 @@ class SealedAbstractTypeTest {
     private sealed interface SealedInterfaceA permits SealedInterfaceB, SealedInterfaceImpl1 {}
     private sealed interface SealedInterfaceB extends SealedInterfaceA permits SealedAbstractClassB {}
     private abstract static sealed class SealedAbstractClassB implements SealedInterfaceB permits SealedInterfaceImpl2 {}
-    private static final class SealedInterfaceImpl1 implements SealedInterfaceA { UUID uuid; }
-    private static final class SealedInterfaceImpl2 extends SealedAbstractClassB { String string; Long num; }
+    private static final class SealedInterfaceImpl1 implements SealedInterfaceA { @Nullable UUID uuid; }
+    private static final class SealedInterfaceImpl2 extends SealedAbstractClassB { @Nullable String string; @Nullable Long num; }
     //@formatter:on
 
     /**

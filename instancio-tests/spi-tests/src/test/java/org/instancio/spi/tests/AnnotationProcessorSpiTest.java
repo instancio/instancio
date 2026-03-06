@@ -24,6 +24,7 @@ import org.example.spi.CustomAnnotationProcessor.WithKeys;
 import org.example.spi.CustomGeneratorProvider;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -43,6 +44,7 @@ class AnnotationProcessorSpiTest {
     @Test
     void customAnnotation() {
         class Pojo {
+            @Nullable
             @WithKeys({"foo", "bar"})
             Map<CharSequence, Long> map;
         }
@@ -55,6 +57,7 @@ class AnnotationProcessorSpiTest {
     @Test
     void generatorProviderTakesPrecedenceOverAnnotationProcessor() {
         class Pojo {
+            @Nullable
             // since GeneratorProvider takes precedence, this annotation is ignored
             @EmptyString
             String value;

@@ -11,8 +11,6 @@ description: "Get started with Instancio. Install dependencies via Maven or Grad
 
 Instancio can be used with **Java 17** or higher.
 
-It has a single `compile` dependency on `org.slf4j:slf4j-api`.
-
 ## Dependencies
 
 The following dependencies are available from Maven central:

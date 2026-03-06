@@ -20,6 +20,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.HashSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.lang.StringGenerator;
+import org.jspecify.annotations.Nullable;
 
 public class HashGenerator extends AbstractGenerator<String>
         implements HashSpec {
@@ -68,6 +69,7 @@ public class HashGenerator extends AbstractGenerator<String>
         return this;
     }
 
+    @Nullable
     @Override
     protected String tryGenerateNonNull(final Random random) {
         return delegate.hex()

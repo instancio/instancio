@@ -15,13 +15,16 @@
  */
 package org.instancio.generator.specs;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 /**
  * Generator spec for numeric types.
  *
  * @param <T> type of number
  * @since 1.0.1
  */
-public interface NumberGeneratorSpec<T extends Number> extends
+public interface NumberGeneratorSpec<T extends @Nullable Number> extends
         AsGeneratorSpec<T>,
         NullableGeneratorSpec<T> {
 
@@ -32,7 +35,7 @@ public interface NumberGeneratorSpec<T extends Number> extends
      * @return spec builder
      * @since 1.0.1
      */
-    NumberGeneratorSpec<T> min(T min);
+    NumberGeneratorSpec<T> min(@NonNull T min);
 
     /**
      * Specifies the upper bound.
@@ -41,7 +44,7 @@ public interface NumberGeneratorSpec<T extends Number> extends
      * @return spec builder
      * @since 1.0.1
      */
-    NumberGeneratorSpec<T> max(T max);
+    NumberGeneratorSpec<T> max(@NonNull T max);
 
     /**
      * Specifies the range for generated numbers.
@@ -71,7 +74,7 @@ public interface NumberGeneratorSpec<T extends Number> extends
      * @return spec builder
      * @since 1.1.2
      */
-    NumberGeneratorSpec<T> range(T min, T max);
+    NumberGeneratorSpec<T> range(@NonNull T min, @NonNull T max);
 
     /**
      * Specifies that a {@code null} can be generated.

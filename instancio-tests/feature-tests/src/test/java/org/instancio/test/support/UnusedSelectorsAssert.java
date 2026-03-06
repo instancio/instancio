@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * - Regular selectors implement equals() and are matched by object equality.
  * - Predicate selectors do not implement equals() and are matched by toString representation.
  */
-@SuppressWarnings("UnusedReturnValue")
+@SuppressWarnings({"NullAway", "UnusedReturnValue"})
 public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorException> {
 
     private UnusedSelectorsAssert(final UnusedSelectorException actual) {

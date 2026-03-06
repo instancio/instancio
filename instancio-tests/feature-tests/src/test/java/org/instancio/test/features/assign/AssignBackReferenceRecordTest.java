@@ -21,6 +21,7 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +34,7 @@ import static org.instancio.Select.field;
 import static org.instancio.Select.root;
 import static org.instancio.Select.scope;
 
-@SuppressWarnings("SameNameButDifferent")
+@SuppressWarnings({"NullAway", "SameNameButDifferent"})
 @FeatureTag(Feature.ASSIGN)
 @ExtendWith(InstancioExtension.class)
 class AssignBackReferenceRecordTest {
@@ -70,7 +71,7 @@ class AssignBackReferenceRecordTest {
         record Rec(Pojo pojo) {}
 
         static class Pojo {
-            List<Rec> records;
+            @Nullable List<Rec> records;
         }
 
         @Test
@@ -87,7 +88,7 @@ class AssignBackReferenceRecordTest {
 
     @Nested
     class RootPojoWithListTest {
-        static class Pojo {
+        static @Data class Pojo {
             Rec rec;
         }
 

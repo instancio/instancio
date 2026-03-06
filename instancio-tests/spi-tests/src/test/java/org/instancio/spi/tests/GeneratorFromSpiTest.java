@@ -46,6 +46,7 @@ import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.PhoneWithType;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -72,6 +73,7 @@ import static org.instancio.Select.field;
 class GeneratorFromSpiTest {
 
     private static class PersonPojo {
+        @Nullable
         @PersonName(min = 10, max = 10)
         String name;
 
@@ -372,7 +374,7 @@ class GeneratorFromSpiTest {
     @SuppressWarnings("unused")
     private static final class ByteHolder {
         private byte primitive;
-        private Byte wrapper;
+        private @Nullable Byte wrapper;
     }
 
     @Nested

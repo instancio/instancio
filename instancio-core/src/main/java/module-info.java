@@ -9,7 +9,6 @@ module org.instancio.core {
     requires static jdk.unsupported;
     requires static org.apache.groovy;
     requires static org.hibernate.validator;
-    requires static org.jetbrains.annotations;
     requires static tools.jackson.databind;
 
     exports org.instancio;

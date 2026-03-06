@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.util.ErrorMessageUtils.invalidStringTemplate;
 
 public class WordTemplateGenerator extends AbstractGenerator<String> implements WordTemplateSpec {
@@ -69,6 +70,7 @@ public class WordTemplateGenerator extends AbstractGenerator<String> implements 
             }
 
             String word = wordGenerator.wordClass(wordClass).generate(random);
+            requireNonNull(word);
 
             if (Character.isUpperCase(templateKey.charAt(0))) {
                 // if first and last char are uppercase, assume the entire string is uppercase

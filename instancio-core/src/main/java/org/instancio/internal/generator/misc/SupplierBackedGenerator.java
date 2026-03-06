@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.feed.FeedSpec;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -36,6 +37,7 @@ public class SupplierBackedGenerator<T> extends AbstractGenerator<T> implements 
         this.supplier = supplier;
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;

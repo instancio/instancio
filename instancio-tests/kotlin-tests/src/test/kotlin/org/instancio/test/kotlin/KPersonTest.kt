@@ -119,16 +119,14 @@ internal class KPersonTest {
         assertThat(callbackCount[0]).isOne()
     }
 
-// TODO uncomment once the set() API is updated to accept null
-//
-//    @Test
-//    fun setNonNullableToNull() {
-//        // Note: setting null would not be possible creating an object manually
-//        // since UUID is not declared as `UUID?`
-//        val result: KPerson = Instancio.of(KPerson::class.java)
-//            .set(field("uuid"), null)
-//            .create()
-//
-//        assertThat(result.uuid).isNull()
-//    }
+    @Test
+    fun setNonNullableToNull() {
+        // Note: setting null would not be possible creating an object manually
+        // since UUID is not declared as `UUID?`
+        val result: KPerson = Instancio.of(KPerson::class.java)
+            .set(field("uuid"), null)
+            .create()
+
+        assertThat(result.uuid).isNull()
+    }
 }

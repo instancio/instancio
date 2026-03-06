@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.feed.FeedSpec;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.Nullable;
 
 public class NullGenerator<T> extends AbstractGenerator<T> implements FeedSpec<T> {
 
@@ -26,6 +27,7 @@ public class NullGenerator<T> extends AbstractGenerator<T> implements FeedSpec<T
         super(context);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;
@@ -37,6 +39,7 @@ public class NullGenerator<T> extends AbstractGenerator<T> implements FeedSpec<T
         return this;
     }
 
+    @Nullable
     @Override
     protected T tryGenerateNonNull(final Random random) {
         return null;

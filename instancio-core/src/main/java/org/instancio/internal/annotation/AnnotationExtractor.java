@@ -20,7 +20,6 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.settings.BeanValidationTarget;
 import org.instancio.settings.Keys;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -40,7 +39,6 @@ public final class AnnotationExtractor {
         this.getterMethodResolver = new GetterMethodResolverImpl();
     }
 
-    @NotNull
     public Annotation[] getAnnotations(final InternalNode node) {
         final Field field = node.getField();
 
@@ -62,11 +60,15 @@ public final class AnnotationExtractor {
      * e.g. {@code Map<@Email String, @Negative Integer>}.
      */
     private static Annotation[] getTypeUseAnnotations(final InternalNode node) {
-        final Field parentField = node.getParent() == null ? null : node.getParent().getField();
+        final InternalNode parent = node.getParent();
+        if (parent == null) {
+            return EMPTY_ANNOTATIONS;
+        }
 
+        final Field parentField = parent.getField();
         if (parentField != null && parentField.getAnnotatedType() instanceof AnnotatedParameterizedType) {
             final AnnotatedParameterizedType apt = (AnnotatedParameterizedType) parentField.getAnnotatedType();
-            final int childIndex = CollectionUtils.identityIndexOf(node, node.getParent().getChildren());
+            final int childIndex = CollectionUtils.identityIndexOf(node, parent.getChildren());
 
             if (childIndex != -1) {
                 final AnnotatedType[] annotatedTypes = apt.getAnnotatedActualTypeArguments();

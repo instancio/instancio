@@ -19,6 +19,7 @@ import org.instancio.GivenOrigin;
 import org.instancio.GivenOriginPredicate;
 import org.instancio.TargetSelector;
 import org.instancio.When;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
@@ -30,23 +31,23 @@ public class InternalGivenOrigin implements GivenOrigin {
     }
 
     @Override
-    public <T> GivenOriginPredicate satisfies(final Predicate<T> originPredicate) {
+    public <T extends @Nullable Object> GivenOriginPredicate satisfies(final Predicate<T> originPredicate) {
         return new InternalGivenOriginPredicateRequiredAction(origin, originPredicate);
     }
 
     @Override
-    public <T> GivenOriginPredicate is(final T obj) {
+    public <T extends @Nullable Object> GivenOriginPredicate is(final T obj) {
         return new InternalGivenOriginPredicateRequiredAction(origin, When.is(obj));
     }
 
     @Override
-    public <T> GivenOriginPredicate isNot(final T obj) {
+    public <T extends @Nullable Object> GivenOriginPredicate isNot(final T obj) {
         return new InternalGivenOriginPredicateRequiredAction(origin, When.isNot(obj));
     }
 
     @SafeVarargs
     @Override
-    public final <T> GivenOriginPredicate isIn(final T... values) {
+    public final <T extends @Nullable Object> GivenOriginPredicate isIn(final T... values) {
         return new InternalGivenOriginPredicateRequiredAction(origin, When.isIn(values));
     }
 }

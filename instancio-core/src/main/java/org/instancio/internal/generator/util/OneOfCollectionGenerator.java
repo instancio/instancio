@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.Random;
+import org.instancio.documentation.Initializer;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
 import org.instancio.generator.specs.OneOfCollectionGeneratorSpec;
@@ -23,9 +24,11 @@ import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.internal.util.Sonar;
 
 import java.util.Collection;
 
+@SuppressWarnings(Sonar.NULL_MARKED_NULL_VALUE)
 public class OneOfCollectionGenerator<T> extends AbstractGenerator<T>
         implements OneOfCollectionGeneratorSpec<T>, OneOfCollectionSpec<T> {
 
@@ -48,6 +51,7 @@ public class OneOfCollectionGenerator<T> extends AbstractGenerator<T>
         return "oneOf()";
     }
 
+    @Initializer
     @Override
     public OneOfCollectionGenerator<T> oneOf(final Collection<T> values) {
         this.values = ApiValidator.notEmpty(values, "Collection must have at least one element");

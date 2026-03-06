@@ -15,7 +15,9 @@
  */
 package org.instancio.test.support.pojo.record;
 
+import org.jspecify.annotations.Nullable;
+
 public record PhoneRecord(
-        String countryCode,
-        String number) {
+        @Nullable String countryCode,
+        @Nullable String number) {
 }

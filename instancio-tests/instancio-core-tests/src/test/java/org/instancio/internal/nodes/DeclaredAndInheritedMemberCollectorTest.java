@@ -34,6 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DeclaredAndInheritedMemberCollectorTest {
 
+    private static final NodeKind ANY_NODE_KIND = NodeKind.JDK;
+
     private final DeclaredAndInheritedMemberCollector collector = new DeclaredAndInheritedMemberCollector(
             Settings.defaults());
 
@@ -41,6 +43,7 @@ class DeclaredAndInheritedMemberCollectorTest {
                     BaseClassSubClassInheritance.SubClass.class,
                     BaseClassSubClassInheritance.SubClass.class,
                     Fixtures.modelContext().getRootType())
+            .nodeKind(ANY_NODE_KIND)
             .build();
 
     @Test
@@ -66,6 +69,7 @@ class DeclaredAndInheritedMemberCollectorTest {
     void shouldReturnEmptyResults(final Class<?> klass) {
         final ClassData result = collector.getClassData(node.toBuilder()
                 .targetClass(klass)
+                .nodeKind(ANY_NODE_KIND)
                 .build());
 
         assertThat(result.getMemberPairs()).isEmpty();

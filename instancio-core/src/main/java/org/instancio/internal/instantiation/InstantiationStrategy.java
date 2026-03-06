@@ -16,9 +16,11 @@
 package org.instancio.internal.instantiation;
 
 import org.instancio.documentation.InternalApi;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public interface InstantiationStrategy {
 
+    @Nullable
     <T> T createInstance(Class<T> klass);
 }

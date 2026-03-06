@@ -16,11 +16,13 @@
 package org.instancio.internal;
 
 import org.instancio.exception.InstancioApiException;
+import org.instancio.internal.util.Sonar;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -29,7 +31,11 @@ class ApiValidatorTest {
     @Test
     void doesNotContainNull() {
         assertThatNoException()
-                .isThrownBy(() -> ApiValidator.doesNotContainNull(new String[]{"a"}, () -> "a message"));
+                .isThrownBy(() -> {
+                    final String[] input = {"a"};
+                    final String[] output = ApiValidator.doesNotContainNull(input, () -> "a message");
+                    assertThat(output).isSameAs(input);
+                });
 
         assertThatThrownBy(() -> ApiValidator.doesNotContainNull(new String[]{null}, () -> "a message"))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -48,4 +54,17 @@ class ApiValidatorTest {
                 .hasMessageContaining("invalid subtype mapping");
     }
 
+    @Test
+    @SuppressWarnings({"DataFlowIssue", Sonar.ONE_METHOD_WHEN_TESTING_EXCEPTIONS})
+    void notEmptyCollection() {
+        assertThatNoException().isThrownBy(() -> ApiValidator.notEmpty(List.of("foo"), "some error"));
+
+        assertThatThrownBy(() -> ApiValidator.notEmpty(List.of(), "some %s", "error"))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("some error");
+
+        assertThatThrownBy(() -> ApiValidator.notEmpty((Collection<Object>) null, "some %s", "error"))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("some error");
+    }
 }

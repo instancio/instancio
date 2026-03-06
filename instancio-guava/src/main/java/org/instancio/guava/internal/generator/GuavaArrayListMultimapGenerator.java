@@ -18,6 +18,7 @@ package org.instancio.guava.internal.generator;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.instancio.Random;
+import org.instancio.documentation.Initializer;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
@@ -34,6 +35,7 @@ public class GuavaArrayListMultimapGenerator<K, V>
     private int minSize = Constants.MIN_SIZE;
     private int maxSize = Constants.MAX_SIZE;
 
+    @Initializer
     @Override
     public void init(final GeneratorContext context) {
         this.context = context;

@@ -17,6 +17,7 @@ package org.instancio.internal.assigners;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -44,5 +45,5 @@ public interface Assigner {
      *               if the target field is a primitive,
      *               then {@code null} value is simply ignored.
      */
-    void assign(InternalNode node, Object target, Object value);
+    void assign(InternalNode node, Object target, @Nullable Object value);
 }

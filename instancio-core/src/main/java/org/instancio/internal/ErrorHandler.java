@@ -24,6 +24,7 @@ import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.Log;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,7 @@ public final class ErrorHandler {
      * @param <T>      the type of value returned by the supplier
      * @return an optional containing the value from the supplier
      */
-    public <T> Optional<T> conditionalFailOnError(final Supplier<T> supplier) {
+    public <T extends @Nullable Object> Optional<T> conditionalFailOnError(final Supplier<T> supplier) {
         try {
             return Optional.ofNullable(supplier.get());
         } catch (AssertionError | InstancioTerminatingException ex) {

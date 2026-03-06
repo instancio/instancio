@@ -22,6 +22,7 @@ import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.EmitGenerator.WhenEmptyAction;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +32,7 @@ class EmitGeneratorTest {
 
     private final Random random = new DefaultRandom();
 
-    private final EmitGenerator<Number> generator = new EmitGenerator<>(
+    private final EmitGenerator<@Nullable Number> generator = new EmitGenerator<>(
             new GeneratorContext(Settings.defaults(), random));
 
     @Test
@@ -58,6 +59,7 @@ class EmitGeneratorTest {
         assertThat(hint.emitNull()).isTrue();
     }
 
+    @SuppressWarnings({"DataFlowIssue", "NullAway"})
     @Test
     void validation() {
         assertThatThrownBy(() -> generator.items((Iterable<Long>) null))

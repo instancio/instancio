@@ -16,6 +16,7 @@
 package org.instancio;
 
 import org.instancio.documentation.ExperimentalApi;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
@@ -29,5 +30,5 @@ import java.util.function.Predicate;
  */
 @ExperimentalApi
 @FunctionalInterface
-public interface FilterPredicate<T> extends Predicate<T> {
+public interface FilterPredicate<T extends @Nullable Object> extends Predicate<T> {
 }

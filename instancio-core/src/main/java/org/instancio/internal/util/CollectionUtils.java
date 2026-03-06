@@ -16,8 +16,8 @@
 package org.instancio.internal.util;
 
 import org.instancio.Random;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.instancio.documentation.Contract;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class CollectionUtils {
 
     private static final int DEFAULT_INITIAL_CAPACITY = 4;
@@ -39,32 +40,39 @@ public final class CollectionUtils {
         // non-instantiable
     }
 
+    @Contract("null -> true")
     public static boolean isNullOrEmpty(@Nullable final Collection<?> collection) {
         return collection == null || collection.isEmpty();
     }
 
+    @Contract("null -> true")
     public static boolean isNullOrEmpty(@Nullable final Map<?, ?> map) {
         return map == null || map.isEmpty();
     }
 
+    @Contract("null -> !null")
     @SafeVarargs
-    public static <T> List<T> asUnmodifiableList(final T... values) {
+    public static <T extends @Nullable Object> List<T> asUnmodifiableList(@Nullable final T @Nullable ... values) {
         return Collections.unmodifiableList(asArrayList(values));
     }
 
-    public static <T> List<T> asUnmodifiableList(final List<T> list) {
+    @Contract("null -> !null")
+    public static <T> List<T> asUnmodifiableList(@Nullable final List<T> list) {
         return list == null ? Collections.emptyList() : Collections.unmodifiableList(list);
     }
 
-    public static <T> Set<T> asUnmodifiableSet(final Set<T> set) {
+    @Contract("null -> !null")
+    public static <T> Set<T> asUnmodifiableSet(@Nullable final Set<T> set) {
         return set == null ? Collections.emptySet() : Collections.unmodifiableSet(set);
     }
 
-    public static <K, V> Map<K, V> asUnmodifiableMap(final Map<K, V> map) {
+    @Contract("null -> !null")
+    public static <K, V> Map<K, V> asUnmodifiableMap(@Nullable final Map<K, V> map) {
         return map == null ? Collections.emptyMap() : Collections.unmodifiableMap(map);
     }
 
-    public static <K, E> Map<K, List<E>> asUnmodifiableLinkedHashMapOfLists(final Map<K, List<E>> map) {
+    @Contract("null -> !null")
+    public static <K, E> Map<K, List<E>> asUnmodifiableLinkedHashMapOfLists(@Nullable final Map<K, List<E>> map) {
         if (map == null) {
             return Collections.emptyMap();
         }
@@ -75,7 +83,8 @@ public final class CollectionUtils {
         return Collections.unmodifiableMap(copy);
     }
 
-    public static <K, E> Map<K, List<E>> copyAsLinkedHashMap(final Map<K, List<E>> map) {
+    @Contract("null -> !null")
+    public static <K, E> Map<K, List<E>> copyAsLinkedHashMap(@Nullable final Map<K, List<E>> map) {
         if (map == null) {
             return new LinkedHashMap<>(0);
         }
@@ -86,23 +95,27 @@ public final class CollectionUtils {
         return copy;
     }
 
-    public static <K, V> Map<K, V> newLinkedHashMapIfNull(final Map<K, V> map) {
+    @Contract("!null -> param1; null -> !null")
+    public static <K, V> Map<K, V> newLinkedHashMapIfNull(@Nullable final Map<K, V> map) {
         return map != null ? map : new LinkedHashMap<>(DEFAULT_INITIAL_CAPACITY);
     }
 
-    public static <T> Set<T> newLinkedHashSetIfNull(final Set<T> set) {
+    @Contract("!null -> param1; null -> !null")
+    public static <T> Set<T> newLinkedHashSetIfNull(@Nullable final Set<T> set) {
         return set != null ? set : new LinkedHashSet<>(DEFAULT_INITIAL_CAPACITY);
     }
 
+    @Contract("null -> !null")
     @SafeVarargs
-    public static <T> List<T> asArrayList(final T... values) {
+    public static <T> List<T> asArrayList(@Nullable final T @Nullable ... values) {
         return values == null
                 ? new ArrayList<>(DEFAULT_INITIAL_CAPACITY)
                 : new ArrayList<>(Arrays.asList(values));
     }
 
+    @Contract("null -> !null")
     @SafeVarargs
-    public static <T> Set<T> asSet(final T... values) {
+    public static <T> Set<T> asSet(@Nullable final T @Nullable ... values) {
         if (values == null) {
             return Collections.emptySet();
         }
@@ -111,8 +124,12 @@ public final class CollectionUtils {
         return set;
     }
 
+    @Contract("_, null -> !null")
     @SafeVarargs
-    public static <K, V> Map<K, V> asLinkedHashMap(final Function<V, K> keyFn, final V... values) {
+    public static <K, V extends @Nullable Object> Map<K, V> asLinkedHashMap(
+            final Function<V, K> keyFn,
+            final V @Nullable ... values) {
+
         if (values == null) return Collections.emptyMap();
         final Map<K, V> map = new LinkedHashMap<>(values.length);
         for (V value : values) {
@@ -122,6 +139,7 @@ public final class CollectionUtils {
         return map;
     }
 
+    @Contract("_, _ -> !null")
     @SafeVarargs
     public static <T> List<T> combine(final List<T> list, final T... values) {
         final List<T> result = new ArrayList<>(list);
@@ -129,6 +147,7 @@ public final class CollectionUtils {
         return Collections.unmodifiableList(result);
     }
 
+    @Contract("_ -> !null")
     public static <T> List<T> flatMap(List<List<T>> lists) {
         if (lists.isEmpty()) {
             return Collections.emptyList();
@@ -142,7 +161,7 @@ public final class CollectionUtils {
 
     // same as List.indexOf() but using '==' instead of equals()
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
-    public static int identityIndexOf(final Object obj, @NotNull final List<?> list) {
+    public static int identityIndexOf(final Object obj, final List<?> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) == obj) {
                 return i;
@@ -151,7 +170,7 @@ public final class CollectionUtils {
         return -1;
     }
 
-    public static <T> void shuffle(final Collection<T> collection, final Random random) {
+    public static <T extends @Nullable Object> void shuffle(final Collection<T> collection, final Random random) {
         if (collection.isEmpty()) {
             return;
         } else if (collection instanceof List<T> list) {
@@ -165,7 +184,7 @@ public final class CollectionUtils {
         collection.addAll(list);
     }
 
-    private static <T> void shuffleList(final List<T> list, final Random random) {
+    private static <T extends @Nullable Object> void shuffleList(final List<T> list, final Random random) {
         for (int i = 0; i < list.size(); i++) {
             final int r = random.intRange(0, i);
             final T tmp = list.get(i);

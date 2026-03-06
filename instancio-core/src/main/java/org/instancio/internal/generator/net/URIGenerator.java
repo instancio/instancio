@@ -20,6 +20,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.URISpec;
 import org.instancio.internal.util.Fail;
+import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,9 +29,9 @@ import static org.instancio.internal.util.StringUtils.singleQuote;
 
 public class URIGenerator extends AbstractURIGenerator<URI> implements URISpec {
 
-    private String userInfo;
-    private Generator<String> queryGenerator;
-    private Generator<String> fragmentGenerator;
+    private @Nullable String userInfo;
+    private @Nullable Generator<String> queryGenerator;
+    private @Nullable Generator<String> fragmentGenerator;
 
     public URIGenerator(final GeneratorContext context) {
         super(context);

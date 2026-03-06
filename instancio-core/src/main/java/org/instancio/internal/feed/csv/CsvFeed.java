@@ -18,6 +18,8 @@ package org.instancio.internal.feed.csv;
 import org.instancio.internal.feed.AbstractFeed;
 import org.instancio.internal.feed.DataStore;
 import org.instancio.internal.feed.InternalFeedContext;
+import org.instancio.internal.util.Verify;
+import org.jspecify.annotations.Nullable;
 
 class CsvFeed extends AbstractFeed<String[]> {
 
@@ -28,10 +30,12 @@ class CsvFeed extends AbstractFeed<String[]> {
         super(feedContext, dataStore);
     }
 
+    @Nullable
     @Override
     protected String getValue(final String propertyKey) {
         final int index = getPropertyIndex(propertyKey);
-        final String[] currentEntry = getCurrentEntry();
+        final String[] currentEntry = Verify.notNull(getCurrentEntry(),
+                "currentEntry is null; propertyKey: %s", propertyKey);
 
         // Handle cases where a CSV record does not have values for all the columns
         if (index < currentEntry.length) {

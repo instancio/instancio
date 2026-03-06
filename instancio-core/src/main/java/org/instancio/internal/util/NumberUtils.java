@@ -15,16 +15,17 @@
  */
 package org.instancio.internal.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.instancio.documentation.Contract;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 public final class NumberUtils {
 
@@ -105,22 +106,22 @@ public final class NumberUtils {
 
     @SuppressWarnings("unchecked")
     public static <T extends Number & Comparable<T>> T getMinValue(final Class<?> klass) {
-        return (T) NUMERIC_MIN_VALUES.get(klass);
+        return (T) requireNonNull(NUMERIC_MIN_VALUES.get(klass));
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends Number & Comparable<T>> T getMaxValue(final Class<?> klass) {
-        return (T) NUMERIC_MAX_VALUES.get(klass);
+        return (T) requireNonNull(NUMERIC_MAX_VALUES.get(klass));
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends Number> Function<Long, T> longConverter(final Class<?> klass) {
-        return (Function<Long, T>) CONVERT_FROM_LONG_FN_MAP.get(klass);
+        return (Function<Long, T>) requireNonNull(CONVERT_FROM_LONG_FN_MAP.get(klass));
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends Number> Function<BigDecimal, T> bigDecimalConverter(final Class<?> klass) {
-        return (Function<BigDecimal, T>) CONVERT_FROM_BD_FN_MAP.get(klass);
+        return (Function<BigDecimal, T>) requireNonNull(CONVERT_FROM_BD_FN_MAP.get(klass));
     }
 
     /**
@@ -137,10 +138,10 @@ public final class NumberUtils {
      * @return new minimum if current minimum is greater than the new maximum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMin(
-            @Nullable final T curMin, @NotNull final T newMax, final int percentage) {
+            @Nullable final T curMin, final T newMax, final int percentage) {
 
-        if (Objects.equals(newMax, curMin)) {
-            return curMin;
+        if (newMax.equals(curMin)) {
+            return newMax;
         }
 
         BigDecimal newMaxBD = toBigDecimal(newMax);
@@ -188,10 +189,10 @@ public final class NumberUtils {
      * @return new maximum if current maximum is less than the new minimum
      */
     public static <T extends Number & Comparable<T>> T calculateNewMax(
-            @Nullable final T curMax, @NotNull final T newMin, final int percentage) {
+            @Nullable final T curMax, final T newMin, final int percentage) {
 
-        if (Objects.equals(newMin, curMax)) {
-            return curMax;
+        if (newMin.equals(curMax)) {
+            return newMin;
         }
 
         BigDecimal newMinBD = toBigDecimal(newMin);
@@ -255,11 +256,13 @@ public final class NumberUtils {
         return value.compareTo(BigDecimal.ZERO) == 0;
     }
 
-    public static BigDecimal toBigDecimal(final Number n) {
+    @Contract("null -> null; !null -> !null")
+    @Nullable
+    public static BigDecimal toBigDecimal(@Nullable final Number n) {
         if (n instanceof BigDecimal bd) {
             return bd;
         }
-        return n == null ? null : new BigDecimal(String.valueOf(n));
+        return n == null ? null : new BigDecimal(n.toString());
     }
 
     private NumberUtils() {

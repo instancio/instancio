@@ -64,6 +64,7 @@ import static org.instancio.Select.types;
  *   <li>predicate type selector builder</li>
  * </ul>
  */
+@SuppressWarnings("NullAway")
 @FeatureTag({Feature.PREDICATE_SELECTOR, Feature.SELECTOR, Feature.DEPTH_SELECTOR})
 @ExtendWith(InstancioExtension.class)
 class DepthSelectorTest {

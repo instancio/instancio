@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.annotation;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,7 @@ class AnnotationHandlerMap {
         }
     }
 
+    @Nullable
     final FieldAnnotationHandler get(final Annotation annotation) {
         return handlerMap.get(annotation.annotationType());
     }

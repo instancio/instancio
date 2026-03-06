@@ -20,6 +20,7 @@ import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.ExceptionUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.spi.InstancioServiceProvider;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,7 @@ public class Instantiator {
         };
     }
 
+    @Nullable
     public <T> T instantiate(final Class<T> klass) {
         for (InstantiationStrategy strategy : strategies) {
             final T instance = createInstance(klass, strategy);
@@ -52,6 +54,7 @@ public class Instantiator {
         return null;
     }
 
+    @Nullable
     @SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
     private <T> T createInstance(final Class<T> klass, final InstantiationStrategy strategy) {
         try {

@@ -20,8 +20,7 @@ import org.instancio.documentation.InternalApi;
 import org.instancio.internal.context.PropertiesLoader;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @InternalApi
 public final class Global {
@@ -30,15 +29,15 @@ public final class Global {
             .merge(Settings.from(PropertiesLoader.loadDefaultPropertiesFile()))
             .lock();
 
-    private static final Random CONFIGURED_RANDOM = PROPERTIES_FILE_SETTINGS.get(Keys.SEED) == null
-            ? null : new DefaultRandom(PROPERTIES_FILE_SETTINGS.get(Keys.SEED), Seeds.Source.GLOBAL);
+    private static final @Nullable Long PROPERTIES_FILE_SEED = PROPERTIES_FILE_SETTINGS.get(Keys.SEED);
+    private static final @Nullable Random CONFIGURED_RANDOM = PROPERTIES_FILE_SEED == null
+            ? null : new DefaultRandom(PROPERTIES_FILE_SEED, Seeds.Source.GLOBAL);
 
     /**
      * Default settings overlaid with settings from {@code instancio.properties}.
      *
      * @return settings from properties file
      */
-    @NotNull
     public static Settings getPropertiesFileSettings() {
         return PROPERTIES_FILE_SETTINGS;
     }

@@ -37,9 +37,11 @@ class BlankRecordTest {
 
         assertThat(result.name()).isNull();
         assertThat(result.age()).isZero();
-        assertThat(result.address().street()).isNull();
-        assertThat(result.address().city()).isNull();
-        assertThat(result.address().phoneNumbers()).isEmpty();
+        assertThat(result.address()).isNotNull().satisfies(address -> {
+            assertThat(address.street()).isNull();
+            assertThat(address.city()).isNull();
+            assertThat(address.phoneNumbers()).isEmpty();
+        });
     }
 
     @Test
@@ -50,11 +52,13 @@ class BlankRecordTest {
 
         assertThat(result.name()).isNotBlank();
         assertThat(result.age()).isPositive();
-        assertThat(result.address().street()).isNotBlank();
-        assertThat(result.address().city()).isNotBlank();
-        assertThat(result.address().phoneNumbers()).isNotEmpty().allSatisfy(phone -> {
-            assertThat(phone.countryCode()).isNull();
-            assertThat(phone.number()).isNull();
+        assertThat(result.address()).isNotNull().satisfies(address -> {
+            assertThat(address.street()).isNotBlank();
+            assertThat(address.city()).isNotBlank();
+            assertThat(address.phoneNumbers()).isNotEmpty().allSatisfy(phone -> {
+                assertThat(phone.countryCode()).isNull();
+                assertThat(phone.number()).isNull();
+            });
         });
     }
 }

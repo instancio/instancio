@@ -34,6 +34,7 @@ class NumberUtilsTest {
 
     @Test
     void calculateNewMin() {
+        assertNewMin(null, 0, 50, -2);
         assertNewMin(1, 0, 50, -2);
         assertNewMin(1, -1, 50, -2);
         assertNewMin(1, -2, 50, -3);
@@ -50,6 +51,7 @@ class NumberUtilsTest {
 
     @Test
     void calculateNewMax() {
+        assertNewMax(null, 0, 50, 2);
         assertNewMax(-1, 0, 50, 2);
         assertNewMax(-1, 1, 50, 2);
         assertNewMax(-1, 2, 50, 3);

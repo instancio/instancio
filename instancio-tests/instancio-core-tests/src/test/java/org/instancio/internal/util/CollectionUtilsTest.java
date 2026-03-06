@@ -61,7 +61,21 @@ class CollectionUtilsTest {
     @Test
     void asUnmodifiableList() {
         assertThat(CollectionUtils.asUnmodifiableList((String[]) null)).isEmpty();
-        assertThat(CollectionUtils.asUnmodifiableList("foo", "bar")).containsExactly("foo", "bar");
+        assertThat(CollectionUtils.asUnmodifiableList("foo", "bar"))
+                .isUnmodifiable()
+                .containsExactly("foo", "bar");
+    }
+
+    @Test
+    void asUnmodifiableSet() {
+        assertThat(CollectionUtils.asUnmodifiableSet(null)).isEmpty();
+
+        final Set<String> hashSet = new HashSet<>();
+        hashSet.add("foo");
+
+        assertThat(CollectionUtils.asUnmodifiableSet(hashSet))
+                .isUnmodifiable()
+                .containsOnly("foo");
     }
 
     @Test

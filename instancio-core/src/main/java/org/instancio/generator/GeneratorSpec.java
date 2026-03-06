@@ -15,6 +15,8 @@
  */
 package org.instancio.generator;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A marker interface serving as the base class
  * for all {@link Generator Generators}.
@@ -27,5 +29,5 @@ package org.instancio.generator;
  * @since 1.0.1
  */
 @SuppressWarnings("unused")
-public interface GeneratorSpec<T> {
+public interface GeneratorSpec<T extends @Nullable Object> {
 }

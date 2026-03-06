@@ -26,6 +26,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.record.PersonRecord;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -72,7 +73,7 @@ class CustomGeneratorRecordTest {
 
 
     private static class Pojo {
-        private String s1;
+        private @Nullable String s1;
         private String s2 = INITIAL_STRING;
         private int n1;
         private int n2 = INITIAL_INT;

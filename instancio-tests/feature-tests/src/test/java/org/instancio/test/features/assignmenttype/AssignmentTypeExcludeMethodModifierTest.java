@@ -27,6 +27,7 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.RunWith;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,23 +71,23 @@ class AssignmentTypeExcludeMethodModifierTest {
     }
 
     private static class Pojo {
-        private String foo;
-        private String bar;
-        private String baz;
+        private @Nullable String foo;
+        private @Nullable String bar;
+        private @Nullable String baz;
 
-        public void setFoo(final String foo) {
+        public void setFoo(@Nullable final String foo) {
             this.foo = foo;
         }
 
         // used via reflection
         @SuppressWarnings("unused")
-        private void setBar(final String bar) {
+        private void setBar(@Nullable final String bar) {
             this.bar = bar;
         }
 
         // used via reflection
         @SuppressWarnings("unused")
-        void setBaz(final String baz) {
+        void setBaz(@Nullable final String baz) {
             this.baz = baz;
         }
     }

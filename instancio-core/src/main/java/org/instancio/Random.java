@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 
 /**
@@ -206,7 +208,7 @@ public interface Random {
      * @param <T>   element type
      * @return random element
      */
-    <T> T oneOf(T... array);
+    <T extends @Nullable Object> T oneOf(T... array);
 
     /**
      * Returns a random element from the given collection.
@@ -215,5 +217,5 @@ public interface Random {
      * @param <T>        element type
      * @return random element
      */
-    <T> T oneOf(Collection<T> collection);
+    <T extends @Nullable Object> T oneOf(Collection<T> collection);
 }

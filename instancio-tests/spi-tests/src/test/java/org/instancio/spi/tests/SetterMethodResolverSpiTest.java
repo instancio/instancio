@@ -40,6 +40,7 @@ import static org.instancio.Select.fields;
 /**
  * see {@link org.example.spi.CustomSetterMethodResolver}
  */
+@SuppressWarnings("NullAway")
 @ExtendWith(InstancioExtension.class)
 class SetterMethodResolverSpiTest {
 

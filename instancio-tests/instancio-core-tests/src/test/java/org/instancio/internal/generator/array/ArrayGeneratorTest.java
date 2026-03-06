@@ -26,9 +26,6 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.instancio.testsupport.asserts.HintsAssert;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -98,12 +95,15 @@ class ArrayGeneratorTest extends AbstractGeneratorTestTemplate<String[], ArrayGe
         HintsAssert.assertHints(hints).afterGenerate(AfterGenerate.POPULATE_ALL);
     }
 
-    @NullSource
-    @ValueSource(classes = String.class)
-    @ParameterizedTest
-    void subtypeValidation(final Class<?> klass) {
-        assertThatThrownBy(() -> generator.subtype(klass))
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    void subtypeValidation() {
+        assertThatThrownBy(() -> generator.subtype(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("type must be an array: %s", klass);
+                .hasMessageContaining("array type must not be null");
+
+        assertThatThrownBy(() -> generator.subtype(String.class))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("type must be an array: %s", String.class);
     }
 }

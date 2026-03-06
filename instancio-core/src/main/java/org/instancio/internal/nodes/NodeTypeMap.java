@@ -18,7 +18,7 @@ package org.instancio.internal.nodes;
 import org.instancio.internal.RootType;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.TypeUtils;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -37,9 +37,9 @@ public final class NodeTypeMap {
     private final RootType rootType;
     private final Map<Type, Type> typeMap;
 
-    NodeTypeMap(@NotNull final Type genericType,
-                @NotNull final RootType rootType,
-                @NotNull final Map<Type, Type> subtypeMappingTypeMap) {
+    NodeTypeMap(final Type genericType,
+                final RootType rootType,
+                final Map<Type, Type> subtypeMappingTypeMap) {
 
         this.rootType = rootType;
         this.typeMap = buildTypeMap(genericType, subtypeMappingTypeMap);
@@ -49,6 +49,7 @@ public final class NodeTypeMap {
         return rootType;
     }
 
+    @Nullable
     public Type get(final Type type) {
         return typeMap.get(type);
     }
@@ -110,6 +111,7 @@ public final class NodeTypeMap {
         return map;
     }
 
+    @Nullable
     private Type resolveTypeMapping(final Type type) {
         if (type instanceof Class || type instanceof ParameterizedType || type instanceof GenericArrayType) {
             return type;

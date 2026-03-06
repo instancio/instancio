@@ -31,9 +31,10 @@ import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
 import org.instancio.internal.selectors.TargetSetter;
 import org.instancio.internal.util.Fail;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -123,7 +125,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         if (!withParent.isEmpty()) {
             final SelectorImpl selector = withParent.get(0);
             markUsed(selector);
-            return Optional.of(this.selectors.get(selector));
+            return Optional.ofNullable(this.selectors.get(selector));
         }
 
         return getPredicateSelectorMatch(node);
@@ -249,17 +251,19 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         candidates.addAll(scopelessSelectors.getOrDefault(new ScopelessSelector(node.getRawType()), emptyList()));
 
         // Setter selectors
-        if (node.getSetter() != null) {
+        final Method setter = node.getSetter();
+        if (setter != null) {
             final ScopelessSelector key = new ScopelessSelector(
-                    node.getSetter().getDeclaringClass(), node.getSetter());
+                    setter.getDeclaringClass(), setter);
 
             candidates.addAll(scopelessSelectors.getOrDefault(key, emptyList()));
         }
 
         // Field selectors last as they have the highest precedence
-        if (node.getField() != null) {
+        final Field field = node.getField();
+        if (field != null) {
             final ScopelessSelector key = new ScopelessSelector(
-                    node.getField().getDeclaringClass(), node.getField());
+                    field.getDeclaringClass(), field);
 
             candidates.addAll(scopelessSelectors.getOrDefault(key, emptyList()));
         }
@@ -295,8 +299,8 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
 
     private static boolean selectorScopesMatchNodeHierarchy(
             @Nullable final Integer candidateDepth,
-            @NotNull final List<Scope> candidateScopes,
-            @NotNull final InternalNode targetNode) {
+            final List<Scope> candidateScopes,
+            final InternalNode targetNode) {
 
         if (candidateDepth != null && candidateDepth != targetNode.getDepth()) {
             return false;
@@ -348,23 +352,26 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         //  1. The precise matching is actually more restrictive
         //  2. It's inconsistent with the semantics of within(Scope) API,
         //     i.e. "match anywhere _within_ given scope" (at given depth or further)
-        if (scope.getDepth() == null || node.getDepth() >= scope.getDepth()) {
+        final Integer scopeDepth = scope.getDepth();
+        if (scopeDepth == null || node.getDepth() >= scopeDepth) {
 
             if (scope.getTarget() instanceof TargetField) {
-                matched = node.getField() != null
-                        && scope.getTargetClass().equals(node.getField().getDeclaringClass())
-                        && scope.getField().equals(node.getField());
+                final Field field = node.getField();
+                matched = field != null
+                          && Objects.equals(scope.getTargetClass(), field.getDeclaringClass())
+                          && Objects.equals(scope.getField(), field);
 
             } else if (scope.getTarget() instanceof TargetSetter) {
-                matched = node.getSetter() != null
-                        && scope.getTargetClass().equals(node.getSetter().getDeclaringClass())
-                        && scope.getMethodName().equals(node.getSetter().getName())
-                        && (scope.getParameterType() == null // param not specified
-                        || scope.getParameterType().equals(node.getSetter().getParameterTypes()[0]));
+                final Method setter = node.getSetter();
+                final Class<?> parameterType = scope.getParameterType();
+                matched = setter != null
+                          && Objects.equals(scope.getTargetClass(), setter.getDeclaringClass())
+                          && Objects.equals(scope.getMethodName(), setter.getName())
+                          && Objects.equals(parameterType, setter.getParameterTypes()[0]);
 
             } else {
-                matched = node.getRawType().equals(scope.getTargetClass())
-                        || node.getTargetClass().equals(scope.getTargetClass());
+                matched = Objects.equals(node.getRawType(), scope.getTargetClass())
+                          || Objects.equals(node.getTargetClass(), scope.getTargetClass());
             }
         }
         return matched;

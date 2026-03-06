@@ -28,6 +28,8 @@ import org.instancio.internal.util.TypeUtils;
 
 import java.lang.reflect.Type;
 
+import static java.util.Objects.requireNonNull;
+
 final class SetModelValidatingListener implements GenerationListener {
 
     private final ModelContext context;
@@ -61,7 +63,7 @@ final class SetModelValidatingListener implements GenerationListener {
                 ? PrimitiveWrapperBiLookup.getEquivalent(node.getTargetClass())
                 : node.getTargetClass();
 
-        if (!modelRawType.isAssignableFrom(targetClass)) {
+        if (!modelRawType.isAssignableFrom(requireNonNull(targetClass))) {
             final String modelTypeName = Format.withoutPackage(modelRootType);
 
             throw Fail.withUsageError(

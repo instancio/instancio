@@ -89,7 +89,6 @@ class StringUtilsTest {
 
     @Test
     void capitalise() {
-        assertThat(StringUtils.capitalise(null)).isNull();
         assertThat(StringUtils.capitalise("")).isEmpty();
         assertThat(StringUtils.capitalise("a")).isEqualTo("A");
         assertThat(StringUtils.capitalise("aa")).isEqualTo("Aa");
@@ -103,7 +102,7 @@ class StringUtilsTest {
 
     @Test
     void quoteStringValue() {
-        assertThat(StringUtils.quoteStringValue(null)).isNull();
+        assertThat(StringUtils.quoteStringValue(null)).isEqualTo("<null>");
         assertThat(StringUtils.quoteStringValue("")).isEqualTo("\"\"");
         assertThat(StringUtils.quoteStringValue("123")).isEqualTo("\"123\"");
         assertThat(StringUtils.quoteStringValue(123)).isEqualTo("123");

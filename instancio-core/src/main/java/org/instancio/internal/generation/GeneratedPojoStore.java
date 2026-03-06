@@ -63,7 +63,7 @@ class GeneratedPojoStore {
     }
 
     void putValue(final InternalNode node, final GeneratorResult result) {
-        if (node.is(NodeKind.POJO) && !result.containsNull()) {
+        if (node.is(NodeKind.POJO) && result.getValue() != null) {
             generatedPojos.put(node, result.getValue());
         }
     }

@@ -19,6 +19,7 @@ import org.instancio.Scope;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.RootType;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
@@ -41,6 +42,8 @@ import static org.instancio.Select.fields;
 import static org.instancio.Select.scope;
 
 class TypeSelectorBuilderImplTest {
+
+    private static final NodeKind ANY_NODE_KIND = NodeKind.JDK;
 
     private final TypeSelectorBuilderImpl selectorBuilder = new TypeSelectorBuilderImpl();
 
@@ -72,6 +75,7 @@ class TypeSelectorBuilderImplTest {
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void validation() {
         assertThatThrownBy(() -> selectorBuilder.of(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -126,7 +130,8 @@ class TypeSelectorBuilderImplTest {
                     .within(scope(Person.class), fields().ofType(Phone.class).toScope())
                     .toString();
 
-            assertThat(result).isEqualTo("types().atDepth(Predicate<Integer>)"
+            assertThat(result).isEqualTo(
+                    "types().atDepth(Predicate<Integer>)"
                     + ".within(scope(Person), scope(fields().ofType(Phone)))");
         }
 
@@ -142,7 +147,8 @@ class TypeSelectorBuilderImplTest {
                     .within(scope(List.class))
                     .toString();
 
-            assertThat(result).isEqualTo("types().of(Object).excluding(Foo).excluding(Bar)"
+            assertThat(result).isEqualTo(
+                    "types().of(Object).excluding(Foo).excluding(Bar)"
                     + ".annotated(Pojo).annotated(PersonName).atDepth(5)"
                     + ".within(scope(List))");
         }
@@ -152,7 +158,9 @@ class TypeSelectorBuilderImplTest {
         final RootType rootType = Fixtures.modelContext().getRootType();
 
         return Arrays.stream(types)
-                .map(type -> InternalNode.builder(type, type, rootType).build())
+                .map(type -> InternalNode.builder(type, type, rootType)
+                        .nodeKind(ANY_NODE_KIND)
+                        .build())
                 .collect(Collectors.toList());
     }
 

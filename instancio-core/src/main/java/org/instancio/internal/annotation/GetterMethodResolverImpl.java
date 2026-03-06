@@ -16,12 +16,14 @@
 package org.instancio.internal.annotation;
 
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 class GetterMethodResolverImpl implements GetterMethodResolver {
 
+    @Nullable
     @Override
     public Method getGetter(final InternalNode node) {
         final Field field = node.getField();
@@ -59,6 +61,7 @@ class GetterMethodResolverImpl implements GetterMethodResolver {
         return new String(ch);
     }
 
+    @Nullable
     private static Method getMethod(final Class<?> declaringClass, final String methodName) {
         try {
             return declaringClass.getDeclaredMethod(methodName);

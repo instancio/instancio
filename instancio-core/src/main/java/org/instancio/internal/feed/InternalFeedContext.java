@@ -41,7 +41,7 @@ import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
 import org.instancio.support.ThreadLocalSettings;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Paths;
 import java.util.function.Function;
@@ -50,10 +50,10 @@ public final class InternalFeedContext<F extends Feed> {
 
     private final Class<F> feedClass;
     private final GeneratorContext generatorContext;
-    private final String tagKey;
-    private final String tagValue;
+    private final @Nullable String tagKey;
+    private final @Nullable String tagValue;
     private final DataSource dataSource;
-    private final FormatOptions formatOptions;
+    private final @Nullable FormatOptions formatOptions;
     private final FeedFormatType feedFormatType;
     private final FeedDataAccess feedDataAccess;
     private final FeedDataEndAction feedDataEndAction;
@@ -80,7 +80,7 @@ public final class InternalFeedContext<F extends Feed> {
     private static FeedFormatType resolveDataFormatType(
             final Settings settings,
             final Class<?> feedClass,
-            final FeedFormatType feedFormatType) {
+            @Nullable final FeedFormatType feedFormatType) {
 
         if (feedFormatType != null) {
             return feedFormatType;
@@ -95,7 +95,7 @@ public final class InternalFeedContext<F extends Feed> {
     private static FeedDataAccess resolveFeedDataAccess(
             final Settings settings,
             final Class<?> feedClass,
-            final FeedDataAccess feedDataAccess) {
+            @Nullable final FeedDataAccess feedDataAccess) {
 
         if (feedDataAccess != null) {
             return feedDataAccess;
@@ -120,10 +120,11 @@ public final class InternalFeedContext<F extends Feed> {
                 settings, RandomHelper.resolveRandom(settings.get(Keys.SEED), null));
     }
 
+    @Nullable
     private static String resolveTagKey(
             final Settings settings,
             final Class<?> feedClass,
-            final String tagKey) {
+            @Nullable final String tagKey) {
 
         if (tagKey != null) {
             return tagKey;
@@ -136,10 +137,10 @@ public final class InternalFeedContext<F extends Feed> {
     }
 
     private static DataSource resolveDataSource(
-            final Feed.Source feedSource,
+            final Feed.@Nullable Source feedSource,
             final Class<?> feedClass,
-            final DataSource dataSource,
-            final String tagKey) {
+            @Nullable final DataSource dataSource,
+            @Nullable final String tagKey) {
 
         // sources of data in order of precedence
         if (dataSource != null) {
@@ -171,10 +172,12 @@ public final class InternalFeedContext<F extends Feed> {
         return feedClass;
     }
 
+    @Nullable
     public String getTagKey() {
         return tagKey;
     }
 
+    @Nullable
     public String getTagValue() {
         return tagValue;
     }
@@ -218,18 +221,19 @@ public final class InternalFeedContext<F extends Feed> {
         private static final FormatOptionsFactory DATA_FORMAT_FACTORY = new FormatOptionsFactory() {};
 
         private final Class<F> feedClass;
-        private GeneratorContext generatorContext;
-        private String tagKey;
-        private String tagValue;
-        private DataSource dataSource;
-        private Function<Settings, FormatOptions> formatOptions;
-        private FeedFormatType feedFormatType;
-        private FeedDataAccess feedDataAccess;
-        private FeedDataEndAction feedDataEndAction;
-        private Settings settings;
+        private @Nullable GeneratorContext generatorContext;
+        private @Nullable String tagKey;
+        private @Nullable String tagValue;
+        private @Nullable DataSource dataSource;
+        private @Nullable Function<Settings, FormatOptions> formatOptions;
+        private @Nullable FeedFormatType feedFormatType;
+        private @Nullable FeedDataAccess feedDataAccess;
+        private @Nullable FeedDataEndAction feedDataEndAction;
+        private @Nullable Settings settings;
 
         private Builder(final Class<F> feedClass) {
-            ApiValidator.isTrue(feedClass != null && feedClass.isInterface(),
+            ApiValidator.notNull(feedClass, "Feed interface class must not be null");
+            ApiValidator.isTrue(feedClass.isInterface(),
                     "Feed must be an interface, but got: %s", feedClass);
             this.feedClass = feedClass;
         }

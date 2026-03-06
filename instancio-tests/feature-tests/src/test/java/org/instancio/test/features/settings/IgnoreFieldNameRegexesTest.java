@@ -22,6 +22,7 @@ import org.instancio.settings.Keys;
 import org.instancio.test.support.conditions.Conditions;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -33,9 +34,9 @@ class IgnoreFieldNameRegexesTest {
 
     @SuppressWarnings(Sonar.FIELD_NAMING_CONVENTION)
     private static class Pojo {
-        private String $$_ignoreField1;
-        private String _ignoredField2;
-        private String $_nonIgnoredField;
+        private @Nullable String $$_ignoreField1;
+        private @Nullable String _ignoredField2;
+        private @Nullable String $_nonIgnoredField;
     }
 
     @Test

@@ -17,6 +17,7 @@ package org.instancio.test.features.generator.custom;
 
 import org.instancio.Instancio;
 import org.instancio.Random;
+import org.instancio.documentation.Initializer;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
@@ -30,6 +31,8 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -74,8 +77,10 @@ class CustomGeneratorSpecUseCaseTest {
         private Random random;
         private Settings settings;
 
+        @Initializer
         @Override
-        public void init(final GeneratorContext context) {
+        @SuppressWarnings("NullAway")
+        public void init(final @NonNull GeneratorContext context) {
             random = context.random();
             settings = context.getSettings();
 
@@ -87,7 +92,7 @@ class CustomGeneratorSpecUseCaseTest {
         }
 
         @Override
-        public List<Integer> generate(final Random random) {
+        public List<Integer> generate(final @NonNull Random random) {
             final int size = random.intRange(minSize, maxSize);
             final List<Integer> list = new ArrayList<>();
             for (int i = 0; i < size; i++) {
@@ -116,6 +121,7 @@ class CustomGeneratorSpecUseCaseTest {
             return this;
         }
 
+        @Nullable
         @Override
         public Hints hints() {
             // Ensure Random and Settings are not null
@@ -131,8 +137,8 @@ class CustomGeneratorSpecUseCaseTest {
     // Used via reflection
     @SuppressWarnings("unused")
     private static final class ListHolder {
-        private List<Integer> list1;
-        private List<Integer> list2;
+        private @Nullable List<Integer> list1;
+        private @Nullable List<Integer> list2;
     }
 
     private static IntegerListSpec integerList() {

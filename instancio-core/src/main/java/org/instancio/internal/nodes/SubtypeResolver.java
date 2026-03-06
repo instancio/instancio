@@ -22,7 +22,7 @@ import org.instancio.internal.util.SealedClassUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ final class SubtypeResolver {
      *   <li>a generator's {@code subtype()} method, e.g. {@code gen.collection().subtype()}</li>
      * </ol>
      */
-    Optional<Class<?>> resolveSubtype(@NotNull final InternalNode node) {
+    Optional<Class<?>> resolveSubtype(final InternalNode node) {
         final Optional<Class<?>> subtype = getSubtype(node);
 
         if (subtype.isPresent()) {
@@ -66,9 +66,10 @@ final class SubtypeResolver {
         if (SealedClassUtils.isSealedAbstractType(node.getTargetClass())
                 && (node.is(NodeKind.POJO) || node.is(NodeKind.RECORD))) {
             final List<Class<?>> impls = SealedClassUtils.getSealedClassImplementations(node.getTargetClass());
-            return Optional.of(modelContext.getRandom().oneOf(impls));
+            return Optional.ofNullable(modelContext.getRandom().oneOf(impls));
         }
-        return Optional.ofNullable(resolveSubtypeFromAncestors(node));
+        final Class<?> subtypeFromAncestors = resolveSubtypeFromAncestors(node);
+        return Optional.ofNullable(subtypeFromAncestors);
     }
 
     private Optional<Class<?>> getSubtype(final InternalNode node) {
@@ -85,6 +86,7 @@ final class SubtypeResolver {
                 : Optional.of(subtypeFromSettings);
     }
 
+    @Nullable
     private static Class<?> resolveSubtypeFromAncestors(final InternalNode node) {
         InternalNode next = node;
         while (next != null) {

@@ -17,6 +17,7 @@ package org.instancio.generator.specs;
 
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.ValueSpec;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -28,7 +29,7 @@ import java.util.Collection;
  * @since 5.0.0
  */
 @ExperimentalApi
-public interface ShuffleSpec<T> extends ValueSpec<Collection<T>> {
+public interface ShuffleSpec<T extends @Nullable Object> extends ValueSpec<Collection<T>> {
 
     /**
      * Creates a copy of the specified array and shuffles its elements.

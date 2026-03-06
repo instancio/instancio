@@ -27,19 +27,22 @@ import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.NumberUtils;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGeneratorSpec<T> {
 
     protected int minLength;
     protected int maxLength;
     private boolean nullableElements;
-    private Class<?> arrayType;
-    private List<Object> withElements;
+    private @Nullable Class<?> arrayType;
+    private @Nullable List<Object> withElements;
 
     public ArrayGenerator(final GeneratorContext context) {
         super(context);
@@ -100,7 +103,8 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     @Override
     public ArrayGenerator<T> subtype(final Class<?> type) {
-        ApiValidator.isTrue(type != null && type.isArray(), "type must be an array: %s", type);
+        ApiValidator.notNull(type, "array type must not be null");
+        ApiValidator.isTrue(type.isArray(), "type must be an array: %s", type);
         this.arrayType = type;
         return this;
     }
@@ -121,8 +125,9 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     @SuppressWarnings("unchecked")
     protected T tryGenerateNonNull(final Random random) {
         final int length = random.intRange(minLength, maxLength)
-                + (withElements == null ? 0 : withElements.size());
+                           + (withElements == null ? 0 : withElements.size());
 
+        requireNonNull(arrayType);
         return (T) Array.newInstance(arrayType.getComponentType(), length);
     }
 

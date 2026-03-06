@@ -18,6 +18,7 @@ package org.instancio.internal.generator.time;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.TimeZone;
 
@@ -30,6 +31,7 @@ public class TimeZoneGenerator extends AbstractGenerator<TimeZone> {
         this.delegate = new ZoneIdGenerator(context);
     }
 
+    @Nullable
     @Override
     public String apiMethod() {
         return null;

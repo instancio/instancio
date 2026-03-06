@@ -31,6 +31,7 @@ import org.instancio.internal.util.NumberUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -39,16 +40,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
+import static java.util.Objects.requireNonNull;
+
+public class MapGenerator<K extends @Nullable Object, V extends @Nullable Object>
+        extends AbstractGenerator<Map<K, V>> implements MapGeneratorSpec<K, V> {
+
     private static final Class<?> DEFAULT_MAP_TYPE = HashMap.class; // NOPMD
 
     protected int minSize;
     protected int maxSize;
     private boolean nullableKeys;
     private boolean nullableValues;
-    protected Class<?> mapType;
-    private Map<K, V> withEntries;
-    private List<K> withKeys;
+    protected @Nullable Class<?> mapType;
+    private @Nullable Map<K, V> withEntries;
+    private @Nullable List<K> withKeys;
 
     public MapGenerator(final GeneratorContext context) {
         super(context);
@@ -117,7 +122,7 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
     }
 
     @Override
-    public MapGenerator<K, V> with(final K key, final V value) {
+    public MapGenerator<K, V> with(@Nullable final K key, @Nullable final V value) {
         if (withEntries == null) {
             withEntries = new HashMap<>();
         }
@@ -136,9 +141,12 @@ public class MapGenerator<K, V> extends AbstractGenerator<Map<K, V>> implements 
         return this;
     }
 
+    @Nullable
     @Override
     @SuppressWarnings({"unchecked", Sonar.RETURN_EMPTY_COLLECTION})
     public Map<K, V> tryGenerateNonNull(final Random random) {
+        requireNonNull(mapType);
+
         try {
             Constructor<?> ctor = ReflectionUtils.setAccessible(mapType.getDeclaredConstructor());
             return (Map<K, V>) ctor.newInstance();

@@ -21,6 +21,7 @@ import org.instancio.internal.util.Fail;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 public class AssignerImpl implements Assigner {
 
@@ -31,7 +32,7 @@ public class AssignerImpl implements Assigner {
     }
 
     @Override
-    public void assign(final InternalNode node, final Object target, final Object value) {
+    public void assign(final InternalNode node, final Object target, @Nullable final Object value) {
         delegate.assign(node, target, value);
     }
 

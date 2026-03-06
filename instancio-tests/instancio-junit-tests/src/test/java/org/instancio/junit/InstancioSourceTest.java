@@ -17,6 +17,7 @@ package org.instancio.junit;
 
 import org.instancio.feed.Feed;
 import org.instancio.feed.FeedSpec;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -60,6 +61,7 @@ class InstancioSourceTest {
         assertThat(map.values()).allSatisfy(i -> assertThat(i).isNotZero());
     }
 
+    @SuppressWarnings("NullAway")
     @Nested
     class DifferentTypesWithSameFieldsTest {
         //@formatter:off
@@ -79,8 +81,8 @@ class InstancioSourceTest {
     @Nested
     class TwoArgsTest {
         //@formatter:off
-        private static class First  { String foo; }
-        private static class Second { String bar; }
+        private static class First  { @Nullable String foo; }
+        private static class Second { @Nullable String bar; }
         //@formatter:on
 
         @InstancioSource(samples = 5)
@@ -96,8 +98,8 @@ class InstancioSourceTest {
     @Nested
     class GenericsTest {
         private static class Generic<T, E> {
-            T first;
-            List<E> second;
+            @Nullable T first;
+            @Nullable List<E> second;
         }
 
         @InstancioSource(samples = 5)
@@ -112,7 +114,7 @@ class InstancioSourceTest {
     @Nested
     class FeedTest {
         private static class Pojo {
-            String value;
+            @Nullable String value;
         }
 
         @Feed.Source(string = "id\n123")

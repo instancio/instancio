@@ -21,6 +21,7 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -38,8 +39,8 @@ class AssignContainerTest {
     @Data
     private static class OptionalHolder {
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-        private Optional<String> optional;
-        private String string;
+        private @Nullable Optional<String> optional;
+        private @Nullable String string;
     }
 
     @Test

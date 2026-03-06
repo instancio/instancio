@@ -21,6 +21,7 @@ import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 public class BooleanGenerator extends AbstractGenerator<Boolean>
         implements BooleanSpec {
@@ -52,6 +53,7 @@ public class BooleanGenerator extends AbstractGenerator<Boolean>
         return this;
     }
 
+    @Nullable
     @Override
     protected Boolean tryGenerateNonNull(final Random random) {
         return random.diceRoll(isNullable()) ? null : random.trueOrFalse(probability);

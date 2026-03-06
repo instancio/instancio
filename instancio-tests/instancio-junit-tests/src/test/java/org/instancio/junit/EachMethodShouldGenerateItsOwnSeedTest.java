@@ -15,6 +15,7 @@
  */
 package org.instancio.junit;
 
+import org.instancio.Random;
 import org.instancio.internal.util.Sonar;
 import org.instancio.support.ThreadLocalRandom;
 import org.junit.jupiter.api.MethodOrderer;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,14 +47,14 @@ class EachMethodShouldGenerateItsOwnSeedTest {
     @Test
     @Order(1)
     void method1() {
-        seeds.add(ThreadLocalRandom.getInstance().get().getSeed());
+        seeds.add(getThreadLocalSeed());
         seedCount++;
     }
 
     @Test
     @Order(2)
     void method2() {
-        seeds.add(ThreadLocalRandom.getInstance().get().getSeed());
+        seeds.add(getThreadLocalSeed());
         seedCount++;
     }
 
@@ -60,15 +62,20 @@ class EachMethodShouldGenerateItsOwnSeedTest {
     @RepeatedTest(2)
     @Order(3)
     void method4() {
-        seeds.add(ThreadLocalRandom.getInstance().get().getSeed());
+        seeds.add(getThreadLocalSeed());
         seedCount++;
     }
 
     @Test
     @Order(4)
     void verifyNumberOfSeeds() {
-        seeds.add(ThreadLocalRandom.getInstance().get().getSeed());
+        seeds.add(getThreadLocalSeed());
         seedCount++;
         assertThat(seeds).hasSize(seedCount);
+    }
+
+    private static long getThreadLocalSeed() {
+        final Random random = Objects.requireNonNull(ThreadLocalRandom.getInstance().get());
+        return random.getSeed();
     }
 }

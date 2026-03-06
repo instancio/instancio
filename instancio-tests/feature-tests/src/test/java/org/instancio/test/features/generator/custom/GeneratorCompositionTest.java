@@ -18,6 +18,7 @@ package org.instancio.test.features.generator.custom;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Random;
+import org.instancio.documentation.Initializer;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
@@ -56,6 +57,7 @@ class GeneratorCompositionTest {
     private abstract static class BaseGenerator<T> implements Generator<T> {
         private AfterGenerate afterGenerate;
 
+        @Initializer
         BaseGenerator<T> afterGenerate(final AfterGenerate afterGenerate) {
             this.afterGenerate = afterGenerate;
             return this;

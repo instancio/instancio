@@ -17,6 +17,7 @@ package org.instancio;
 
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -63,6 +64,7 @@ public interface Node {
      * @return field of this node, or {@code null} if the node has no field
      * @since 2.11.0
      */
+    @Nullable
     Field getField();
 
     /**
@@ -72,6 +74,7 @@ public interface Node {
      * @return parent of this node
      * @since 3.5.0
      */
+    @Nullable
     Node getParent();
 
     /**
@@ -81,5 +84,6 @@ public interface Node {
      * @return setter of this node, or {@code null} if the node has no setter
      * @since 4.0.0
      */
+    @Nullable
     Method getSetter();
 }

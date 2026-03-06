@@ -18,6 +18,7 @@ package org.instancio;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides an API for specifying custom {@link Settings}.
@@ -38,7 +39,7 @@ public interface SettingsApi {
      * @see #withSettings(Settings)
      * @since 5.0.0
      */
-    <V> SettingsApi withSetting(SettingKey<V> key, V value);
+    <V extends @Nullable Object> SettingsApi withSetting(SettingKey<V> key, V value);
 
     /**
      * Merges the specified {@link Settings} with the current settings,

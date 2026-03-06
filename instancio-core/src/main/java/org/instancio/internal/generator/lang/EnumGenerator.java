@@ -23,6 +23,7 @@ import org.instancio.generator.specs.EnumSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -65,6 +66,7 @@ public class EnumGenerator<E extends Enum<E>> extends AbstractGenerator<E>
         return this;
     }
 
+    @Nullable
     @Override
     protected E tryGenerateNonNull(final Random random) {
         if (values.isEmpty()) {

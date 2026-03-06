@@ -21,6 +21,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,16 +55,23 @@ class FileGeneratorTest {
         assertThat(result).isEqualTo("foo");
     }
 
-    @NullAndEmptySource
-    @ValueSource(strings = {" ", "\t"})
-    @ParameterizedTest
-    void nameValidation(final String name) {
-        final InstancioApi<File> api = Instancio.of(File.class)
-                .generate(root(), gen -> gen.io().file().name(random -> name));
 
-        assertThatThrownBy(api::create)
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("generated name must not be blank");
+    // Ignore null-related data flow analysis due to @NullAndEmptySource as we are
+    // testing validation for cases where users don't have these checks enabled
+    @SuppressWarnings({"JUnitMalformedDeclaration", "NullAway"})
+    @Nested
+    class ValidationTest {
+        @NullAndEmptySource
+        @ValueSource(strings = {" ", "\t"})
+        @ParameterizedTest
+        void nameValidation(@Nullable final String name) {
+            final InstancioApi<File> api = Instancio.of(File.class)
+                    .generate(root(), gen -> gen.io().file().name(random -> name));
+
+            assertThatThrownBy(api::create)
+                    .isExactlyInstanceOf(InstancioApiException.class)
+                    .hasMessageContaining("generated name must not be blank");
+        }
     }
 
     @Nested

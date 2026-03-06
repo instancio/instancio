@@ -16,6 +16,7 @@
 package org.instancio.generator.specs;
 
 import org.instancio.generator.GeneratorSpec;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides methods for specifying whether {@code null} can be generated.
@@ -23,7 +24,7 @@ import org.instancio.generator.GeneratorSpec;
  * @param <T> generated type
  * @since 2.7.0
  */
-public interface NullableGeneratorSpec<T> extends GeneratorSpec<T> {
+public interface NullableGeneratorSpec<T extends @Nullable Object> extends GeneratorSpec<T> {
 
     /**
      * Indicates that {@code null} value can be generated.

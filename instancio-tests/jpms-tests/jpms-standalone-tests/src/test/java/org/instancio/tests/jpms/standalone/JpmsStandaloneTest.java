@@ -17,6 +17,7 @@ package org.instancio.tests.jpms.standalone;
 
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -32,7 +33,7 @@ class JpmsStandaloneTest {
     @Test
     void createClassWithoutAvailableConstructor() {
         class ClassWithoutAvailableConstructor {
-            private String value;
+            private @Nullable String value;
 
             public ClassWithoutAvailableConstructor(final String value) {
                 throw new AssertionError("Expected error from constructor");
@@ -46,7 +47,7 @@ class JpmsStandaloneTest {
 
     @Test
     void createPersonRecord() {
-        record PersonRecord(String name, int age) {
+        record PersonRecord(@Nullable String name, int age) {
         }
 
         var result = Instancio.create(PersonRecord.class);
