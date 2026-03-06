@@ -196,6 +196,27 @@
                 </pluginManagement>
             </build>
         </profile>
+        <profile>
+            <!-- Error Prone requires Java 21+; disable it on older JDKs even when .run-error-prone is present -->
+            <id>error-prone-skip-java-lt-21</id>
+            <activation>
+                <jdk>(,21)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <configuration>
+                                <compilerArgs combine.self="override"/>
+                                <annotationProcessorPaths combine.self="override"/>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
     </profiles>
 
     <build>
