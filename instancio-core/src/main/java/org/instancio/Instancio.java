@@ -27,6 +27,7 @@ import org.instancio.internal.GenApiImpl;
 import org.instancio.internal.MapApiImpl;
 import org.instancio.settings.FillType;
 import org.instancio.settings.Keys;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -167,7 +168,7 @@ public final class Instancio {
      * @return an object of the specified type
      * @since 1.0.1
      */
-    public static <T> T create(final Class<T> type) {
+    public static <T extends @Nullable Object> T create(final Class<T> type) {
         return of(type).create();
     }
 
@@ -215,7 +216,7 @@ public final class Instancio {
      * @since 4.7.0
      */
     @ExperimentalApi
-    public static <T> T createBlank(final Class<T> type) {
+    public static <T extends @Nullable Object> T createBlank(final Class<T> type) {
         return ofBlank(type).create();
     }
 
@@ -233,7 +234,7 @@ public final class Instancio {
      * @return API builder reference
      * @since 3.0.1
      */
-    public static <T> List<T> createList(final Class<T> elementType) {
+    public static <T extends @Nullable Object> List<T> createList(final Class<T> elementType) {
         return ofList(elementType).create();
     }
 
@@ -251,7 +252,7 @@ public final class Instancio {
      * @return API builder reference
      * @since 3.0.1
      */
-    public static <T> Set<T> createSet(final Class<T> elementType) {
+    public static <T extends @Nullable Object> Set<T> createSet(final Class<T> elementType) {
         return ofSet(elementType).create();
     }
 
@@ -270,7 +271,7 @@ public final class Instancio {
      * @return API builder reference
      * @since 3.0.1
      */
-    public static <K, V> Map<K, V> createMap(final Class<K> keyType, final Class<V> valueType) {
+    public static <K extends @Nullable Object, V extends @Nullable Object> Map<K, V> createMap(final Class<K> keyType, final Class<V> valueType) {
         return ofMap(keyType, valueType).create();
     }
 
@@ -289,7 +290,7 @@ public final class Instancio {
      * @return an infinite stream of objects of the specified type
      * @since 1.1.9
      */
-    public static <T> Stream<T> stream(final Class<T> type) {
+    public static <T extends @Nullable Object> Stream<T> stream(final Class<T> type) {
         return of(type).stream();
     }
 
@@ -306,7 +307,7 @@ public final class Instancio {
      * @param <T>       the type of object
      * @return an object of the specified type
      */
-    public static <T> T create(final TypeTokenSupplier<T> typeToken) {
+    public static <T extends @Nullable Object> T create(final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).create();
     }
 
@@ -326,7 +327,7 @@ public final class Instancio {
      * @return an infinite stream of objects of the specified type
      * @since 1.1.9
      */
-    public static <T> Stream<T> stream(final TypeTokenSupplier<T> typeToken) {
+    public static <T extends @Nullable Object> Stream<T> stream(final TypeTokenSupplier<T> typeToken) {
         return of(typeToken).stream();
     }
 
@@ -343,7 +344,7 @@ public final class Instancio {
      * @see #of(Model)
      * @see #stream(Model)
      */
-    public static <T> T create(final Model<T> model) {
+    public static <T extends @Nullable Object> T create(final Model<T> model) {
         return of(model).create();
     }
 
@@ -374,7 +375,7 @@ public final class Instancio {
      * @see #of(Model)
      * @since 2.4.0
      */
-    public static <T> Stream<T> stream(final Model<T> model) {
+    public static <T extends @Nullable Object> Stream<T> stream(final Model<T> model) {
         return of(model).stream();
     }
 
@@ -395,7 +396,7 @@ public final class Instancio {
      * @param <T>  the type of object
      * @return API builder reference
      */
-    public static <T> InstancioClassApi<T> of(final Class<T> type) {
+    public static <T extends @Nullable Object> InstancioClassApi<T> of(final Class<T> type) {
         return new ClassApiImpl<>(type);
     }
 
@@ -439,7 +440,7 @@ public final class Instancio {
      * @since 4.7.0
      */
     @ExperimentalApi
-    public static <T> InstancioClassApi<T> ofBlank(final Class<T> type) {
+    public static <T extends @Nullable Object> InstancioClassApi<T> ofBlank(final Class<T> type) {
         final InstancioClassApi<T> api = new ClassApiImpl<>(type);
         api.setBlank(Select.root());
         return api;
@@ -462,7 +463,7 @@ public final class Instancio {
      * @param <T>       the type of object
      * @return API builder reference
      */
-    public static <T> InstancioApi<T> of(final TypeTokenSupplier<T> typeToken) {
+    public static <T extends @Nullable Object> InstancioApi<T> of(final TypeTokenSupplier<T> typeToken) {
         return new ApiImpl<>(typeToken);
     }
 
@@ -489,7 +490,7 @@ public final class Instancio {
      * @param <T>   the type of object
      * @return API builder reference
      */
-    public static <T> InstancioApi<T> of(final Model<T> model) {
+    public static <T extends @Nullable Object> InstancioApi<T> of(final Model<T> model) {
         return new ApiImpl<>(model);
     }
 
@@ -507,7 +508,7 @@ public final class Instancio {
      * @since 5.3.0
      */
     @ExperimentalApi
-    public static <T> void fill(final T object) {
+    public static <T extends @Nullable Object> void fill(final T object) {
         ofObject(object).fill();
     }
 
@@ -609,7 +610,7 @@ public final class Instancio {
      * @since 5.3.0
      */
     @ExperimentalApi
-    public static <T> InstancioObjectApi<T> ofObject(final T object) {
+    public static <T extends @Nullable Object> InstancioObjectApi<T> ofObject(final T object) {
         ApiValidator.notNull(object, "object to populate must not be null");
         return new ApiImpl<>(object);
     }
@@ -650,7 +651,7 @@ public final class Instancio {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static <T> InstancioCartesianProductApi<T> ofCartesianProduct(final Class<T> type) {
+    public static <T extends @Nullable Object> InstancioCartesianProductApi<T> ofCartesianProduct(final Class<T> type) {
         return new CartesianProductApiImpl<>(ApiValidator.validateOfCartesianProductElementType(type));
     }
 
@@ -669,7 +670,7 @@ public final class Instancio {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static <T> InstancioCartesianProductApi<T> ofCartesianProduct(final TypeTokenSupplier<T> typeToken) {
+    public static <T extends @Nullable Object> InstancioCartesianProductApi<T> ofCartesianProduct(final TypeTokenSupplier<T> typeToken) {
         return new CartesianProductApiImpl<>(typeToken);
     }
 
@@ -688,7 +689,7 @@ public final class Instancio {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static <T> InstancioCartesianProductApi<T> ofCartesianProduct(final Model<T> model) {
+    public static <T extends @Nullable Object> InstancioCartesianProductApi<T> ofCartesianProduct(final Model<T> model) {
         return new CartesianProductApiImpl<>(model);
     }
 
@@ -701,7 +702,7 @@ public final class Instancio {
      * @since 2.0.0
      */
     @SuppressWarnings("all")
-    public static <T> InstancioCollectionsApi<List<T>> ofList(final Class<T> elementType) {
+    public static <T extends @Nullable Object> InstancioCollectionsApi<List<T>> ofList(final Class<T> elementType) {
         return new CollectionsApiImpl(List.class, ApiValidator.validateOfListElementType(elementType));
     }
 
@@ -714,7 +715,7 @@ public final class Instancio {
      * @since 2.16.0
      */
     @SuppressWarnings("all")
-    public static <T> InstancioCollectionsApi<List<T>> ofList(final TypeTokenSupplier<T> elementTypeToken) {
+    public static <T extends @Nullable Object> InstancioCollectionsApi<List<T>> ofList(final TypeTokenSupplier<T> elementTypeToken) {
         return new CollectionsApiImpl(List.class, ApiValidator.validateTypeToken(elementTypeToken));
     }
 
@@ -726,7 +727,7 @@ public final class Instancio {
      * @return API builder reference
      * @since 2.5.0
      */
-    public static <T> InstancioCollectionsApi<List<T>> ofList(final Model<T> elementModel) {
+    public static <T extends @Nullable Object> InstancioCollectionsApi<List<T>> ofList(final Model<T> elementModel) {
         return CollectionsApiImpl.fromElementModel(cast(List.class), elementModel);
     }
 
@@ -739,7 +740,7 @@ public final class Instancio {
      * @since 2.0.0
      */
     @SuppressWarnings("all")
-    public static <T> InstancioCollectionsApi<Set<T>> ofSet(final Class<T> elementType) {
+    public static <T extends @Nullable Object> InstancioCollectionsApi<Set<T>> ofSet(final Class<T> elementType) {
         return new CollectionsApiImpl(Set.class, ApiValidator.validateOfSetElementType(elementType));
     }
 
@@ -752,7 +753,7 @@ public final class Instancio {
      * @since 2.16.0
      */
     @SuppressWarnings("all")
-    public static <T> InstancioCollectionsApi<Set<T>> ofSet(final TypeTokenSupplier<T> elementTypeToken) {
+    public static <T extends @Nullable Object> InstancioCollectionsApi<Set<T>> ofSet(final TypeTokenSupplier<T> elementTypeToken) {
         return new CollectionsApiImpl(Set.class, ApiValidator.validateTypeToken(elementTypeToken));
     }
 
@@ -764,7 +765,7 @@ public final class Instancio {
      * @return API builder reference
      * @since 2.5.0
      */
-    public static <T> InstancioCollectionsApi<Set<T>> ofSet(final Model<T> elementModel) {
+    public static <T extends @Nullable Object> InstancioCollectionsApi<Set<T>> ofSet(final Model<T> elementModel) {
         return CollectionsApiImpl.fromElementModel(cast(Set.class), elementModel);
     }
 
@@ -779,7 +780,7 @@ public final class Instancio {
      * @since 2.0.0
      */
     @SuppressWarnings("all")
-    public static <K, V> InstancioCollectionsApi<Map<K, V>> ofMap(
+    public static <K extends @Nullable Object, V extends @Nullable Object> InstancioCollectionsApi<Map<K, V>> ofMap(
             final Class<K> keyType,
             final Class<V> valueType) {
 
@@ -799,7 +800,7 @@ public final class Instancio {
      * @since 2.16.0
      */
     @SuppressWarnings("all")
-    public static <K, V> InstancioCollectionsApi<Map<K, V>> ofMap(
+    public static <K extends @Nullable Object, V extends @Nullable Object> InstancioCollectionsApi<Map<K, V>> ofMap(
             final TypeTokenSupplier<K> keyTypeToken,
             final TypeTokenSupplier<V> valueTypeToken) {
 

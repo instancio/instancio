@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
 
@@ -27,7 +29,7 @@ import java.util.function.Supplier;
 // <T> is required to be present, even though not used directly here.
 @SuppressWarnings("unused")
 @FunctionalInterface
-public interface TypeTokenSupplier<T> extends Supplier<Type> {
+public interface TypeTokenSupplier<T extends @Nullable Object> extends Supplier<Type> {
 
     /**
      * Returns the type to be created.

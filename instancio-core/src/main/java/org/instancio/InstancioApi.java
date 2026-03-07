@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * @param <T> type to create
  * @since 1.0.1
  */
-public interface InstancioApi<T> extends
+public interface InstancioApi<T extends @Nullable Object> extends
         BaseApi<T>,
         SettingsApi,
         LenientModeApi,

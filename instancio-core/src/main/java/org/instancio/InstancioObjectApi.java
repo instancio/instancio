@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  * @since 5.3.0
  */
 @ExperimentalApi
-public interface InstancioObjectApi<T> extends
+public interface InstancioObjectApi<T extends @Nullable Object> extends
         BaseApi<T>,
         SettingsApi,
         LenientModeApi,

@@ -15,13 +15,15 @@
  */
 package org.instancio;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Instancio API for generating collections populated with random data.
  *
  * @param <C> collection type to create
  * @since 2.0.0
  */
-public interface InstancioCollectionsApi<C> extends InstancioApi<C> {
+public interface InstancioCollectionsApi<C extends @Nullable Object> extends InstancioApi<C> {
 
     /**
      * Specifies collection size to generate.
