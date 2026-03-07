@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * @param <T> the type of object to create
  * @since 4.0.0
  */
-public interface BaseApi<T> {
+public interface BaseApi<T extends @Nullable Object> {
 
     /**
      * Specifies that a class or field should be ignored.

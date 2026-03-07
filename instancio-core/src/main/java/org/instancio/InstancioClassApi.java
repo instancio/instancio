@@ -15,13 +15,15 @@
  */
 package org.instancio;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Instancio API for defining type parameters for generic classes.
  *
  * @param <T> type to create
  * @since 1.0.1
  */
-public interface InstancioClassApi<T> extends InstancioApi<T> {
+public interface InstancioClassApi<T extends @Nullable Object> extends InstancioApi<T> {
 
     /**
      * Method for supplying type parameters for generic classes.

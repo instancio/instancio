@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -39,7 +41,7 @@ import java.lang.reflect.Type;
  *            Required to be present, though not used directly.
  * @since 1.0.1
  */
-public interface TypeToken<T> extends TypeTokenSupplier<T> {
+public interface TypeToken<T extends @Nullable Object> extends TypeTokenSupplier<T> {
 
     /**
      * Returns the type to be created.

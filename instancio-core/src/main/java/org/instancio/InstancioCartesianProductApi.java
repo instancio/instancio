@@ -43,7 +43,7 @@ import java.util.function.Supplier;
  * @since 4.0.0
  */
 @ExperimentalApi
-public interface InstancioCartesianProductApi<T> extends
+public interface InstancioCartesianProductApi<T extends @Nullable Object> extends
         BaseApi<T>,
         SettingsApi,
         LenientModeApi,
