@@ -15,6 +15,7 @@
  */
 package org.instancio.junit.internal;
 
+import org.instancio.Random;
 import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -60,6 +61,7 @@ public final class ExtensionSupport {
         final Seeds.Source source;
         final Settings tlSettings = ThreadLocalSettings.getInstance().get();
         final Long tlSeed = tlSettings == null ? null : tlSettings.get(Keys.SEED);
+        final Random configuredRandom = Global.getConfiguredRandom();
 
         if (tlSeed != null) {
             seed = tlSeed;
@@ -67,8 +69,8 @@ public final class ExtensionSupport {
         } else if (seedAnnotation != null) {
             seed = seedAnnotation.value();
             source = Seeds.Source.SEED_ANNOTATION;
-        } else if (Global.getConfiguredRandom() != null) {
-            seed = Global.getConfiguredRandom().getSeed();
+        } else if (configuredRandom != null) {
+            seed = configuredRandom.getSeed();
             source = Seeds.Source.GLOBAL;
         } else {
             seed = Seeds.randomSeed();
@@ -91,7 +93,7 @@ public final class ExtensionSupport {
                 .map(t -> findSettings(t, context))
                 .flatMap(Optional::stream)
                 .reduce(Settings::merge)
-                .ifPresent(threadLocalSettings::set);
+                .ifPresentOrElse(threadLocalSettings::set, threadLocalSettings::remove);
     }
 
     private static Optional<Settings> findSettings(Class<?> testClass, ExtensionContext context) {
