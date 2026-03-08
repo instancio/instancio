@@ -59,16 +59,42 @@ public interface Settings {
     /**
      * Creates a new instance of empty settings.
      *
+     * <p>This method is typically used when overriding only specific settings.
+     * In such cases, there is no need to construct the entire set of default
+     * settings via {@link #defaults()}.
+     *
+     * <p>Any settings not explicitly specified will fall back to the library's
+     * built-in defaults when the settings are used.
+     *
+     * <pre>{@code
+     * // NOTE: if you use Settings.defaults() instead of Settings.create(),
+     * // it will override any custom settings you may have defined in
+     * // instancio.properties with the defaults
+     * Settings settings = Settings.create()
+     *     .set(Keys.STRING_NULLABLE, true)
+     *     .set(Keys.COLLECTION_MIN_SIZE, 10);
+     *
+     * Person person = Instancio.of(Person.class)
+     *     .withSettings(settings)
+     *     .create();
+     * }</pre>
+     *
      * @return a new instance of empty settings
+     * @see #defaults()
      */
     static Settings create() {
         return InternalSettings.create();
     }
 
     /**
-     * Creates a new instance containing default settings.
+     * Creates a new instance containing all default settings.
+     *
+     * <p>This method returns a settings instance pre-populated with the
+     * library's default values. It can be useful when you need to inspect,
+     * modify, or copy the full set of defaults.
      *
      * @return a new instance of settings containing the defaults
+     * @see #create()
      */
     static Settings defaults() {
         return InternalSettings.defaults();
