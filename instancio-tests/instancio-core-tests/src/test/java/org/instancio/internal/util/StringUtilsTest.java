@@ -43,6 +43,7 @@ class StringUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("ConstantValue")
     void isEmpty() {
         assertThat(StringUtils.isEmpty(null)).isTrue();
         assertThat(StringUtils.isEmpty("")).isTrue();
@@ -68,15 +69,6 @@ class StringUtilsTest {
         assertThat(StringUtils.singleQuote(null)).isNull();
         assertThat(StringUtils.singleQuote("")).isEqualTo("''");
         assertThat(StringUtils.singleQuote("foo")).isEqualTo("'foo'");
-    }
-
-    @Test
-    void repeat() {
-        assertThat(StringUtils.repeat("a", 0)).isEmpty();
-        assertThat(StringUtils.repeat("a", 1)).isEqualTo("a");
-        assertThat(StringUtils.repeat("a", 3)).isEqualTo("aaa");
-        assertThatThrownBy(() -> StringUtils.repeat("a", -1))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

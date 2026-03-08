@@ -18,7 +18,6 @@ package org.instancio.internal.generator.text;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
-import org.instancio.internal.util.StringUtils;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,14 +27,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate<String, TextPatternGenerator> {
-    private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
-            + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
-            + "%n\t#c - lower case character [a-z]"
-            + "%n\t#C - upper case character [A-Z]"
-            + "%n\t#d - digit [0-9]"
-            + "%n\t#h - lower case hexadecimal character [a-f, 0-9]"
-            + "%n\t#H - upper case hexadecimal character [A-F, 0-9]"
-            + "%n\t## - hash symbol escape%n");
+    private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("""
+            Allowed hashtags:
+            \t#a - alphanumeric character [a-z, A-Z, 0-9]
+            \t#c - lower case character [a-z]
+            \t#C - upper case character [A-Z]
+            \t#d - digit [0-9]
+            \t#h - lower case hexadecimal character [a-f, 0-9]
+            \t#H - upper case hexadecimal character [A-F, 0-9]
+            \t## - hash symbol escape%n""");
 
     private final GeneratorContext context = getGeneratorContext();
 
@@ -65,7 +65,7 @@ class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate<String, Tex
     @NonDeterministicTag("Assumes that generating a string of given length will produce at least one of each character types")
     void alphanumericContainsLowerUpperAndDigit() {
         final int length = 500;
-        assertThat(generate(StringUtils.repeat("#a", length)))
+        assertThat(generate("#a".repeat(length)))
                 .containsPattern("[a-z]")
                 .containsPattern("[A-Z]")
                 .containsPattern("\\d");

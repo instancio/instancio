@@ -25,7 +25,6 @@ import java.util.Locale;
 
 import static org.instancio.internal.util.ErrorMessageUtils.invalidStringTemplate;
 
-@SuppressWarnings("PMD.GodClass")
 public final class StringUtils {
 
     @Contract("null -> true")
@@ -66,15 +65,6 @@ public final class StringUtils {
         return s == null ? null : "'" + s + "'";
     }
 
-    public static String repeat(final String s, final int times) {
-        if (times < 0) throw new IllegalArgumentException("Number of times must be positive: " + times);
-        StringBuilder sb = new StringBuilder(s.length() * times);
-        for (int i = 0; i < times; i++) {
-            sb.append(s);
-        }
-        return sb.toString();
-    }
-
     public static boolean startsWithAny(@Nullable final String s, final String... prefixes) {
         if (s == null) {
             return false;
@@ -87,7 +77,7 @@ public final class StringUtils {
         return false;
     }
 
-    public static String concatNonNull(@Nullable final String @Nullable... values) {
+    public static String concatNonNull(@Nullable final String @Nullable ... values) {
         final StringBuilder sb = new StringBuilder();
         if (values != null) {
             for (String val : values) {
