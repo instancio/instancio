@@ -27,7 +27,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SettingsCustomKeyTest {
 
-    private static final SettingKey<StringHolder> KEY = Keys.ofType(StringHolder.class).create();
+    private static final SettingKey<StringHolder> KEY = Keys
+            .ofType(StringHolder.class, /* defaultValue = */ null)
+            .create();
 
     @Test
     void customKey() {
@@ -40,7 +42,7 @@ class SettingsCustomKeyTest {
 
     @Test
     void customKeyViaBuilder() {
-        final SettingKey<String> key = Keys.ofType(String.class)
+        final SettingKey<String> key = Keys.ofType(String.class, "default-value")
                 .withPropertyKey("xyz")
                 .create();
 
@@ -50,11 +52,11 @@ class SettingsCustomKeyTest {
 
     @Test
     void validation() {
-        assertThatThrownBy(() -> Keys.ofType(null))
+        assertThatThrownBy(() -> Keys.ofType(null, null))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("type must not be null");
 
-        final SettingKey.SettingKeyBuilder<String> builder = Keys.ofType(String.class);
+        final SettingKey.SettingKeyBuilder<String> builder = Keys.ofType(String.class, null);
         assertThatThrownBy(() -> builder.withPropertyKey(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("property key must not be null");

@@ -849,14 +849,15 @@ public final class Keys {
      * If {@code withPropertyKey()} is not specified, then a random
      * property key will be assigned.
      *
-     * @param type of the value the key is associated with, not {@code null}
-     * @param <T>  the value type
+     * @param type         of the value the key is associated with, not {@code null}
+     * @param defaultValue the default value for this key
+     * @param <T>          the value type
      * @return key builder
      * @since 2.12.0
      */
     @ExperimentalApi
-    public static <T> SettingKeyBuilder<T> ofType(final Class<T> type) {
-        return InternalKey.builder(type);
+    public static <T extends @Nullable Object> SettingKeyBuilder<T> ofType(final Class<T> type, final T defaultValue) {
+        return InternalKey.builder(type, defaultValue);
     }
 
     private static <T extends @Nullable Object> SettingKey<T> register(

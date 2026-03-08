@@ -65,8 +65,9 @@ class CustomGeneratorSpecUseCaseTest {
         IntegerListSpec negative(int size);
     }
 
-    private static final SettingKey<Integer> KEY_MIN_SIZE = Keys.ofType(Integer.class).create();
-    private static final SettingKey<Integer> KEY_MAX_SIZE = Keys.ofType(Integer.class).create();
+    private static final int DEFAULT_VALUE = 1234;
+    private static final SettingKey<Integer> KEY_MIN_SIZE = Keys.ofType(Integer.class, DEFAULT_VALUE).create();
+    private static final SettingKey<Integer> KEY_MAX_SIZE = Keys.ofType(Integer.class, DEFAULT_VALUE).create();
 
     private static class IntegerListSpecImpl implements IntegerListSpec, Generator<List<Integer>> {
 

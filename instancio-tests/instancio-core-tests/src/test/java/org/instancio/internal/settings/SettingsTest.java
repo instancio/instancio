@@ -164,7 +164,9 @@ class SettingsTest {
     @Test
     @DisplayName("Should produce settings sorted by SettingKey.propertyKey()")
     void verifyToString() {
-        final SettingKey<String> customKey = Keys.ofType(String.class).create();
+        final SettingKey<String> customKey = Keys
+                .ofType(String.class, "default-value")
+                .create();
 
         assertThat(Settings.create()
                 .set(Keys.LONG_MIN, 123L)
@@ -323,7 +325,8 @@ class SettingsTest {
 
     @Test
     void userDefinedKeyFromProperties() {
-        final SettingKey<Integer> key = Keys.ofType(Integer.class)
+        final int defaultValue = 1234;
+        final SettingKey<Integer> key = Keys.ofType(Integer.class, defaultValue)
                 .withPropertyKey("user.defined.key")
                 .create();
 
@@ -335,7 +338,7 @@ class SettingsTest {
     @Test
     @DisplayName("Settings should accept values that are subtypes of SettingKey.type()")
     void keyType() {
-        final SettingKey<CharSequence> key = Keys.ofType(CharSequence.class)
+        final SettingKey<CharSequence> key = Keys.ofType(CharSequence.class, "default-value")
                 .withPropertyKey("custom.key")
                 .create();
 

@@ -121,21 +121,21 @@ public final class InternalKey<T extends @Nullable Object>
                 propertyKey, type.getSimpleName());
     }
 
-    public static <T> SettingKeyBuilder<T> builder(final Class<T> type) {
-        return new InternalKeyBuilder<>(type);
+    public static <T extends @Nullable Object> SettingKeyBuilder<T> builder(
+            final Class<T> type,
+            final T defaultValue) {
+
+        return new InternalKeyBuilder<>(type, defaultValue);
     }
 
     public static final class InternalKeyBuilder<T extends @Nullable Object> implements SettingKeyBuilder<T> {
         private final Class<T> type;
+        private final T defaultValue;
         private @Nullable String propertyKey;
 
-        private InternalKeyBuilder(final Class<T> type) {
+        private InternalKeyBuilder(final Class<T> type, final T defaultValue) {
             this.type = ApiValidator.notNull(type, "type must not be null");
-        }
-
-        @Override
-        public SettingKeyBuilder<T> ofType(final Class<T> type) {
-            return new InternalKeyBuilder<>(type);
+            this.defaultValue = defaultValue;
         }
 
         @Override
@@ -144,7 +144,6 @@ public final class InternalKey<T extends @Nullable Object>
             return this;
         }
 
-        @SuppressWarnings("NullAway") // TODO
         @Initializer
         @Override
         public SettingKey<T> create() {
@@ -152,7 +151,7 @@ public final class InternalKey<T extends @Nullable Object>
                     .replace("-", "")
                     .substring(0, 20));
 
-            return new InternalKey<>(key, type, null, null, true, false);
+            return new InternalKey<>(key, type, defaultValue, null, true, false);
         }
     }
 }

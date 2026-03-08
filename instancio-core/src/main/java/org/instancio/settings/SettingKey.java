@@ -80,15 +80,6 @@ public interface SettingKey<T extends @Nullable Object> {
     interface SettingKeyBuilder<T extends @Nullable Object> {
 
         /**
-         * Specifies the value's type.
-         *
-         * @param type of value
-         * @return key builder
-         * @since 2.12.0
-         */
-        SettingKeyBuilder<T> ofType(Class<T> type);
-
-        /**
          * Specifies the property key.
          *
          * <p>When defining custom keys, it is advisable to use
