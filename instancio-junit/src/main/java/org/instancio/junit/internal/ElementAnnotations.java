@@ -23,7 +23,6 @@ import org.jspecify.annotations.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ElementAnnotations {
 
@@ -36,7 +35,7 @@ public class ElementAnnotations {
                 .filter(a -> a.annotationType() == Given.class)
                 .flatMap(a -> Arrays.stream(((Given) a).value()))
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Nullable
