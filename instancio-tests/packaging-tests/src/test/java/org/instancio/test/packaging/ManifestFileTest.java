@@ -122,11 +122,7 @@ class ManifestFileTest {
 
         assertImports(attrs, INSTANCIO_JUNIT_EXPECTED_IMPORTS);
 
-        assertThat(getExportedPackages(attrs)).containsExactlyInAnyOrder(
-                "org.instancio.junit",
-                "org.junit.jupiter.api.extension",
-                "org.junit.jupiter.params.provider"
-        );
+        assertThat(getExportedPackages(attrs)).containsExactlyInAnyOrder("org.instancio.junit");
     }
 
     private static void assertImports(final Attributes attrs, final String[] expectedImports) {
@@ -138,10 +134,11 @@ class ManifestFileTest {
     }
 
     private static Set<String> getExportedPackages(final Attributes attrs) {
-        return Arrays.stream(attrs.getValue(EXPORT_PACKAGE).split(","))
-                .map(e -> e.split(";")[0])
-                .flatMap(s -> Arrays.stream(s.split(",")))
-                .map(s -> s.replace("\"", ""))
+        // Strip uses:="..." clauses before splitting to avoid treating commas inside quotes as separators
+        final String exportPackage = attrs.getValue(EXPORT_PACKAGE).replaceAll(";uses:=\"[^\"]*\"", "");
+        return Arrays.stream(exportPackage.split(","))
+                .map(e -> e.split(";")[0].trim())
+                .filter(s -> !s.isEmpty())
                 .collect(Collectors.toSet());
     }
 
