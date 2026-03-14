@@ -68,6 +68,15 @@ class ManifestFileTest {
             "org.slf4j"
     };
 
+    private static final String[] INSTANCIO_KOTLIN_EXPECTED_IMPORTS = {
+            "kotlin.jvm.functions,",
+            "kotlin.reflect,",
+            "kotlin.reflect.jvm,",
+            "org.instancio,",
+            "org.instancio.exception,",
+            "org.instancio.settings",
+    };
+
     @Test
     void instancioCoreManifest() throws IOException {
         final String symbolicName = "org.instancio.core";
@@ -123,6 +132,25 @@ class ManifestFileTest {
         assertImports(attrs, INSTANCIO_JUNIT_EXPECTED_IMPORTS);
 
         assertThat(getExportedPackages(attrs)).containsExactlyInAnyOrder("org.instancio.junit");
+    }
+
+    @Test
+    void instancioKotlinManifest() throws IOException {
+        final String symbolicName = "org.instancio.kotlin";
+        final Manifest manifest = getManifest(symbolicName);
+        final Attributes attrs = manifest.getMainAttributes();
+
+        assertThat(attrs.getValue(BUNDLE_NAME))
+                .isEqualTo("Instancio Kotlin");
+
+        assertThat(attrs.getValue(BUNDLE_DESCRIPTION))
+                .isEqualTo("Kotlin extensions for the Instancio API");
+
+        assertThat(attrs.getOrDefault(MULTI_RELEASE, "false")).isEqualTo("false");
+
+        assertImports(attrs, INSTANCIO_KOTLIN_EXPECTED_IMPORTS);
+
+        assertThat(getExportedPackages(attrs)).containsExactlyInAnyOrder("org.instancio.kotlin");
     }
 
     private static void assertImports(final Attributes attrs, final String[] expectedImports) {

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.instancio</groupId>
+        <artifactId>kotlin-tests</artifactId>
+        <version>6.0.0-RC2-SNAPSHOT</version>
+    </parent>
+    <artifactId>instancio-kotlin-api-tests</artifactId>
+    <name>Instancio tests: Instancio Kotlin API Tests</name>
+
+    <properties>
+        <!-- Disable jacoco as we're using kover in this module -->
+        <jacoco.skip>true</jacoco.skip>
+        <version.restrict-imports-enforcer-rule>3.0.0</version.restrict-imports-enforcer-rule>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Using kover because jacoco does not provide coverage for Kotlin inline functions -->
+            <plugin>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kover-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>kover-instrument</id>
+                        <goals>
+                            <goal>instrumentation</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>kover-report-xml</id>
+                        <goals>
+                            <goal>report-xml</goal>
+                        </goals>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <xmlFile>${project.build.directory}/kover/report.xml</xmlFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>de.skuzzle.enforcer</groupId>
+                        <artifactId>restrict-imports-enforcer-rule</artifactId>
+                        <version>${version.restrict-imports-enforcer-rule}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>ban-certain-java-apis-in-kotlin-api-tests</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <RestrictImports>
+                                    <!-- Prevent Kotlin API tests accidentally referencing java
+                                         classes like Select.field() instead of KSelect.field() -->
+                                    <reason>Use Instancio Kotlin APIs instead of Java</reason>
+                                    <bannedImports>
+                                        <bannedImport>org.instancio.Instancio</bannedImport>
+                                        <bannedImport>org.instancio.Select</bannedImport>
+                                    </bannedImports>
+                                </RestrictImports>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-kotlin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>kotlin-test-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

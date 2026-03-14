@@ -438,23 +438,9 @@ For methods that follow other naming conventions, or situations where no method 
 
 ##### Kotlin method reference selector
 
-Since Instancio does not include Kotlin dependencies,
-the method reference selector described above is only supported for Java classes.
-If you use Kotlin, a similar selector can be implemented as a simple utility class shown below.
-This sample assumes that the property has a non-null backing `javaField`:
-
-``` kotlin title="Sample implementation method reference selector for Kotlin" linenums="1"
-class KSelect {
-    companion object {
-        fun <T, V> field(property: KProperty1<T, V>): TargetSelector {
-            val field = property.javaField!!
-            return Select.field(field.declaringClass, field.name)
-        }
-    }
-}
-
-// Usage: KSelect.field(SamplePojo::value)
-```
+Since version `6.0.0`, Instancio provides the `instancio-kotlin` module with a first-class Kotlin API.
+Among other things, it includes the `KSelect` class with native support for Kotlin property references.
+See [Kotlin API](#kotlin-api) for details.
 
 #### Predicate selectors
 
@@ -4716,6 +4702,43 @@ void verifyShippingAddress() {
 With the `@Seed` annotation in place, the data becomes effectively static.
 This allows the root cause to be established and fixed.
 Once the test is passing, the `@Seed` annotation can be removed so that new data will be generated on each subsequent test run.
+
+---
+
+# Kotlin API
+
+!!! info "Experimental API `@since 6.0.0`"
+
+The `instancio-kotlin` module provides a Kotlin-native API for creating objects and working with selectors.
+It offers the same functionality as the core Java API, enhanced with Kotlin-specific improvements
+such as reified type parameters and Kotlin property references,
+which eliminate the need to pass `Class` objects or type tokens explicitly.
+
+The `KInstancio` object is the entry point, mirroring the Java {{Instancio}} class:
+
+```kotlin linenums="1"
+// Create a single instance — no Class argument needed
+val person: Person = KInstancio.create<Person>()
+
+// Create a generic type — no TypeToken needed
+val pairs: List<Pair<String, Long>> = KInstancio.createList<Pair<String, Long>>()
+
+// Use the builder API to customise generated values
+val person: Person = KInstancio.of<Person>()
+    .generate(KSelect.field(Person::age)) { gen -> gen.ints().range(18, 65) }
+    .create()
+```
+
+The `KSelect` object provides all selector methods available in the Java {{Select}} class,
+with the addition of Kotlin property reference selectors for both `field()` and `scope()`:
+
+```kotlin linenums="1"
+// Select a field using a Kotlin property reference
+val person: Person = KInstancio.of<Person>()
+    .ignore(KSelect.field(Person::address))
+    .set(KSelect.allStrings().within(KSelect.scope(Person::homeAddress)), "N/A")
+    .create()
+```
 
 ---
 
