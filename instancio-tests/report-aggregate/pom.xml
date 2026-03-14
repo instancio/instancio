@@ -43,6 +43,10 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
+            <artifactId>instancio-kotlin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
             <artifactId>instancio-guava-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -79,7 +83,13 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>kotlin-tests</artifactId>
+            <artifactId>java-interop-kotlin-tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-kotlin-api-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -167,6 +177,12 @@
                 <dependency>
                     <groupId>org.instancio</groupId>
                     <artifactId>jpms-guava-tests</artifactId>
+                    <version>${project.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.instancio</groupId>
+                    <artifactId>jpms-kotlin-tests</artifactId>
                     <version>${project.version}</version>
                     <scope>test</scope>
                 </dependency>
