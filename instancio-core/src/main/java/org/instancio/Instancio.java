@@ -43,14 +43,14 @@ import static org.instancio.internal.util.TypeUtils.cast;
  * <h2>Usage</h2>
  *
  * <h3>Create and populate an instance of a class</h3>
- * Returns an object fully populated with random data with non-null values.
+ * Returns an object fully populated with random, non-null values.
  *
  * <pre>{@code
  * Person person = Instancio.create(Person.class);
  * }</pre>
  *
  * <h3>Customise object's values</h3>
- * Returns an object populated with random data and some specified fields' values customised.
+ * Returns an object populated with random data, with some field values customised.
  *
  * <pre>{@code
  * // Customise specific fields using set(), supply(), or generate()
@@ -110,14 +110,14 @@ import static org.instancio.internal.util.TypeUtils.cast;
  *
  * // The toModel() method allows you to save the builder configurations inside
  * // a reusable template. You can then generate objects from the model directly
- * // or modify it to override certain values, e g. use the above model as is:
+ * // or modify it to override certain values, e.g. use the above model as is:
  * Person person = Instancio.create(simpsons);
  *
  * // Use the model but override the name:
  * Person homer = Instancio.of(simpsons).set(field(Person::getName), "Homer").create();
  * Person marge = Instancio.of(simpsons).set(field(Person::getName), "Marge").create();
  *
- * // A model can also used to create another model.
+ * // A model can also be used to create another model.
  * // This snippet creates a new model from the original model to include a new pet.
  * Model<Person> withNewPet = Instancio.of(simpsons)
  *     .supply(field(Person::getPets), () -> List.of(
@@ -178,7 +178,7 @@ public final class Instancio {
      * <p>The created object will have the following properties:
      *
      * <ul>
-     *   <li>value fields (strings, numbers, dates, etc) are {@code null}</li>
+     *   <li>value fields (strings, numbers, dates, etc.) are {@code null}</li>
      *   <li>arrays, collections, and maps are empty</li>
      *   <li>nested POJOs are blank</li>
      * </ul>
@@ -295,7 +295,7 @@ public final class Instancio {
     }
 
     /**
-     * Creates an object of type specified by the type token.
+     * Creates an object of the type specified by the type token.
      * This method can be used for creating instances of generic types.
      * <p>
      * Example:
@@ -312,7 +312,7 @@ public final class Instancio {
     }
 
     /**
-     * Creates an infinite stream of objects of type specified by the type token.
+     * Creates an infinite stream of objects of the type specified by the type token.
      * This method can be used for creating streams of generic types.
      * <p>
      * Example:
@@ -422,7 +422,7 @@ public final class Instancio {
      * Person person = Instancio.ofBlank(Person.class)
      *     .set(field(Address::getCountry), "Canada")
      *     .generate(field(Person::getDateOfBirth), gen -> gen.temporal().localDate().past())
-     *     .create()
+     *     .create();
      *
      * // Sample output:
      * // Person[
@@ -501,7 +501,7 @@ public final class Instancio {
      * <p>For more details, including customisation options and usage constraints,
      * refer to the {@link #ofObject(Object)} method.
      *
-     * @param object the object whose fields should be populated with random values.
+     * @param object the object whose fields should be populated with random values
      * @param <T>    the type of the object
      * @see #ofObject(Object)
      * @see FillType
@@ -547,6 +547,8 @@ public final class Instancio {
      * // Person[name=VCNSOU, email=fphna@mph.org, dateOfBirth=1980-12-31]
      * }</pre>
      *
+     * <p>In the above example:
+     *
      * <ul>
      *   <li>The {@code name} field which was {@code null}
      *       was populated with a random value.</li>
@@ -555,7 +557,7 @@ public final class Instancio {
      *   <li>The {@code dateOfBirth} field retained the initialised value.</li>
      * </ul>
      *
-     * <p>Note that by default, Instancio uses the
+     * <p>Note that by default, Instancio uses
      * {@link FillType#POPULATE_NULLS_AND_DEFAULT_PRIMITIVES}
      * when populating objects.
      * The default fill type can be customised in two ways:
@@ -822,7 +824,7 @@ public final class Instancio {
      * String randomChoice = Instancio.gen().oneOf("foo", "bar", "baz").get();
      * }</pre>
      *
-     * <p>as  well as generating a list of values
+     * <p>As well as generating a list of values
      * using the {@code list(int size)} method:
      *
      * <pre>{@code
@@ -835,7 +837,7 @@ public final class Instancio {
      * for example a stream of strings in the {@code "ABC-123"} format:
      *
      * <pre>{@code
-     * Stream<String> pastDates = Instancio.gen().text().pattern("#C#C#C-#d#d#d")
+     * Stream<String> strings = Instancio.gen().text().pattern("#C#C#C-#d#d#d")
      *   .stream()
      *   .limit(100); // limit must be called to avoid an infinite loop
      * }</pre>
@@ -853,7 +855,7 @@ public final class Instancio {
      *
      * @param type the class that defines a feed
      * @param <F>  the type of feed
-     * @return API builder reference
+     * @return a feed instance of the specified type
      * @see #ofFeed(Class)
      * @since 5.0.0
      */

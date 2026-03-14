@@ -43,7 +43,7 @@ import java.util.function.Predicate;
  * Instancio supports two types of selectors: regular and predicate-based.
  *
  * <p>Regular selectors allow matching by exact class (not including subtypes)
- * and field:</p>
+ * and field:
  *
  * <ul>
  *   <li>{@link #all(Class)}</li>
@@ -64,7 +64,7 @@ import java.util.function.Predicate;
  *
  * <p>The first two allow constructing predicates using convenience builder
  * methods. The last two methods can be used with arbitrary predicates
- * where the builders are not sufficient.</p>
+ * where the builders are not sufficient.
  *
  * <p>It should be noted that regular selectors have higher precedence than
  * predicate selectors. See the
@@ -82,11 +82,11 @@ public final class Select {
 
     /**
      * Provides a builder for selecting fields based on {@link Predicate Predicates}.
-     * This method can be used for selecting multiple fields in different classes.
-     * The returned builder offers convenience methods for constructing the predicate.
+     * The builder supports matching fields by name, name regex, type, declaring class,
+     * and annotation, which can be combined to form logical {@code AND} conditions.
      *
-     * <p>The following example will match all fields named {@code lastModified}
-     * declared in the {@code Person} and other classes referenced from {@code Person}.</p>
+     * <p>The following example matches all fields named {@code lastModified}
+     * declared anywhere in the {@code Person} object tree:
      *
      * <pre>{@code
      * Person person = Instancio.of(Person.class)
@@ -94,11 +94,11 @@ public final class Select {
      *     .create();
      * }</pre>
      *
-     * <p>Specifying only {@code fields()} (without further predicates)
-     * will match all fields declared across the class tree.</p>
+     * <p>Calling {@code fields()} without any further predicates matches
+     * all fields in the object tree.
      *
      * <p>The alternative method {@link #fields(Predicate)} can be used to specify
-     * a predicate directly.</p>
+     * a predicate directly.
      *
      * @return predicate selector builder for matching fields
      * @see #fields(Predicate)
@@ -112,10 +112,10 @@ public final class Select {
 
     /**
      * Provides a builder for selecting types based on {@link Predicate Predicates}.
-     * This method can be used for selecting multiple types.
-     * The returned builder offers convenience methods for constructing the predicate.
+     * The builder supports matching types by name, name regex, supertype,
+     * and annotation, which can be combined to form logical {@code AND} conditions.
      *
-     * <p>The following example will match all types annotated {@code @Embeddable}.</p>
+     * <p>The following example matches all types annotated with {@code @Embeddable}:
      *
      * <pre>{@code
      * Person person = Instancio.of(Person.class)
@@ -123,11 +123,11 @@ public final class Select {
      *     .create();
      * }</pre>
      *
-     * <p>Specifying only {@code types()} (without further predicates)
-     * will match all types referenced in the class tree.</p>
+     * <p>Calling {@code types()} without any further predicates matches
+     * all types in the object tree.
      *
-     * <p>The alternative method {@link #types(Predicate)} can be used to specify
-     * a predicate directly.</p>
+     * <p>When a predicate is already available, {@link #types(Predicate)}
+     * can be used to supply it directly.
      *
      * @return predicate selector builder for matching types
      * @see #types(Predicate)
@@ -140,7 +140,7 @@ public final class Select {
     }
 
     /**
-     * Select all fields matching the specified predicate.
+     * Selects all fields matching the specified predicate.
      *
      * @param predicate for matching fields
      * @return a predicate selector
@@ -155,7 +155,7 @@ public final class Select {
     }
 
     /**
-     * Select all types matching the specified predicate.
+     * Selects all types matching the specified predicate.
      *
      * @param predicate for matching types
      * @return a predicate selector
@@ -170,18 +170,18 @@ public final class Select {
     }
 
     /**
-     * Select all instances of the given type, <b>not including</b> subtypes.
-     * <p>
-     * If the type is a primitive or wrapper, this method only selects the specified type. For example:
+     * Selects all instances of the given type, <b>not including</b> subtypes.
+     *
+     * <p>When the type is a primitive or its wrapper, only the specified type is selected:
      * <ul>
      *   <li>{@code all(int.class)} - selects primitive {@code int} but not {@code Integer}</li>
      *   <li>{@code all(Integer.class)} - selects {@code Integer} wrapper but not primitive {@code int}</li>
      * </ul>
-     * <p>
-     * In order to select both, primitive {@code int} and wrapper, use the {@link #allInts()}.
      *
-     * @param type to select
-     * @return a selector for given class
+     * <p>To select both the primitive and its wrapper, use {@link #allInts()} and related methods.
+     *
+     * @param type the class to select
+     * @return a selector for the given class
      * @since 1.2.0
      */
     public static Selector all(final Class<?> type) {
@@ -191,7 +191,9 @@ public final class Select {
     }
 
     /**
-     * A convenience method for combining multiple selectors.
+     * A convenience method for combining multiple selectors into a group.
+     * All selectors in the group are applied together as if each had been
+     * specified individually.
      *
      * <p>Example:
      * <pre>{@code
@@ -201,11 +203,11 @@ public final class Select {
      *         all(Phone.class),
      *         field(Person::getDateOfBirth)
      *     ))
-     *     .create()
+     *     .create();
      * }</pre>
      *
-     * @param selectors to combine
-     * @return a group containing given selectors
+     * @param selectors one or more selectors to combine
+     * @return a group containing the given selectors
      * @since 1.3.0
      */
     public static SelectorGroup all(final GroupableSelector... selectors) {
@@ -258,51 +260,48 @@ public final class Select {
     }
 
     /**
-     * Selects a field based on the given method reference.
+     * Selects a field based on the given getter method reference.
      * <p>
-     * Internally, the method reference is mapped to a regular field selector
-     * as returned by {@link #field(Class, String)}. Therefore, this
-     * method only works for classes with expected field and method naming
-     * conventions:
+     * Internally, the method reference is resolved to a field selector equivalent
+     * to {@link #field(Class, String)} using the following strategy:
      *
      * <ul>
-     *   <li>Java beans convention with "get" and "is" prefixes.</li>
-     *   <li>Java records convention where method names match property names.</li>
+     *   <li>Java beans convention with {@code get} and {@code is} prefixes.</li>
+     *   <li>Property-style convention where the method name matches the field name
+     *       (e.g. Java records).</li>
      * </ul>
-     * <p>
-     * <b>Examples:</b>
+     *
+     * <p><b>Examples:</b>
      *
      * <pre>{@code
-     * // Java beans naming convention
+     * // Java beans: prefix stripped and first character lowercased
      * field(Person::getName)  -> field(Person.class, "name")
      * field(Person::isActive) -> field(Person.class, "active")
      *
-     * // Property-style naming convention (e.g. Java records)
+     * // Property-style (e.g. Java records): method name used as-is
      * field(Person::name)     -> field(Person.class, "name")
      * field(Person::isActive) -> field(Person.class, "isActive")
      * }</pre>
      *
      * <p><b>Note:</b> for a method reference with a generic return type,
-     * the type must be specified explicitly, for example:
+     * the type must be specified explicitly:
      *
      * <pre>{@code
      * class Item<T> {
      *     private T value;
      *
-     *     T getValue() { // generic return type
-     *         return value;
-     *     }
+     *     T getValue() { return value; }
      * }
      *
-     * // Option 1:
+     * // Option 1: specify the type argument inline
      * Select.field(Item<String>::getValue)
      *
-     * // Option 2:
+     * // Option 2: assign to a typed variable first
      * GetMethodSelector<Item<String>, String> getterSelector = Item::getValue;
      * Select.field(getterSelector)
      * }</pre>
      *
-     * @param methodReference method reference from which field name will be resolved
+     * @param methodReference getter method reference from which the field name will be resolved
      * @param <T>             type declaring the method
      * @param <R>             return type of the method
      * @return a field selector matching the given method reference
@@ -318,7 +317,7 @@ public final class Select {
     /**
      * Selects a setter by name declared in the class being created.
      * The setter method must have exactly one parameter. Since this method
-     * resolves the setter by name only (ignoring the parameter type)
+     * resolves the setter by name only (ignoring the parameter type),
      * it should only be used if there are no overloaded setters.
      *
      * <p>Example
@@ -346,7 +345,7 @@ public final class Select {
     /**
      * Selects a setter method by name in the specified class.
      * The method must have exactly one parameter. Since this method resolves
-     * the setter by name only (ignoring the parameter type)
+     * the setter by name only (ignoring the parameter type),
      * it should only be used if there are no overloaded setters.
      *
      * <p><b>Note:</b> setter selectors can only be used if
@@ -400,7 +399,7 @@ public final class Select {
      *
      * <p>This selector resolves the class that declares the setter and
      * the method name from the method reference. Since this method resolves
-     * the setter by name only (ignoring the parameter type)
+     * the setter by name only (ignoring the parameter type),
      * it should only be used if there are no overloaded setters.
      *
      * <p><b>Note:</b> setter selectors can only be used if
@@ -521,9 +520,10 @@ public final class Select {
     }
 
     /**
-     * Creates a scope for narrowing down a selector's target to a field of the specified class.
-     * <p>
-     * For example, the following will set all lists within {@code Person.address} object to an empty list.
+     * Creates a scope that restricts a selector to targets within the specified field.
+     *
+     * <p>For example, the following sets all lists nested within {@code Person.address}
+     * to an empty list, without affecting lists elsewhere in the object tree:
      *
      * <pre>{@code
      * Person person = Instancio.of(Person.class)
@@ -531,8 +531,8 @@ public final class Select {
      *     .create();
      * }</pre>
      *
-     * @param targetClass of the scope
-     * @param fieldName   declared by the target class
+     * @param targetClass the class declaring the field
+     * @param fieldName   the field name within the target class
      * @return a scope for fine-tuning a selector
      * @see #scope(GetMethodSelector)
      * @since 1.3.0
@@ -542,10 +542,10 @@ public final class Select {
     }
 
     /**
-     * Creates a selector scope for narrowing down a selector's target to the specified class.
-     * <p>
-     * For example, assuming a {@code Customer} class that has a {@code CustomerConsent} class.
-     * the following will set all booleans within {@code CustomerConsent} to {@code true}.
+     * Creates a scope that restricts a selector to targets within the specified class.
+     *
+     * <p>For example, the following sets all booleans within {@code CustomerConsent}
+     * to {@code true}, without affecting booleans in other parts of the object tree:
      *
      * <pre>{@code
      * Customer customer = Instancio.of(Customer.class)
@@ -553,7 +553,7 @@ public final class Select {
      *     .create();
      * }</pre>
      *
-     * @param targetClass of the scope
+     * @param targetClass the class to use as the scope boundary
      * @return a scope for fine-tuning a selector
      * @since 1.3.0
      */
@@ -563,13 +563,14 @@ public final class Select {
     }
 
     /**
-     * Creates a scope for narrowing down a selector's target to a
-     * matching the specified method reference.
+     * Creates a scope that restricts a selector to targets within the field
+     * identified by the given getter method reference.
      *
-     * <p>This is a convenience method for {@link #scope(Class, String)}
-     * that avoids referring to a field by its name.
+     * <p>This is a type-safe alternative to {@link #scope(Class, String)}
+     * that avoids referring to a field by its string name. Field name resolution
+     * follows the same rules as {@link #field(GetMethodSelector)}.
      *
-     * @param methodReference method reference from which field name will be resolved
+     * @param methodReference getter method reference identifying the field
      * @param <T>             type declaring the method
      * @param <R>             return type of the method
      * @return a scope for fine-tuning a selector
@@ -582,9 +583,10 @@ public final class Select {
     }
 
     /**
-     * Creates a scope from the given predicate selector.
+     * Creates a scope from the given predicate selector, restricting a selector's
+     * target to nodes matched by the predicate.
      *
-     * @param selector a predicate selector to use as the scope
+     * @param selector the predicate selector defining the scope boundary
      * @return a scope for fine-tuning a selector
      * @since 4.2.0
      */

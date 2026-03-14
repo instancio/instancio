@@ -50,8 +50,8 @@ public interface BaseApi<T extends @Nullable Object> {
      *     .create();
      * }</pre>
      *
-     * <p>will create a fully populated person, but will ignore the
-     * {@code getPhoneNumber} field, and all strings.
+     * <p>This will create a fully populated person, but will ignore the
+     * {@code phoneNumber} field and all strings.
      *
      * <h4>Precedence</h4>
      *
@@ -115,10 +115,10 @@ public interface BaseApi<T extends @Nullable Object> {
     BaseApi<T> withNullable(TargetSelector selector);
 
     /**
-     * Sets a value to matching selector targets.
+     * Sets a value on matching selector targets.
      *
      * <p>Example: if {@code Person} class contains a {@code List<Phone>}, the following
-     * snippet will set all the country code of all phone instances to "+1".
+     * snippet will set the country code on all Phone instances to "+1".
      * <pre>{@code
      * Person person = Instancio.of(Person.class)
      *     .set(field(Phone::getCountryCode), "+1")
@@ -128,7 +128,7 @@ public interface BaseApi<T extends @Nullable Object> {
      * <p>Note: Instancio <b>will not</b></p>
      * <ul>
      *   <li>populate or modify objects supplied by this method</li>
-     *   <li>apply other {@code set()}, {@code supply()}, or {@code generate()}}
+     *   <li>apply other {@code set()}, {@code supply()}, or {@code generate()}
      *       methods with matching selectors to the supplied object</li>
      *   <li>invoke {@code onComplete()} callbacks on supplied instances</li>
      * </ul>
@@ -186,7 +186,7 @@ public interface BaseApi<T extends @Nullable Object> {
      * <a href="https://www.instancio.org/user-guide/#using-setmodel">user guide</a>
      * for further details.
      *
-     * @param selector to which the model will be applied to
+     * @param selector to which the model will be applied
      * @param model    to apply to the given selector's target
      * @param <V>      the type of object this model represents
      * @return API builder reference
@@ -211,7 +211,7 @@ public interface BaseApi<T extends @Nullable Object> {
      * <p>Note: Instancio <b>will not</b></p>
      * <ul>
      *   <li>populate or modify objects supplied by this method</li>
-     *   <li>apply other {@code set()}, {@code supply()}, or {@code generate()}}
+     *   <li>apply other {@code set()}, {@code supply()}, or {@code generate()}
      *       methods with matching selectors to the supplied object</li>
      *   <li>invoke {@code onComplete()} callbacks on supplied instances</li>
      * </ul>
@@ -262,7 +262,7 @@ public interface BaseApi<T extends @Nullable Object> {
      *
      * <p>This behaviour is controlled by the {@link AfterGenerate} hint specified
      * by {@link Generator#hints()}. Refer to the {@link Generator#hints()} Javadoc
-     * for details, or <a href="https://www.instancio.org/user-guide/#custom-generators">
+     * for details, or the <a href="https://www.instancio.org/user-guide/#custom-generators">
      * Custom Generators</a> section of the user guide.
      *
      * @param selector  for fields and/or classes this method should be applied to
@@ -390,7 +390,7 @@ public interface BaseApi<T extends @Nullable Object> {
     <V extends @Nullable Object> BaseApi<T> filter(TargetSelector selector, FilterPredicate<V> predicate);
 
     /**
-     * Maps target field or class to the given subtype. This can be used
+     * Maps the target field or class to the given subtype. This can be used
      * in the following cases:
      *
      * <ol>
@@ -414,15 +414,15 @@ public interface BaseApi<T extends @Nullable Object> {
      * <p>
      * By default, Instancio uses certain defaults for collection classes, for example
      * {@link ArrayList} for {@link List}.
-     * If an alternative implementation is required, this method allows to specify it:
+     * If an alternative implementation is required, this method can be used to specify it:
      *
      * <pre>{@code
      * Person person = Instancio.of(Person.class)
      *     .subtype(all(List.class), LinkedList.class)
      *     .create();
      * }</pre>
-     * <p>
-     * will use the {@code LinkedList} implementation for all {@code List}s.
+     *
+     * <p>This will use the {@code LinkedList} implementation for all {@code List}s.
      *
      * @param selector for fields and/or classes this method should be applied to
      * @param subtype  to map the selector to
@@ -432,7 +432,7 @@ public interface BaseApi<T extends @Nullable Object> {
     BaseApi<T> subtype(TargetSelector selector, Class<?> subtype);
 
     /**
-     * Generates values based on given assignments.
+     * Generates values based on the given assignments.
      * An {@link Assignment} can be created using one of the builder patterns
      * provided by the {@link Assign} class.
      *
@@ -591,7 +591,7 @@ public interface BaseApi<T extends @Nullable Object> {
      * <p>and a record with matching properties:
      *
      * <pre>{@code
-     * class Person(String firstName, String lastName, int age, String username) {}
+     * record Person(String firstName, String lastName, int age, String username) {}
      * }</pre>
      *
      * <p>a feed can be applied as follows:
@@ -646,8 +646,8 @@ public interface BaseApi<T extends @Nullable Object> {
 
     /**
      * Sets the seed value for the random number generator. If the seed is not specified,
-     * a random seed will be used. Specifying the seed is useful for reproducing test results.
-     * By specifying the seed value, the same random data will be generated again.
+     * a random seed will be used. Specifying a seed value is useful for reproducing test results,
+     * as the same random data will be generated on each run.
      *
      * <p>
      * Example:
@@ -673,7 +673,7 @@ public interface BaseApi<T extends @Nullable Object> {
      * <p>A blank object has the following properties:
      *
      * <ul>
-     *   <li>value fields (strings, numbers, dates, etc) are {@code null}</li>
+     *   <li>value fields (strings, numbers, dates, etc.) are {@code null}</li>
      *   <li>arrays, collections, and maps are empty</li>
      *   <li>nested POJOs are blank</li>
      * </ul>
@@ -721,7 +721,7 @@ public interface BaseApi<T extends @Nullable Object> {
      *
      * <ul>
      *   <li>{@code withUnique(allInts())}</li>
-     *   <li>{@code withUnique(all(field(Data::foo), field(Data::bar))}</li>
+     *   <li>{@code withUnique(all(field(Data::foo), field(Data::bar)))}</li>
      * </ul>
      * <p>
      * would result in unique values for {@code foo} and {@code bar}

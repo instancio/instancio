@@ -147,7 +147,7 @@ public interface InstancioApi<T extends @Nullable Object> extends
     Stream<T> stream();
 
     /**
-     * Creates a model containing generation parameters for creating an object
+     * Creates a model containing generation parameters for creating an object.
      * A model acts as a template for creating objects or other models.
      *
      * <p>The example below illustrates how to create a reusable model
