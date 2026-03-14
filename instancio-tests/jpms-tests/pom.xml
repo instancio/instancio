@@ -22,6 +22,7 @@
         <module>jpms-bean-validation-jakarta-tests</module>
         <module>jpms-bean-validation-hibernate-tests</module>
         <module>jpms-guava-tests</module>
+        <module>jpms-kotlin-tests</module>
     </modules>
 
     <dependencies>

@@ -51,7 +51,8 @@
         <sonar.organization>instancio</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>
-            ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
+            ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml,
+            ${maven.multiModuleProjectDirectory}/instancio-tests/kotlin-tests/instancio-kotlin-api-tests/target/kover/report.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <latest.release.version>6.0.0-RC1</latest.release.version>
         <version.guava>33.5.0-jre</version.guava>
@@ -63,6 +64,7 @@
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
         <version.jspecify>1.0.0</version.jspecify>
         <version.junit>6.0.3</version.junit>
+        <version.kotlin>2.3.10</version.kotlin>
         <version.slf4j>2.0.17</version.slf4j>
         <version.errorprone>2.48.0</version.errorprone>
         <version.nullaway>0.13.1</version.nullaway>
@@ -80,6 +82,7 @@
         <version.maven-release-plugin>3.3.1</version.maven-release-plugin>
         <version.maven-site-plugin>3.21.0</version.maven-site-plugin>
         <version.maven-source-plugin>3.4.0</version.maven-source-plugin>
+        <version.kover-maven-plugin>0.9.7</version.kover-maven-plugin>
         <version.sonar-maven-plugin>5.5.0.6356</version.sonar-maven-plugin>
         <version.spotbugs-maven-plugin>4.9.8.2</version.spotbugs-maven-plugin>
         <version.versions-maven-plugin>2.21.0</version.versions-maven-plugin>
@@ -98,6 +101,7 @@
         <module>build-tools</module>
         <module>instancio-core</module>
         <module>instancio-junit</module>
+        <module>instancio-kotlin</module>
         <module>instancio-guava</module>
         <module>instancio-bom</module>
         <module>instancio-tests</module>
@@ -332,6 +336,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.jetbrains.kotlinx</groupId>
+                    <artifactId>kover-maven-plugin</artifactId>
+                    <version>${version.kover-maven-plugin}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -575,6 +584,13 @@
                 <version>${version.junit}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-bom</artifactId>
+                <version>${version.kotlin}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
