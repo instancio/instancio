@@ -87,9 +87,12 @@
         <version.spotbugs-maven-plugin>4.9.8.2</version.spotbugs-maven-plugin>
         <version.versions-maven-plugin>2.21.0</version.versions-maven-plugin>
         <version.flatten-maven-plugin>1.7.3</version.flatten-maven-plugin>
+        <version.maven-clean-plugin>3.5.0</version.maven-clean-plugin>
         <version.maven-resources-plugin>3.5.0</version.maven-resources-plugin>
         <version.maven-install-plugin>3.1.4</version.maven-install-plugin>
         <version.maven-deploy-plugin>3.1.4</version.maven-deploy-plugin>
+        <version.maven-failsafe-plugin>3.5.5</version.maven-failsafe-plugin>
+        <version.maven-surefire-plugin>3.5.5</version.maven-surefire-plugin>
     </properties>
 
     <issueManagement>
@@ -255,6 +258,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${version.maven-clean-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${version.maven-resources-plugin}</version>
                 </plugin>
@@ -267,6 +275,16 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>${version.maven-deploy-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${version.maven-surefire-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${version.maven-failsafe-plugin}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
