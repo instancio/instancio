@@ -8,8 +8,8 @@
     </parent>
     <artifactId>instancio-junit</artifactId>
     <packaging>bundle</packaging>
-    <name>Instancio JUnit 5 Support</name>
-    <description>Instancio integration with JUnit 5</description>
+    <name>Instancio JUnit Framework Support</name>
+    <description>Instancio integration with the JUnit framework</description>
 
     <build>
         <pluginManagement>

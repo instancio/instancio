@@ -9,6 +9,6 @@ These are intended as "how-tos" with code snippets that can be copy/pasted.
 Some of the information here may overlap with the [user guide](user-guide.md).
 
 
-- [Using Instancio with JUnit 5](articles/using-instancio-with-junit-jupiter.md)
+- [Using Instancio with the JUnit framework](articles/using-instancio-with-junit-jupiter.md)
 - [How to override default settings](articles/how-to-override-default-settings.md)
 - [Creating object templates using Models](articles/creating-object-templates-using-models.md)

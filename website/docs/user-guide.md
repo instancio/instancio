@@ -1,5 +1,5 @@
 ---
-description: "Official Instancio reference documentation. Covers core APIs, object generation, selectors, Models, settings, and JUnit 5 integration."
+description: "Official Instancio reference documentation. Covers core APIs, object generation, selectors, Models, settings, and JUnit integration."
 ---
 
 ## Introduction
@@ -4141,8 +4141,8 @@ These are ranked from highest to lowest precedence:
 
 1. {{withSeed}}  method of the builder API
 1. {{withSettings}} or {{withSetting}} method of the builder API using `Keys.SEED`
-1. `@WithSettings` annotations (requires [`InstancioExtension`](#junit-jupiter-integration))
-1. `@Seed` annotation  (requires [`InstancioExtension`](#junit-jupiter-integration))
+1. `@WithSettings` annotations (requires [`InstancioExtension`](#junit-framework-integration))
+1. `@Seed` annotation  (requires [`InstancioExtension`](#junit-framework-integration))
 1. `instancio.properties` file (see [Global Seed](#global-seed) for details)
 1. random seed
 
@@ -4277,10 +4277,11 @@ class ExampleTest {
 ## Getting the Seed Value
 
 Sometimes it is necessary to get the seed value that was used to generate the data. One such example
-is for reproducing failed tests. If you are using JUnit 5, the seed value is reported automatically
-using the `InstancioExtension` (see [JUnit Jupiter integration](#junit-jupiter-integration)). If you are using JUnit 4, TestNG,
-or Instancio standalone, the seed value can be obtained by calling the `asResult()` method of the builder API.
-This returns a `Result` containing the created object and the seed value that was used to populate its values.
+is for reproducing failed tests. If you are using JUnit, the seed value is reported automatically
+using the `InstancioExtension` (see [JUnit Framework Integration](#junit-framework-integration)).
+If you are using JUnit 4, TestNG, or Instancio standalone, the seed value can be obtained by calling
+the `asResult()` method of the builder API. This returns a `Result` containing the created object
+and the seed value that was used to populate its values.
 
 
 ``` java linenums="1" title="Example of using asResult()"
@@ -4302,9 +4303,9 @@ This will create a log message for every generated root object created via the A
 Generating org.example.Pojo with seed 1473150975436346185 (seed source: RANDOM)
 ```
 
-# JUnit Jupiter Integration
+# JUnit Framework Integration
 
-Instancio supports JUnit 5 through the {{InstancioExtension}}, which provides several useful features:
+Instancio supports the JUnit framework through the {{InstancioExtension}}, which provides several useful features:
 
 - Injection of fields and method parameters using the `@Given` annotation
 - Ability to use `@InstancioSource` with `@ParameterizedTest` methods
@@ -4612,7 +4613,7 @@ assertThat(person.getName()).isEqualTo("VEONRGF");
 assertThat(person.getPhoneNumbers()).hasSize(3);
 ```
 
-### Seed Lifecycle in a JUnit Jupiter Test
+### Seed Lifecycle in a JUnit Test
 
 Instancio initialises a seed value before each test method.
 This seed value is used for creating all objects during the test method's execution

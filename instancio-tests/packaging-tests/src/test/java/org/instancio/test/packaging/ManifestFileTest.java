@@ -122,10 +122,10 @@ class ManifestFileTest {
         final Attributes attrs = manifest.getMainAttributes();
 
         assertThat(attrs.getValue(BUNDLE_NAME))
-                .isEqualTo("Instancio JUnit 5 Support");
+                .isEqualTo("Instancio JUnit Framework Support");
 
         assertThat(attrs.getValue(BUNDLE_DESCRIPTION))
-                .isEqualTo("Instancio integration with JUnit 5");
+                .isEqualTo("Instancio integration with the JUnit framework");
 
         assertThat(attrs.getOrDefault(MULTI_RELEASE, "false")).isEqualTo("false");
 

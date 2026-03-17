@@ -55,7 +55,7 @@ import static org.instancio.junit.internal.Constants.INSTANCIO_SOURCE_STATE;
 
 /**
  * The Instancio JUnit extension adds support for additional
- * features when using Instancio with JUnit Jupiter:
+ * features when using Instancio with the JUnit framework:
  *
  * <ul>
  *   <li>reporting the seed value to allow reproducing failed tests</li>

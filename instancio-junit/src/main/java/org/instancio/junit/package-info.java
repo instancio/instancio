@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 /**
- * Provides Instancio JUnit 5 support.
+ * Provides Instancio support for the JUnit framework.
  */
 @NullMarked
 package org.instancio.junit;
 
 import org.jspecify.annotations.NullMarked;
-
