@@ -64,7 +64,7 @@
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
         <version.jspecify>1.0.0</version.jspecify>
         <version.junit>6.0.3</version.junit>
-        <version.kotlin>2.3.10</version.kotlin>
+        <version.kotlin>2.3.20</version.kotlin>
         <version.slf4j>2.0.17</version.slf4j>
         <version.errorprone>2.48.0</version.errorprone>
         <version.nullaway>0.13.1</version.nullaway>
