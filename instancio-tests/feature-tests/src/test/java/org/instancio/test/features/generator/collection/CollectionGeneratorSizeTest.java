@@ -22,7 +22,7 @@ import org.instancio.exception.InstancioException;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.util.Constants;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.test.support.asserts.Asserts;
+import org.instancio.settings.Keys;
 import org.instancio.test.support.pojo.collections.CollectionLong;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 import org.instancio.test.support.pojo.person.Gender;
@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 
 @FeatureTag({
@@ -109,9 +110,10 @@ class CollectionGeneratorSizeTest {
         @DisplayName("Verify exception is thrown when failOnError system property is enabled")
         void impossibleSetSizeWithFailOnErrorEnabled() {
             final InstancioApi<Set<Boolean>> api = Instancio.of(new TypeToken<Set<Boolean>>() {})
+                    .withSetting(Keys.FAIL_ON_ERROR, true)
                     .generate(all(Set.class), gen -> gen.collection().size(10));
 
-            Asserts.assertWithFailOnErrorEnabled(api::create)
+            assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(InstancioException.class)
                     .hasMessageContaining("unable to populate Collection");
         }

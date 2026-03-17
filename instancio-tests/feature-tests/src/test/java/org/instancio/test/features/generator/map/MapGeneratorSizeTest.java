@@ -25,7 +25,6 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.test.support.asserts.Asserts;
 import org.instancio.test.support.pojo.collections.maps.MapStringPerson;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 import org.instancio.test.support.pojo.person.Gender;
@@ -40,6 +39,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 
 @FeatureTag({
@@ -118,9 +118,10 @@ class MapGeneratorSizeTest {
         @DisplayName("Verify exception is thrown when failOnError system property is enabled")
         void impossibleMapSizeWithFailOnErrorEnabled() {
             final InstancioApi<Map<Boolean, String>> api = Instancio.of(new TypeToken<Map<Boolean, String>>() {})
+                    .withSetting(Keys.FAIL_ON_ERROR, true)
                     .generate(all(Map.class), gen -> gen.map().size(19));
 
-            Asserts.assertWithFailOnErrorEnabled(api::create)
+            assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(InstancioException.class)
                     .hasMessageContaining("unable to populate Map");
         }
