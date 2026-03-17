@@ -49,7 +49,7 @@ class SettingsTest {
 
     @Test
     void defaults() {
-        for (SettingKey<?> settingKey : InternalKeys.getInstance().all()) {
+        for (SettingKey<?> settingKey : Keys.all()) {
             final Object actual = DEFAULTS.get(settingKey);
             final Object expected = settingKey.defaultValue();
             assertThat(actual).isEqualTo(expected);

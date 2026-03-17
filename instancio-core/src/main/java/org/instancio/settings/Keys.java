@@ -23,10 +23,15 @@ import org.instancio.documentation.ExperimentalApi;
 import org.instancio.feed.Feed;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.internal.settings.InternalKey;
-import org.instancio.internal.settings.InternalKeys;
 import org.instancio.internal.settings.RangeAdjuster;
 import org.instancio.settings.SettingKey.SettingKeyBuilder;
 import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.instancio.internal.util.Constants.MAX_SIZE;
 import static org.instancio.internal.util.Constants.MIN_SIZE;
@@ -40,11 +45,12 @@ import static org.instancio.internal.util.Constants.NUMERIC_MIN;
  * @see Settings
  * @since 1.1.10
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public final class Keys {
 
     private static final RangeAdjuster MIN_ADJUSTER = RangeAdjuster.MIN_ADJUSTER;
     private static final RangeAdjuster MAX_ADJUSTER = RangeAdjuster.MAX_ADJUSTER;
-    private static final InternalKeys INTERNAL_KEYS = InternalKeys.getInstance();
+    private static final List<SettingKey<Object>> ALL_KEYS = new ArrayList<>();
 
     /**
      * Specifies whether to assign values using fields or methods;
@@ -61,7 +67,7 @@ public final class Keys {
      * @since 2.1.0
      */
     @ExperimentalApi
-    public static final SettingKey<AssignmentType> ASSIGNMENT_TYPE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<AssignmentType> ASSIGNMENT_TYPE = registerRequiredNonAdjustable(
             "assignment.type", AssignmentType.class, AssignmentType.FIELD);
 
     /**
@@ -73,35 +79,35 @@ public final class Keys {
      * @see AfterGenerate
      * @since 2.0.0
      */
-    public static final SettingKey<AfterGenerate> AFTER_GENERATE_HINT = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<AfterGenerate> AFTER_GENERATE_HINT = registerRequiredNonAdjustable(
             "hint.after.generate", AfterGenerate.class, AfterGenerate.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
     /**
      * Specifies whether a {@code null} can be generated for array elements;
      * default is {@code false}; property name {@code array.elements.nullable}.
      */
-    public static final SettingKey<Boolean> ARRAY_ELEMENTS_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> ARRAY_ELEMENTS_NULLABLE = registerRequiredNonAdjustable(
             "array.elements.nullable", Boolean.class, false);
 
     /**
      * Specifies minimum length for arrays;
      * default is 2; property name {@code array.min.length}.
      */
-    public static final SettingKey<Integer> ARRAY_MIN_LENGTH = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> ARRAY_MIN_LENGTH = registerRequiredAdjustable(
             "array.min.length", Integer.class, MIN_SIZE, MIN_ADJUSTER, false);
 
     /**
      * Specifies maximum length for arrays;
      * default is 6; property name {@code array.max.length}.
      */
-    public static final SettingKey<Integer> ARRAY_MAX_LENGTH = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> ARRAY_MAX_LENGTH = registerRequiredAdjustable(
             "array.max.length", Integer.class, MAX_SIZE, MAX_ADJUSTER, false);
 
     /**
      * Specifies whether a null can be generated for arrays;
      * default is {@code false}; property name {@code array.nullable}.
      */
-    public static final SettingKey<Boolean> ARRAY_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> ARRAY_NULLABLE = registerRequiredNonAdjustable(
             "array.nullable", Boolean.class, false);
 
     /**
@@ -114,7 +120,7 @@ public final class Keys {
      * @since 2.7.0
      */
     @ExperimentalApi
-    public static final SettingKey<Boolean> BEAN_VALIDATION_ENABLED = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> BEAN_VALIDATION_ENABLED = registerRequiredNonAdjustable(
             "bean.validation.enabled", Boolean.class, false);
 
     /**
@@ -125,7 +131,7 @@ public final class Keys {
      * @since 3.4.0
      */
     @ExperimentalApi
-    public static final SettingKey<BeanValidationTarget> BEAN_VALIDATION_TARGET = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<BeanValidationTarget> BEAN_VALIDATION_TARGET = registerRequiredNonAdjustable(
             "bean.validation.target", BeanValidationTarget.class, BeanValidationTarget.FIELD);
 
     /**
@@ -135,91 +141,91 @@ public final class Keys {
      * @since 3.3.0
      */
     @ExperimentalApi
-    public static final SettingKey<Integer> BIG_DECIMAL_SCALE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Integer> BIG_DECIMAL_SCALE = registerRequiredNonAdjustable(
             "bigdecimal.scale", Integer.class, 2);
 
     /**
      * Specifies whether a {@code null} can be generated for Boolean type;
      * default is {@code false}; property name {@code boolean.nullable}.
      */
-    public static final SettingKey<Boolean> BOOLEAN_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> BOOLEAN_NULLABLE = registerRequiredNonAdjustable(
             "boolean.nullable", Boolean.class, false);
 
     /**
      * Specifies minimum value for bytes;
      * default is 1; property name {@code byte.min}.
      */
-    public static final SettingKey<Byte> BYTE_MIN = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Byte> BYTE_MIN = registerRequiredAdjustable(
             "byte.min", Byte.class, (byte) NUMERIC_MIN, MIN_ADJUSTER, true);
 
     /**
      * Specifies maximum value for bytes;
      * default is 127; property name {@code byte.max}.
      */
-    public static final SettingKey<Byte> BYTE_MAX = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Byte> BYTE_MAX = registerRequiredAdjustable(
             "byte.max", Byte.class, (byte) 127, MAX_ADJUSTER, true);
 
     /**
      * Specifies whether a {@code null} can be generated for Byte type;
      * default is {@code false}; property name {@code byte.nullable}.
      */
-    public static final SettingKey<Boolean> BYTE_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> BYTE_NULLABLE = registerRequiredNonAdjustable(
             "byte.nullable", Boolean.class, false);
 
     /**
      * Specifies whether a {@code null} can be generated for Character type;
      * default is {@code false}; property name {@code character.nullable}.
      */
-    public static final SettingKey<Boolean> CHARACTER_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> CHARACTER_NULLABLE = registerRequiredNonAdjustable(
             "character.nullable", Boolean.class, false);
 
     /**
      * Specifies whether a {@code null} can be generated for collection elements;
      * default is {@code false}; property name {@code collection.elements.nullable}.
      */
-    public static final SettingKey<Boolean> COLLECTION_ELEMENTS_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> COLLECTION_ELEMENTS_NULLABLE = registerRequiredNonAdjustable(
             "collection.elements.nullable", Boolean.class, false);
 
     /**
      * Specifies minimum size for collections;
      * default is 2; property name {@code collection.min.size}.
      */
-    public static final SettingKey<Integer> COLLECTION_MIN_SIZE = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> COLLECTION_MIN_SIZE = registerRequiredAdjustable(
             "collection.min.size", Integer.class, MIN_SIZE, MIN_ADJUSTER, false);
 
     /**
      * Specifies maximum size for collections;
      * default is 6; property name {@code collection.max.size}.
      */
-    public static final SettingKey<Integer> COLLECTION_MAX_SIZE = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> COLLECTION_MAX_SIZE = registerRequiredAdjustable(
             "collection.max.size", Integer.class, MAX_SIZE, MAX_ADJUSTER, false);
 
     /**
      * Specifies whether a {@code null} can be generated for collections;
      * default is {@code false}; property name {@code collection.nullable}.
      */
-    public static final SettingKey<Boolean> COLLECTION_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> COLLECTION_NULLABLE = registerRequiredNonAdjustable(
             "collection.nullable", Boolean.class, false);
 
     /**
      * Specifies minimum value for doubles;
      * default is 1; property name {@code double.min}.
      */
-    public static final SettingKey<Double> DOUBLE_MIN = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Double> DOUBLE_MIN = registerRequiredAdjustable(
             "double.min", Double.class, (double) NUMERIC_MIN, MIN_ADJUSTER, true);
 
     /**
      * Specifies maximum value for doubles;
      * default is 10000; property name {@code double.max}.
      */
-    public static final SettingKey<Double> DOUBLE_MAX = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Double> DOUBLE_MAX = registerRequiredAdjustable(
             "double.max", Double.class, (double) NUMERIC_MAX, MAX_ADJUSTER, true);
 
     /**
      * Specifies whether a {@code null} can be generated for Double type;
      * default is {@code false}; property name {@code double.nullable}.
      */
-    public static final SettingKey<Boolean> DOUBLE_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> DOUBLE_NULLABLE = registerRequiredNonAdjustable(
             "double.nullable", Boolean.class, false);
 
     /**
@@ -229,7 +235,7 @@ public final class Keys {
      * @since 3.0.1
      */
     @ExperimentalApi
-    public static final SettingKey<Boolean> FAIL_ON_ERROR = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> FAIL_ON_ERROR = registerRequiredNonAdjustable(
             "fail.on.error", Boolean.class, false);
 
     /**
@@ -239,7 +245,7 @@ public final class Keys {
      * @since 6.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<Boolean> FAIL_ON_MAX_DEPTH_REACHED = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> FAIL_ON_MAX_DEPTH_REACHED = registerRequiredNonAdjustable(
             "fail.on.max.depth.reached", Boolean.class, false);
 
     /**
@@ -250,28 +256,28 @@ public final class Keys {
      * @since 6.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<Boolean> FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED = registerRequiredNonAdjustable(
             "fail.on.max.generation.attempts.reached", Boolean.class, true);
 
     /**
      * Specifies minimum value for floats;
      * default is 1; property name {@code float.min}.
      */
-    public static final SettingKey<Float> FLOAT_MIN = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Float> FLOAT_MIN = registerRequiredAdjustable(
             "float.min", Float.class, (float) NUMERIC_MIN, MIN_ADJUSTER, true);
 
     /**
      * Specifies maximum value for floats;
      * default is 10000; property name {@code float.max}.
      */
-    public static final SettingKey<Float> FLOAT_MAX = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Float> FLOAT_MAX = registerRequiredAdjustable(
             "float.max", Float.class, (float) NUMERIC_MAX, MAX_ADJUSTER, true);
 
     /**
      * Specifies whether a {@code null} can be generated for Float type;
      * default is {@code false}; property name {@code float.nullable}.
      */
-    public static final SettingKey<Boolean> FLOAT_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> FLOAT_NULLABLE = registerRequiredNonAdjustable(
             "float.nullable", Boolean.class, false);
 
     /**
@@ -282,7 +288,7 @@ public final class Keys {
      * @since 5.5.0
      */
     @ExperimentalApi
-    public static final SettingKey<String> IGNORE_FIELD_NAME_REGEXES = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<String> IGNORE_FIELD_NAME_REGEXES = registerRequiredNonAdjustable(
             "ignore.field.name.regexes", String.class, "");
 
     /**
@@ -293,28 +299,28 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<Integer> INSTANCIO_SOURCE_SAMPLES = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Integer> INSTANCIO_SOURCE_SAMPLES = registerRequiredNonAdjustable(
             "instancio.source.samples", Integer.class, 100);
 
     /**
      * Specifies minimum value for integers;
      * default is 1; property name {@code integer.min}.
      */
-    public static final SettingKey<Integer> INTEGER_MIN = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> INTEGER_MIN = registerRequiredAdjustable(
             "integer.min", Integer.class, NUMERIC_MIN, MIN_ADJUSTER, true);
 
     /**
      * Specifies maximum value for integers;
      * default is 10000; property name {@code integer.max}.
      */
-    public static final SettingKey<Integer> INTEGER_MAX = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> INTEGER_MAX = registerRequiredAdjustable(
             "integer.max", Integer.class, NUMERIC_MAX, MAX_ADJUSTER, true);
 
     /**
      * Specifies whether a {@code null} can be generated for Integer type;
      * default is {@code false}; property name {@code integer.nullable}.
      */
-    public static final SettingKey<Boolean> INTEGER_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> INTEGER_NULLABLE = registerRequiredNonAdjustable(
             "integer.nullable", Boolean.class, false);
 
     /**
@@ -325,63 +331,63 @@ public final class Keys {
      * @since 3.3.0
      */
     @ExperimentalApi
-    public static final SettingKey<Boolean> JPA_ENABLED = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> JPA_ENABLED = registerRequiredNonAdjustable(
             "jpa.enabled", Boolean.class, false);
 
     /**
      * Specifies minimum value for longs;
      * default is 1; property name {@code long.min}.
      */
-    public static final SettingKey<Long> LONG_MIN = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Long> LONG_MIN = registerRequiredAdjustable(
             "long.min", Long.class, (long) NUMERIC_MIN, MIN_ADJUSTER, true);
 
     /**
      * Specifies maximum value for longs;
      * default is 10000; property name {@code long.max}.
      */
-    public static final SettingKey<Long> LONG_MAX = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Long> LONG_MAX = registerRequiredAdjustable(
             "long.max", Long.class, (long) NUMERIC_MAX, MAX_ADJUSTER, true);
 
     /**
      * Specifies whether a {@code null} can be generated for Long type;
      * default is {@code false}; property name {@code long.nullable}.
      */
-    public static final SettingKey<Boolean> LONG_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> LONG_NULLABLE = registerRequiredNonAdjustable(
             "long.nullable", Boolean.class, false);
 
     /**
      * Specifies whether a {@code null} can be generated for map keys;
      * default is {@code false}; property name {@code map.keys.nullable}.
      */
-    public static final SettingKey<Boolean> MAP_KEYS_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> MAP_KEYS_NULLABLE = registerRequiredNonAdjustable(
             "map.keys.nullable", Boolean.class, false);
 
     /**
      * Specifies minimum size for maps;
      * default is 2; property name {@code map.min.size}.
      */
-    public static final SettingKey<Integer> MAP_MIN_SIZE = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> MAP_MIN_SIZE = registerRequiredAdjustable(
             "map.min.size", Integer.class, MIN_SIZE, MIN_ADJUSTER, false);
 
     /**
      * Specifies maximum size for maps;
      * default is 6; property name {@code map.max.size}.
      */
-    public static final SettingKey<Integer> MAP_MAX_SIZE = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> MAP_MAX_SIZE = registerRequiredAdjustable(
             "map.max.size", Integer.class, MAX_SIZE, MAX_ADJUSTER, false);
 
     /**
      * Specifies whether a {@code null} can be generated for maps;
      * default is {@code false}; property name {@code map.nullable}.
      */
-    public static final SettingKey<Boolean> MAP_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> MAP_NULLABLE = registerRequiredNonAdjustable(
             "map.nullable", Boolean.class, false);
 
     /**
      * Specifies whether a {@code null} can be generated for map values;
      * default is {@code false}; property name {@code map.values.nullable}.
      */
-    public static final SettingKey<Boolean> MAP_VALUES_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> MAP_VALUES_NULLABLE = registerRequiredNonAdjustable(
             "map.values.nullable", Boolean.class, false);
 
     /**
@@ -390,7 +396,7 @@ public final class Keys {
      *
      * @since 2.7.0
      */
-    public static final SettingKey<Integer> MAX_DEPTH = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Integer> MAX_DEPTH = registerRequiredNonAdjustable(
             "max.depth", Integer.class, 8);
 
     /**
@@ -407,7 +413,7 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<Integer> MAX_GENERATION_ATTEMPTS = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Integer> MAX_GENERATION_ATTEMPTS = registerRequiredNonAdjustable(
             "max.generation.attempts", Integer.class, 1000);
 
     /**
@@ -417,7 +423,7 @@ public final class Keys {
      * @see Mode
      * @since 1.3.3
      */
-    public static final SettingKey<Mode> MODE = INTERNAL_KEYS.registerRequiredNonAdjustable("mode", Mode.class, Mode.STRICT);
+    public static final SettingKey<Mode> MODE = registerRequiredNonAdjustable("mode", Mode.class, Mode.STRICT);
 
     /**
      * Specifies what should happen if a feed property is unmatched when using the {@code applyFeed()} method;
@@ -427,7 +433,7 @@ public final class Keys {
      * @since 5.2.0
      */
     @ExperimentalApi
-    public static final SettingKey<OnFeedPropertyUnmatched> ON_FEED_PROPERTY_UNMATCHED = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<OnFeedPropertyUnmatched> ON_FEED_PROPERTY_UNMATCHED = registerRequiredNonAdjustable(
             "on.feed.property.unmatched", OnFeedPropertyUnmatched.class, OnFeedPropertyUnmatched.FAIL);
 
     /**
@@ -441,7 +447,7 @@ public final class Keys {
      * @since 2.1.0
      */
     @ExperimentalApi
-    public static final SettingKey<OnSetFieldError> ON_SET_FIELD_ERROR = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<OnSetFieldError> ON_SET_FIELD_ERROR = registerRequiredNonAdjustable(
             "on.set.field.error", OnSetFieldError.class, OnSetFieldError.IGNORE);
 
     /**
@@ -452,7 +458,7 @@ public final class Keys {
      * @since 2.1.0
      */
     @ExperimentalApi
-    public static final SettingKey<OnSetMethodError> ON_SET_METHOD_ERROR = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<OnSetMethodError> ON_SET_METHOD_ERROR = registerRequiredNonAdjustable(
             "on.set.method.error", OnSetMethodError.class, OnSetMethodError.ASSIGN_FIELD);
 
     /**
@@ -467,7 +473,7 @@ public final class Keys {
      * @since 2.1.0
      */
     @ExperimentalApi
-    public static final SettingKey<OnSetMethodNotFound> ON_SET_METHOD_NOT_FOUND = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<OnSetMethodNotFound> ON_SET_METHOD_NOT_FOUND = registerRequiredNonAdjustable(
             "on.set.method.not.found", OnSetMethodNotFound.class, OnSetMethodNotFound.ASSIGN_FIELD);
 
     /**
@@ -487,7 +493,7 @@ public final class Keys {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<OnSetMethodUnmatched> ON_SET_METHOD_UNMATCHED = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<OnSetMethodUnmatched> ON_SET_METHOD_UNMATCHED = registerRequiredNonAdjustable(
             "on.set.method.unmatched", OnSetMethodUnmatched.class, OnSetMethodUnmatched.IGNORE);
 
     /**
@@ -540,7 +546,7 @@ public final class Keys {
      *
      * @since 2.0.0
      */
-    public static final SettingKey<Boolean> OVERWRITE_EXISTING_VALUES = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> OVERWRITE_EXISTING_VALUES = registerRequiredNonAdjustable(
             "overwrite.existing.values", Boolean.class, true);
 
     /**
@@ -552,7 +558,7 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<FeedDataAccess> FEED_DATA_ACCESS = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<FeedDataAccess> FEED_DATA_ACCESS = registerRequiredNonAdjustable(
             "feed.data.access", FeedDataAccess.class, FeedDataAccess.SEQUENTIAL);
 
     /**
@@ -565,7 +571,7 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<FeedDataEndAction> FEED_DATA_END_ACTION = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<FeedDataEndAction> FEED_DATA_END_ACTION = registerRequiredNonAdjustable(
             "feed.data.end.action", FeedDataEndAction.class, FeedDataEndAction.FAIL);
 
     /**
@@ -576,7 +582,7 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<FeedDataTrim> FEED_DATA_TRIM = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<FeedDataTrim> FEED_DATA_TRIM = registerRequiredNonAdjustable(
             "feed.data.trim", FeedDataTrim.class, FeedDataTrim.UNQUOTED);
 
     /**
@@ -587,7 +593,7 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<FeedFormatType> FEED_FORMAT_TYPE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<FeedFormatType> FEED_FORMAT_TYPE = registerRequiredNonAdjustable(
             "feed.format.type", FeedFormatType.class, FeedFormatType.CSV);
 
     /**
@@ -598,7 +604,7 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<@Nullable String> FEED_TAG_KEY = INTERNAL_KEYS.<@Nullable String>register(
+    public static final SettingKey<@Nullable String> FEED_TAG_KEY = Keys.<@Nullable String>register(
             "feed.tag.key", String.class, null, null, true, false);
 
     /**
@@ -609,7 +615,7 @@ public final class Keys {
      * @since 5.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<@Nullable String> FEED_TAG_VALUE = INTERNAL_KEYS.<@Nullable String>register(
+    public static final SettingKey<@Nullable String> FEED_TAG_VALUE = Keys.<@Nullable String>register(
             "feed.tag.value", String.class, null, null, true, false);
 
     /**
@@ -623,7 +629,7 @@ public final class Keys {
      * @since 5.3.0
      */
     @ExperimentalApi
-    public static final SettingKey<FillType> FILL_TYPE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<FillType> FILL_TYPE = registerRequiredNonAdjustable(
             "fill.type", FillType.class, FillType.POPULATE_NULLS_AND_DEFAULT_PRIMITIVES);
 
     /**
@@ -632,7 +638,7 @@ public final class Keys {
      *
      * @since 1.5.1
      */
-    public static final SettingKey<@Nullable Long> SEED = INTERNAL_KEYS.<@Nullable Long>register(
+    public static final SettingKey<@Nullable Long> SEED = Keys.<@Nullable Long>register(
             "seed", Long.class, null, null, true, true);
 
     /**
@@ -680,7 +686,7 @@ public final class Keys {
      * @since 3.0.0
      */
     @ExperimentalApi
-    public static final SettingKey<Boolean> SET_BACK_REFERENCES = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> SET_BACK_REFERENCES = registerRequiredNonAdjustable(
             "set.back.references", Boolean.class, false);
 
     /**
@@ -710,7 +716,7 @@ public final class Keys {
      * @since 2.16.0
      */
     @ExperimentalApi
-    public static final SettingKey<Integer> SETTER_EXCLUDE_MODIFIER = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Integer> SETTER_EXCLUDE_MODIFIER = registerRequiredNonAdjustable(
             "setter.exclude.modifier", Integer.class, 0);
 
     /**
@@ -721,35 +727,35 @@ public final class Keys {
      * @since 2.1.0
      */
     @ExperimentalApi
-    public static final SettingKey<SetterStyle> SETTER_STYLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<SetterStyle> SETTER_STYLE = registerRequiredNonAdjustable(
             "setter.style", SetterStyle.class, SetterStyle.SET);
 
     /**
      * Specifies minimum value for shorts;
      * default is 1; property name {@code short.min}.
      */
-    public static final SettingKey<Short> SHORT_MIN = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Short> SHORT_MIN = registerRequiredAdjustable(
             "short.min", Short.class, (short) 1, MIN_ADJUSTER, true);
 
     /**
      * Specifies maximum value for shorts;
      * default is 10000; property name {@code short.max}.
      */
-    public static final SettingKey<Short> SHORT_MAX = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Short> SHORT_MAX = registerRequiredAdjustable(
             "short.max", Short.class, (short) NUMERIC_MAX, MAX_ADJUSTER, true);
 
     /**
      * Specifies whether a {@code null} can be generated for Short type;
      * default is {@code false}; property name {@code short.nullable}.
      */
-    public static final SettingKey<Boolean> SHORT_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> SHORT_NULLABLE = registerRequiredNonAdjustable(
             "short.nullable", Boolean.class, false);
 
     /**
      * Specifies whether an empty string can be generated;
      * default is {@code false}; property name {@code string.allow.empty}.
      */
-    public static final SettingKey<Boolean> STRING_ALLOW_EMPTY = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> STRING_ALLOW_EMPTY = registerRequiredNonAdjustable(
             "string.allow.empty", Boolean.class, false);
 
     /**
@@ -758,28 +764,28 @@ public final class Keys {
      *
      * @since 2.4.0
      */
-    public static final SettingKey<Boolean> STRING_FIELD_PREFIX_ENABLED = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> STRING_FIELD_PREFIX_ENABLED = registerRequiredNonAdjustable(
             "string.field.prefix.enabled", Boolean.class, false);
 
     /**
      * Specifies minimum length of strings;
      * default is 3; property name {@code string.min.length}.
      */
-    public static final SettingKey<Integer> STRING_MIN_LENGTH = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> STRING_MIN_LENGTH = registerRequiredAdjustable(
             "string.min.length", Integer.class, 3, MIN_ADJUSTER, false);
 
     /**
      * Specifies maximum length of strings;
      * default is 10; property name {@code string.max.length}.
      */
-    public static final SettingKey<Integer> STRING_MAX_LENGTH = INTERNAL_KEYS.registerRequiredAdjustable(
+    public static final SettingKey<Integer> STRING_MAX_LENGTH = registerRequiredAdjustable(
             "string.max.length", Integer.class, 10, MAX_ADJUSTER, false);
 
     /**
      * Specifies whether a {@code null} can be generated for String type;
      * default is {@code false}; property name {@code string.nullable}.
      */
-    public static final SettingKey<Boolean> STRING_NULLABLE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<Boolean> STRING_NULLABLE = registerRequiredNonAdjustable(
             "string.nullable", Boolean.class, false);
 
     /**
@@ -789,7 +795,7 @@ public final class Keys {
      * @since 4.8.0
      */
     @ExperimentalApi
-    public static final SettingKey<StringCase> STRING_CASE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<StringCase> STRING_CASE = registerRequiredNonAdjustable(
             "string.case", StringCase.class, StringCase.UPPER);
 
     /**
@@ -799,8 +805,28 @@ public final class Keys {
      * @since 4.7.0
      */
     @ExperimentalApi
-    public static final SettingKey<StringType> STRING_TYPE = INTERNAL_KEYS.registerRequiredNonAdjustable(
+    public static final SettingKey<StringType> STRING_TYPE = registerRequiredNonAdjustable(
             "string.type", StringType.class, StringType.ALPHABETIC);
+
+    // Note: keys must be collected after all keys have been initialised
+    private static final Map<String, SettingKey<?>> SETTING_KEY_MAP = Collections.unmodifiableMap(settingKeyMap());
+
+    private static Map<String, SettingKey<?>> settingKeyMap() {
+        final Map<String, SettingKey<?>> map = new HashMap<>();
+        for (SettingKey<?> key : ALL_KEYS) {
+            map.put(key.propertyKey(), key);
+        }
+        return map;
+    }
+
+    /**
+     * Returns all keys supported by Instancio.
+     *
+     * @return all keys
+     */
+    public static List<SettingKey<Object>> all() {
+        return Collections.unmodifiableList(ALL_KEYS);
+    }
 
     /**
      * Returns a {@link SettingKey} instance with the given property key.
@@ -809,8 +835,9 @@ public final class Keys {
      * @return the setting key, or {@code null} if none found
      */
     @Nullable
+    @SuppressWarnings("unchecked")
     public static <T extends @Nullable Object> SettingKey<T> get(final String key) {
-        return INTERNAL_KEYS.get(key);
+        return (SettingKey<T>) SETTING_KEY_MAP.get(key);
     }
 
     /**
@@ -831,6 +858,39 @@ public final class Keys {
     @ExperimentalApi
     public static <T extends @Nullable Object> SettingKeyBuilder<T> ofType(final Class<T> type, final T defaultValue) {
         return InternalKey.builder(type, defaultValue);
+    }
+
+    private static <T extends @Nullable Object> SettingKey<T> register(
+            final String propertyKey,
+            final Class<?> type,
+            final T defaultValue,
+            @Nullable final RangeAdjuster rangeAdjuster,
+            final boolean allowsNullValue,
+            final boolean allowsNegative) {
+
+        final SettingKey<T> settingKey = new InternalKey<>(
+                propertyKey, type, defaultValue, rangeAdjuster, allowsNullValue, allowsNegative);
+
+        ALL_KEYS.add((SettingKey<Object>) settingKey);
+        return settingKey;
+    }
+
+    private static <T extends @Nullable Object> SettingKey<T> registerRequiredAdjustable(
+            final String propertyKey,
+            final Class<T> type,
+            final T defaultValue,
+            @Nullable final RangeAdjuster rangeAdjuster,
+            final boolean allowsNegative) {
+
+        return register(propertyKey, type, defaultValue, rangeAdjuster, false, allowsNegative);
+    }
+
+    private static <T extends @Nullable Object> SettingKey<T> registerRequiredNonAdjustable(
+            final String key,
+            final Class<T> type,
+            final T defaultValue) {
+
+        return register(key, type, defaultValue, null, false, false);
     }
 
     private Keys() {

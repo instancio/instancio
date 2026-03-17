@@ -55,7 +55,7 @@ public final class InternalSettings implements Settings {
 
     public static InternalSettings defaults() {
         InternalSettings settings = new InternalSettings();
-        for (SettingKey<Object> setting : InternalKeys.getInstance().all()) {
+        for (SettingKey<Object> setting : Keys.all()) {
             settings.set(setting, setting.defaultValue());
         }
         return settings;
