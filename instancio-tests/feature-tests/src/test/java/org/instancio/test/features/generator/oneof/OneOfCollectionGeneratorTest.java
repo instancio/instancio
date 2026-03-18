@@ -65,7 +65,7 @@ class OneOfCollectionGeneratorTest {
     void oneOfConsidersAllChoices() {
         final Set<String> results = new HashSet<>();
         final List<String> choices = Arrays.asList("one", "two", "three");
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < Constants.SAMPLE_SIZE_DDD; i++) {
             results.add(Instancio.of(String.class)
                     .generate(allStrings(), gen -> gen.oneOf(choices))
                     .create());
