@@ -9,18 +9,20 @@ description: "Get started with Instancio. Install dependencies via Maven or Grad
 
 **Requirements**:
 
-Instancio can be used with **Java 17** or higher.
+- Instancio 5.x: **Java 8** or higher.
+- Instancio 6.x: **Java 17** or higher.
 
 ## Dependencies
 
 The following dependencies are available from Maven central:
 
-| Dependency        | JPMS Module Name      | Description                 |
-|-------------------|-----------------------|-----------------------------|
-| `instancio-core`  | `org.instancio.core`  | Core library                |
-| `instancio-junit` | `org.instancio.junit` | JUnit framework integration |
-| `instancio-guava` | `org.instancio.guava` | Support for Google Guava    |
-| `instancio-bom`   | -                     | Bill Of Materials           |
+| Dependency         | JPMS Module Name       | Description                 |
+|--------------------|------------------------|-----------------------------|
+| `instancio-core`   | `org.instancio.core`   | Core library                |
+| `instancio-junit`  | `org.instancio.junit`  | JUnit framework integration |
+| `instancio-guava`  | `org.instancio.guava`  | Support for Google Guava    |
+| `instancio-kotlin` | `org.instancio.kotlin` | Instancio Kotlin extension  |
+| `instancio-bom`    | -                      | Bill Of Materials           |
 
 !!! danger "The `org.instancio:instancio` artifact on Maven central is an older dependency that should no longer be used."
 
@@ -76,6 +78,17 @@ Using `instancio-guava` requires the following dependencies on the classpath:
 
 - either `instancio-core` or `instancio-junit`
 - `com.google.guava:guava` version `23.1-jre` or higher
+
+### **`instancio-kotlin`**
+
+`instancio-kotlin` includes a transitive dependency on `instancio-core`,
+therefore it is not necessary to import both.
+
+The following Kotlin dependencies are **not** included transitively.
+Please make sure they are available on the classpath:
+
+- `org.jetbrains.kotlin:kotlin-stdlib`
+- `org.jetbrains.kotlin:kotlin-reflect`
 
 ### **`instancio-bom`**
 
