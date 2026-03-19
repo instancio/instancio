@@ -243,8 +243,8 @@ class NodeCreator {
         if (rawType != targetClass && !targetClass.isEnum() && !rawType.isPrimitive()) {
             ApiValidator.validateSubtype(rawType, targetClass);
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Subtype mapping '{}' to '{}'",
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Subtype mapping '{}' to '{}'",
                         Format.withoutPackage(rawType),
                         Format.withoutPackage(targetClass));
             }
@@ -322,8 +322,8 @@ class NodeCreator {
 
             ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Subtype mapping '{}' to '{}'",
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Subtype mapping '{}' to '{}'",
                         Format.withoutPackage(rawComponentType),
                         Format.withoutPackage(targetClass));
             }
