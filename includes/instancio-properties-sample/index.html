@@ -1,0 +1,137 @@
+<!doctype html><html class=no-js lang=en><meta charset=utf-8><meta content="width=device-width,initial-scale=1" name=viewport><link href=https://www.instancio.org/includes/instancio-properties-sample/ rel=canonical><link href=../../assets/favicon.ico rel=icon><meta content="mkdocs-1.6.1, mkdocs-material-9.7.5" name=generator><title>Instancio properties sample - Instancio</title><link href=../../assets/stylesheets/main.484c7ddc.min.css rel=stylesheet><link href=../../assets/stylesheets/palette.ab4e12ef.min.css rel=stylesheet><script src="https://www.googletagmanager.com/gtag/js?id=G-MYZQVSS3LL" async></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-MYZQVSS3LL');</script><link crossorigin href=https://fonts.gstatic.com rel=preconnect><link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback" rel=stylesheet><style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style><link href=../../stylesheets/extra.css rel=stylesheet><script>__md_scope=new URL(`../..`,location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+`.`+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+`.`+e,JSON.stringify(_))}catch{}};</script><meta content="Instancio is a test data generation library for Java. Its goals are to automate data setup, make tests more concise, and reduce test maintenance effort." name=description><body data-md-color-accent=deep-orange data-md-color-primary=green data-md-color-scheme=default dir=ltr><input autocomplete=off class=md-toggle data-md-toggle=drawer id=__drawer type=checkbox><input autocomplete=off class=md-toggle data-md-toggle=search id=__search type=checkbox><label class=md-overlay for=__drawer></label><div data-md-component=skip></div><div data-md-component=announce><aside class=md-banner><div class="md-banner__inner md-grid md-typeset"><button aria-label="Don't show this again" class="md-banner__button md-icon"><svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button> Instancio <b>6.0.0-RC2</b> is out with the new <a href=/getting-started>instancio-kotlin</a> extension.</div><script>var el=document.querySelector("[data-md-component=announce]");if(el){var content=el.querySelector(".md-typeset");__md_hash(content.innerHTML)===__md_get("__announce")&&(el.hidden=!0)}</script></aside></div><header class="md-header md-header--shadow md-header--lifted" data-md-component=header><nav class="md-header__inner md-grid" aria-label=Header><a class="md-header__button md-logo" aria-label=Instancio data-md-component=logo href=../.. title=Instancio> <svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a><label class="md-header__button md-icon" for=__drawer><svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg></label><div class=md-header__title data-md-component=header-title><div class=md-header__ellipsis><div class=md-header__topic><span class=md-ellipsis> Instancio </span></div><div class=md-header__topic data-md-component=header-topic><span class=md-ellipsis> Instancio properties sample </span></div></div></div><form class=md-header__option data-md-component=palette><input aria-label="Switch to dark mode" class=md-option data-md-color-accent=deep-orange data-md-color-media data-md-color-primary=green data-md-color-scheme=default id=__palette_0 name=__palette type=radio><label class="md-header__button md-icon" title="Switch to dark mode" for=__palette_1 hidden><svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg></label><input aria-label="Switch to light mode" class=md-option data-md-color-accent=deep-orange data-md-color-media data-md-color-primary=green data-md-color-scheme=slate id=__palette_1 name=__palette type=radio><label class="md-header__button md-icon" title="Switch to light mode" for=__palette_0 hidden><svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg></label></form><script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script><label class="md-header__button md-icon" for=__search><svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg></label><div class=md-search data-md-component=search role=dialog><label class=md-search__overlay for=__search></label><div class=md-search__inner role=search><form class=md-search__form name=search><input aria-label=Search autocapitalize=off autocomplete=off autocorrect=off class=md-search__input data-md-component=search-query name=query placeholder=Search required spellcheck=false type=text><label class="md-search__icon md-icon" for=__search><svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> <svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg></label><nav aria-label=Search class=md-search__options><button class="md-search__icon md-icon" aria-label=Clear tabindex=-1 title=Clear type=reset><svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></nav></form><div class=md-search__output><div class=md-search__scrollwrap data-md-scrollfix tabindex=0><div class=md-search-result data-md-component=search-result><div class=md-search-result__meta>Initializing search</div><ol class=md-search-result__list role=presentation></ol></div></div></div></div></div><div class=md-header__source><a title="Go to repository" class=md-source data-md-component=source href=https://github.com/instancio/instancio> <div class="md-source__icon md-icon"><svg viewbox="0 0 448 512" xmlns=http://www.w3.org/2000/svg><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg></div> <div class=md-source__repository>instancio</div> </a></div></nav><nav aria-label=Tabs class=md-tabs data-md-component=tabs><div class=md-grid><ul class=md-tabs__list><li class=md-tabs__item><a class=md-tabs__link href=../..> Home </a><li class=md-tabs__item><a class=md-tabs__link href=../../getting-started/> Getting Started </a><li class=md-tabs__item><a class=md-tabs__link href=../../user-guide/> User Guide </a><li class=md-tabs__item><a class=md-tabs__link href=../../building/> Building </a><li class=md-tabs__item><a class=md-tabs__link href=../../articles/> Articles </a></ul></div></nav></header><div class=md-container data-md-component=container><main class=md-main data-md-component=main><div class="md-main__inner md-grid"><div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation><div class=md-sidebar__scrollwrap><div class=md-sidebar__inner><nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label=Navigation data-md-level=0><label class=md-nav__title for=__drawer><a class="md-nav__button md-logo" aria-label=Instancio data-md-component=logo href=../.. title=Instancio> <svg viewbox="0 0 24 24" xmlns=http://www.w3.org/2000/svg><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a> Instancio</label><div class=md-nav__source><a title="Go to repository" class=md-source data-md-component=source href=https://github.com/instancio/instancio> <div class="md-source__icon md-icon"><svg viewbox="0 0 448 512" xmlns=http://www.w3.org/2000/svg><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg></div> <div class=md-source__repository>instancio</div> </a></div><ul class=md-nav__list data-md-scrollfix><li class=md-nav__item><a class=md-nav__link href=../..> <span class=md-ellipsis> Home </span> </a><li class=md-nav__item><a class=md-nav__link href=../../getting-started/> <span class=md-ellipsis> Getting Started </span> </a><li class=md-nav__item><a class=md-nav__link href=../../user-guide/> <span class=md-ellipsis> User Guide </span> </a><li class=md-nav__item><a class=md-nav__link href=../../building/> <span class=md-ellipsis> Building </span> </a><li class=md-nav__item><a class=md-nav__link href=../../articles/> <span class=md-ellipsis> Articles </span> </a></ul></nav></div></div></div><div class=md-content data-md-component=content><article class="md-content__inner md-typeset"><h1>Instancio properties sample</h1><div class=highlight><table class=highlighttable><tr><th class=filename colspan=2><span class=filename>Sample instancio.properties</span><tr><td class=linenos><div class=linenodiv><pre><span></span><span class=normal><a href=#__codelineno-0-1> 1</a></span>
+<span class=normal><a href=#__codelineno-0-2> 2</a></span>
+<span class=normal><a href=#__codelineno-0-3> 3</a></span>
+<span class=normal><a href=#__codelineno-0-4> 4</a></span>
+<span class=normal><a href=#__codelineno-0-5> 5</a></span>
+<span class=normal><a href=#__codelineno-0-6> 6</a></span>
+<span class=normal><a href=#__codelineno-0-7> 7</a></span>
+<span class=normal><a href=#__codelineno-0-8> 8</a></span>
+<span class=normal><a href=#__codelineno-0-9> 9</a></span>
+<span class=normal><a href=#__codelineno-0-10>10</a></span>
+<span class=normal><a href=#__codelineno-0-11>11</a></span>
+<span class=normal><a href=#__codelineno-0-12>12</a></span>
+<span class=normal><a href=#__codelineno-0-13>13</a></span>
+<span class=normal><a href=#__codelineno-0-14>14</a></span>
+<span class=normal><a href=#__codelineno-0-15>15</a></span>
+<span class=normal><a href=#__codelineno-0-16>16</a></span>
+<span class=normal><a href=#__codelineno-0-17>17</a></span>
+<span class=normal><a href=#__codelineno-0-18>18</a></span>
+<span class=normal><a href=#__codelineno-0-19>19</a></span>
+<span class=normal><a href=#__codelineno-0-20>20</a></span>
+<span class=normal><a href=#__codelineno-0-21>21</a></span>
+<span class=normal><a href=#__codelineno-0-22>22</a></span>
+<span class=normal><a href=#__codelineno-0-23>23</a></span>
+<span class=normal><a href=#__codelineno-0-24>24</a></span>
+<span class=normal><a href=#__codelineno-0-25>25</a></span>
+<span class=normal><a href=#__codelineno-0-26>26</a></span>
+<span class=normal><a href=#__codelineno-0-27>27</a></span>
+<span class=normal><a href=#__codelineno-0-28>28</a></span>
+<span class=normal><a href=#__codelineno-0-29>29</a></span>
+<span class=normal><a href=#__codelineno-0-30>30</a></span>
+<span class=normal><a href=#__codelineno-0-31>31</a></span>
+<span class=normal><a href=#__codelineno-0-32>32</a></span>
+<span class=normal><a href=#__codelineno-0-33>33</a></span>
+<span class=normal><a href=#__codelineno-0-34>34</a></span>
+<span class=normal><a href=#__codelineno-0-35>35</a></span>
+<span class=normal><a href=#__codelineno-0-36>36</a></span>
+<span class=normal><a href=#__codelineno-0-37>37</a></span>
+<span class=normal><a href=#__codelineno-0-38>38</a></span>
+<span class=normal><a href=#__codelineno-0-39>39</a></span>
+<span class=normal><a href=#__codelineno-0-40>40</a></span>
+<span class=normal><a href=#__codelineno-0-41>41</a></span>
+<span class=normal><a href=#__codelineno-0-42>42</a></span>
+<span class=normal><a href=#__codelineno-0-43>43</a></span>
+<span class=normal><a href=#__codelineno-0-44>44</a></span>
+<span class=normal><a href=#__codelineno-0-45>45</a></span>
+<span class=normal><a href=#__codelineno-0-46>46</a></span>
+<span class=normal><a href=#__codelineno-0-47>47</a></span>
+<span class=normal><a href=#__codelineno-0-48>48</a></span>
+<span class=normal><a href=#__codelineno-0-49>49</a></span>
+<span class=normal><a href=#__codelineno-0-50>50</a></span>
+<span class=normal><a href=#__codelineno-0-51>51</a></span>
+<span class=normal><a href=#__codelineno-0-52>52</a></span>
+<span class=normal><a href=#__codelineno-0-53>53</a></span>
+<span class=normal><a href=#__codelineno-0-54>54</a></span>
+<span class=normal><a href=#__codelineno-0-55>55</a></span>
+<span class=normal><a href=#__codelineno-0-56>56</a></span>
+<span class=normal><a href=#__codelineno-0-57>57</a></span>
+<span class=normal><a href=#__codelineno-0-58>58</a></span>
+<span class=normal><a href=#__codelineno-0-59>59</a></span>
+<span class=normal><a href=#__codelineno-0-60>60</a></span>
+<span class=normal><a href=#__codelineno-0-61>61</a></span>
+<span class=normal><a href=#__codelineno-0-62>62</a></span>
+<span class=normal><a href=#__codelineno-0-63>63</a></span>
+<span class=normal><a href=#__codelineno-0-64>64</a></span>
+<span class=normal><a href=#__codelineno-0-65>65</a></span>
+<span class=normal><a href=#__codelineno-0-66>66</a></span>
+<span class=normal><a href=#__codelineno-0-67>67</a></span></pre></div><td class=code><div><pre><span></span><code><a id=__codelineno-0-1 name=__codelineno-0-1></a><span class=na>array.elements.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-2 name=__codelineno-0-2></a><span class=na>array.max.length</span><span class=o>=</span><span class=s>6</span>
+<a id=__codelineno-0-3 name=__codelineno-0-3></a><span class=na>array.min.length</span><span class=o>=</span><span class=s>2</span>
+<a id=__codelineno-0-4 name=__codelineno-0-4></a><span class=na>array.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-5 name=__codelineno-0-5></a><span class=na>bigdecimal.scale</span><span class=o>=</span><span class=s>2</span>
+<a id=__codelineno-0-6 name=__codelineno-0-6></a><span class=na>boolean.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-7 name=__codelineno-0-7></a><span class=na>byte.max</span><span class=o>=</span><span class=s>127</span>
+<a id=__codelineno-0-8 name=__codelineno-0-8></a><span class=na>byte.min</span><span class=o>=</span><span class=s>1</span>
+<a id=__codelineno-0-9 name=__codelineno-0-9></a><span class=na>byte.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-10 name=__codelineno-0-10></a><span class=na>character.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-11 name=__codelineno-0-11></a><span class=na>collection.elements.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-12 name=__codelineno-0-12></a><span class=na>collection.max.size</span><span class=o>=</span><span class=s>6</span>
+<a id=__codelineno-0-13 name=__codelineno-0-13></a><span class=na>collection.min.size</span><span class=o>=</span><span class=s>2</span>
+<a id=__codelineno-0-14 name=__codelineno-0-14></a><span class=na>collection.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-15 name=__codelineno-0-15></a><span class=na>double.max</span><span class=o>=</span><span class=s>10000</span>
+<a id=__codelineno-0-16 name=__codelineno-0-16></a><span class=na>double.min</span><span class=o>=</span><span class=s>1</span>
+<a id=__codelineno-0-17 name=__codelineno-0-17></a><span class=na>double.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-18 name=__codelineno-0-18></a><span class=na>fail.on.error</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-19 name=__codelineno-0-19></a><span class=na>fail.on.max.depth.reached</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-20 name=__codelineno-0-20></a><span class=na>fail.on.max.generation.attempts.reached</span><span class=o>=</span><span class=s>true</span>
+<a id=__codelineno-0-21 name=__codelineno-0-21></a><span class=na>fill.type</span><span class=o>=</span><span class=s>POPULATE_NULLS_AND_DEFAULT_PRIMITIVES</span>
+<a id=__codelineno-0-22 name=__codelineno-0-22></a><span class=na>float.max</span><span class=o>=</span><span class=s>10000</span>
+<a id=__codelineno-0-23 name=__codelineno-0-23></a><span class=na>float.min</span><span class=o>=</span><span class=s>1</span>
+<a id=__codelineno-0-24 name=__codelineno-0-24></a><span class=na>float.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-25 name=__codelineno-0-25></a><span class=na>ignore.field.name.regexes</span><span class=o>=</span><span class=s>foo.*,bar.*</span>
+<a id=__codelineno-0-26 name=__codelineno-0-26></a><span class=na>instancio.source.samples</span><span class=o>=</span><span class=s>100</span>
+<a id=__codelineno-0-27 name=__codelineno-0-27></a><span class=na>integer.max</span><span class=o>=</span><span class=s>10000</span>
+<a id=__codelineno-0-28 name=__codelineno-0-28></a><span class=na>integer.min</span><span class=o>=</span><span class=s>1</span>
+<a id=__codelineno-0-29 name=__codelineno-0-29></a><span class=na>integer.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-30 name=__codelineno-0-30></a><span class=na>jpa.enabled</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-31 name=__codelineno-0-31></a><span class=na>long.max</span><span class=o>=</span><span class=s>10000</span>
+<a id=__codelineno-0-32 name=__codelineno-0-32></a><span class=na>long.min</span><span class=o>=</span><span class=s>1</span>
+<a id=__codelineno-0-33 name=__codelineno-0-33></a><span class=na>long.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-34 name=__codelineno-0-34></a><span class=na>map.keys.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-35 name=__codelineno-0-35></a><span class=na>map.max.size</span><span class=o>=</span><span class=s>6</span>
+<a id=__codelineno-0-36 name=__codelineno-0-36></a><span class=na>map.min.size</span><span class=o>=</span><span class=s>2</span>
+<a id=__codelineno-0-37 name=__codelineno-0-37></a><span class=na>map.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-38 name=__codelineno-0-38></a><span class=na>map.values.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-39 name=__codelineno-0-39></a><span class=na>max.depth</span><span class=o>=</span><span class=s>8</span>
+<a id=__codelineno-0-40 name=__codelineno-0-40></a><span class=na>max.generation.attempts</span><span class=o>=</span><span class=s>1000</span>
+<a id=__codelineno-0-41 name=__codelineno-0-41></a><span class=na>mode</span><span class=o>=</span><span class=s>STRICT</span>
+<a id=__codelineno-0-42 name=__codelineno-0-42></a><span class=na>hint.after.generate</span><span class=o>=</span><span class=s>APPLY_SELECTORS</span>
+<a id=__codelineno-0-43 name=__codelineno-0-43></a><span class=na>assignment.type</span><span class=o>=</span><span class=s>FIELD</span>
+<a id=__codelineno-0-44 name=__codelineno-0-44></a><span class=na>on.feed.property.unmatched</span><span class=o>=</span><span class=s>FAIL</span>
+<a id=__codelineno-0-45 name=__codelineno-0-45></a><span class=na>on.set.field.error</span><span class=o>=</span><span class=s>IGNORE</span>
+<a id=__codelineno-0-46 name=__codelineno-0-46></a><span class=na>on.set.method.error</span><span class=o>=</span><span class=s>ASSIGN_FIELD</span>
+<a id=__codelineno-0-47 name=__codelineno-0-47></a><span class=na>on.set.method.not.found</span><span class=o>=</span><span class=s>ASSIGN_FIELD</span>
+<a id=__codelineno-0-48 name=__codelineno-0-48></a><span class=na>on.set.method.unmatched</span><span class=o>=</span><span class=s>IGNORE</span>
+<a id=__codelineno-0-49 name=__codelineno-0-49></a><span class=na>setter.style</span><span class=o>=</span><span class=s>SET</span>
+<a id=__codelineno-0-50 name=__codelineno-0-50></a><span class=na>overwrite.existing.values</span><span class=o>=</span><span class=s>true</span>
+<a id=__codelineno-0-51 name=__codelineno-0-51></a><span class=na>bean.validation.enabled</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-52 name=__codelineno-0-52></a><span class=na>bean.validation.target</span><span class=o>=</span><span class=s>FIELD</span>
+<a id=__codelineno-0-53 name=__codelineno-0-53></a><span class=na>seed</span><span class=o>=</span><span class=s>12345</span>
+<a id=__codelineno-0-54 name=__codelineno-0-54></a><span class=na>set.back.references</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-55 name=__codelineno-0-55></a><span class=na>short.max</span><span class=o>=</span><span class=s>10000</span>
+<a id=__codelineno-0-56 name=__codelineno-0-56></a><span class=na>short.min</span><span class=o>=</span><span class=s>1</span>
+<a id=__codelineno-0-57 name=__codelineno-0-57></a><span class=na>short.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-58 name=__codelineno-0-58></a><span class=na>string.allow.empty</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-59 name=__codelineno-0-59></a><span class=na>string.max.length</span><span class=o>=</span><span class=s>10</span>
+<a id=__codelineno-0-60 name=__codelineno-0-60></a><span class=na>string.min.length</span><span class=o>=</span><span class=s>3</span>
+<a id=__codelineno-0-61 name=__codelineno-0-61></a><span class=na>string.nullable</span><span class=o>=</span><span class=s>false</span>
+<a id=__codelineno-0-62 name=__codelineno-0-62></a><span class=na>string.case</span><span class=o>=</span><span class=s>UPPER</span>
+<a id=__codelineno-0-63 name=__codelineno-0-63></a><span class=na>string.type</span><span class=o>=</span><span class=s>ALPHABETIC</span>
+<a id=__codelineno-0-64 name=__codelineno-0-64></a><span class=na>subtype.java.util.Collection</span><span class=o>=</span><span class=s>java.util.ArrayList</span>
+<a id=__codelineno-0-65 name=__codelineno-0-65></a><span class=na>subtype.java.util.List</span><span class=o>=</span><span class=s>java.util.ArrayList</span>
+<a id=__codelineno-0-66 name=__codelineno-0-66></a><span class=na>subtype.java.util.Map</span><span class=o>=</span><span class=s>java.util.HashMap</span>
+<a id=__codelineno-0-67 name=__codelineno-0-67></a><span class=na>subtype.java.util.SortedMap</span><span class=o>=</span><span class=s>java.util.TreeMap</span>
+</code></pre></div></table></div><hr><ul><li>The <code>*.elements.nullable</code>, <code>map.keys.nullable</code>, and <code>map.values.nullable</code> properties determine whether Instancio can generate <code>null</code> values for array/collection elements, as well as map keys and values.<li>Other <code>*.nullable</code> properties control whether Instancio is permitted to generate <code>null</code> values for a specific type.<li>The <code>mode</code> property sets the operation to either <code>STRICT</code> (default) or <code>LENIENT</code>. For more details, see <a href=#selector-strictness>Selector Strictness</a>.<li>Defines a global seed value for consistent data generation.<li>Properties prefixed with <code>subtype</code> define default implementations for abstract types or map types to specific subtypes.<li>This follows the same mechanism as <a href=#subtype-mapping>subtype mapping</a>, but is configured via property files.</ul></article></div><script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script></div></main><footer class=md-footer><div class="md-footer-meta md-typeset"><div class="md-footer-meta__inner md-grid"><div class=md-footer-copyright><div class=md-footer-copyright__highlight>© Instancio 2022-2026</div> powered by <a href=https://www.mkdocs.org target=_blank title=MkDocs>MkDocs</a> and <a title="Material for MkDocs" href=https://squidfunk.github.io/mkdocs-material/ target=_blank> Material for MkDocs</a></div><div class=md-social></div></div></div></footer></div><div class=md-dialog data-md-component=dialog><div class="md-dialog__inner md-typeset"></div></div><script id=__config type=application/json>{"annotate": null, "base": "../..", "features": ["announce.dismiss", "content.code.annotate", "content.code.copy", "icons", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script><script src=../../assets/javascripts/bundle.79ae519e.min.js></script>
