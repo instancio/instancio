@@ -17,9 +17,8 @@ package org.instancio.test.features.generator.collection;
 
 import lombok.Data;
 import org.instancio.Instancio;
-import org.instancio.InstancioApi;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.Keys;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
-import static org.instancio.test.support.asserts.Asserts.assertNoExceptionWithFailOnErrorEnabled;
 
 @FeatureTag(Feature.CYCLIC)
 @ExtendWith(InstancioExtension.class)
@@ -49,18 +47,18 @@ class CollectionGeneratorCyclicNodeTest {
     }
 
     /**
-     * No exception should be thrown when {@link SystemProperties#FAIL_ON_ERROR} is enabled.
+     * No exception should be thrown when {@link Keys#FAIL_ON_ERROR} is enabled.
      */
     @Test
     void withElement() {
         final A expectedElement = new A();
 
-        final InstancioApi<Root> api = Instancio.of(Root.class)
+        final Root result = Instancio.of(Root.class)
+                .withSetting(Keys.FAIL_ON_ERROR, true)
                 .generate(field(B::getList), gen -> gen.collection()
                         .size(100) // won't be able to generate but should not throw an error
-                        .with(expectedElement));
-
-        final Root result = assertNoExceptionWithFailOnErrorEnabled(api::create);
+                        .with(expectedElement))
+                .create();
 
         assertThat(result.a.b.list).containsOnly(expectedElement);
     }

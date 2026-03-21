@@ -42,9 +42,11 @@
                         </goals>
                         <configuration>
                             <systemPropertyVariables>
-                                <instancio.assignmentType>FIELD</instancio.assignmentType>
                                 <net.bytebuddy.safe>true</net.bytebuddy.safe>
                             </systemPropertyVariables>
+                            <additionalClasspathElements>
+                                <additionalClasspathElement>${project.basedir}/src/test/config/field</additionalClasspathElement>
+                            </additionalClasspathElements>
                             <summaryFile>target/failsafe-reports/failsafe-summary-assignment-field.xml</summaryFile>
                         </configuration>
                     </execution>
@@ -55,9 +57,11 @@
                         </goals>
                         <configuration>
                             <systemPropertyVariables>
-                                <instancio.assignmentType>METHOD</instancio.assignmentType>
                                 <net.bytebuddy.safe>true</net.bytebuddy.safe>
                             </systemPropertyVariables>
+                            <additionalClasspathElements>
+                                <additionalClasspathElement>${project.basedir}/src/test/config/method</additionalClasspathElement>
+                            </additionalClasspathElements>
                             <summaryFile>target/failsafe-reports/failsafe-summary-assignment-method.xml</summaryFile>
                         </configuration>
                     </execution>

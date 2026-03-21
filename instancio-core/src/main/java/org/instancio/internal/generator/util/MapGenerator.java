@@ -22,7 +22,6 @@ import org.instancio.generator.Hints;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.generator.specs.MapGeneratorSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.ErrorHandler;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.ExceptionUtils;
@@ -153,7 +152,7 @@ public class MapGenerator<K extends @Nullable Object, V extends @Nullable Object
         } catch (Exception ex) {
             final String msg = String.format("Error creating instance of: %s", mapType);
 
-            if (ErrorHandler.shouldFailOnError(getContext().getSettings())) {
+            if (getContext().getSettings().get(Keys.FAIL_ON_ERROR)) {
                 throw Fail.withFataInternalError(msg, ex);
             }
             ExceptionUtils.logException(msg, ex);

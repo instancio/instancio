@@ -32,7 +32,6 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,7 +100,6 @@ class SelectWithGenerateTest {
     }
 
     @Test
-    @RunWith.MethodAssignmentOnly
     @DisplayName("Composite selector group with compatible types with method assignment")
     void compositeSelectorGroupWithMethodAssignment() {
         final int expectedLength = 100;

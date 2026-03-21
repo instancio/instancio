@@ -28,13 +28,11 @@ import org.instancio.test.support.pojo.dynamic.DynAddress;
 import org.instancio.test.support.pojo.dynamic.DynPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith.MethodAssignmentOnly
 @FeatureTag({Feature.ASSIGNMENT_TYPE, Feature.ASSIGNMENT_TYPE_METHOD})
 @ExtendWith(InstancioExtension.class)
 class MethodAssignmentDynPersonTest {

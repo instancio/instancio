@@ -31,7 +31,6 @@ import org.instancio.test.support.pojo.dynamic.DynPojoBase;
 import org.instancio.test.support.pojo.dynamic.MixedPojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
@@ -43,7 +42,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 import static org.instancio.Select.setter;
 
-@RunWith.MethodAssignmentOnly
 @FeatureTag({Feature.ASSIGNMENT_TYPE, Feature.ASSIGNMENT_TYPE_METHOD})
 @ExtendWith(InstancioExtension.class)
 class MethodAssignmentMixedPojoTest {

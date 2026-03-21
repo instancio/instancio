@@ -26,7 +26,6 @@ import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -68,7 +67,6 @@ class WithNullableTest {
     }
 
     @Test
-    @RunWith.MethodAssignmentOnly
     void withMethod() {
         final Set<IntegerHolder> results = Instancio.of(IntegerHolder.class)
                 .withSettings(Settings.create()

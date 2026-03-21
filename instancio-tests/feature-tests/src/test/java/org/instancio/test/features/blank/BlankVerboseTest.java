@@ -21,7 +21,6 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,6 @@ class BlankVerboseTest {
      * output (by including setter methods).
      */
     @Test
-    @RunWith.FieldAssignmentOnly
     void verbose() {
         Instancio.ofBlank(Person.class)
                 .setBlank(all(Address.class))

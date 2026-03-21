@@ -31,7 +31,6 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.dynamic.MixedPojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -40,7 +39,6 @@ import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.instancio.Select.setter;
 
-@RunWith.MethodAssignmentOnly
 @FeatureTag({Feature.AFTER_GENERATE, Feature.ASSIGNMENT_TYPE_METHOD, Feature.UNSUPPORTED})
 @ExtendWith(InstancioExtension.class)
 class AfterGenerateWithDynamicPojoTest {

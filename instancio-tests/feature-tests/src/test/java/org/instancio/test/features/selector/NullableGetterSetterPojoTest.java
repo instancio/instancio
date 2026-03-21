@@ -24,7 +24,6 @@ import org.instancio.settings.Keys;
 import org.instancio.test.support.pojo.misc.NullableGetterSetterPojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +48,6 @@ class NullableGetterSetterPojoTest {
     }
 
     @Test
-    @RunWith.MethodAssignmentOnly
     void setterSelector_withNullableArgSetter() {
         // NOTE declared explicitly with @Nullable to ensure no compiler warnings/errors
         final SetMethodSelector<NullableGetterSetterPojo, @Nullable Integer> setter =

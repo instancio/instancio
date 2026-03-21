@@ -29,7 +29,6 @@ import org.instancio.test.support.pojo.dynamic.DynPhone;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,7 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 import static org.instancio.Select.setter;
 
-@RunWith.MethodAssignmentOnly
 @FeatureTag({Feature.ASSIGN, Feature.ASSIGNMENT_TYPE_METHOD})
 @ExtendWith(InstancioExtension.class)
 class AssignWithSetterSelectorTest {

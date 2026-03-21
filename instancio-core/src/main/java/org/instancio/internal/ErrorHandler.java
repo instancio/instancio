@@ -20,9 +20,7 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Sonar;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.instancio.support.Log;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -52,12 +50,7 @@ public final class ErrorHandler {
     /**
      * Extracts value from given {@code supplier} while handling
      * errors (if any) thrown by the supplier. An error will be propagated
-     * if at least one of the following conditions is {@code true}:
-     *
-     * <ul>
-     *   <li>{@link SystemProperties#FAIL_ON_ERROR} is enabled</li>
-     *   <li>{@link Keys#FAIL_ON_ERROR} is enabled</li>
-     * </ul>
+     * if {@link Keys#FAIL_ON_ERROR} is enabled.
      *
      * @param supplier containing value to extract
      * @param <T>      the type of value returned by the supplier
@@ -69,20 +62,12 @@ public final class ErrorHandler {
         } catch (AssertionError | InstancioTerminatingException ex) {
             throw ex;
         } catch (Throwable ex) { //NOPMD
-            if (shouldFailOnError()) {
+            if (isFailOnErrorSettingEnabled) {
                 throw Fail.withInternalError(ex);
             }
             logSuppressed(ex);
         }
         return Optional.empty();
-    }
-
-    public static boolean shouldFailOnError(final Settings settings) {
-        return settings.get(Keys.FAIL_ON_ERROR) || SystemProperties.isFailOnErrorEnabled();
-    }
-
-    private boolean shouldFailOnError() {
-        return isFailOnErrorSettingEnabled || SystemProperties.isFailOnErrorEnabled();
     }
 
     @SuppressWarnings("all")

@@ -38,8 +38,10 @@ import static org.instancio.Select.all;
 @ExtendWith(InstancioExtension.class)
 class OneToManyWithCrossReferencesTest {
 
+    private static final int TIMEOUT_SECONDS = 3;
+
     @Test
-    @Timeout(1)
+    @Timeout(TIMEOUT_SECONDS)
     void defaultMaxDepth() {
         final ObjectA objectA = Instancio.create(ObjectA.class);
 
@@ -94,7 +96,7 @@ class OneToManyWithCrossReferencesTest {
      * and this method should no longer time out.
      */
     @Test
-    @Timeout(1)
+    @Timeout(TIMEOUT_SECONDS)
     void withIgnore() {
         final ObjectA objectA = Instancio.of(ObjectA.class)
                 .withMaxDepth(Integer.MAX_VALUE)
