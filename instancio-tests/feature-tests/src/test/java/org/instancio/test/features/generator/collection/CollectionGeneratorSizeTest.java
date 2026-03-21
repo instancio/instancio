@@ -107,7 +107,7 @@ class CollectionGeneratorSizeTest {
         }
 
         @Test
-        @DisplayName("Verify exception is thrown when failOnError system property is enabled")
+        @DisplayName("Verify exception is thrown when failOnError is enabled")
         void impossibleSetSizeWithFailOnErrorEnabled() {
             final InstancioApi<Set<Boolean>> api = Instancio.of(new TypeToken<Set<Boolean>>() {})
                     .withSetting(Keys.FAIL_ON_ERROR, true)

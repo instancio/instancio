@@ -31,7 +31,6 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -158,7 +157,6 @@ class SelectorPrecedenceTest {
      * The order in which selectors are specified should not matter.
      */
     @Nested
-    @RunWith.MethodAssignmentOnly
     class FieldSelectorShouldTakePrecedenceOverSetterSelectorTest {
 
         @WithSettings
@@ -201,7 +199,6 @@ class SelectorPrecedenceTest {
     }
 
     @Nested
-    @RunWith.MethodAssignmentOnly
     class SetterSelectorShouldTakePrecedenceOverTypeSelectorTest {
 
         @WithSettings
@@ -231,7 +228,6 @@ class SelectorPrecedenceTest {
     }
 
     @Nested
-    @RunWith.MethodAssignmentOnly
     class SetterSelectorShouldTakePrecedenceOverPredicateSelectorTest {
 
         @WithSettings

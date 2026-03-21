@@ -22,7 +22,6 @@ import org.instancio.generator.Hints;
 import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.internal.ApiValidator;
-import org.instancio.internal.ErrorHandler;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
@@ -142,7 +141,7 @@ public class CollectionGenerator<T extends @Nullable Object>
         } catch (Exception ex) {
             final String msg = String.format("Error creating instance of: %s", collectionType);
 
-            if (ErrorHandler.shouldFailOnError(getContext().getSettings())) {
+            if (getContext().getSettings().get(Keys.FAIL_ON_ERROR)) {
                 throw Fail.withFataInternalError(msg, ex);
             }
             ExceptionUtils.logException(msg, ex);

@@ -53,10 +53,8 @@ import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ServiceLoaders;
 import org.instancio.internal.util.Sonar;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
-import org.instancio.settings.AssignmentType;
 import org.instancio.settings.FillType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
@@ -131,13 +129,6 @@ public final class ModelContext {
 
         if (Boolean.TRUE.equals(builder.lenient)) {
             settings.set(Keys.MODE, Mode.LENIENT);
-        }
-
-        // The system property override is used for running
-        // feature-tests using both assignment types
-        final AssignmentType assignmentTypeOverride = SystemProperties.getAssignmentType();
-        if (assignmentTypeOverride != null) {
-            settings.set(Keys.ASSIGNMENT_TYPE, assignmentTypeOverride);
         }
 
         Log.msg(Log.Category.SETTINGS, "Resolved settings: {}", settings);

@@ -28,7 +28,6 @@ import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.assignment.UnmatchedSettersPojo;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -48,7 +47,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  *   <li>{@link Keys#SETTER_EXCLUDE_MODIFIER}</li>
  * </ul>
  */
-@RunWith.MethodAssignmentOnly
 @FeatureTag({Feature.ASSIGNMENT_TYPE, Feature.ASSIGNMENT_TYPE_METHOD})
 @ExtendWith(InstancioExtension.class)
 class MethodAssignmentUnmatchedSettersTest {

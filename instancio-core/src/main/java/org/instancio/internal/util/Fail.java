@@ -19,6 +19,7 @@ import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
 import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.exception.UnresolvedAssignmentException;
+import org.instancio.settings.Keys;
 
 /**
  * Utility class for constructing exceptions.
@@ -36,7 +37,7 @@ public final class Fail {
      * including a message to request a bug report submission.
      *
      * <p>This exception will not be propagated to the user
-     * unless {@link SystemProperties#FAIL_ON_ERROR} is enabled.
+     * unless {@link Keys#FAIL_ON_ERROR} is enabled.
      *
      * @param cause of an error
      * @return a wrapped exception with a message requesting a bug report

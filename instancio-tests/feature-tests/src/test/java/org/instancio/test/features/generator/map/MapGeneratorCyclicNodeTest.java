@@ -17,9 +17,8 @@ package org.instancio.test.features.generator.map;
 
 import lombok.Data;
 import org.instancio.Instancio;
-import org.instancio.InstancioApi;
-import org.instancio.internal.util.SystemProperties;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.Keys;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Nested;
@@ -31,7 +30,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
-import static org.instancio.test.support.asserts.Asserts.assertNoExceptionWithFailOnErrorEnabled;
 
 @FeatureTag(Feature.CYCLIC)
 @ExtendWith(InstancioExtension.class)
@@ -60,19 +58,19 @@ class MapGeneratorCyclicNodeTest {
         }
 
         /**
-         * No exception should be thrown when {@link SystemProperties#FAIL_ON_ERROR} is enabled.
+         * No exception should be thrown when {@link Keys#FAIL_ON_ERROR} is enabled.
          */
         @Test
         void withEntry() {
             final ACyclicKey expectedKey = new ACyclicKey();
             final UUID expectedValue = Instancio.create(UUID.class);
 
-            final InstancioApi<RootCyclicKey> api = Instancio.of(RootCyclicKey.class)
+            final RootCyclicKey result = Instancio.of(RootCyclicKey.class)
+                    .withSetting(Keys.FAIL_ON_ERROR, true)
                     .generate(field(BCyclicKey::getMap), gen -> gen.map()
                             .size(100) // won't be able to generate but should not throw an error
-                            .with(expectedKey, expectedValue));
-
-            final RootCyclicKey result = assertNoExceptionWithFailOnErrorEnabled(api::create);
+                            .with(expectedKey, expectedValue))
+                    .create();
 
             assertThat(result.a.b.map)
                     .hasSize(1)
@@ -92,19 +90,19 @@ class MapGeneratorCyclicNodeTest {
         }
 
         /**
-         * No exception should be thrown when {@link SystemProperties#FAIL_ON_ERROR} is enabled.
+         * No exception should be thrown when {@link Keys#FAIL_ON_ERROR} is enabled.
          */
         @Test
         void withEntry() {
             final UUID expectedKey = Instancio.create(UUID.class);
             final ACyclicValue expectedValue = new ACyclicValue();
 
-            final InstancioApi<RootCyclicValue> api = Instancio.of(RootCyclicValue.class)
+            final RootCyclicValue result = Instancio.of(RootCyclicValue.class)
+                    .withSetting(Keys.FAIL_ON_ERROR, true)
                     .generate(field(BCyclicValue::getMap), gen -> gen.map()
                             .size(100) // won't be able to generate but should not throw an error
-                            .with(expectedKey, expectedValue));
-
-            final RootCyclicValue result = assertNoExceptionWithFailOnErrorEnabled(api::create);
+                            .with(expectedKey, expectedValue))
+                    .create();
 
             assertThat(result.a.b.map)
                     .hasSize(1)

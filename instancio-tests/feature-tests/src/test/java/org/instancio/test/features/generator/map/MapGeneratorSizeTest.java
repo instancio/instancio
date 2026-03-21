@@ -115,7 +115,7 @@ class MapGeneratorSizeTest {
         }
 
         @Test
-        @DisplayName("Verify exception is thrown when failOnError system property is enabled")
+        @DisplayName("Verify exception is thrown when failOnError is enabled")
         void impossibleMapSizeWithFailOnErrorEnabled() {
             final InstancioApi<Map<Boolean, String>> api = Instancio.of(new TypeToken<Map<Boolean, String>>() {})
                     .withSetting(Keys.FAIL_ON_ERROR, true)

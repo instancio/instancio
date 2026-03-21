@@ -23,7 +23,6 @@ import org.instancio.settings.Keys;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -88,7 +87,6 @@ class LenientSelectorTest {
     }
 
     @Test
-    @RunWith.MethodAssignmentOnly
     void setterSelector() {
         final String result = Instancio.of(String.class)
                 .withSetting(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD)

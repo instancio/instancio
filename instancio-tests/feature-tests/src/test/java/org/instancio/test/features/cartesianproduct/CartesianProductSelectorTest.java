@@ -29,7 +29,6 @@ import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.dynamic.DynPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.instancio.test.support.tags.RunWith;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -101,7 +100,6 @@ class CartesianProductSelectorTest {
     }
 
     @Test
-    @RunWith.MethodAssignmentOnly
     void withSetterSelector() {
         final List<DynPerson> results = Instancio.ofCartesianProduct(DynPerson.class)
                 .withSettings(Settings.create()

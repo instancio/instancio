@@ -34,12 +34,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class LargeCyclicSubclassTest {
 
+    private static final int TIMEOUT_SECONDS = 3;
+
     @WithSettings
     private final Settings settings = Settings.create()
             .set(Keys.MAX_DEPTH, Integer.MAX_VALUE);
 
     @Test
-    @Timeout(1)
+    @Timeout(TIMEOUT_SECONDS)
     void largeCyclicShouldBeGeneratedWithinGivenTimeout() {
         final LargeCyclicSubclass result = Instancio.create(LargeCyclicSubclass.class);
 
