@@ -26,6 +26,8 @@ import org.instancio.test.support.pojo.basic.StringHolderAlternativeImpl;
 import org.instancio.test.support.pojo.generics.basic.ItemAlternativeImpl;
 import org.instancio.test.support.pojo.generics.basic.ItemInterfaceHolder;
 import org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance;
+import org.instancio.test.support.pojo.interfaces.ItemInterface;
+import org.instancio.test.support.pojo.interfaces.ListOfItemInterfaceString;
 import org.instancio.test.support.pojo.interfaces.StringHolderInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,6 +85,25 @@ class TypeResolverFromSpiTest {
         final ItemInterfaceHolder<String> result = Instancio.create(new TypeToken<ItemInterfaceHolder<String>>() {});
         assertThat(result.getItemInterface()).isExactlyInstanceOf(ItemAlternativeImpl.class);
         assertThat(result.getItemInterface().getValue()).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("TypeResolver.getSubtype(Type) is invoked for a generic root type")
+    void typeResolverWithGenericRootType() {
+        final ItemInterface<String> result = Instancio.create(new TypeToken<>() {});
+
+        assertThat(result).isExactlyInstanceOf(ItemAlternativeImpl.class);
+        assertThat(result.getValue()).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("TypeResolver.getSubtype(Type) is invoked for collection element type")
+    void typeResolverWithCollectionElementType() {
+        final ListOfItemInterfaceString result = Instancio.create(ListOfItemInterfaceString.class);
+
+        assertThat(result.getList()).isNotEmpty()
+                .hasOnlyElementsOfType(ItemAlternativeImpl.class)
+                .allSatisfy(item -> assertThat(item.getValue()).isNotBlank());
     }
 
     @Test

@@ -78,7 +78,7 @@ public class CustomTypeProvider implements InstancioServiceProvider {
         }
 
         getTypeResolverInvoked = true;
-        return SUBTYPE_MAP::get;
+        return node -> SUBTYPE_MAP.get(node.getTargetClass());
     }
 
     @Override

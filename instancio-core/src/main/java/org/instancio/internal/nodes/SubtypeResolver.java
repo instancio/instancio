@@ -54,36 +54,41 @@ final class SubtypeResolver {
      *   <li>a generator's {@code subtype()} method, e.g. {@code gen.collection().subtype()}</li>
      * </ol>
      */
-    Optional<Class<?>> resolveSubtype(final InternalNode node) {
-        final Optional<Class<?>> subtype = getSubtype(node);
+    SubtypeResult resolveSubtype(final InternalNode node) {
+        final SubtypeResult subtype = getSubtype(node);
 
         if (subtype.isPresent()) {
             if (LOG.isTraceEnabled()) {
-                LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.get().getName());
+                LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.subtype());
             }
             return subtype;
         }
         if (SealedClassUtils.isSealedAbstractType(node.getTargetClass())
                 && (node.is(NodeKind.POJO) || node.is(NodeKind.RECORD))) {
+
             final List<Class<?>> impls = SealedClassUtils.getSealedClassImplementations(node.getTargetClass());
-            return Optional.ofNullable(modelContext.getRandom().oneOf(impls));
+            final Class<?> randomSubtype = modelContext.getRandom().oneOf(impls);
+            return SubtypeResult.subtypeWithoutValidation(randomSubtype);
         }
         final Class<?> subtypeFromAncestors = resolveSubtypeFromAncestors(node);
-        return Optional.ofNullable(subtypeFromAncestors);
+        return SubtypeResult.subtypeWithoutValidation(subtypeFromAncestors);
     }
 
-    private Optional<Class<?>> getSubtype(final InternalNode node) {
-        final Optional<Class<?>> subtype = modelContext.getSubtypeSelectorMap().getSubtype(node);
+    private SubtypeResult getSubtype(final InternalNode node) {
+        final Optional<Type> subtype = modelContext.getSubtypeSelectorMap()
+                .getSubtype(node)
+                .map(TypeUtils::getRawType);
+
         if (subtype.isPresent()) {
-            return subtype;
+            return SubtypeResult.subtypeWithValidation(subtype.get());
         }
 
         final Settings settings = modelContext.getSettings();
         final Class<?> subtypeFromSettings = settings.getSubtypeMap().get(node.getRawType());
 
         return subtypeFromSettings == null
-                ? typeResolverFacade.resolve(node.getRawType())
-                : Optional.of(subtypeFromSettings);
+                ? typeResolverFacade.resolve(node)
+                : SubtypeResult.subtypeWithValidation(subtypeFromSettings);
     }
 
     @Nullable

@@ -18,28 +18,29 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Optional;
 
 public final class SubtypeSelectorMap {
 
-    private final SelectorMap<Class<?>> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<Type> selectorMap = new SelectorMapImpl<>();
 
-    void putAll(final Map<TargetSelector, Class<?>> subtypes) {
-        for (Map.Entry<TargetSelector, Class<?>> entry : subtypes.entrySet()) {
+    void putAll(final Map<TargetSelector, ? extends Type> subtypes) {
+        for (Map.Entry<TargetSelector, ? extends Type> entry : subtypes.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
 
-    void put(final TargetSelector key, final Class<?> value) {
+    void put(final TargetSelector key, final Type value) {
         selectorMap.put(key, value);
     }
 
-    SelectorMap<Class<?>> getSelectorMap() {
+    SelectorMap<Type> getSelectorMap() {
         return selectorMap;
     }
 
-    public Optional<Class<?>> getSubtype(final InternalNode node) {
+    public Optional<Type> getSubtype(final InternalNode node) {
         return selectorMap.getValue(node);
     }
 }

@@ -33,6 +33,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ServiceLoader;
 
 /**
@@ -192,7 +193,7 @@ public interface InstancioServiceProvider {
     }
 
     /**
-     * Resolves subtype based on a given class.
+     * Resolves a subtype for a given {@link Node}.
      *
      * <p>An implementation of this interface can be returned
      * via the {@link #getTypeResolver()} method.
@@ -202,7 +203,7 @@ public interface InstancioServiceProvider {
     interface TypeResolver {
 
         /**
-         * Returns a subtype for the given {@code type}.
+         * Returns a subtype for the given {@link Node}.
          *
          * <p>Similar functionality can be achieved using:
          *
@@ -212,24 +213,29 @@ public interface InstancioServiceProvider {
          * </ul>
          *
          * <p>However, the methods above require specifying the subtypes
-         * manually. This class allows subtype resolution to be done
-         * automatically. For example, if this method maps an abstract
-         * {@code Animal} class to a concrete {@code Dog} class, then
-         * Instancio will generate objects based on this mapping:
+         * manually. This method allows subtype resolution to be done
+         * automatically based on the node's context.
+         *
+         * <p>For example, if this method maps an abstract {@code Animal} class
+         * to a concrete {@code Dog} class, then Instancio will generate objects
+         * based on this mapping:
          *
          * <pre>{@code
          *   Animal animal = Instancio.create(Animal.class);
          *   assertThat(animal).isExactlyInstanceOf(Dog.class);
          * }</pre>
          *
-         * @param type the type to map to a subtype
-         * @return the subtype class, or {@code null} if no subtype is defined
-         * @throws InstancioSpiException if the returned class is not
-         *                               a subtype of the argument class
+         * <p>The return type is {@link Type} rather than {@link Class}, which
+         * allows returning parameterised types such as {@code List<String>}.
+         *
+         * @param node the node for which to resolve a subtype
+         * @return the subtype, or {@code null} if no subtype is defined for this node
+         * @throws InstancioSpiException if the returned type is not
+         *                               a subtype of the node's target class
          * @since 2.11.0
          */
         @Nullable
-        Class<?> getSubtype(Class<?> type);
+        Type getSubtype(Node node);
     }
 
     /**
