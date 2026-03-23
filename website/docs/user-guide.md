@@ -3892,11 +3892,22 @@ This interface allows mapping a type to a subtype:
 
 ```java
 interface TypeResolver {
-    Class<?> getSubtype(Class<?> type);
+    Type getSubtype(Node node);
 }
 ```
 
 The subtype mapping uses the same mechanism as the `subtype()` API method.
+
+The method receives a `Node` representing the type being resolved.
+This provides richer context than just the raw class, including:
+
+- `node.getTargetClass()` — the raw class to resolve a subtype for
+- `node.getField()` — the field this node represents, if any
+- `node.getParent()` — the parent node in the object graph
+- `node.getSetter()` — the setter method, if `ASSIGNMENT_TYPE=METHOD`
+
+The return type is `java.lang.reflect.Type` allows returning a `Class`,
+such as `List.class` as well as parameterised types such as `List<String>`.
 
 ### Use Case
 
@@ -3928,8 +3939,8 @@ Using `TypeResolver`, the subtype can be resolved automatically:
 public class TypeResolverImpl implements TypeResolver {
 
     @Override
-    public Class<?> getSubtype(final Class<?> type) {
-        if (type == Animal.class) {
+    public Type getSubtype(final Node node) {
+        if (node.getTargetClass() == Animal.class) {
             return Cat.class;
         }
         return null;

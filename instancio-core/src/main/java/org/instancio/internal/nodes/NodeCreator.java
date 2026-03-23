@@ -44,10 +44,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Helper class for creating nodes.
  */
-@SuppressWarnings("PMD.CyclomaticComplexity")
+@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.GodClass"})
 class NodeCreator {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeCreator.class);
@@ -227,7 +229,11 @@ class NodeCreator {
                 .member(setter)
                 .build();
 
-        final Class<?> targetClass = subtypeResolver.resolveSubtype(node).orElse(rawType);
+        final SubtypeResult subtypeResult = subtypeResolver.resolveSubtype(node);
+        final Type targetType = subtypeResult.isPresent() ? requireNonNull(subtypeResult.subtype()) : type;
+        final Class<?> targetClass = targetType == type //NOPMD
+                ? rawType
+                : TypeUtils.getRawType(targetType);
 
         // Handle the case where: Child<T> extends Parent<T>
         // If the child node inherits a TypeVariable field declaration from
@@ -240,8 +246,11 @@ class NodeCreator {
                     .build();
         }
 
-        if (rawType != targetClass && !targetClass.isEnum() && !rawType.isPrimitive()) {
-            ApiValidator.validateSubtype(rawType, targetClass);
+        if (rawType != targetClass
+            && (!subtypeResult.validationEnabled() || (!targetClass.isEnum() && !rawType.isPrimitive()))) {
+            if (subtypeResult.validationEnabled()) {
+                ApiValidator.validateSubtype(rawType, targetClass);
+            }
 
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Subtype mapping '{}' to '{}'",
@@ -249,7 +258,17 @@ class NodeCreator {
                         Format.withoutPackage(targetClass));
             }
 
-            // Re-evaluate node kind and type map
+            // Re-evaluate node kind and type map.
+            // Only override `type` if targetType is a ParameterizedType (i.e. not a Class)
+            // to preserve the generic type information
+            if (targetType instanceof ParameterizedType) {
+                return node.toBuilder(targetType)
+                        .targetClass(targetClass)
+                        .nodeKind(getNodeKind(targetClass))
+                        .additionalTypeMap(typeHelper.createBridgeTypeMap(rawType, targetClass))
+                        .build();
+            }
+
             return node.toBuilder()
                     .targetClass(targetClass)
                     .nodeKind(getNodeKind(targetClass))
@@ -313,14 +332,20 @@ class NodeCreator {
                 .member(setter)
                 .build();
 
-        final Class<?> targetClass = subtypeResolver.resolveSubtype(node).orElse(rawComponentType);
+        final SubtypeResult subtypeResult = subtypeResolver.resolveSubtype(node);
+        final Class<?> targetClass = subtypeResult.isPresent()
+                ? TypeUtils.getRawType(requireNonNull(subtypeResult.subtype()))
+                : rawComponentType;
+
         final Class<?> targetClassComponentType = targetClass.getComponentType();
 
         if (!rawComponentType.isPrimitive()
             && targetClassComponentType != null
             && rawComponentType != targetClassComponentType) {
 
-            ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
+            if (subtypeResult.validationEnabled()) {
+                ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
+            }
 
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Subtype mapping '{}' to '{}'",

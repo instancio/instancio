@@ -291,8 +291,8 @@ public final class InternalNode implements Node {
         return sb.toString();
     }
 
-    public Builder toBuilder() {
-        final Builder builder = new Builder(type, rawType, nodeTypeMap.getRootType());
+    public Builder toBuilder(final Type typeOverride) {
+        final Builder builder = new Builder(typeOverride, rawType, nodeTypeMap.getRootType());
         builder.targetClass = targetClass;
         builder.field = field;
         builder.setter = setter;
@@ -302,6 +302,10 @@ public final class InternalNode implements Node {
         builder.cyclic = cyclic;
         builder.nodeTypeMap = nodeTypeMap;
         return builder;
+    }
+
+    public Builder toBuilder() {
+        return toBuilder(type);
     }
 
     public static Builder builder(
