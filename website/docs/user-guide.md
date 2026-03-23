@@ -4322,6 +4322,7 @@ Instancio supports the JUnit framework through the {{InstancioExtension}}, which
 - Ability to use `@InstancioSource` with `@ParameterizedTest` methods
 - Injection of custom settings using the `@WithSettings` annotation
 - Support for reproducing failed tests using the `@Seed` annotation
+- Support for running tests [concurrently](https://docs.junit.org/current/writing-tests/parallel-execution.html)
 
 ## `@Given` Injection
 

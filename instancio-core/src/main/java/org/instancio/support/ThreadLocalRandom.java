@@ -24,7 +24,7 @@ public final class ThreadLocalRandom {
 
     private static final ThreadLocalRandom INSTANCE = new ThreadLocalRandom();
 
-    private static final ThreadLocal<Random> RANDOM = new ThreadLocal<>();
+    private static final ThreadLocal<@Nullable Random> RANDOM = new InheritableThreadLocal<>();
 
     private ThreadLocalRandom() {
         // non-instantiable
