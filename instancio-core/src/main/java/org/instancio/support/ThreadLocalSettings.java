@@ -24,7 +24,7 @@ public final class ThreadLocalSettings {
 
     private static final ThreadLocalSettings INSTANCE = new ThreadLocalSettings();
 
-    private static final ThreadLocal<Settings> SETTINGS = new ThreadLocal<>();
+    private static final ThreadLocal<@Nullable Settings> SETTINGS = new InheritableThreadLocal<>();
 
     private ThreadLocalSettings() {
         // non-instantiable

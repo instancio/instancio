@@ -62,6 +62,7 @@
                 <module>jackson-tests</module>
                 <module>arch-tests</module>
                 <module>jpms-tests</module>
+                <module>concurrency-tests</module>
             </modules>
         </profile>
     </profiles>

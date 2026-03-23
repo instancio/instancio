@@ -48,6 +48,8 @@ import static org.instancio.junit.internal.Constants.INSTANCIO_SOURCE_STATE;
 public class InstancioSourceArgumentsProvider
         implements ArgumentsProvider, AnnotationConsumer<InstancioSource> {
 
+    private static final String THREAD_LOCAL_CLEANUP = "instancio.source.threadLocalCleanup";
+
     private InstancioSource instancioSource;
 
     @Initializer
@@ -65,6 +67,18 @@ public class InstancioSourceArgumentsProvider
         final ThreadLocalSettings threadLocalSettings = ThreadLocalSettings.getInstance();
 
         ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
+
+        // Ensure thread-local state set by processAnnotations() is cleared when the
+        // parameterized test method's store is closed. Without this, using
+        // @InstancioSource without @ExtendWith(InstancioExtension.class) leaks the
+        // seed/settings to subsequent tests on the same thread, since the extension's
+        // afterEach cleanup would otherwise be the only cleanup path.
+        context.getStore(INSTANCIO_NAMESPACE).put(
+                THREAD_LOCAL_CLEANUP,
+                (AutoCloseable) () -> {
+                    threadLocalRandom.remove();
+                    threadLocalSettings.remove();
+                });
 
         final Random random = requireNonNull(threadLocalRandom.get());
         final Settings settings = threadLocalSettings.get();
