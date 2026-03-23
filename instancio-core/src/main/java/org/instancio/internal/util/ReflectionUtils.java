@@ -131,7 +131,7 @@ public final class ReflectionUtils {
                 ? methodName
                 : String.format("%s(%s)", methodName, parameterType.getSimpleName());
 
-        throw Fail.withUsageError("Could not find method method '%s' declared by %s", method, klass);
+        throw Fail.withUsageError("Could not find method '%s' declared by %s", method, klass);
     }
 
     public static Field getField(final Class<?> klass, final String fieldName) {

@@ -152,12 +152,12 @@ class ReflectionUtilsTest {
 
         assertThatThrownBy(() -> ReflectionUtils.getSetterMethod(Person.class, "setName", int.class))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Could not find method method 'setName(int)' declared by %s", Person.class);
+                .hasMessageContaining("Could not find method 'setName(int)' declared by %s", Person.class);
 
         final String invalidMethodName = "invalid-method-name";
         assertThatThrownBy(() -> ReflectionUtils.getSetterMethod(Person.class, invalidMethodName, null))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("Could not find method method '%s' declared by %s", invalidMethodName, Person.class);
+                .hasMessageContaining("Could not find method '%s' declared by %s", invalidMethodName, Person.class);
     }
 
     @Test

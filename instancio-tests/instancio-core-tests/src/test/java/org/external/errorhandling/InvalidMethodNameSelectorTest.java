@@ -37,7 +37,7 @@ class InvalidMethodNameSelectorTest extends AbstractErrorMessageTestTemplate {
                 Error creating an object
                  -> at org.external.errorhandling.InvalidMethodNameSelectorTest.methodUnderTest(InvalidMethodNameSelectorTest.java:28)
 
-                Reason: Could not find method method 'setNamex' declared by class org.instancio.test.support.pojo.person.Person
+                Reason: Could not find method 'setNamex' declared by class org.instancio.test.support.pojo.person.Person
 
                 """;
     }
