@@ -22,12 +22,7 @@ import org.instancio.internal.nodes.InternalNode;
 @InternalApi
 interface NodeHandler {
 
-    NodeHandler NOOP_HANDLER = new NodeHandler() {
-        @Override
-        public GeneratorResult getResult(final InternalNode node) {
-            return GeneratorResult.emptyResult();
-        }
-    };
+    NodeHandler NOOP_HANDLER = node -> GeneratorResult.emptyResult();
 
     GeneratorResult getResult(InternalNode node);
 
