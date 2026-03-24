@@ -17,8 +17,11 @@ package org.instancio.test.features.assign;
 
 import org.apache.commons.lang3.Strings;
 import org.instancio.Assign;
+import org.instancio.BaseApi;
 import org.instancio.Instancio;
+import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
@@ -32,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -107,5 +111,50 @@ class AssignPojoTest {
                 assertThat(phone.getNumber()).containsOnlyDigits().hasSize(7);
             });
         }
+    }
+
+    /**
+     * Objects provided via {@link BaseApi#supply(TargetSelector, Generator)}
+     * should be populated and assignment evaluated.
+     */
+    @Test
+    void assignFieldPopulatedByCustomGenerator(@Given final String value) {
+        final TargetSelector origin = field(Address::getCity).lenient();
+        final TargetSelector destination = field(Person::getName).lenient();
+
+        final Person person = Instancio.of(Person.class)
+                .supply(all(Person.class), random -> {
+                    Person p = new Person();
+                    p.setAddress(Address.builder().city(value).build());
+                    return p;
+                })
+                .assign(Assign.valueOf(origin).to(destination))
+                .create();
+
+        assertThat(person.getAddress().getCity()).isEqualTo(value);
+        assertThat(person.getName()).isEqualTo(value);
+    }
+
+    /**
+     * Objects provided via {@link BaseApi#supply(TargetSelector, Supplier)}
+     * should not be modified by the engine and assignment never evaluated.
+     */
+    @Test
+    void assignFieldPopulatedBySupplier(@Given final String value) {
+        // Lenient selectors because assignment is never evaluated
+        final TargetSelector origin = field(Address::getCity).lenient();
+        final TargetSelector destination = field(Person::getName).lenient();
+
+        final Person person = Instancio.of(Person.class)
+                .supply(all(Person.class), () -> {
+                    Person p = new Person();
+                    p.setAddress(Address.builder().city(value).build());
+                    return p;
+                })
+                .assign(Assign.valueOf(origin).to(destination))
+                .create();
+
+        assertThat(person.getAddress().getCity()).isEqualTo(value);
+        assertThat(person.getName()).isNull();
     }
 }
