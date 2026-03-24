@@ -98,7 +98,7 @@ final class AssignmentSelectorMap {
                 final Generator<?> updatedGenerator = generatorInitialiser.initGenerator(assignment.getDestination(), generator);
 
                 final InternalAssignment updatedAssignment = assignment.toBuilder()
-                        .generator(updatedGenerator)
+                        .generatorHolder(GeneratorHolder.of(updatedGenerator))
                         .build();
 
                 processed.add(updatedAssignment);
