@@ -37,7 +37,7 @@ import static org.instancio.internal.generator.GeneratorUtil.instantiateInternal
 public class GeneratorResolver {
 
     private final GeneratorContext context;
-    private final Map<Class<?>, Generator<?>> cache = new HashMap<>();
+    private final Map<Class<?>, @Nullable Generator<?>> cache = new HashMap<>();
 
     public GeneratorResolver(final GeneratorContext context) {
         this.context = context;
@@ -92,40 +92,12 @@ public class GeneratorResolver {
     }
 
     /**
-     * Java modules will not have these legacy classes unless explicitly
-     * imported via e.g. "requires java.sql". In case the classes are not
-     * available, load them by name to avoid class not found error
-     */
-    @Nullable
-    @SuppressWarnings(Sonar.USE_INSTANCEOF)
-    private Generator<?> getGeneratorForLegacyClass(final Class<?> klass) {
-        final String className = klass.getName();
-
-        if ("java.sql.Date".equals(className)) {
-            return loadByClassName(context, "org.instancio.internal.generator.sql.SqlDateGenerator");
-        }
-        if ("java.sql.Timestamp".equals(className)) {
-            return loadByClassName(context, "org.instancio.internal.generator.sql.TimestampGenerator");
-        }
-        if ("javax.xml.datatype.XMLGregorianCalendar".equals(className)) {
-            return loadByClassName(context, "org.instancio.internal.generator.xml.XMLGregorianCalendarGenerator");
-        }
-        if ("javax.xml.namespace.QName".equals(className)) {
-            return loadByClassName(context, "org.instancio.internal.generator.xml.QNameGenerator");
-        }
-        return null;
-    }
-
-    private static Generator<?> loadByClassName(
-            final GeneratorContext context,
-            final String generatorClassName) {
-
-        final Class<?> generatorClass = ReflectionUtils.loadRequiredClass(generatorClassName);
-        return instantiateInternalGenerator(generatorClass, context);
-    }
-
-    /**
-     * Since this method returns a cached generator,
+     * Returns a cached built-in generator for the given class.
+     *
+     * <p>Unlike {@link #getCached(InternalNode)}, this method resolves
+     * <b>only</b> built-in generators registered in {@link GeneratorResolverMaps}.
+     *
+     * <p>Since this method returns a cached generator,
      * callers must not update the generator's state.
      */
     @Nullable
@@ -156,5 +128,38 @@ public class GeneratorResolver {
             }
         }
         return generator;
+    }
+
+    /**
+     * Java modules will not have these legacy classes unless explicitly
+     * imported via e.g. "requires java.sql". In case the classes are not
+     * available, load them by name to avoid class not found error
+     */
+    @Nullable
+    @SuppressWarnings(Sonar.USE_INSTANCEOF)
+    private Generator<?> getGeneratorForLegacyClass(final Class<?> klass) {
+        final String className = klass.getName();
+
+        if ("java.sql.Date".equals(className)) {
+            return loadByClassName(context, "org.instancio.internal.generator.sql.SqlDateGenerator");
+        }
+        if ("java.sql.Timestamp".equals(className)) {
+            return loadByClassName(context, "org.instancio.internal.generator.sql.TimestampGenerator");
+        }
+        if ("javax.xml.datatype.XMLGregorianCalendar".equals(className)) {
+            return loadByClassName(context, "org.instancio.internal.generator.xml.XMLGregorianCalendarGenerator");
+        }
+        if ("javax.xml.namespace.QName".equals(className)) {
+            return loadByClassName(context, "org.instancio.internal.generator.xml.QNameGenerator");
+        }
+        return null;
+    }
+
+    private static Generator<?> loadByClassName(
+            final GeneratorContext context,
+            final String generatorClassName) {
+
+        final Class<?> generatorClass = ReflectionUtils.loadRequiredClass(generatorClassName);
+        return instantiateInternalGenerator(generatorClass, context);
     }
 }

@@ -19,17 +19,14 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.DelegatingGeneratorProcessor;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.SpiGeneratorResolver;
-import org.instancio.internal.generator.array.ArrayGenerator;
 import org.instancio.internal.generator.misc.EmitGenerator;
-import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
-import org.instancio.internal.util.Verify;
 
 import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
@@ -83,48 +80,22 @@ public final class UserSuppliedGeneratorProcessor {
     private Generator<?> processGenerator(final Generator<?> generator, final InternalNode node) {
         ApiValidator.validateGeneratorUsage(node, generator);
 
-        if (generator instanceof ArrayGenerator<?> arrayGenerator) {
-            // If gen.array().subtype() was specified, then node targetClass
-            // is expected to have the specified subtype.
-            // If no subtype() was specified, then it will be null.
-            // Therefore, it's safe to overwrite the generator subtype
-            // with node's targetClass
-            arrayGenerator.subtype(node.getTargetClass());
-        } else if (generator instanceof final AbstractGenerator<?> g) {
+        // If gen.array().subtype() was specified, then node targetClass
+        // is expected to have the specified subtype.
+        // If no subtype() was specified, then it will be null.
+        // Therefore, it's safe to overwrite the generator subtype with node's targetClass.
+        return DelegatingGeneratorProcessor.process(generator, node, internalHint -> {
+            final Class<?> targetClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());
 
-            if (!g.isDelegating()) {
-                return generator;
+            final InternalNode actualNode = targetClass == node.getTargetClass()
+                    ? node
+                    : node.toBuilder().targetClass(targetClass).build();
+
+            Generator<?> delegate = spiGeneratorResolver.getSpiGenerator(node);
+            if (delegate == null) {
+                delegate = generatorResolver.getCached(actualNode);
             }
-
-            final Hints hints = requireNonNull(generator.hints());
-            final InternalGeneratorHint internalHint = Verify.notNull(hints.get(InternalGeneratorHint.class),
-                    "InternalGeneratorHint is null");
-
-            final Generator<?> delegate = resolveDelegate(node, internalHint);
-
-            if (delegate instanceof AbstractGenerator<?> delegateGenerator) {
-                final boolean nullable = g.isNullable();
-                delegateGenerator.nullable(nullable);
-            }
-
-            return GeneratorDecorator.replaceHints(delegate, hints);
-        }
-
-        return generator;
-    }
-
-    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
-    private Generator<?> resolveDelegate(final InternalNode node, final InternalGeneratorHint internalHint) {
-        final Class<?> targetClass = defaultIfNull(internalHint.targetClass(), node.getTargetClass());
-
-        final InternalNode actualNode = targetClass == node.getTargetClass()
-                ? node : node.toBuilder().targetClass(targetClass).build();
-
-        Generator<?> generator = spiGeneratorResolver.getSpiGenerator(node);
-
-        if (generator == null) {
-            generator = generatorResolver.getCached(actualNode);
-        }
-        return requireNonNull(generator);
+            return requireNonNull(delegate);
+        });
     }
 }

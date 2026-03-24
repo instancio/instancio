@@ -102,6 +102,8 @@ final class AnnotationNodeHandler implements NodeHandler {
             return GeneratorResult.emptyResult();
         }
 
+        // NOTE: annotation handlers can mutate the generator's state,
+        // therefore shared/cached generator instances must not be used here.
         Generator<?> generator;
 
         // AnnotationProcessor SPI can be used with or without
