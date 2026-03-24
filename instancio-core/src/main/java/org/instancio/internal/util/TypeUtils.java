@@ -66,7 +66,8 @@ public final class TypeUtils {
             return (Class<T>) parameterizedType.getRawType();
         } else if (type instanceof GenericArrayType genericArrayType) {
             final Type genericComponentType = genericArrayType.getGenericComponentType();
-            return getRawType(genericComponentType);
+            final Class<?> componentRawType = getRawType(genericComponentType);
+            return (Class<T>) Array.newInstance(componentRawType, 0).getClass();
         }
         throw Fail.withFataInternalError("Unhandled type: %s", type.getClass().getSimpleName());
     }

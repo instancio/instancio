@@ -58,6 +58,12 @@ class TypeUtilsTest {
         }
 
         @Test
+        void withGenericArrayType() {
+            assertThat(TypeUtils.getRawType(new TypeToken<Item<String>[]>() {}.get())).isEqualTo(Item[].class);
+            assertThat(TypeUtils.getRawType(new TypeToken<Item<String>[][]>() {}.get())).isEqualTo(Item[][].class);
+        }
+
+        @Test
         void withTypeVariable() {
             assertThatThrownBy(() -> TypeUtils.getRawType(TYPE_VARIABLE))
                     .isExactlyInstanceOf(InstancioTerminatingException.class)
