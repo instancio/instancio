@@ -30,6 +30,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Member;
@@ -325,7 +326,7 @@ class NodeCreator {
             @Nullable final InternalNode parent) {
 
         final Class<?> rawComponentType = TypeUtils.getRawType(genericComponentType);
-        final Class<?> arrayClass = TypeUtils.getArrayClass(rawComponentType);
+        final Class<?> arrayClass = Array.newInstance(rawComponentType, 0).getClass();
         final InternalNode node = builderTemplate(arrayType, arrayClass, member)
                 .parent(parent)
                 .nodeKind(NodeKind.ARRAY)
@@ -339,7 +340,8 @@ class NodeCreator {
 
         final Class<?> targetClassComponentType = targetClass.getComponentType();
 
-        if (!rawComponentType.isPrimitive()
+        if (subtypeResult.isPresent()
+            && !rawComponentType.isPrimitive()
             && targetClassComponentType != null
             && rawComponentType != targetClassComponentType) {
 
