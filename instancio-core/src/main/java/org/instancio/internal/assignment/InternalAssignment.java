@@ -19,7 +19,6 @@ import org.instancio.Assignment;
 import org.instancio.RandomFunction;
 import org.instancio.TargetSelector;
 import org.instancio.documentation.InternalApi;
-import org.instancio.generator.Generator;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
 import org.jspecify.annotations.Nullable;
@@ -36,7 +35,6 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
     private final TargetSelector destination;
     private final @Nullable Predicate<?> originPredicate; // null for unconditional assignments
     private final @Nullable GeneratorHolder generatorHolder; // null for `from(selectorA).to(selectorB)` assignments
-    private final @Nullable Generator<?> generator;
     private final @Nullable RandomFunction<?, ?> valueMapper;
 
     private InternalAssignment(final Builder builder) {
@@ -44,7 +42,6 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
         destination = requireNonNull(builder.destination);
         originPredicate = builder.originPredicate;
         generatorHolder = builder.generatorHolder;
-        generator = builder.generator;
         valueMapper = builder.valueMapper;
     }
 
@@ -62,16 +59,9 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
         return (Predicate<T>) originPredicate;
     }
 
-
     @Nullable
     public GeneratorHolder getGeneratorHolder() {
         return generatorHolder;
-    }
-
-    @Nullable
-    @SuppressWarnings("unchecked")
-    public <T> Generator<T> getGenerator() {
-        return (Generator<T>) generator;
     }
 
     @SuppressWarnings("unchecked")
@@ -94,7 +84,6 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
         builder.destination = this.destination;
         builder.originPredicate = this.originPredicate;
         builder.generatorHolder = this.generatorHolder;
-        builder.generator = this.generator;
         builder.valueMapper = this.valueMapper;
         return builder;
     }
@@ -104,7 +93,6 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
         private @Nullable Predicate<?> originPredicate;
         private @Nullable TargetSelector destination;
         private @Nullable GeneratorHolder generatorHolder;
-        private @Nullable Generator<?> generator;
         private @Nullable RandomFunction<?, ?> valueMapper;
 
         private Builder() {
@@ -127,11 +115,6 @@ public final class InternalAssignment implements Assignment, Flattener<InternalA
 
         public Builder generatorHolder(final GeneratorHolder generatorHolder) {
             this.generatorHolder = generatorHolder;
-            return this;
-        }
-
-        public Builder generator(final Generator<?> generator) {
-            this.generator = generator;
             return this;
         }
 

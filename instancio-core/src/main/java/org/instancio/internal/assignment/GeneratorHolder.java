@@ -38,7 +38,7 @@ public final class GeneratorHolder {
         this.specProvider = specProvider;
     }
 
-    static GeneratorHolder of(final Generator<?> generator) {
+    public static GeneratorHolder of(final Generator<?> generator) {
         ApiValidator.validateGeneratorNotNull(generator);
         return new GeneratorHolder(generator, null);
     }
@@ -65,11 +65,16 @@ public final class GeneratorHolder {
     }
 
     // Either generator or specProvider guaranteed to be not null
-    @SuppressWarnings({"unchecked", "NullAway"})
+    @SuppressWarnings({"unchecked", "DataFlowIssue", "NullAway"})
     public <T> Generator<T> getGenerator(final Generators generators) {
         return generator != null
                 ? (Generator<T>) generator
                 : (Generator<T>) specProvider.getSpec(generators);
+    }
 
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <T> Generator<T> getResolvedGenerator() {
+        return (Generator<T>) generator;
     }
 }

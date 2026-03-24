@@ -18,6 +18,7 @@ package org.instancio.internal.generation;
 import org.instancio.RandomFunction;
 import org.instancio.documentation.VisibleForTesting;
 import org.instancio.generator.Generator;
+import org.instancio.internal.assignment.GeneratorHolder;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
@@ -64,6 +65,7 @@ class AssignmentNodeHandler implements NodeHandler {
     }
 
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     public GeneratorResult getResult(final InternalNode node) {
         final List<InternalAssignment> assignments = context.getAssignments(node);
 
@@ -71,7 +73,8 @@ class AssignmentNodeHandler implements NodeHandler {
         for (int i = assignments.size() - 1; i >= 0; i--) {
             final InternalAssignment assignment = assignments.get(i);
             final Predicate<@Nullable Object> predicate = assignment.getOriginPredicate();
-            final Generator<Object> assignmentGenerator = assignment.getGenerator();
+            final GeneratorHolder holder = assignment.getGeneratorHolder();
+            final Generator<Object> assignmentGenerator = holder == null ? null : holder.getResolvedGenerator();
 
             // unconditional assignment
             if (predicate == null && assignmentGenerator != null) {
