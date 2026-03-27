@@ -13,7 +13,7 @@
 
     <properties>
         <version.build-helper-maven-plugin>3.6.1</version.build-helper-maven-plugin>
-        <version.dokka-maven-plugin>2.1.0</version.dokka-maven-plugin>
+        <version.dokka-maven-plugin>2.2.0</version.dokka-maven-plugin>
     </properties>
 
     <build>
