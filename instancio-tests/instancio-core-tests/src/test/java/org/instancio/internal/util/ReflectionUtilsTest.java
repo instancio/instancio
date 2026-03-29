@@ -214,6 +214,17 @@ class ReflectionUtilsTest {
     }
 
     @Test
+    void invokeStatic() {
+        final String result = ReflectionUtils.invokeStaticMethod(StaticFieldWithValue.class, "getStaticField");
+        assertThat(result).isEqualTo(StaticFieldWithValue.staticField);
+
+        assertThatThrownBy(() -> ReflectionUtils.invokeStaticMethod(StaticFieldWithValue.class, "foo"))
+                .isExactlyInstanceOf(InstancioException.class)
+                .hasMessageContaining("error invoking method 'foo' declared by class" +
+                                      " org.instancio.internal.util.ReflectionUtilsTest$StaticFieldWithValue");
+    }
+
+    @Test
     void hasNonNullValue() {
         final Field nameField = ReflectionUtils.getField(Person.class, "name");
         assertThat(ReflectionUtils.hasNonNullValue(nameField, null)).isFalse();
@@ -256,5 +267,9 @@ class ReflectionUtilsTest {
     @SuppressWarnings("all")
     private static class StaticFieldWithValue {
         private static String staticField = "expected";
+
+        public static String getStaticField() {
+            return staticField;
+        }
     }
 }

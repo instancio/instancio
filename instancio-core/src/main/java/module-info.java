@@ -33,11 +33,12 @@ module org.instancio.core {
     exports org.instancio.spi;
 
     exports org.instancio.internal to org.instancio.junit, org.instancio.guava, org.instancio.kotlin;
-    exports org.instancio.internal.generator to org.instancio.guava;
+    exports org.instancio.internal.generator to org.instancio.guava, org.instancio.protobuf;
     exports org.instancio.internal.generator.domain.internet to org.instancio.guava;
+    exports org.instancio.internal.generator.lang to org.instancio.protobuf;
     exports org.instancio.internal.generator.util to org.instancio.guava;
-    exports org.instancio.internal.spi to org.instancio.guava;
-    exports org.instancio.internal.util to org.instancio.guava, org.instancio.junit;
+    exports org.instancio.internal.spi to org.instancio.guava, org.instancio.protobuf;
+    exports org.instancio.internal.util to org.instancio.guava, org.instancio.junit, org.instancio.protobuf;
     exports org.instancio.support to org.instancio.junit;
 
     uses org.instancio.spi.InstancioServiceProvider;

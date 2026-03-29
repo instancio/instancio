@@ -20,12 +20,9 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.resolvers.NodeKindResolverFacade;
 import org.instancio.internal.util.Format;
-import org.instancio.internal.util.StringUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.settings.AssignmentType;
-import org.instancio.settings.Keys;
-import org.instancio.settings.Settings;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,18 +36,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * Helper class for creating nodes.
  */
-@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.GodClass"})
 class NodeCreator {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeCreator.class);
@@ -60,7 +52,7 @@ class NodeCreator {
     private final TypeHelper typeHelper;
     private final NodeKindResolverFacade nodeKindResolverFacade;
     private final SubtypeResolver subtypeResolver;
-    private final List<Pattern> ignorePatterns;
+    private final NodePruner nodePruner;
 
     NodeCreator(final ModelContext modelContext) {
         this.modelContext = modelContext;
@@ -68,22 +60,8 @@ class NodeCreator {
         this.nodeKindResolverFacade = new NodeKindResolverFacade(modelContext.getInternalServiceProviders());
         this.predefinedNodeCreator = new PredefinedNodeCreator(modelContext.getRootType(), nodeKindResolverFacade);
         this.subtypeResolver = new SubtypeResolver(modelContext);
-        this.ignorePatterns = getIgnorePatterns(modelContext.getSettings());
+        this.nodePruner = new NodePruner(modelContext);
     }
-
-    private List<Pattern> getIgnorePatterns(final Settings settings) {
-        final List<String> regexes = StringUtils.split(settings.get(Keys.IGNORE_FIELD_NAME_REGEXES));
-        if (regexes.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        final List<Pattern> patterns = new ArrayList<>(regexes.size());
-        for (String regex : regexes) {
-            patterns.add(Pattern.compile(regex));
-        }
-        return Collections.unmodifiableList(patterns);
-    }
-
 
     @Nullable
     InternalNode createNode(final Type type,
@@ -141,15 +119,6 @@ class NodeCreator {
 
         Verify.notNull(type, "'type' is null");
 
-        if (parent != null && parent.getDepth() >= modelContext.getMaxDepth()) {
-            LOG.trace("Maximum depth ({}) reached {}", modelContext.getMaxDepth(), parent);
-            return null;
-        }
-
-        if (shouldIgnoreMember(member)) {
-            return null;
-        }
-
         if (LOG.isTraceEnabled()) {
             LOG.trace("Creating node for: {}", Format.withoutPackage(type));
         }
@@ -173,12 +142,10 @@ class NodeCreator {
             throw new InstancioException("Unsupported type: " + type.getClass());
         }
 
-        if (node != null && modelContext.isIgnored(node)) {
-            node = node.toBuilder().nodeKind(NodeKind.IGNORED).build();
-        }
+        final InternalNode effectiveNode = nodePruner.apply(node);
+        LOG.trace("Created node {} for type {}", effectiveNode, type);
 
-        LOG.trace("Created node {} for type {}", node, type);
-        return node;
+        return effectiveNode;
     }
 
     @Nullable
@@ -231,7 +198,8 @@ class NodeCreator {
                 .build();
 
         final SubtypeResult subtypeResult = subtypeResolver.resolveSubtype(node);
-        final Type targetType = subtypeResult.isPresent() ? requireNonNull(subtypeResult.subtype()) : type;
+
+        final Type targetType = subtypeResult.isPresent() ? requireNonNull(subtypeResult.getSubtype()) : type;
         final Class<?> targetClass = targetType == type //NOPMD
                 ? rawType
                 : TypeUtils.getRawType(targetType);
@@ -248,29 +216,22 @@ class NodeCreator {
         }
 
         if (rawType != targetClass
-            && (!subtypeResult.validationEnabled() || (!targetClass.isEnum() && !rawType.isPrimitive()))) {
-            if (subtypeResult.validationEnabled()) {
+            && (!subtypeResult.isValidationEnabled() || (!targetClass.isEnum() && !rawType.isPrimitive()))) {
+
+            if (subtypeResult.isValidationEnabled()) {
                 ApiValidator.validateSubtype(rawType, targetClass);
             }
 
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Subtype mapping '{}' to '{}'",
-                        Format.withoutPackage(rawType),
-                        Format.withoutPackage(targetClass));
-            }
+            logSubtypeMapping(rawType, targetClass);
 
             // Re-evaluate node kind and type map.
             // Only override `type` if targetType is a ParameterizedType (i.e. not a Class)
             // to preserve the generic type information
-            if (targetType instanceof ParameterizedType) {
-                return node.toBuilder(targetType)
-                        .targetClass(targetClass)
-                        .nodeKind(getNodeKind(targetClass))
-                        .additionalTypeMap(typeHelper.createBridgeTypeMap(rawType, targetClass))
-                        .build();
-            }
+            final InternalNode.Builder builder = targetType instanceof ParameterizedType
+                    ? node.toBuilder(targetType)
+                    : node.toBuilder();
 
-            return node.toBuilder()
+            return builder
                     .targetClass(targetClass)
                     .nodeKind(getNodeKind(targetClass))
                     .additionalTypeMap(typeHelper.createBridgeTypeMap(rawType, targetClass))
@@ -334,8 +295,12 @@ class NodeCreator {
                 .build();
 
         final SubtypeResult subtypeResult = subtypeResolver.resolveSubtype(node);
-        final Class<?> targetClass = subtypeResult.isPresent()
-                ? TypeUtils.getRawType(requireNonNull(subtypeResult.subtype()))
+        final Type resolvedSubtype = subtypeResult.isPresent()
+                ? requireNonNull(subtypeResult.getSubtype())
+                : null;
+
+        final Class<?> targetClass = resolvedSubtype != null
+                ? TypeUtils.getRawType(resolvedSubtype)
                 : rawComponentType;
 
         final Class<?> targetClassComponentType = targetClass.getComponentType();
@@ -345,15 +310,11 @@ class NodeCreator {
             && targetClassComponentType != null
             && rawComponentType != targetClassComponentType) {
 
-            if (subtypeResult.validationEnabled()) {
+            if (subtypeResult.isValidationEnabled()) {
                 ApiValidator.validateSubtype(rawComponentType, targetClassComponentType);
             }
 
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Subtype mapping '{}' to '{}'",
-                        Format.withoutPackage(rawComponentType),
-                        Format.withoutPackage(targetClass));
-            }
+            logSubtypeMapping(rawComponentType, targetClass);
 
             final Map<Type, Type> typeMapForSubtype = typeHelper.createBridgeTypeMap(rawComponentType, targetClassComponentType);
 
@@ -368,16 +329,11 @@ class NodeCreator {
         return node;
     }
 
-    private boolean shouldIgnoreMember(final @Nullable Member member) {
-        if (!ignorePatterns.isEmpty() && member instanceof Field) {
-            final String fieldName = member.getName();
-            for (Pattern p : ignorePatterns) {
-                if (p.matcher(fieldName).matches()) {
-                    return true;
-                }
-            }
+    private static void logSubtypeMapping(final Class<?> rawType, final Class<?> targetClass) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Subtype mapping '{}' to '{}'",
+                    Format.withoutPackage(rawType),
+                    Format.withoutPackage(targetClass));
         }
-
-        return false;
     }
 }

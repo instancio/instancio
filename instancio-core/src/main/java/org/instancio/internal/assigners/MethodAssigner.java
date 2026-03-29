@@ -17,7 +17,6 @@ package org.instancio.internal.assigners;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.InstancioException;
-import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Format;
@@ -48,12 +47,14 @@ final class MethodAssigner implements Assigner {
     private final Assigner fieldAssigner;
     private final SetterMethodResolverFacade setterMethodResolverFacade;
 
-    MethodAssigner(final ModelContext context) {
-        this.settings = context.getSettings();
+    MethodAssigner(
+            final Settings settings,
+            final SetterMethodResolverFacade setterMethodResolverFacade) {
+
+        this.settings = settings;
         this.excludedModifiers = settings.get(Keys.SETTER_EXCLUDE_MODIFIER);
         this.fieldAssigner = new FieldAssigner(settings);
-        this.setterMethodResolverFacade = new SetterMethodResolverFacade(
-                context.getServiceProviders().getSetterMethodResolvers());
+        this.setterMethodResolverFacade = setterMethodResolverFacade;
 
         LOG.trace("{}, {}, {}, {}", AssignmentType.METHOD,
                 settings.get(Keys.SETTER_STYLE),

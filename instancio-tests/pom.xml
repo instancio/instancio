@@ -39,14 +39,15 @@
         <module>global-seed-tests</module>
         <module>groovy-tests</module>
         <module>kotlin-tests</module>
+        <module>protobuf-tests</module>
         <module>jpa-jakarta-tests</module>
         <module>bean-validation-jakarta-tests</module>
         <module>packaging-tests</module>
-        <module>report-aggregate</module>
         <module>instancio-core-tests</module>
         <module>instancio-junit-tests</module>
         <module>bean-validation-hibernate-tests</module>
         <module>spi-tests</module>
+        <module>report-aggregate</module>
     </modules>
 
     <profiles>
@@ -119,6 +120,11 @@
             <dependency>
                 <groupId>org.instancio</groupId>
                 <artifactId>instancio-kotlin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.instancio</groupId>
+                <artifactId>instancio-protobuf</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

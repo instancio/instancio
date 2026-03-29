@@ -28,9 +28,12 @@ import org.instancio.spi.InstancioServiceProvider;
 public interface InternalTypeResolver extends InstancioServiceProvider.TypeResolver {
 
     /**
-     * Allows disabling subtype validation for internal type resolvers.
+     * Returns {@code false} to disable subtype validation during node graph construction.
      *
-     * @return {@code true} if subtype validation is enabled.
+     * <p>Intended for implementations that remap types in ways that would
+     * not pass standard subtype checks (e.g. remapping primitives or enums).
+     *
+     * @return {@code true} to enable subtype validation; {@code false} to disable it.
      * @since 6.0.0
      */
     boolean isSubtypeValidationEnabled();

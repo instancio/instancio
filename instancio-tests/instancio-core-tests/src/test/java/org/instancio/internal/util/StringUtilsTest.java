@@ -124,6 +124,26 @@ class StringUtilsTest {
         assertThat(StringUtils.split(" , bar , , , ")).containsExactly("bar");
     }
 
+    @Test
+    void camelCaseToSnakeCase() {
+        assertThat(StringUtils.camelCaseToSnakeCase("")).isEmpty();
+        assertThat(StringUtils.camelCaseToSnakeCase("a")).isEqualTo("a");
+        assertThat(StringUtils.camelCaseToSnakeCase("A")).isEqualTo("a");
+        assertThat(StringUtils.camelCaseToSnakeCase("aB")).isEqualTo("a_b");
+        assertThat(StringUtils.camelCaseToSnakeCase("aBC")).isEqualTo("a_b_c");
+        assertThat(StringUtils.camelCaseToSnakeCase("fooBarBaz")).isEqualTo("foo_bar_baz");
+    }
+
+    @Test
+    void snakeCaseToCamelCase() {
+        assertThat(StringUtils.snakeCaseToCamelCase("")).isEmpty();
+        assertThat(StringUtils.snakeCaseToCamelCase("a")).isEqualTo("a");
+        assertThat(StringUtils.snakeCaseToCamelCase("foo")).isEqualTo("foo");
+        assertThat(StringUtils.snakeCaseToCamelCase("foo_bar")).isEqualTo("fooBar");
+        assertThat(StringUtils.snakeCaseToCamelCase("foo_bar_baz")).isEqualTo("fooBarBaz");
+        assertThat(StringUtils.snakeCaseToCamelCase("foo__bar")).isEqualTo("fooBar");
+    }
+
     @Nested
     class GetTemplatePropertiesTest {
 

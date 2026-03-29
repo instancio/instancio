@@ -47,6 +47,10 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
+            <artifactId>instancio-protobuf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
             <artifactId>instancio-guava-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -120,6 +124,12 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>bean-validation-hibernate-tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>protobuf-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
