@@ -19,20 +19,41 @@ import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 
-record SubtypeResult(@Nullable Type subtype, boolean validationEnabled) {
+final class SubtypeResult {
 
     private static final SubtypeResult EMPTY_RESULT = new SubtypeResult(null, false);
+
+    private final @Nullable Type subtype;
+    private final boolean validationEnabled;
+
+    private SubtypeResult(final @Nullable Type subtype, final boolean validationEnabled) {
+        this.subtype = subtype;
+        this.validationEnabled = validationEnabled;
+    }
 
     static SubtypeResult empty() {
         return EMPTY_RESULT;
     }
 
-    static SubtypeResult subtypeWithValidation(Type subtype) {
-        return new SubtypeResult(subtype, true);
+    static SubtypeResult of(@Nullable final Type subtype, final boolean validationEnabled) {
+        return new SubtypeResult(subtype, validationEnabled);
     }
 
-    static SubtypeResult subtypeWithoutValidation(@Nullable Type subtype) {
-        return new SubtypeResult(subtype, false);
+    static SubtypeResult withValidationEnabled(final Type subtype) {
+        return of(subtype, true);
+    }
+
+    static SubtypeResult withValidationDisabled(@Nullable final Type subtype) {
+        return of(subtype, false);
+    }
+
+    @Nullable
+    Type getSubtype() {
+        return subtype;
+    }
+
+    boolean isValidationEnabled() {
+        return validationEnabled;
     }
 
     boolean isPresent() {

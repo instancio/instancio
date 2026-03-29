@@ -16,13 +16,14 @@ description: "Get started with Instancio. Install dependencies via Maven or Grad
 
 The following dependencies are available from Maven central:
 
-| Dependency         | JPMS Module Name       | Description                 |
-|--------------------|------------------------|-----------------------------|
-| `instancio-core`   | `org.instancio.core`   | Core library                |
-| `instancio-junit`  | `org.instancio.junit`  | JUnit framework integration |
-| `instancio-guava`  | `org.instancio.guava`  | Support for Google Guava    |
-| `instancio-kotlin` | `org.instancio.kotlin` | Instancio Kotlin extension  |
-| `instancio-bom`    | -                      | Bill Of Materials           |
+| Dependency           | JPMS Module Name         | Description                 |
+|----------------------|--------------------------|-----------------------------|
+| `instancio-bom`      | -                        | Bill Of Materials           |
+| `instancio-core`     | `org.instancio.core`     | Core library                |
+| `instancio-junit`    | `org.instancio.junit`    | JUnit framework integration |
+| `instancio-guava`    | `org.instancio.guava`    | Support for Google Guava    |
+| `instancio-kotlin`   | `org.instancio.kotlin`   | Instancio Kotlin extension  |
+| `instancio-protobuf` | `org.instancio.protobuf` | Instancio Protobuf support  |
 
 !!! danger "The `org.instancio:instancio` artifact on Maven central is an older dependency that should no longer be used."
 
@@ -90,6 +91,13 @@ Please make sure they are available on the classpath:
 - `org.jetbrains.kotlin:kotlin-stdlib`
 - `org.jetbrains.kotlin:kotlin-reflect`
 
+### **`instancio-protobuf`**
+
+Using `instancio-protobuf` requires the following dependencies on the classpath:
+
+- either `instancio-core` or `instancio-junit`
+- `com.google.protobuf:protobuf-java` version `4.x`
+
 ### **`instancio-bom`**
 
 Use `instancio-bom` to easily manage Instancio dependencies:
@@ -123,6 +131,16 @@ Use `instancio-bom` to easily manage Instancio dependencies:
         <artifactId>instancio-guava</artifactId>
         <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>org.instancio</groupId>
+        <artifactId>instancio-kotlin</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.instancio</groupId>
+        <artifactId>instancio-protobuf</artifactId>
+        <scope>test</scope>
+    </dependency>
 </dependencies>
 ```
 === "Gradle"
@@ -132,6 +150,8 @@ dependencies {
     testImplementation 'org.instancio:instancio-core'
     testImplementation 'org.instancio:instancio-junit'
     testImplementation 'org.instancio:instancio-guava'
+    testImplementation 'org.instancio:instancio-kotlin'
+    testImplementation 'org.instancio:instancio-protobuf'
 }
 ```
 

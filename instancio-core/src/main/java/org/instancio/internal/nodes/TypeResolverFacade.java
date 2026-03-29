@@ -53,7 +53,7 @@ class TypeResolverFacade {
                             entry.getInstancioProviderClass(), resolvedType, originalTargetClass));
                 }
 
-                return new SubtypeResult(resolvedType, validateSubtype);
+                return SubtypeResult.of(resolvedType, validateSubtype);
             }
         }
         return SubtypeResult.empty();

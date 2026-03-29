@@ -18,21 +18,19 @@ package org.instancio.internal.nodes;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.util.SealedClassUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 
-final class SubtypeResolver {
+import static org.instancio.internal.util.SealedClassUtils.getSealedClassImplementations;
+import static org.instancio.internal.util.SealedClassUtils.isSealedAbstractType;
 
-    private static final Logger LOG = LoggerFactory.getLogger(SubtypeResolver.class);
+final class SubtypeResolver {
 
     private final ModelContext modelContext;
     private final TypeResolverFacade typeResolverFacade;
@@ -58,20 +56,15 @@ final class SubtypeResolver {
         final SubtypeResult subtype = getSubtype(node);
 
         if (subtype.isPresent()) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Resolved subtype: {} -> {}", node.getRawType().getName(), subtype.subtype());
-            }
             return subtype;
         }
-        if (SealedClassUtils.isSealedAbstractType(node.getTargetClass())
-                && (node.is(NodeKind.POJO) || node.is(NodeKind.RECORD))) {
-
-            final List<Class<?>> impls = SealedClassUtils.getSealedClassImplementations(node.getTargetClass());
+        if (isSealedAbstractType(node.getTargetClass()) && node.is(NodeKind.POJO)) {
+            final List<Class<?>> impls = getSealedClassImplementations(node.getTargetClass());
             final Class<?> randomSubtype = modelContext.getRandom().oneOf(impls);
-            return SubtypeResult.subtypeWithoutValidation(randomSubtype);
+            return SubtypeResult.withValidationDisabled(randomSubtype);
         }
         final Class<?> subtypeFromAncestors = resolveSubtypeFromAncestors(node);
-        return SubtypeResult.subtypeWithoutValidation(subtypeFromAncestors);
+        return SubtypeResult.withValidationDisabled(subtypeFromAncestors);
     }
 
     private SubtypeResult getSubtype(final InternalNode node) {
@@ -80,7 +73,7 @@ final class SubtypeResolver {
                 .map(TypeUtils::getRawType);
 
         if (subtype.isPresent()) {
-            return SubtypeResult.subtypeWithValidation(subtype.get());
+            return SubtypeResult.withValidationEnabled(subtype.get());
         }
 
         final Settings settings = modelContext.getSettings();
@@ -88,7 +81,7 @@ final class SubtypeResolver {
 
         return subtypeFromSettings == null
                 ? typeResolverFacade.resolve(node)
-                : SubtypeResult.subtypeWithValidation(subtypeFromSettings);
+                : SubtypeResult.withValidationEnabled(subtypeFromSettings);
     }
 
     @Nullable

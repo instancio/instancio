@@ -15,8 +15,10 @@
  */
 package org.instancio.internal.spi;
 
+import org.instancio.Node;
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.generator.InternalContainerHint;
+import org.instancio.settings.Settings;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -39,8 +41,84 @@ public interface InternalServiceProvider {
     }
 
     @Nullable
+    default InternalNullSubstitutor getNullSubstitutor() {
+        return null;
+    }
+
+    @Nullable
     default InternalGetterMethodFieldResolver getGetterMethodFieldResolver() {
         return null;
+    }
+
+    @Nullable
+    default InternalNodeFilter getNodeFilter() {
+        return null;
+    }
+
+    @Nullable
+    default InternalAssignerSettingsProvider getAssignerSettingsProvider() {
+        return null;
+    }
+
+    /**
+     * Provides {@link Settings} overrides that control how values are assigned
+     * to children of a specific target class. This allows internal SPIs
+     * to provide settings without reliance on {@code instancio.properties}
+     * which can be overridden by users.
+     *
+     * @since 6.0.0
+     */
+    interface InternalAssignerSettingsProvider {
+
+        /**
+         * Returns the {@link Settings} overrides to use when assigning
+         * values to children of the given target class.
+         *
+         * @param targetClass the parent object's class being populated
+         * @return settings overrides, or {@code null} if not applicable
+         */
+        @Nullable
+        Settings getAssignerSettings(Class<?> targetClass);
+    }
+
+    /**
+     * Determines how a node should be handled during graph processing.
+     *
+     * @since 6.0.0
+     */
+    interface InternalNodeFilter {
+
+        /**
+         * Outcome of evaluating a node.
+         *
+         * @since 6.0.0
+         */
+        enum Decision {
+
+            /**
+             * Node is retained in the graph as-is.
+             */
+            KEEP,
+
+            /**
+             * Node is retained but marked ignored; visible in {@code verbose()} output.
+             */
+            IGNORE,
+
+            /**
+             * Node is removed from the graph.
+             */
+            PRUNE
+        }
+
+        /**
+         * Evaluates the given node and returns the appropriate {@link Decision}.
+         *
+         * @param node the node to evaluate
+         * @return the decision for the node
+         * @since 6.0.0
+         */
+        Decision resolve(Node node);
     }
 
     /**
@@ -64,6 +142,23 @@ public interface InternalServiceProvider {
          */
         @Nullable
         Field resolveField(Class<?> declaringClass, String methodName);
+    }
+
+    /**
+     * Replaces a null value produced with a non-null substitute, if applicable.
+     *
+     * @since 6.0.0
+     */
+    interface InternalNullSubstitutor {
+
+        /**
+         * Returns a substitute for null, or {@code null} to keep the null result.
+         *
+         * @param node for which a null result was generated
+         * @return substitute value, or {@code null} for no substitution
+         */
+        @Nullable
+        Object substituteNull(Node node);
     }
 
     /**

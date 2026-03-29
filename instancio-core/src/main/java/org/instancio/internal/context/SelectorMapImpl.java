@@ -245,10 +245,18 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             return Collections.singletonList(scopelessSelectors.get(SCOPELESS_ROOT).get(0));
         }
 
+        final Class<?> rawType = node.getRawType();
+        final Class<?> targetClass = node.getTargetClass();
         final List<SelectorImpl> candidates = new ArrayList<>();
 
         // Class selectors
-        candidates.addAll(scopelessSelectors.getOrDefault(new ScopelessSelector(node.getRawType()), emptyList()));
+        candidates.addAll(scopelessSelectors.getOrDefault(new ScopelessSelector(rawType), emptyList()));
+
+        // Also look up by targetClass when it differs from rawType (e.g. when a TypeResolver
+        // maps a raw type like int to a different type like an enum or String).
+        if (!rawType.equals(targetClass)) {
+            candidates.addAll(scopelessSelectors.getOrDefault(new ScopelessSelector(targetClass), emptyList()));
+        }
 
         // Setter selectors
         final Method setter = node.getSetter();

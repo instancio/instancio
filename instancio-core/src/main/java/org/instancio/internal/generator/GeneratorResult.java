@@ -97,6 +97,21 @@ public final class GeneratorResult {
         return DELAYED_RESULT;
     }
 
+    public GeneratorResult applyBuildFunctionIfPresent() {
+        if (value == null) {
+            return this;
+        }
+        final InternalContainerHint hint = hints.get(InternalContainerHint.class);
+        if (hint != null) {
+            final ContainerBuildFunction<Object, Object> buildFn = hint.buildFunction();
+            if (buildFn != null) {
+                final Object built = buildFn.build(value);
+                return create(built, hints);
+            }
+        }
+        return this;
+    }
+
     // Note: another option is to introduce a dedicated EmitGeneratorHint,
     // however for a single boolean flag it doesn't seem to be worth it
     public boolean hasEmitNullHint() {

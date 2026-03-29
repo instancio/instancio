@@ -187,6 +187,16 @@ public final class ReflectionUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T invokeStaticMethod(final Class<?> declaringClass, final String methodName) {
+        try {
+            return (T) declaringClass.getMethod(methodName).invoke(null);
+        } catch (Exception ex) {
+            throw Fail.withInternalError("error invoking method '%s' declared by %s",
+                    methodName, declaringClass, ex);
+        }
+    }
+
     public static boolean hasNonNullValue(final Field field, @Nullable final Object object) {
         return object != null && getFieldValue(field, object) != null;
     }

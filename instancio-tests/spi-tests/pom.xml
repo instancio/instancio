@@ -38,6 +38,29 @@
             <artifactId>instancio-test-support</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Include Guava and Protobuf to verify they don't
+             conflict with user-defined SPI implementations -->
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-guava</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>test</scope>
+            <version>${version.guava}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-protobuf</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

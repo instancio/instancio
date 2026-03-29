@@ -82,13 +82,12 @@ class TypeResolverFromSpiTest {
     @Test
     @DisplayName("Should use class resolved via SPI (with generic class)")
     void shouldUseClassResolvedViaSPIWithGenericClass() {
-        final ItemInterfaceHolder<String> result = Instancio.create(new TypeToken<ItemInterfaceHolder<String>>() {});
+        final ItemInterfaceHolder<String> result = Instancio.create(new TypeToken<>() {});
         assertThat(result.getItemInterface()).isExactlyInstanceOf(ItemAlternativeImpl.class);
         assertThat(result.getItemInterface().getValue()).isNotBlank();
     }
 
     @Test
-    @DisplayName("TypeResolver.getSubtype(Type) is invoked for a generic root type")
     void typeResolverWithGenericRootType() {
         final ItemInterface<String> result = Instancio.create(new TypeToken<>() {});
 
@@ -97,7 +96,6 @@ class TypeResolverFromSpiTest {
     }
 
     @Test
-    @DisplayName("TypeResolver.getSubtype(Type) is invoked for collection element type")
     void typeResolverWithCollectionElementType() {
         final ListOfItemInterfaceString result = Instancio.create(ListOfItemInterfaceString.class);
 
@@ -110,11 +108,11 @@ class TypeResolverFromSpiTest {
     void shouldThrowExceptionIfGivenInvalidSubtype() {
         assertThatThrownBy(() -> Instancio.create(BaseClassSubClassInheritance.SubClass.class))
                 .isExactlyInstanceOf(InstancioSpiException.class)
-                .hasMessage(String.format(
-                        "%n%s provided an invalid subtype:%n" +
-                                " -> class org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance$BaseClass%n" +
-                                "is not a subtype of:%n" +
-                                " -> class org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance$SubClass",
+                .hasMessage(String.format("""
+                                %n%s provided an invalid subtype:
+                                 -> class org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance$BaseClass
+                                is not a subtype of:
+                                 -> class org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance$SubClass""",
                         CustomTypeProvider.class));
     }
 }

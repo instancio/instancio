@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import static org.instancio.internal.util.ErrorMessageUtils.invalidStringTemplate;
 
+@SuppressWarnings("PMD.GodClass")
 public final class StringUtils {
 
     @Contract("null -> true")
@@ -183,6 +184,32 @@ public final class StringUtils {
             tokens.add(token);
         }
         return Collections.unmodifiableList(tokens);
+    }
+
+    public static String camelCaseToSnakeCase(final String camel) {
+        final StringBuilder sb = new StringBuilder(camel.length() + 4);
+        for (int i = 0; i < camel.length(); i++) {
+            final char c = camel.charAt(i);
+            if (Character.isUpperCase(c) && !sb.isEmpty()) {
+                sb.append('_');
+            }
+            sb.append(Character.toLowerCase(c));
+        }
+        return sb.toString();
+    }
+
+    public static String snakeCaseToCamelCase(final String s) {
+        final String[] parts = s.split("_");
+        final StringBuilder sb = new StringBuilder(s.length());
+        sb.append(parts[0]);
+
+        for (int i = 1; i < parts.length; i++) {
+            if (!parts[i].isEmpty()) {
+                sb.append(Character.toUpperCase(parts[i].charAt(0)))
+                        .append(parts[i], 1, parts[i].length());
+            }
+        }
+        return sb.toString();
     }
 
     private StringUtils() {

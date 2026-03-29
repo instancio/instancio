@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option java_package = "org.instancio.test.prototobuf";
+option java_outer_classname = "Proto";
+
+message SupportedNumericTypes {
+  int32 standard_int32 = 1;
+  int64 standard_int64 = 2;
+  uint32 unsigned_int32 = 3;
+  uint64 unsigned_int64 = 4;
+  sint32 signed_int32 = 5;
+  sint64 signed_int64 = 6;
+  fixed32 fixed_int32 = 7;
+  fixed64 fixed_int64 = 8;
+  sfixed32 signed_fixed32 = 9;
+  sfixed64 signed_fixed64 = 10;
+  float single_precision = 11;
+  double double_precision = 12;
+  google.protobuf.DoubleValue wrapped_double = 13;
+  google.protobuf.FloatValue wrapped_float = 14;
+  google.protobuf.Int32Value wrapped_int32 = 15;
+  google.protobuf.Int64Value wrapped_int64 = 16;
+  google.protobuf.UInt32Value wrapped_uint32 = 17;
+  google.protobuf.UInt64Value wrapped_uint64 = 18;
+}
+
+message SupportedOtherTypes {
+  bool bool_field = 1;
+  bytes bytes_field = 2;
+  google.protobuf.BoolValue wrapped_bool = 3;
+  google.protobuf.BytesValue wrapped_bytes = 4;
+  google.protobuf.Duration duration = 5;
+  google.protobuf.Timestamp timestamp = 6;
+}
+
+message SupportedNumericTypesAsMapValues {
+  map<string, int32> ints = 1;
+  map<string, int64> longs = 2;
+  map<string, float> floats = 3;
+  map<string, double> doubles = 4;
+}
+
+message SupportedNumericTypesAsCollectionValues {
+  repeated int32 ints = 1;
+  repeated int64 longs = 2;
+  repeated float floats = 3;
+  repeated double doubles = 4;
+}
+
+message SupportedOtherTypesAsMapValues {
+  map<string, bool> bools = 1;
+  map<string, google.protobuf.Duration> durations = 2;
+  map<string, google.protobuf.Timestamp> timestamps = 3;
+}
+
+
+message StructMessage {
+  // Not supported
+  google.protobuf.Struct struct = 1;
+}
+
+message AnyMessage {
+  // Not supported
+  google.protobuf.Any foo = 1;
+}
+
+message OneOfMessage {
+  // Not supported
+  oneof choice {
+    string foo = 1;
+    string bar = 2;
+  }
+}
+
+message Person {
+  string name = 1;
+  int32 age = 2;
+  Gender gender = 3;
+  Address address = 4;
+  map<string, Address> addresses = 5;
+  map<string, int32> attributes = 6;
+  google.protobuf.StringValue nickname = 8; // Nullable string wrapper
+  Person spouse = 9;
+  repeated Person children = 10;
+}
+
+message Address {
+  string address = 1;
+  string city = 2;
+  string country = 3;
+  repeated Phone phone_numbers = 4;
+}
+
+message Phone {
+  string country_code = 1;
+  string number = 2;
+}
+
+enum Gender {
+  UNKNOWN = 0;
+  MALE = 1;
+  FEMALE = 2;
+  OTHER = 3;
+}

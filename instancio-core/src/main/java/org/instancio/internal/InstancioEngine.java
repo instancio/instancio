@@ -23,7 +23,7 @@ import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.internal.NodePopulationFilter.NodeFilterResult;
 import org.instancio.internal.assigners.Assigner;
-import org.instancio.internal.assigners.AssignerImpl;
+import org.instancio.internal.assigners.AssignerResolver;
 import org.instancio.internal.assignment.AssignmentErrorUtil;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generation.AssigmentObjectStore;
@@ -88,8 +88,9 @@ class InstancioEngine {
     private final GenerationListener[] listeners;
     private final AfterGenerate defaultAfterGenerate;
     private final NodeFilter nodeFilter;
-    private final Assigner assigner;
+    private final AssignerResolver assignerResolver;
     private final AssigmentObjectStore assigmentObjectStore;
+    private final NullSubstitutorFacade nullSubstitutorFacade;
     private final DelayedNodeQueue delayedNodeQueue = new DelayedNodeQueue();
     private final int maxGenerationAttempts;
 
@@ -100,11 +101,12 @@ class InstancioEngine {
         callbackHandler = CallbackHandler.create(context);
         containerFactoriesHandler = new ContainerFactoriesHandler(context.getInternalServiceProviders());
         assigmentObjectStore = AssigmentObjectStore.create(context);
-        generatorFacade = new GeneratorFacade(context, assigmentObjectStore);
+        nullSubstitutorFacade = new NullSubstitutorFacade(context);
+        generatorFacade = new GeneratorFacade(context, nullSubstitutorFacade, assigmentObjectStore);
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
         maxGenerationAttempts = context.getSettings().get(Keys.MAX_GENERATION_ATTEMPTS);
         nodeFilter = new NodeFilter(context);
-        assigner = new AssignerImpl(context);
+        assignerResolver = AssignerResolver.create(context);
         listeners = new GenerationListener[]{
                 callbackHandler,
                 assigmentObjectStore,
@@ -149,8 +151,10 @@ class InstancioEngine {
                 i--;
                 delayedNodeQueue.addLast(entry);
             } else {
-                final Object parentResultValue = requireNonNull(entry.getParentResult().getValue());
-                assignValue(parentResultValue, entry.getNode(), result);
+                final GeneratorResult parentResult = entry.getParentResult();
+                final Object parentResultValue = requireNonNull(parentResult.getValue());
+                final Assigner assigner = assignerResolver.resolve(parentResult);
+                assignValue(parentResultValue, entry.getNode(), result, assigner);
             }
         }
 
@@ -202,21 +206,23 @@ class InstancioEngine {
         final GeneratorResult generatorResult;
 
         if (context.getRandom().diceRoll(isNullable)) {
-            generatorResult = GeneratorResult.nullResult();
-        } else if (node.is(NodeKind.JDK) || node.getChildren().isEmpty()) { // leaf - generate a value
+            generatorResult = nullSubstitutorFacade.substituteNull(node);
+        } else if (node.is(NodeKind.JDK)) {
             generatorResult = generateValue(node);
-        } else if (node.is(NodeKind.ARRAY)) {
-            generatorResult = generateArray(node);
+        } else if (node.is(NodeKind.POJO)) {
+            generatorResult = generatePojo(node);
         } else if (node.is(NodeKind.COLLECTION)) {
             generatorResult = generateCollection(node);
         } else if (node.is(NodeKind.MAP)) {
             generatorResult = generateMap(node);
+        } else if (node.is(NodeKind.ARRAY)) {
+            generatorResult = generateArray(node);
         } else if (node.is(NodeKind.RECORD)) {
             generatorResult = generateRecord(node);
         } else if (node.is(NodeKind.CONTAINER)) {
             generatorResult = generateContainer(node);
-        } else if (node.is(NodeKind.POJO)) {
-            generatorResult = generatePojo(node);
+        } else if (node.getChildren().isEmpty()) {
+            generatorResult = generateValue(node).applyBuildFunctionIfPresent();
         } else { // unreachable
             throw Fail.withFataInternalError("Unhandled node kind: '%s' for %s", node.getNodeKind(), node);
         }
@@ -233,7 +239,8 @@ class InstancioEngine {
         if (!nodeResult.isDelayed()) {
             populateChildren(node.getChildren(), nodeResult);
         }
-        return nodeResult;
+
+        return nodeResult.applyBuildFunctionIfPresent();
     }
 
     private void populateArray(final InternalNode node, final GeneratorResult result) {
@@ -655,8 +662,13 @@ class InstancioEngine {
         final Object parentObject = generatorResult.getValue();
         final Hints hints = generatorResult.getHints();
         final AfterGenerate action = requireNonNull(hints.afterGenerate());
+        final Assigner assigner = assignerResolver.resolve(generatorResult);
 
         for (final InternalNode child : children) {
+            if (child.isIgnored()) {
+                continue;
+            }
+
             final NodeFilterResult filterResult = nodeFilter.filter(child, action, parentObject);
 
             if (filterResult == NodeFilterResult.GENERATE) {
@@ -665,7 +677,7 @@ class InstancioEngine {
                 if (result.isDelayed()) {
                     delayedNodeQueue.addLast(new DelayedNode(child, generatorResult));
                 } else {
-                    assignValue(parentObject, child, result);
+                    assignValue(parentObject, child, result, assigner);
                 }
                 continue;
             }
@@ -764,7 +776,12 @@ class InstancioEngine {
         return containerFactoriesHandler.substituteResult(node, generatorResult);
     }
 
-    private void assignValue(final Object parentResult, final InternalNode node, final GeneratorResult result) {
+    private static void assignValue(
+            final Object parentResult,
+            final InternalNode node,
+            final GeneratorResult result,
+            final Assigner assigner) {
+
         if (!result.isEmpty() && !result.isIgnored()) {
             assigner.assign(node, parentResult, result.getValue());
         }
