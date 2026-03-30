@@ -59,7 +59,7 @@
         <version.hibernate.validator>9.1.0.Final</version.hibernate.validator>
         <version.highlight.js>11.11.1</version.highlight.js>
         <version.jackson>3.1.1</version.jackson>
-        <version.groovy>5.0.4</version.groovy>
+        <version.groovy>5.0.5</version.groovy>
         <version.jakarta.persistence>3.2.0</version.jakarta.persistence>
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
         <version.jspecify>1.0.0</version.jspecify>
