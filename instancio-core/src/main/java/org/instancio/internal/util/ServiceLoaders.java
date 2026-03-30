@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.ServiceLoader.Provider;
 
 public final class ServiceLoaders {
 
@@ -33,6 +34,10 @@ public final class ServiceLoaders {
             providers.add(service);
         }
         return Collections.unmodifiableList(providers);
+    }
+
+    public static <T> List<Provider<T>> loadAllProviders(final Class<T> spi) {
+        return ServiceLoader.load(spi, getClassLoader()).stream().toList();
     }
 
     private static ClassLoader getClassLoader() {

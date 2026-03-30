@@ -26,9 +26,12 @@ import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.ServiceProviderContext;
 
 import java.util.List;
+import java.util.ServiceLoader.Provider;
 
 public final class Providers {
 
+    private static final List<Provider<InstancioServiceProvider>> PROVIDERS = ServiceLoaders.loadAllProviders(
+        InstancioServiceProvider.class);
     private final List<ProviderEntry<GeneratorProvider>> generatorProviders;
     private final List<ProviderEntry<TypeResolver>> typeResolvers;
     private final List<ProviderEntry<TypeInstantiator>> typeInstantiators;
@@ -36,7 +39,7 @@ public final class Providers {
     private final List<ProviderEntry<AnnotationProcessor>> annotationProcessors;
 
     public Providers(final ServiceProviderContext context) {
-        this(ServiceLoaders.loadAll(InstancioServiceProvider.class), context);
+        this(getProviders(), context);
     }
 
     @VisibleForTesting
@@ -48,6 +51,10 @@ public final class Providers {
         typeInstantiators = ProviderEntry.from(spList, InstancioServiceProvider::getTypeInstantiator);
         setterMethodResolvers = ProviderEntry.from(spList, InstancioServiceProvider::getSetterMethodResolver);
         annotationProcessors = ProviderEntry.from(spList, InstancioServiceProvider::getAnnotationProcessor);
+    }
+
+    private static List<InstancioServiceProvider> getProviders() {
+        return PROVIDERS.stream().map(Provider::get).toList();
     }
 
     public List<ProviderEntry<GeneratorProvider>> getGeneratorProviders() {
