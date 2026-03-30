@@ -86,7 +86,7 @@ class AssignmentNodeHandler implements NodeHandler {
             if (candidateResult == null) {
                 LOG.trace("Delayed result for {}", assignment.getDestination());
                 unresolvedAssignments.add(assignment);
-                return GeneratorResult.delayed();
+                return GeneratorResult.delayedResult();
             }
 
             unresolvedAssignments.remove(assignment);
@@ -110,7 +110,7 @@ class AssignmentNodeHandler implements NodeHandler {
                     // Since the same object instance is assigned to different fields,
                     // set this result to DO_NOT_MODIFY. The result will be populated
                     // based on the original hint
-                    return GeneratorResult.create(destinationResult, Constants.DO_NOT_MODIFY_HINT);
+                    return GeneratorResult.resolved(destinationResult, Constants.DO_NOT_MODIFY_HINT);
                 } else {
                     return userSuppliedGeneratorProcessor.getGeneratorResult(node, assignmentGenerator);
                 }
@@ -118,8 +118,8 @@ class AssignmentNodeHandler implements NodeHandler {
         }
 
         // if no assignments, or origin value didn't satisfy the predicate
-        // return empty result means process the node as usual using a built-in generator
-        return GeneratorResult.emptyResult();
+        // return unresolved result means process the node as usual using a built-in generator
+        return GeneratorResult.unresolvedResult();
     }
 
     Set<InternalAssignment> getUnresolvedAssignments() {
@@ -149,7 +149,7 @@ class AssignmentNodeHandler implements NodeHandler {
 
         @Override
         public GeneratorResult getResult(final InternalNode node) {
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         @Override

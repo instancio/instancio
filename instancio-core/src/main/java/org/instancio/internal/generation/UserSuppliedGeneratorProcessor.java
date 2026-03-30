@@ -69,11 +69,11 @@ public final class UserSuppliedGeneratorProcessor {
         }
 
         if (internalHint != null && internalHint.emptyResult()) {
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         final Object value = generator.generate(context.getRandom());
-        return GeneratorResult.create(value, hints);
+        return GeneratorResult.resolved(value, hints);
     }
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)

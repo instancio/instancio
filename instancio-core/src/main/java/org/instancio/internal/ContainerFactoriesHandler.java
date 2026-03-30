@@ -63,7 +63,7 @@ class ContainerFactoriesHandler {
 
             if (fn != null) {
                 final Object replacement = applyFunction(fn, result);
-                return GeneratorResult.create(replacement, result.getHints());
+                return GeneratorResult.resolved(replacement, result.getHints());
             }
         }
         return result;

@@ -132,4 +132,16 @@ class SubtypeUsingClassSelectorTest {
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("class '%s' is not a subtype of '%s'", String.class.getName(), List.class.getName());
     }
+
+    @Test
+    void abstractRootWithAbstractSubtypeReturnsNull() {
+        interface RootInterface {}
+        interface SubInterface extends RootInterface {}
+
+        final RootInterface result = Instancio.of(RootInterface.class)
+                .subtype(all(RootInterface.class), SubInterface.class)
+                .create();
+
+        assertThat(result).isNull();
+    }
 }

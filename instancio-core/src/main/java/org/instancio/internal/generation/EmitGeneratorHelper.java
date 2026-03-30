@@ -41,7 +41,7 @@ class EmitGeneratorHelper {
             .with(InternalGeneratorHint.builder().emitNull(true).build())
             .build();
 
-    private static final GeneratorResult NULL_RESULT = GeneratorResult.create(null, EMIT_NULL_HINT);
+    private static final GeneratorResult NULL_RESULT = GeneratorResult.resolved(null, EMIT_NULL_HINT);
 
     private final ModelContext modelContext;
 
@@ -67,7 +67,7 @@ class EmitGeneratorHelper {
 
             return result == null
                     ? NULL_RESULT
-                    : GeneratorResult.create(result, generator.hints());
+                    : GeneratorResult.resolved(result, generator.hints());
         }
 
         final WhenEmptyAction whenEmptyAction = generator.getWhenEmptyAction();
@@ -75,7 +75,7 @@ class EmitGeneratorHelper {
         if (whenEmptyAction == WhenEmptyAction.EMIT_NULL) {
             return NULL_RESULT;
         } else if (whenEmptyAction == WhenEmptyAction.EMIT_RANDOM) {
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         final Map<InternalNode, List<Object>> emittedValues =

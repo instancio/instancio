@@ -42,16 +42,16 @@ class InstantiatingHandler implements NodeHandler {
         if (node.is(NodeKind.RECORD) && !node.getChildren().isEmpty()) {
             // If a record has args, it must be populated
             // via the canonical constructor by the engine
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         final Class<?> targetClass = node.getTargetClass();
 
         if (ReflectionUtils.isArrayOrConcrete(targetClass)) {
             final Object object = instantiator.instantiate(targetClass);
-            return GeneratorResult.create(object, POPULATE_ALL_HINT);
+            return GeneratorResult.resolved(object, POPULATE_ALL_HINT);
         }
 
-        return GeneratorResult.emptyResult();
+        return GeneratorResult.unresolvedResult();
     }
 }

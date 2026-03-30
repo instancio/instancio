@@ -41,11 +41,11 @@ class SpiGeneratorNodeHandler implements NodeHandler {
         final Generator<?> generator = spiGeneratorResolver.getSpiGenerator(node);
 
         if (generator == null) {
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         final Object value = generator.generate(modelContext.getRandom());
         final Hints hints = Verify.notNull(generator.hints(), "SPI generator hints are null");
-        return GeneratorResult.create(value, hints);
+        return GeneratorResult.resolved(value, hints);
     }
 }

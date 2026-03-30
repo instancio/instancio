@@ -99,7 +99,7 @@ final class AnnotationNodeHandler implements NodeHandler {
         final Annotation[] annotations = annotationExtractor.getAnnotations(node);
 
         if (annotations.length == 0) {
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         // NOTE: annotation handlers can mutate the generator's state,
@@ -113,7 +113,7 @@ final class AnnotationNodeHandler implements NodeHandler {
             generator = getGenerator(node, annotations, annotationMap);
 
             if (generator == null) {
-                return GeneratorResult.emptyResult();
+                return GeneratorResult.unresolvedResult();
             }
 
             for (AnnotationLibraryFacade lib : annotationLibraryFacades) {
@@ -124,7 +124,7 @@ final class AnnotationNodeHandler implements NodeHandler {
         }
 
         if (generator == null) {
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         // Invoke @AnnotationHandler methods defined via SPI
@@ -154,7 +154,7 @@ final class AnnotationNodeHandler implements NodeHandler {
 
         final Object processed = stringPostProcessor.process(obj, node, generator);
         final Hints hints = requireNonNull(generator.hints(), "Generator hints are null");
-        return GeneratorResult.create(processed, hints);
+        return GeneratorResult.resolved(processed, hints);
     }
 
     private void invokeAnnotationHandlerMethods(

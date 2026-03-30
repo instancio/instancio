@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.internal.generation;
+package org.instancio.test.support.pojo.containers;
 
-import org.instancio.documentation.InternalApi;
-import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.nodes.InternalNode;
-
-@InternalApi
-interface NodeHandler {
-
-    NodeHandler NOOP_HANDLER = node -> GeneratorResult.unresolvedResult();
-
-    GeneratorResult getResult(InternalNode node);
-
+/**
+ * An abstract container that returns {@code true}
+ * via {@code InternalContainerFactoryProvider.isContainer}.
+ *
+ * <p>Used to verify that the engine handles unresolvable
+ * {@code CONTAINER.CONTAINER} nodes.
+ */
+public abstract class UnresolvableContainer<T> {
+    public abstract T get();
 }
