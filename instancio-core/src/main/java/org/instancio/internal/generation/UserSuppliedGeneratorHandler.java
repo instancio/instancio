@@ -52,7 +52,7 @@ final class UserSuppliedGeneratorHandler implements NodeHandler {
 
         //noinspection OptionalIsPresent
         if (generatorOpt.isEmpty()) {
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         return userSuppliedGeneratorProcessor.getGeneratorResult(node, generatorOpt.get());

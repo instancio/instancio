@@ -26,6 +26,7 @@ import org.instancio.test.support.pojo.cyclic.IndirectCircularRef;
 import org.instancio.test.support.pojo.cyclic.onetomany.DetailPojo;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainPojoContainer;
+import org.instancio.test.support.pojo.record.cyclic.ParentRecord;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
@@ -140,6 +141,15 @@ class SetBackReferenceTest {
         assertThat(result.getObjectC().getObjectC()).isSameAs(result.getObjectC());
         assertThat(result.getObjectC().getObjectA().getObjectC()).isSameAs(result.getObjectC());
         assertThat(result.getObjectC().getObjectB().getObjectC()).isSameAs(result.getObjectC());
+    }
+
+    @Test
+    void cyclicParentChildRecord() {
+        final ParentRecord result = Instancio.create(ParentRecord.class);
+
+        assertThat(result.name()).isNotBlank();
+        assertThat(result.children()).isNotEmpty()
+                .allSatisfy(child -> assertThat(child.parent()).isNull());
     }
 
     /**

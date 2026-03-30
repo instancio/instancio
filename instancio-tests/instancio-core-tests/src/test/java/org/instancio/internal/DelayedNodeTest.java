@@ -28,7 +28,7 @@ class DelayedNodeTest {
     @Test
     void verifyToString() {
         final DelayedNode delayedNode = new DelayedNode(Fixtures.node(String.class),
-                GeneratorResult.create("foo", Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS)));
+                GeneratorResult.resolved("foo", Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS)));
 
         assertThat(delayedNode).hasToString(
                 "DelayedNode[Node[String, depth=0, type=String]," +

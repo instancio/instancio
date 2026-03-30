@@ -88,7 +88,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
 
     /**
      * Indicates that generator result should be treated
-     * as {@link GeneratorResult#emptyResult()}.
+     * as {@link GeneratorResult#unresolvedResult()}.
      *
      * @return {@code true} if empty result was generated
      */

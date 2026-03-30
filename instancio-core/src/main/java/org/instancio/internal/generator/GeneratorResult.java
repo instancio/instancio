@@ -25,12 +25,12 @@ import static java.util.Objects.requireNonNull;
 public final class GeneratorResult {
     private static final Hints EMPTY_HINTS = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
     private static final GeneratorResult NULL_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.NULL);
-    private static final GeneratorResult EMPTY_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.EMPTY);
+    private static final GeneratorResult UNRESOLVED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.UNRESOLVED);
     private static final GeneratorResult IGNORED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.IGNORED);
     private static final GeneratorResult DELAYED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.DELAYED);
 
     private enum Type {
-        NULL, EMPTY, IGNORED, DELAYED, NORMAL
+        NULL, UNRESOLVED, IGNORED, DELAYED, RESOLVED
     }
 
     private final @Nullable Object value;
@@ -43,8 +43,8 @@ public final class GeneratorResult {
         this.type = type;
     }
 
-    public static GeneratorResult create(@Nullable final Object value, final Hints hints) {
-        return new GeneratorResult(value, hints, Type.NORMAL);
+    public static GeneratorResult resolved(@Nullable final Object value, final Hints hints) {
+        return new GeneratorResult(value, hints, Type.RESOLVED);
     }
 
     @Nullable
@@ -68,13 +68,13 @@ public final class GeneratorResult {
     }
 
     /**
-     * An empty result implies that a value could not be generated.
+     * An unresolved result implies that a value could not be generated.
      * This could be due to an error.
      *
-     * @return empty result
+     * @return unresolved result
      */
-    public static GeneratorResult emptyResult() {
-        return EMPTY_RESULT;
+    public static GeneratorResult unresolvedResult() {
+        return UNRESOLVED_RESULT;
     }
 
     /**
@@ -93,7 +93,7 @@ public final class GeneratorResult {
      *
      * @return delayed result
      */
-    public static GeneratorResult delayed() {
+    public static GeneratorResult delayedResult() {
         return DELAYED_RESULT;
     }
 
@@ -106,7 +106,7 @@ public final class GeneratorResult {
             final ContainerBuildFunction<Object, Object> buildFn = hint.buildFunction();
             if (buildFn != null) {
                 final Object built = buildFn.build(value);
-                return create(built, hints);
+                return resolved(built, hints);
             }
         }
         return this;
@@ -119,16 +119,16 @@ public final class GeneratorResult {
         return hint != null && hint.emitNull();
     }
 
-    public boolean isNormal() {
-        return type == Type.NORMAL;
+    public boolean isResolved() {
+        return type == Type.RESOLVED;
     }
 
     public boolean isNull() {
         return type == Type.NULL;
     }
 
-    public boolean isEmpty() {
-        return type == Type.EMPTY;
+    public boolean isUnresolved() {
+        return type == Type.UNRESOLVED;
     }
 
     public boolean isIgnored() {
@@ -141,7 +141,7 @@ public final class GeneratorResult {
 
     @Override
     public String toString() {
-        if (type == Type.NORMAL) {
+        if (type == Type.RESOLVED) {
             return String.format("Result[%s, %s]", value, hints);
         }
         return String.format("Result[%s]", type);

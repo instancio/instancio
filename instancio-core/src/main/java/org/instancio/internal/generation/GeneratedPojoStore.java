@@ -56,10 +56,10 @@ class GeneratedPojoStore {
             }
             final Object o = generatedPojos.get(n);
             if (o != null) {
-                return GeneratorResult.create(o, Constants.DO_NOT_MODIFY_HINT);
+                return GeneratorResult.resolved(o, Constants.DO_NOT_MODIFY_HINT);
             }
         }
-        return GeneratorResult.emptyResult();
+        return GeneratorResult.unresolvedResult();
     }
 
     void putValue(final InternalNode node, final GeneratorResult result) {
@@ -71,7 +71,7 @@ class GeneratedPojoStore {
     private static final class NoopGeneratedPojoStore extends GeneratedPojoStore {
         @Override
         GeneratorResult getParentObject(final InternalNode node) {
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         @Override

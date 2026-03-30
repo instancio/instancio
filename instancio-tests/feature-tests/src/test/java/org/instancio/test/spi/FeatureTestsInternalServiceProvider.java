@@ -18,6 +18,7 @@ package org.instancio.test.spi;
 import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.test.support.pojo.containers.BuildableList;
 import org.instancio.test.support.pojo.containers.OptionalLike;
+import org.instancio.test.support.pojo.containers.UnresolvableContainer;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -36,7 +37,9 @@ public class FeatureTestsInternalServiceProvider implements InternalServiceProvi
 
             @Override
             public boolean isContainer(final Class<?> type) {
-                return type == BuildableList.class || type == OptionalLike.class;
+                return type == BuildableList.class
+                       || type == OptionalLike.class
+                       || type == UnresolvableContainer.class;
             }
         };
     }

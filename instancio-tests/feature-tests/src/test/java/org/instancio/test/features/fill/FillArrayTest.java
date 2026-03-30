@@ -21,6 +21,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.FillType;
 import org.instancio.settings.Keys;
 import org.instancio.test.support.conditions.Conditions;
+import org.instancio.test.support.pojo.arrays.object.WithStringArray;
 import org.instancio.test.support.pojo.misc.StringsAbc;
 import org.instancio.test.support.pojo.misc.StringsGhi;
 import org.instancio.test.support.tags.Feature;
@@ -76,6 +77,22 @@ class FillArrayTest {
                 });
 
         assertThatObject(object).isFullyPopulated();
+    }
+
+    @EnumSource(value = FillType.class, names = {"POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES"})
+    @ParameterizedTest
+    void shouldPreserveExistingNonPojoArrayElements(final FillType fillType) {
+        final WithStringArray object = new WithStringArray();
+        final String[] existingArray = {"foo", "bar"};
+        object.setValues(existingArray);
+
+        Instancio.ofObject(object)
+                .withSetting(Keys.FILL_TYPE, fillType)
+                .fill();
+
+        assertThat(object.getValues())
+                .isSameAs(existingArray)
+                .containsExactly("foo", "bar");
     }
 
     @EnumSource(FillType.class)

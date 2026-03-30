@@ -35,7 +35,7 @@ public class NullSubstitutorFacade {
         final Object substitute = nullSubstitutor.substituteNull(node);
         return substitute == null
                 ? GeneratorResult.nullResult()
-                : GeneratorResult.create(substitute, DO_NOT_MODIFY_HINT);
+                : GeneratorResult.resolved(substitute, DO_NOT_MODIFY_HINT);
     }
 
     private static InternalNullSubstitutor resolveNullSubstitutor(final ModelContext context) {

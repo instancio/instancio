@@ -15,7 +15,6 @@
  */
 package org.instancio.internal;
 
-import org.instancio.exception.InstancioException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.ArrayHint;
@@ -43,6 +42,7 @@ import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.RecordUtils;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.support.Log;
 import org.jspecify.annotations.NullUnmarked;
@@ -129,7 +129,7 @@ class InstancioEngine {
         processDelayedNodes(true);
         context.reportWarnings();
 
-        if (generatorResult.isEmpty()) {
+        if (generatorResult.isUnresolved()) {
             final Class<?> rootClass = rootNode.getTargetClass();
 
             if (Modifier.isAbstract(rootClass.getModifiers())
@@ -203,30 +203,23 @@ class InstancioEngine {
     }
 
     private GeneratorResult doCreateObject(final InternalNode node, final boolean isNullable) {
-        final GeneratorResult generatorResult;
-
         if (context.getRandom().diceRoll(isNullable)) {
-            generatorResult = nullSubstitutorFacade.substituteNull(node);
-        } else if (node.is(NodeKind.JDK)) {
-            generatorResult = generateValue(node);
-        } else if (node.is(NodeKind.POJO)) {
-            generatorResult = generatePojo(node);
-        } else if (node.is(NodeKind.COLLECTION)) {
-            generatorResult = generateCollection(node);
-        } else if (node.is(NodeKind.MAP)) {
-            generatorResult = generateMap(node);
-        } else if (node.is(NodeKind.ARRAY)) {
-            generatorResult = generateArray(node);
-        } else if (node.is(NodeKind.RECORD)) {
-            generatorResult = generateRecord(node);
-        } else if (node.is(NodeKind.CONTAINER)) {
-            generatorResult = generateContainer(node);
-        } else if (node.getChildren().isEmpty()) {
-            generatorResult = generateValue(node).applyBuildFunctionIfPresent();
-        } else { // unreachable
-            throw Fail.withFataInternalError("Unhandled node kind: '%s' for %s", node.getNodeKind(), node);
+            return nullSubstitutorFacade.substituteNull(node);
         }
-        return generatorResult;
+
+        return switch (node.getNodeKind()) {
+            case JDK -> generateValue(node);
+            case POJO -> generatePojo(node);
+            case COLLECTION -> generateCollection(node);
+            case MAP -> generateMap(node);
+            case ARRAY -> generateArray(node);
+            case RECORD -> generateRecord(node);
+            case CONTAINER -> generateContainer(node);
+            default -> {
+                Verify.state(node.getChildren().isEmpty(), "Node should have no children");
+                yield generateValue(node).applyBuildFunctionIfPresent();
+            }
+        };
     }
 
     private GeneratorResult createObject(final InternalNode node) {
@@ -248,7 +241,7 @@ class InstancioEngine {
         if (elementNode.is(NodeKind.POJO)) {
             final Object[] array = (Object[]) requireNonNull(result.getValue());
             for (Object element : array) {
-                final GeneratorResult elementResult = GeneratorResult.create(element, result.getHints());
+                final GeneratorResult elementResult = GeneratorResult.resolved(element, result.getHints());
                 populateChildren(elementNode.getChildren(), elementResult);
             }
         }
@@ -259,7 +252,7 @@ class InstancioEngine {
         if (elementNode.is(NodeKind.POJO)) {
             final Iterable<?> iterable = (Iterable<?>) requireNonNull(result.getValue());
             for (Object element : iterable) {
-                final GeneratorResult elementResult = GeneratorResult.create(element, result.getHints());
+                final GeneratorResult elementResult = GeneratorResult.resolved(element, result.getHints());
                 populateChildren(elementNode.getChildren(), elementResult);
             }
         }
@@ -275,11 +268,11 @@ class InstancioEngine {
             final Object v = entry.getValue();
 
             if (keyNode.is(NodeKind.POJO)) {
-                final GeneratorResult keyResult = GeneratorResult.create(k, result.getHints());
+                final GeneratorResult keyResult = GeneratorResult.resolved(k, result.getHints());
                 populateChildren(keyNode.getChildren(), keyResult);
             }
             if (valueNode.is(NodeKind.POJO)) {
-                final GeneratorResult valueResult = GeneratorResult.create(v, result.getHints());
+                final GeneratorResult valueResult = GeneratorResult.resolved(v, result.getHints());
                 populateChildren(valueNode.getChildren(), valueResult);
             }
         }
@@ -306,8 +299,8 @@ class InstancioEngine {
             final List<InternalNode> keyNodeChildren = keyNode.getChildren();
             final List<InternalNode> valueNodeChildren = valueNode.getChildren();
 
-            populateChildren(keyNodeChildren, GeneratorResult.create(entry.getKey(), hints));
-            populateChildren(valueNodeChildren, GeneratorResult.create(entry.getValue(), hints));
+            populateChildren(keyNodeChildren, GeneratorResult.resolved(entry.getKey(), hints));
+            populateChildren(valueNodeChildren, GeneratorResult.resolved(entry.getValue(), hints));
         }
 
         if (keyNode.isIgnored() || valueNode.isIgnored()) {
@@ -330,7 +323,7 @@ class InstancioEngine {
             assigmentObjectStore.exitScope();
 
             if (mapKeyResult.isDelayed() || mapValueResult.isDelayed()) {
-                return GeneratorResult.delayed();
+                return GeneratorResult.delayedResult();
             }
 
             final Object mapValue = mapValueResult.getValue();
@@ -404,7 +397,7 @@ class InstancioEngine {
             // Populate objects created by user within the generator
             if (elementValue != null) {
                 final List<InternalNode> elementNodeChildren = node.getOnlyChild().getChildren();
-                populateChildren(elementNodeChildren, GeneratorResult.create(elementValue, hints));
+                populateChildren(elementNodeChildren, GeneratorResult.resolved(elementValue, hints));
             }
 
             // Current element may have been set by a custom generator.
@@ -433,7 +426,7 @@ class InstancioEngine {
             // Populate objects created by user within the generator
             if (currentValue != null) {
                 final List<InternalNode> elementNodeChildren = node.getOnlyChild().getChildren();
-                populateChildren(elementNodeChildren, GeneratorResult.create(currentValue, hints));
+                populateChildren(elementNodeChildren, GeneratorResult.resolved(currentValue, hints));
             }
 
             if (nodeFilter.filter(elementNode, action, currentValue) == NodeFilterResult.SKIP) {
@@ -445,7 +438,7 @@ class InstancioEngine {
             assigmentObjectStore.exitScope();
 
             if (elementResult.isDelayed()) {
-                return GeneratorResult.delayed();
+                return GeneratorResult.delayedResult();
             }
 
             Object elementValue = elementResult.getValue();
@@ -494,7 +487,7 @@ class InstancioEngine {
         // Populated objects that were created/added in the generator itself
         for (Object element : collection) {
             final List<InternalNode> elementNodeChildren = elementNode.getChildren();
-            populateChildren(elementNodeChildren, GeneratorResult.create(element, hints));
+            populateChildren(elementNodeChildren, GeneratorResult.resolved(element, hints));
         }
 
         if (elementNode.isIgnored()) {
@@ -516,7 +509,7 @@ class InstancioEngine {
             assigmentObjectStore.exitScope();
 
             if (elementResult.isDelayed()) {
-                return GeneratorResult.delayed();
+                return GeneratorResult.delayedResult();
             }
 
             final Object elementValue = elementResult.getValue();
@@ -572,7 +565,7 @@ class InstancioEngine {
         // Handle the case where user supplies a generator for creating a record,
         final GeneratorResult customRecord = generateValue(node);
 
-        if (!customRecord.isEmpty()) {
+        if (!customRecord.isUnresolved()) {
             populateChildren(node.getChildren(), customRecord);
             return customRecord;
         }
@@ -619,7 +612,7 @@ class InstancioEngine {
                 threshold--;
                 recordComponentQueue.addFirst(entry);
 
-            } else if (!result.isEmpty() && !result.isIgnored()) {
+            } else if (!result.isUnresolved()) {
                 args[entry.getArgIndex()] = result.getValue();
             }
             if (threshold == 0) {
@@ -632,22 +625,15 @@ class InstancioEngine {
         // Therefore, if a component is unavailable, the entire record is delayed.
         if (!recordComponentQueue.isEmpty()) {
             delayedNodeQueue.addRecord(node);
-            return GeneratorResult.delayed();
+            return GeneratorResult.delayedResult();
         }
 
-        try {
-            final Object obj = RecordUtils.instantiate(node.getTargetClass(), args);
-            final GeneratorResult generatorResult = GeneratorResult.create(
-                    obj, Hints.afterGenerate(defaultAfterGenerate));
+        final Object obj = RecordUtils.instantiate(node.getTargetClass(), args);
+        final GeneratorResult generatorResult = GeneratorResult.resolved(
+                obj, Hints.afterGenerate(defaultAfterGenerate));
 
-            delayedNodeQueue.removeRecord(node);
-            return generatorResult;
-        } catch (Exception ex) {
-            errorHandler.conditionalFailOnError(() -> {
-                throw new InstancioException("Failed creating a record for: " + node, ex);
-            });
-        }
-        return GeneratorResult.emptyResult();
+        delayedNodeQueue.removeRecord(node);
+        return generatorResult;
     }
 
     @SuppressWarnings("PMD.CognitiveComplexity")
@@ -689,7 +675,7 @@ class InstancioEngine {
                 continue;
             }
 
-            final GeneratorResult childResult = GeneratorResult.create(childObject, hints);
+            final GeneratorResult childResult = GeneratorResult.resolved(childObject, hints);
 
             // Add field value to the object store.
             // This allows fields initialised externally to work with assign()
@@ -713,7 +699,7 @@ class InstancioEngine {
     private GeneratorResult generateContainer(final InternalNode node) {
         GeneratorResult generatorResult = generateValue(node);
 
-        if (generatorResult.isEmpty() || generatorResult.isIgnored()) {
+        if (generatorResult.isUnresolved()) {
             return generatorResult;
         }
 
@@ -733,7 +719,7 @@ class InstancioEngine {
                 final GeneratorResult childResult = createObject(childNode);
 
                 if (childResult.isDelayed()) {
-                    return GeneratorResult.delayed();
+                    return GeneratorResult.delayedResult();
                 }
 
                 ApiValidator.validateValueIsAssignableToElementNode(
@@ -744,7 +730,7 @@ class InstancioEngine {
             }
 
             final Object result = createFunction.create(args);
-            generatorResult = GeneratorResult.create(result, generatorResult.getHints());
+            generatorResult = GeneratorResult.resolved(result, generatorResult.getHints());
         }
 
         if (generatorResult.getValue() == null) {
@@ -770,7 +756,7 @@ class InstancioEngine {
         final ContainerBuildFunction<Object, Object> buildFunction = hint.buildFunction();
         if (buildFunction != null) {
             final Object builtContainer = buildFunction.build(generatorResult.getValue());
-            return GeneratorResult.create(builtContainer, generatorResult.getHints());
+            return GeneratorResult.resolved(builtContainer, generatorResult.getHints());
         }
 
         return containerFactoriesHandler.substituteResult(node, generatorResult);
@@ -782,7 +768,7 @@ class InstancioEngine {
             final GeneratorResult result,
             final Assigner assigner) {
 
-        if (!result.isEmpty() && !result.isIgnored()) {
+        if (!result.isUnresolved()) {
             assigner.assign(node, parentResult, result.getValue());
         }
     }
@@ -792,7 +778,7 @@ class InstancioEngine {
     }
 
     private void notifyListeners(final InternalNode node, final GeneratorResult result) {
-        if (result.isNormal() || result.isNull()) {
+        if (result.isResolved() || result.isNull()) {
             for (GenerationListener listener : listeners) {
                 listener.objectCreated(node, result);
             }

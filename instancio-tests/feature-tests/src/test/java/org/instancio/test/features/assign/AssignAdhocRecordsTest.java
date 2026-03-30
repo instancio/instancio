@@ -259,6 +259,34 @@ class AssignAdhocRecordsTest {
         });
     }
 
+    @Test
+    void interfaceComponentIsNullWhenDelayedAndAssignmentPredicateNeverSatisfied() {
+        interface SampleInterface {}
+        record SampleRecord(SampleInterface iface, String str) {}
+
+        final SampleRecord result = Instancio.of(SampleRecord.class)
+                .assign(Assign.given(field(SampleRecord::str))
+                        .satisfies(s -> false)
+                        .set(field(SampleRecord::iface), new SampleInterface() {}))
+                .create();
+
+        assertThat(result.iface()).isNull();
+        assertThat(result.str()).isNotBlank();
+    }
+
+    @Test
+    void createRecord_whenConstructorThrows_returnsNull() {
+        record ThrowingRecord(String value) {
+            ThrowingRecord {
+                throw new IllegalArgumentException("Intentional error");
+            }
+        }
+
+        final ThrowingRecord result = Instancio.create(ThrowingRecord.class);
+
+        assertThat(result).isNull();
+    }
+
     @RepeatedTest(Constants.SAMPLE_SIZE_D)
     void multipleGenerateCallsLinkedViaConditionals_NestedMap() {
         // @formatter:off

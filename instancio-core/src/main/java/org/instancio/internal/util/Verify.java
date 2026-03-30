@@ -71,11 +71,16 @@ public final class Verify {
         }
     }
 
+    @Contract("false, _ -> fail")
+    public static void state(final boolean condition, final String message) {
+        if (!condition) {
+            throw new IllegalStateException(message);
+        }
+    }
+
     @Contract("false, _, _ -> fail")
     public static void state(final boolean condition, final String message, final Object... values) {
-        if (!condition) {
-            throw new IllegalStateException(String.format(message, values));
-        }
+        state(condition, String.format(message, values));
     }
 
     public static void isNotArrayCollectionOrMap(final Class<?> klass) {

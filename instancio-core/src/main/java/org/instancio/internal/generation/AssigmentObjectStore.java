@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class AssigmentObjectStore implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(AssigmentObjectStore.class);
-    private static final GeneratorResult EMPTY_RESULT = GeneratorResult.emptyResult();
+    private static final GeneratorResult EMPTY_RESULT = GeneratorResult.unresolvedResult();
 
     // A map containing "scope" objects as keys, and a Map of destination
     // selectors to generated objects as values.

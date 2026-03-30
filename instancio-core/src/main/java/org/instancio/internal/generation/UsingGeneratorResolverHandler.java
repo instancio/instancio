@@ -45,12 +45,12 @@ class UsingGeneratorResolverHandler implements NodeHandler {
         final Generator<?> generator = generatorResolver.getCached(node);
 
         if (generator == null) {
-            return GeneratorResult.emptyResult();
+            return GeneratorResult.unresolvedResult();
         }
 
         final Object value = generator.generate(context.getRandom());
         final Object processed = stringPostProcessor.process(value, node, generator);
         final Hints hints = Verify.notNull(generator.hints(), "Built-in generator hints are null");
-        return GeneratorResult.create(processed, hints);
+        return GeneratorResult.resolved(processed, hints);
     }
 }

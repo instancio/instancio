@@ -25,39 +25,39 @@ class GeneratorResultTest {
     @Test
     void isNull() {
         final GeneratorResult result = GeneratorResult.nullResult();
-        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.isUnresolved()).isFalse();
         assertThat(result.isIgnored()).isFalse();
     }
 
     @Test
-    void isEmpty() {
-        final GeneratorResult result = GeneratorResult.emptyResult();
-        assertThat(result.isEmpty()).isTrue();
+    void isUnresolved() {
+        final GeneratorResult result = GeneratorResult.unresolvedResult();
+        assertThat(result.isUnresolved()).isTrue();
         assertThat(result.isIgnored()).isFalse();
     }
 
     @Test
     void isIgnored() {
         final GeneratorResult result = GeneratorResult.ignoredResult();
-        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.isUnresolved()).isFalse();
         assertThat(result.isIgnored()).isTrue();
     }
 
     @Test
-    void create() {
-        final GeneratorResult result = GeneratorResult.create("foo", Hints.builder().build());
-        assertThat(result.isEmpty()).isFalse();
+    void resolved() {
+        final GeneratorResult result = GeneratorResult.resolved("foo", Hints.builder().build());
+        assertThat(result.isUnresolved()).isFalse();
         assertThat(result.isIgnored()).isFalse();
     }
 
     @Test
     void verifyToString() {
-        assertThat(GeneratorResult.create("foo", Hints.builder().build()))
+        assertThat(GeneratorResult.resolved("foo", Hints.builder().build()))
                 .hasToString("Result[foo, Hints[afterGenerate=null, hints={}]]");
 
-        assertThat(GeneratorResult.emptyResult()).hasToString("Result[EMPTY]");
+        assertThat(GeneratorResult.unresolvedResult()).hasToString("Result[UNRESOLVED]");
         assertThat(GeneratorResult.nullResult()).hasToString("Result[NULL]");
-        assertThat(GeneratorResult.delayed()).hasToString("Result[DELAYED]");
+        assertThat(GeneratorResult.delayedResult()).hasToString("Result[DELAYED]");
         assertThat(GeneratorResult.ignoredResult()).hasToString("Result[IGNORED]");
     }
 }
