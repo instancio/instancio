@@ -20,7 +20,7 @@
             <plugin>
                 <groupId>io.github.ascopes</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
-                <version>5.0.2</version>
+                <version>5.1.1</version>
                 <configuration>
                     <protoc>${version.protobuf-java}</protoc>
                 </configuration>
