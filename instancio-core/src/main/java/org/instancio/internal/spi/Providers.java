@@ -29,6 +29,8 @@ import java.util.List;
 
 public final class Providers {
 
+    private static final List<InstancioServiceProvider> SERVICE_PROVIDERS = ServiceLoaders.loadAll(
+        InstancioServiceProvider.class);
     private final List<ProviderEntry<GeneratorProvider>> generatorProviders;
     private final List<ProviderEntry<TypeResolver>> typeResolvers;
     private final List<ProviderEntry<TypeInstantiator>> typeInstantiators;
@@ -36,7 +38,7 @@ public final class Providers {
     private final List<ProviderEntry<AnnotationProcessor>> annotationProcessors;
 
     public Providers(final ServiceProviderContext context) {
-        this(ServiceLoaders.loadAll(InstancioServiceProvider.class), context);
+        this(SERVICE_PROVIDERS, context);
     }
 
     @VisibleForTesting
