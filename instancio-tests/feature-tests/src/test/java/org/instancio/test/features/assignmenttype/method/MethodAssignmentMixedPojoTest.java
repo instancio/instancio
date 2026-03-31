@@ -91,7 +91,7 @@ class MethodAssignmentMixedPojoTest {
             // Since OnSetMethodNotFound is IGNORE and there's no setter, the field selector is unused
             assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(UnusedSelectorException.class)
-                    .hasMessageContaining("regularFieldWithNoSetter")
+                    .hasMessageContaining("getRegularFieldWithNoSetter")
                     .hasMessageContaining("regularFieldWithNonMatchingSetter");
         }
     }

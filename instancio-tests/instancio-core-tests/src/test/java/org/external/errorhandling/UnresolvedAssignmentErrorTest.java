@@ -51,9 +51,9 @@ class UnresolvedAssignmentErrorTest extends AbstractErrorMessageTestTemplate {
 
                 The following assignments could not be applied:
 
-                 -> from [field(StringsAbc, "c")] to [field(StringsAbc, "a")]
-                 -> from [field(StringsAbc, "a")] to [field(StringsAbc, "b")]
-                 -> from [field(StringsAbc, "b").within(scope(StringsAbc))] to [field(StringsAbc, "c")]
+                 -> from [field(StringsAbc::getC)] to [field(StringsAbc::getA)]
+                 -> from [field(StringsAbc::getA)] to [field(StringsAbc::getB)]
+                 -> from [field(StringsAbc::getB).within(scope(StringsAbc))] to [field(StringsAbc::getC)]
 
                 As a result, the following targets could not be assigned a value:
 

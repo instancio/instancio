@@ -235,7 +235,7 @@ class SetMethodSelectorTest {
 
             assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(UnusedSelectorException.class)
-                    .hasMessageContaining("setter(ItemInterface, \"setValue(Object)\")");
+                    .hasMessageContaining("setter(ItemInterface::setValue)");
         }
 
         @Test

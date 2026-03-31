@@ -18,14 +18,23 @@ package org.instancio.internal.selectors;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 public final class TargetSetter implements Target {
 
     private final Method setter;
     private final Class<?> parameterType;
+    @Nullable
+    private final String description;
 
     public TargetSetter(final Method setter) {
+        this(setter, null);
+    }
+
+    public TargetSetter(final Method setter, @Nullable final String description) {
         this.setter = setter;
         this.parameterType = setter.getParameterTypes()[0];
+        this.description = description;
     }
 
     @Override
@@ -61,6 +70,9 @@ public final class TargetSetter implements Target {
 
     @Override
     public String toString() {
+        if (description != null) {
+            return "setter(" + description + ')';
+        }
         String s = "setter(";
         s += setter.getDeclaringClass().getSimpleName() + ", ";
         s += '"' + setter.getName();

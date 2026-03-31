@@ -42,6 +42,6 @@ class FilterWithIgnoreTest {
                 .isExactlyInstanceOf(UnusedSelectorException.class)
                 .hasMessageContainingAll(
                         "Unused selector in: filter()",
-                        "1: field(StringFields, \"one\")");
+                        "1: field(StringFields::getOne)");
     }
 }
