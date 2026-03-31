@@ -38,7 +38,7 @@ class UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest extends Abstr
                  -> at org.external.errorhandling.UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest.methodUnderTest(UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest.java:29)
 
                 Reason: setter() selector cannot be used with AssignmentType.FIELD:
-                 -> setter(StringFields, "setOne(String)")
+                 -> setter(StringFields::setOne)
                     at org.external.errorhandling.UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest.methodUnderTest(UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest.java:28)
 
                 Root cause:

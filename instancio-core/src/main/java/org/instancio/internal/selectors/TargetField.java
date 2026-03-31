@@ -15,15 +15,23 @@
  */
 package org.instancio.internal.selectors;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.Field;
 import java.util.Objects;
 
 public final class TargetField implements Target {
 
     private final Field field;
+    private final @Nullable String description;
 
     public TargetField(final Field field) {
+        this(field, null);
+    }
+
+    public TargetField(final Field field, @Nullable final String description) {
         this.field = field;
+        this.description = description;
     }
 
     @Override
@@ -50,11 +58,14 @@ public final class TargetField implements Target {
 
     @Override
     public int hashCode() {
-        return field != null ? field.hashCode() : 0;
+        return field.hashCode();
     }
 
     @Override
     public String toString() {
+        if (description != null) {
+            return "field(" + description + ')';
+        }
         String s = "field(";
         s += field.getDeclaringClass().getSimpleName() + ", ";
         s += '"' + field.getName() + "\")";

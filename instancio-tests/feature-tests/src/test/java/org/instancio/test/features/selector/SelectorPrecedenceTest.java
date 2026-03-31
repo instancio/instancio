@@ -194,7 +194,7 @@ class SelectorPrecedenceTest {
 
             assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(UnusedSelectorException.class)
-                    .hasMessageContaining("setter(StringFields, \"setOne(String)\")");
+                    .hasMessageContaining("setter(StringFields::setOne)");
         }
     }
 

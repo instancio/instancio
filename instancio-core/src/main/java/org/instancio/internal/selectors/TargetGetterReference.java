@@ -43,7 +43,8 @@ public final class TargetGetterReference implements Target {
         final MethodRef mr = MethodRef.from(selector);
         final Field field = resolveFieldFromGetterMethodReference(
                 targetContext.getInternalServiceProviders(), mr.getTargetClass(), mr.getMethodName());
-        return new TargetField(field);
+        final String description = mr.getTargetClass().getSimpleName() + "::" + mr.getMethodName();
+        return new TargetField(field, description);
     }
 
     /**

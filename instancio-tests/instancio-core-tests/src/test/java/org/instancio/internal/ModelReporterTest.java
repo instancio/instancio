@@ -122,7 +122,7 @@ class ModelReporterTest {
                         Selectors and matching nodes, if any:
 
                          -> Method: supply()
-                            - field(Phone, "countryCode")
+                            - field(Phone::getCountryCode)
                                \\_ Node[Phone.countryCode, depth=1, type=String]
 
                         ________________________________________________________________________________________

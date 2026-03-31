@@ -44,7 +44,8 @@ public final class TargetSetterReference implements Target {
         final Method method = ReflectionUtils.getSetterMethod(
                 mr.getTargetClass(), mr.getMethodName(), null);
 
-        return new TargetSetter(method);
+        final String description = mr.getTargetClass().getSimpleName() + "::" + mr.getMethodName();
+        return new TargetSetter(method, description);
     }
 
     @Override

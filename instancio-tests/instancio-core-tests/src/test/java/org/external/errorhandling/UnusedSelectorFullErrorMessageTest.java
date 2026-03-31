@@ -103,11 +103,11 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:88)
 
                  -> Unused selector in: assign() destination
-                 1: field(StringsAbc, "c")
+                 1: field(StringsAbc::getC)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:80)
 
                  -> Unused selector in: assign() origin
-                 1: field(StringsAbc, "a")
+                 1: field(StringsAbc::getA)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:79)
 
                  -> Unused selector in: filter()
@@ -131,7 +131,7 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                  -> Unused selector in: onComplete()
                  1: all(ZonedDateTime)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:72)
-                 2: field(IntegerHolder, "primitive")
+                 2: field(IntegerHolder::getPrimitive)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:71)
 
                  -> Unused selector in: set()
@@ -157,9 +157,9 @@ class UnusedSelectorFullErrorMessageTest extends AbstractErrorMessageTestTemplat
                  -> Unused selector in: withNullable()
                  1: all(BigDecimal)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:65)
-                 2: field(Foo, "fooValue")
+                 2: field(Foo::getFooValue)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:66)
-                 3: setter(Person, "setName(String)")
+                 3: setter(Person::setName)
                     at org.external.errorhandling.UnusedSelectorFullErrorMessageTest.methodUnderTest(UnusedSelectorFullErrorMessageTest.java:67)
 
                  -> Unused selector in: withUnique()

@@ -16,12 +16,15 @@
 package org.instancio.internal.selectors;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.Test;
 
 class TargetFieldTest {
 
     @Test
     void verifyEqualsAndHashCode() {
-        EqualsVerifier.forClass(TargetField.class).verify();
+        EqualsVerifier.forClass(TargetField.class)
+                .suppress(Warning.ALL_FIELDS_SHOULD_BE_USED)
+                .verify();
     }
 }

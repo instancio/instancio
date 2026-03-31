@@ -89,7 +89,7 @@ class FillAssignTest {
 
             assertThatThrownBy(api::fill)
                     .isExactlyInstanceOf(UnresolvedAssignmentException.class)
-                    .hasMessageContaining("from [field(StringsGhi, \"h\")] to [field(StringsDef, \"e\")]");
+                    .hasMessageContaining("from [field(StringsGhi::getH)] to [field(StringsDef::getE)]");
         }
     }
 

@@ -56,6 +56,6 @@ class AssignWithIgnoreTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(UnusedSelectorException.class)
-                .hasMessageContainingAll("field(StringsAbc, \"a\")", "field(StringsAbc, \"c\")");
+                .hasMessageContainingAll("field(StringsAbc::getA)", "field(StringsAbc::getC)");
     }
 }

@@ -322,7 +322,7 @@ class CartesianProductTest {
 
             assertThatThrownBy(api::create)
                     .isExactlyInstanceOf(UnusedSelectorException.class)
-                    .hasMessageContaining("field(IntegerHolder, \"primitive\")");
+                    .hasMessageContaining("field(IntegerHolder::getPrimitive)");
         }
     }
 
