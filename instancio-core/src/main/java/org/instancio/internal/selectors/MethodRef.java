@@ -84,7 +84,7 @@ final class MethodRef {
 
         @Nullable
         static MethodRef methodRef(final Object methodRef) {
-            if (!(methodRef instanceof Proxy)) {
+            if (!Proxy.isProxyClass(methodRef.getClass())) {
                 return null;
             }
 

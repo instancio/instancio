@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
+import java.lang.reflect.Proxy
 import java.util.stream.Stream
 
 import static org.assertj.core.api.Assertions.assertThat
@@ -40,5 +41,18 @@ class MethodRefTest {
         assertThatThrownBy(() -> MethodRef.from(closure))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining('unable to resolve method name from selector');
+    }
+
+    @Test
+    void 'Should throw error when method is not proper Proxy instance'() {
+        assertThatThrownBy(() -> MethodRef.from(new ExtendedProxy()))
+            .isExactlyInstanceOf(InstancioApiException.class)
+            .hasMessageContaining('unable to resolve method name from selector');
+    }
+
+    private static class ExtendedProxy extends Proxy {
+        ExtendedProxy() {
+            super({})
+        }
     }
 }
