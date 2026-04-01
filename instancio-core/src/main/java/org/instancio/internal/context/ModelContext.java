@@ -44,6 +44,7 @@ import org.instancio.internal.selectors.BlankSelectors;
 import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.SelectorProcessor;
 import org.instancio.internal.selectors.SetterSelectorHolder;
+import org.instancio.internal.settings.InternalSettings;
 import org.instancio.internal.spi.InternalServiceProvider;
 import org.instancio.internal.spi.InternalServiceProviderContext;
 import org.instancio.internal.spi.InternalServiceProviderImpl;
@@ -123,11 +124,22 @@ public final class ModelContext {
     }
 
     private static Settings createSettings(final Builder builder) {
-        final Settings settings = Global.getPropertiesFileSettings()
-                .merge(ThreadLocalSettings.getInstance().get())
-                .merge(builder.settings);
+        final Settings threadLocalSettings = ThreadLocalSettings.getInstance().get();
+        final Settings builderSettings = builder.settings;
+        Settings settings = Global.getPropertiesFileSettings();
+
+        if (threadLocalSettings != null) {
+            settings = settings.merge(threadLocalSettings);
+        }
+        if (builderSettings != null) {
+            settings = settings.merge(builderSettings);
+        }
 
         if (Boolean.TRUE.equals(builder.lenient)) {
+            if (settings.isLocked()) {
+                settings = InternalSettings.from(settings);
+            }
+
             settings.set(Keys.MODE, Mode.LENIENT);
         }
 
