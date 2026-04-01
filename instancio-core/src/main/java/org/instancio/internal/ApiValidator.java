@@ -122,7 +122,7 @@ public final class ApiValidator {
         }
 
         isTrue(typeVarsLength == rootTypeParameters.size(),
-                withTypeParametersNumberOfParameters(rootClass, rootTypeParameters));
+            () -> withTypeParametersNumberOfParameters(rootClass, rootTypeParameters));
 
         for (Type param : rootTypeParameters) {
             if (param instanceof Class<?> rawType && rawType.getTypeParameters().length > 0) {
