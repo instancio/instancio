@@ -61,7 +61,7 @@ public final class ErrorHandler {
             return Optional.ofNullable(supplier.get());
         } catch (AssertionError | InstancioTerminatingException ex) {
             throw ex;
-        } catch (Throwable ex) { //NOPMD
+        } catch (Throwable ex) {
             if (isFailOnErrorSettingEnabled) {
                 throw Fail.withInternalError(ex);
             }

@@ -51,6 +51,7 @@
         <exclude name="ShortMethodName"/>
         <exclude name="ShortVariable"/>
         <exclude name="TooManyStaticImports"/>
+        <exclude name="UnnecessaryInterfaceDeclaration"/>
         <exclude name="UselessParentheses"/>
     </rule>
     <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal">
@@ -58,7 +59,6 @@
     </rule>
 
     <rule ref="category/java/design.xml">
-        <exclude name="AvoidCatchingGenericException"/>
         <exclude name="AvoidRethrowingException"/>
         <exclude name="LoosePackageCoupling"/>
     </rule>
@@ -95,6 +95,7 @@
 
     <rule ref="category/java/errorprone.xml">
         <exclude name="AvoidAccessibilityAlteration"/>
+        <exclude name="AvoidCatchingGenericException"/>
         <exclude name="AvoidFieldNameMatchingMethodName"/>
         <exclude name="AvoidFieldNameMatchingTypeName"/>
         <exclude name="ConstructorCallsOverridableMethod"/>

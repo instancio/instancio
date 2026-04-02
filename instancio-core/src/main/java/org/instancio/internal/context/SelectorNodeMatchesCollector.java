@@ -56,7 +56,7 @@ final class SelectorNodeMatchesCollector {
         this.subtypeSelectorMap = selectorMaps.getSubtypeSelectorMap().getSelectorMap();
     }
 
-    public Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> getNodeMatches(final InternalNode rootNode) {
+    Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> getNodeMatches(final InternalNode rootNode) {
         Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> map = new EnumMap<>(ApiMethodSelector.class);
         Queue<InternalNode> queue = new ArrayDeque<>();
         queue.offer(rootNode);
@@ -106,7 +106,7 @@ final class SelectorNodeMatchesCollector {
      * when doing a lookup. Therefore, this method must be called after the root
      * object has been created (all map lookups have been done).
      */
-    public List<TargetSelector> getUnusedSelectors() {
+    List<TargetSelector> getUnusedSelectors() {
         List<TargetSelector> results = new ArrayList<>();
         results.addAll(assignDestinationToAssignmentsMap.getUnusedKeys());
         results.addAll(assignOriginToDestinationSelectorsMap.getUnusedKeys());

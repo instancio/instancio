@@ -185,7 +185,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
      * The supplier will produce values with the target type,
      * but with no post-processors applied.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "PMD.AvoidDeeplyNestedIfStmts"})
     private <T extends @Nullable Object> Supplier<T> getValueSupplier(
             final SpecMethod specMethod,
             final Object[] args,

@@ -62,7 +62,7 @@ public class Instantiator {
             return strategy.createInstance(klass);
         } catch (InstancioApiException ex) {
             throw ex;
-        } catch (Throwable ex) { //NOPMD catches java.lang.InstantiationError
+        } catch (Throwable ex) { // catches java.lang.InstantiationError
             ExceptionUtils.logException("{}: failed instantiating {}",
                     ex, strategy.getClass().getSimpleName(), klass);
         }

@@ -137,6 +137,7 @@ public class PathGenerator extends AbstractGenerator<Path> implements PathSpec {
         }
     }
 
+    @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
     private Path createPath(@Nullable final Path directoryPath, final Path completePath) throws IOException {
         if (createPathType == null) {
             return completePath;

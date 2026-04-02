@@ -65,7 +65,7 @@ class AssignmentNodeHandler implements NodeHandler {
     }
 
     @Override
-    @SuppressWarnings("PMD.CognitiveComplexity")
+    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.AvoidDeeplyNestedIfStmts"})
     public GeneratorResult getResult(final InternalNode node) {
         final List<InternalAssignment> assignments = context.getAssignments(node);
 

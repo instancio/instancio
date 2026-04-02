@@ -38,13 +38,13 @@ abstract class VariableLengthModCheckGenerator
         super(context);
     }
 
-    public VariableLengthModCheckGenerator startIndex(final int idx) {
+    VariableLengthModCheckGenerator startIndex(final int idx) {
         ApiValidator.isTrue(idx >= 0, "start index must not be negative: %s", idx);
         this.startIndex = idx;
         return this;
     }
 
-    public VariableLengthModCheckGenerator endIndex(final int idx) {
+    VariableLengthModCheckGenerator endIndex(final int idx) {
         ApiValidator.isTrue(idx >= 0, "end index must not be negative: %s", idx);
         // Avoid generating large strings
         // The default value of Hibernate "endIndex" is Integer.MAX_VALUE
@@ -52,13 +52,13 @@ abstract class VariableLengthModCheckGenerator
         return this;
     }
 
-    public VariableLengthModCheckGenerator checkDigitIndex(final int idx) {
+    VariableLengthModCheckGenerator checkDigitIndex(final int idx) {
         ApiValidator.isTrue(idx >= 0, "check digit index must not be negative: %s", idx);
         this.checkDigitIndex = idx;
         return this;
     }
 
-    public VariableLengthModCheckGenerator length(final int length) {
+    VariableLengthModCheckGenerator length(final int length) {
         ApiValidator.isTrue(length > 1, "number length must be greater than 1, but was: %s", length);
         this.minSize = length;
         this.maxSize = length;
