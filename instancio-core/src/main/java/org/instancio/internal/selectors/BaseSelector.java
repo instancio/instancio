@@ -77,6 +77,7 @@ abstract class BaseSelector implements UnusedSelectorDescription, InternalSelect
         return String.format("%s%n    at %s", this, Format.firstNonInstancioStackTraceLine(getStackTraceHolder()));
     }
 
+    @SuppressWarnings("PMD.PublicMemberInNonPublicType")
     public final Throwable getStackTraceHolder() {
         return stackTraceHolder;
     }

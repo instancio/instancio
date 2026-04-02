@@ -38,7 +38,7 @@ class PredicateSelectorMap {
         selectorMap.put(selector, value);
     }
 
-    public SelectorMap<Predicate<?>> getSelectorMap() {
+    SelectorMap<Predicate<?>> getSelectorMap() {
         return selectorMap;
     }
 

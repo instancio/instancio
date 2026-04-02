@@ -38,7 +38,7 @@ class OnCompleteCallbackSelectorMap {
         selectorMap.put(selector, value);
     }
 
-    public SelectorMap<OnCompleteCallback<?>> getSelectorMap() {
+    SelectorMap<OnCompleteCallback<?>> getSelectorMap() {
         return selectorMap;
     }
 
