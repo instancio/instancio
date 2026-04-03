@@ -97,7 +97,7 @@ public interface Settings {
      * @see #create()
      */
     static Settings defaults() {
-        return InternalSettings.defaults();
+        return InternalSettings.from(InternalSettings.getLockedDefaults());
     }
 
     /**

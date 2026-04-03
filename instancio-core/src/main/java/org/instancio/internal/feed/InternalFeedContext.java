@@ -40,7 +40,6 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
-import org.instancio.support.ThreadLocalSettings;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Paths;
@@ -111,10 +110,7 @@ public final class InternalFeedContext<F extends Feed> {
         if (builder.generatorContext != null) {
             return builder.generatorContext;
         }
-        final Settings settings = Global.getPropertiesFileSettings()
-                .merge(ThreadLocalSettings.getInstance().get())
-                .merge(builder.settings)
-                .lock();
+        final Settings settings = Global.resolveEffectiveSettings(builder.settings).lock();
 
         return new GeneratorContext(
                 settings, RandomHelper.resolveRandom(settings.get(Keys.SEED), null));

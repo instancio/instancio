@@ -63,7 +63,6 @@ import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
 import org.instancio.support.Log;
-import org.instancio.support.ThreadLocalSettings;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
@@ -107,7 +106,7 @@ public final class ModelContext {
         maxDepth = builder.maxDepth;
         seed = builder.seed;
         verbose = builder.verbose;
-        settings = createSettings(builder);
+        settings = createLockedSettings(builder);
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
 
         final GeneratorContext generatorContext = new GeneratorContext(settings, random);
@@ -123,17 +122,8 @@ public final class ModelContext {
         }
     }
 
-    private static Settings createSettings(final Builder builder) {
-        final Settings threadLocalSettings = ThreadLocalSettings.getInstance().get();
-        final Settings builderSettings = builder.settings;
-        Settings settings = Global.getPropertiesFileSettings();
-
-        if (threadLocalSettings != null) {
-            settings = settings.merge(threadLocalSettings);
-        }
-        if (builderSettings != null) {
-            settings = settings.merge(builderSettings);
-        }
+    private static Settings createLockedSettings(final Builder builder) {
+        Settings settings = Global.resolveEffectiveSettings(builder.settings);
 
         if (Boolean.TRUE.equals(builder.lenient)) {
             if (settings.isLocked()) {

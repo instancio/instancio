@@ -29,7 +29,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -144,36 +143,36 @@ class SettingsAutoAdjustmentTest {
         @MethodSource("minSettingKeys")
         @DisplayName("newMin > max: verify each settings updates its max to: newMin + PERCENTAGE")
         void newMinIsGreaterThanMax(SettingKey<Number> minSetting) {
-            final Optional<SettingKey<Number>> maxSetting = SettingsSupport.getAutoAdjustable(minSetting);
-            assertThat(maxSetting).isPresent();
+            final SettingKey<Number> maxSetting = SettingsSupport.getAutoAdjustable(minSetting);
+            assertThat(maxSetting).isNotNull();
 
             final Number max = NumberUtils.longConverter(minSetting.type()).apply(50L);
             final Number newMin = NumberUtils.longConverter(minSetting.type()).apply(60L);
             final Number expectedMax = NumberUtils.longConverter(minSetting.type()).apply(90L);
 
             settings
-                    .set(maxSetting.get(), max)
+                    .set(maxSetting, max)
                     .set(minSetting, newMin);
 
-            assertThat(settings.get(maxSetting.get())).isEqualTo(expectedMax);
+            assertThat(settings.get(maxSetting)).isEqualTo(expectedMax);
         }
 
         @ParameterizedTest
         @MethodSource("maxSettingKeys")
         @DisplayName("newMax < min: verify each settings updates its min to: newMax - PERCENTAGE")
         void newMaxIsLessThanMin(SettingKey<Number> maxSetting) {
-            final Optional<SettingKey<Number>> minSetting = SettingsSupport.getAutoAdjustable(maxSetting);
-            assertThat(minSetting).isPresent();
+            final SettingKey<Number> minSetting = SettingsSupport.getAutoAdjustable(maxSetting);
+            assertThat(minSetting).isNotNull();
 
             final Number min = NumberUtils.longConverter(maxSetting.type()).apply(120L);
             final Number newMax = NumberUtils.longConverter(maxSetting.type()).apply(100L);
             final Number expectedMin = NumberUtils.longConverter(maxSetting.type()).apply(50L);
 
             settings
-                    .set(minSetting.get(), min)
+                    .set(minSetting, min)
                     .set(maxSetting, newMax);
 
-            assertThat(settings.get(minSetting.get())).isEqualTo(expectedMin);
+            assertThat(settings.get(minSetting)).isEqualTo(expectedMin);
         }
 
         private Stream<Arguments> minSettingKeys() {

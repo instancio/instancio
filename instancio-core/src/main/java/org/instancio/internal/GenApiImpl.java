@@ -46,11 +46,11 @@ import org.instancio.generators.SpatialSpecs;
 import org.instancio.generators.TemporalSpecs;
 import org.instancio.generators.TextSpecs;
 import org.instancio.internal.generators.BuiltInGenerators;
+import org.instancio.internal.settings.InternalSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
-import org.instancio.support.ThreadLocalSettings;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -58,25 +58,32 @@ import java.util.Collection;
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
 public final class GenApiImpl implements InstancioGenApi {
 
-    private Settings settings = Global.getPropertiesFileSettings()
-            .merge(ThreadLocalSettings.getInstance().get());
+    private @Nullable InternalSettings settings;
 
     @Override
     public InstancioGenApi withSettings(final Settings settings) {
         ApiValidator.notNull(settings, "'settings' must not be null");
-        this.settings = this.settings.merge(settings);
+        if (this.settings == null) {
+            this.settings = (InternalSettings) Settings.from(settings);
+        } else {
+            this.settings.copyFrom(settings);
+        }
         return this;
     }
 
     @Override
     public <V> InstancioGenApi withSetting(final SettingKey<V> key, final V value) {
+        if (settings == null) {
+            settings = InternalSettings.create();
+        }
         settings.set(key, value);
         return this;
     }
 
     private BuiltInGenerators generators() {
-        final Random random = RandomHelper.resolveRandom(settings.get(Keys.SEED), null);
-        return new BuiltInGenerators(new GeneratorContext(settings, random));
+        final Settings effectiveSettings = Global.resolveEffectiveSettings(settings);
+        final Random random = RandomHelper.resolveRandom(effectiveSettings.get(Keys.SEED), null);
+        return new BuiltInGenerators(new GeneratorContext(effectiveSettings, random));
     }
 
     @Override
