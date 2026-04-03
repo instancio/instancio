@@ -33,7 +33,7 @@ public interface ServiceProviderContext {
      * @return read-only instance of settings
      * @since 2.12.0
      */
-    Settings getSettings();
+    Settings settings();
 
     /**
      * Returns the random instance that should be used for generating

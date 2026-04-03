@@ -28,7 +28,7 @@ public class JooqSpi implements InstancioServiceProvider {
 
     @Override
     public void init(final ServiceProviderContext context) {
-        stringSettingsMaxLength = context.getSettings().get(Keys.STRING_MAX_LENGTH);
+        stringSettingsMaxLength = context.settings().get(Keys.STRING_MAX_LENGTH);
     }
 
     /**
