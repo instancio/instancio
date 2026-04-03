@@ -45,7 +45,7 @@ class CommonPersistenceAnnotationHandlerMap extends AnnotationHandlerMap {
                                   final GeneratorContext generatorContext) {
 
             if (spec instanceof final StringGeneratorSpec stringSpec) {
-                final Settings settings = generatorContext.getSettings();
+                final Settings settings = generatorContext.settings();
                 final int maxLength = getLength(annotation);
                 final int minLength = Math.min(maxLength, settings.get(Keys.STRING_MIN_LENGTH));
 

@@ -110,7 +110,7 @@ final class HibernateBeanValidationHandlerMap extends AnnotationHandlerMap {
             final org.hibernate.validator.constraints.Length length =
                     (org.hibernate.validator.constraints.Length) annotation;
 
-            final Settings settings = generatorContext.getSettings();
+            final Settings settings = generatorContext.settings();
 
             final Range<Integer> range = AnnotationUtils.calculateRange(
                     length.min(), length.max(), settings.get(Keys.STRING_MAX_LENGTH));

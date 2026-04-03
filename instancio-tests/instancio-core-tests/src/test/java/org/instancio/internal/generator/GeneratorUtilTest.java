@@ -45,7 +45,7 @@ class GeneratorUtilTest {
 
     @Test
     void instantiateInternalGenerator() {
-        final GeneratorContext context = new GeneratorContext(Settings.create(), new DefaultRandom());
+        final GeneratorContext context = new InternalGeneratorContext(Settings.create(), new DefaultRandom());
 
         assertThatThrownBy(() -> GeneratorUtil.instantiateInternalGenerator(AnInternalGenerator.class, context))
                 .isExactlyInstanceOf(InstancioTerminatingException.class)

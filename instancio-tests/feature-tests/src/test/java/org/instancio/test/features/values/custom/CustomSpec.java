@@ -16,9 +16,9 @@
 package org.instancio.test.features.values.custom;
 
 import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.ValueSpec;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
@@ -33,10 +33,10 @@ class CustomSpec extends AbstractGenerator<String> implements ValueSpec<String> 
     private int length;
 
     CustomSpec() {
-        super(new GeneratorContext(Settings.defaults(),
+        super(new InternalGeneratorContext(Settings.defaults(),
                 ObjectUtils.defaultIfNull(
                         ThreadLocalRandom.getInstance().get(),
-                        () -> new DefaultRandom())));
+                        DefaultRandom::new)));
 
         length = getContext().random().intRange(DEFAULT_MIN_LENGTH, DEFAULT_MAX_LENGTH);
     }

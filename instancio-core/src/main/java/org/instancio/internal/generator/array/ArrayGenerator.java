@@ -46,10 +46,10 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
 
     public ArrayGenerator(final GeneratorContext context) {
         super(context);
-        this.minLength = context.getSettings().get(Keys.ARRAY_MIN_LENGTH);
-        this.maxLength = context.getSettings().get(Keys.ARRAY_MAX_LENGTH);
-        super.nullable(context.getSettings().get(Keys.ARRAY_NULLABLE));
-        this.nullableElements = context.getSettings().get(Keys.ARRAY_ELEMENTS_NULLABLE);
+        this.minLength = context.settings().get(Keys.ARRAY_MIN_LENGTH);
+        this.maxLength = context.settings().get(Keys.ARRAY_MAX_LENGTH);
+        super.nullable(context.settings().get(Keys.ARRAY_NULLABLE));
+        this.nullableElements = context.settings().get(Keys.ARRAY_ELEMENTS_NULLABLE);
     }
 
     public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {

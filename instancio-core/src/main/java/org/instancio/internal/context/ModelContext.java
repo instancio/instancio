@@ -37,6 +37,7 @@ import org.instancio.internal.RootType;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.feed.InternalFeedContext;
 import org.instancio.internal.feed.InternalFeedProxy;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.ObjectFillingGenerator;
 import org.instancio.internal.nodes.InternalNode;
@@ -109,7 +110,7 @@ public final class ModelContext {
         settings = createLockedSettings(builder);
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
 
-        final GeneratorContext generatorContext = new GeneratorContext(settings, random);
+        final GeneratorContext generatorContext = new InternalGeneratorContext(settings, random);
         selectorMaps = new SelectorMaps(contextSource, generatorContext);
         providers = new Providers(new InternalServiceProviderContext(settings, random));
 

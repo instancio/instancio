@@ -55,10 +55,10 @@ public class CollectionGenerator<T extends @Nullable Object>
 
     public CollectionGenerator(final GeneratorContext context) {
         super(context);
-        this.minSize = context.getSettings().get(Keys.COLLECTION_MIN_SIZE);
-        this.maxSize = context.getSettings().get(Keys.COLLECTION_MAX_SIZE);
-        super.nullable(context.getSettings().get(Keys.COLLECTION_NULLABLE));
-        this.nullableElements = context.getSettings().get(Keys.COLLECTION_ELEMENTS_NULLABLE);
+        this.minSize = context.settings().get(Keys.COLLECTION_MIN_SIZE);
+        this.maxSize = context.settings().get(Keys.COLLECTION_MAX_SIZE);
+        super.nullable(context.settings().get(Keys.COLLECTION_NULLABLE));
+        this.nullableElements = context.settings().get(Keys.COLLECTION_ELEMENTS_NULLABLE);
         this.collectionType = DEFAULT_COLLECTION_TYPE;
     }
 
@@ -141,7 +141,7 @@ public class CollectionGenerator<T extends @Nullable Object>
         } catch (Exception ex) {
             final String msg = String.format("Error creating instance of: %s", collectionType);
 
-            if (getContext().getSettings().get(Keys.FAIL_ON_ERROR)) {
+            if (getContext().settings().get(Keys.FAIL_ON_ERROR)) {
                 throw Fail.withFataInternalError(msg, ex);
             }
             ExceptionUtils.logException(msg, ex);

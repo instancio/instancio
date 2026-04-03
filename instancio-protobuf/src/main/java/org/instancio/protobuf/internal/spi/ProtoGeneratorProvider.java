@@ -26,6 +26,7 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.protobuf.internal.generator.ProtoByteStringGenerator;
 import org.instancio.protobuf.internal.generator.ProtoDurationGenerator;
@@ -46,7 +47,7 @@ class ProtoGeneratorProvider implements InstancioServiceProvider.GeneratorProvid
     private final GeneratorContext generatorContext;
 
     ProtoGeneratorProvider(final ServiceProviderContext spContext) {
-        this.generatorContext = new GeneratorContext(spContext.getSettings(), spContext.random());
+        this.generatorContext = new InternalGeneratorContext(spContext.getSettings(), spContext.random());
     }
 
     @Nullable
@@ -85,7 +86,7 @@ class ProtoGeneratorProvider implements InstancioServiceProvider.GeneratorProvid
 
     @Nullable
     private GeneratorSpec<?> getGeneratorSpecForField(final Field field) {
-        final Settings settings = generatorContext.getSettings();
+        final Settings settings = generatorContext.settings();
         final FieldDescriptor.Type protoType = getProtoFieldType(field);
 
         if (protoType == FieldDescriptor.Type.UINT32

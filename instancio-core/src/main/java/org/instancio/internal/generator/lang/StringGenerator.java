@@ -58,7 +58,7 @@ public class StringGenerator extends AbstractGenerator<String>
     public StringGenerator(final GeneratorContext context) {
         super(context);
 
-        final Settings settings = context.getSettings();
+        final Settings settings = context.settings();
         this.minLength = settings.get(Keys.STRING_MIN_LENGTH);
         this.maxLength = settings.get(Keys.STRING_MAX_LENGTH);
         super.nullable(settings.get(Keys.STRING_NULLABLE));

@@ -35,9 +35,9 @@ public class FloatGenerator extends AbstractGenerator<Float>
     public FloatGenerator(final GeneratorContext context) {
         super(context);
         delegate = new BigDecimalGenerator(context)
-                .min(new BigDecimal(String.valueOf(context.getSettings().get(Keys.FLOAT_MIN))))
-                .max(new BigDecimal(String.valueOf(context.getSettings().get(Keys.FLOAT_MAX))))
-                .nullable(context.getSettings().get(Keys.FLOAT_NULLABLE));
+                .min(new BigDecimal(String.valueOf(context.settings().get(Keys.FLOAT_MIN))))
+                .max(new BigDecimal(String.valueOf(context.settings().get(Keys.FLOAT_MAX))))
+                .nullable(context.settings().get(Keys.FLOAT_NULLABLE));
     }
 
     @Override

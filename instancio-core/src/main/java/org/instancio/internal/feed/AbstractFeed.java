@@ -421,7 +421,7 @@ public abstract class AbstractFeed<R> implements InternalFeed {
 
         if (nextIndex == dataSize) {
             if (feedContext.getFeedDataEndStrategy() == FeedDataEndAction.FAIL) {
-                throw Fail.withUsageError(ErrorMessageUtils.feedDataEnd(feedClass, generatorContext.getSettings()));
+                throw Fail.withUsageError(ErrorMessageUtils.feedDataEnd(feedClass, generatorContext.settings()));
             } else {
                 sequentialAccessIndex.set(0);
                 nextIndex = sequentialAccessIndex.getAndIncrement();

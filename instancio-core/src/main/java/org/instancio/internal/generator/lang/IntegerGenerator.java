@@ -25,9 +25,9 @@ public class IntegerGenerator extends AbstractRandomComparableNumberGeneratorSpe
 
     public IntegerGenerator(final GeneratorContext context) {
         super(context,
-                context.getSettings().get(Keys.INTEGER_MIN),
-                context.getSettings().get(Keys.INTEGER_MAX),
-                context.getSettings().get(Keys.INTEGER_NULLABLE));
+                context.settings().get(Keys.INTEGER_MIN),
+                context.settings().get(Keys.INTEGER_MAX),
+                context.settings().get(Keys.INTEGER_NULLABLE));
     }
 
     @Override

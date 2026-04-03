@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.pojo.empty.EmptyEnum;
@@ -39,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class EnumGeneratorTest {
 
     private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(Settings.create(), random);
+    private static final GeneratorContext context = new InternalGeneratorContext(Settings.create(), random);
 
     enum SingleValueEnum {ONLY}
 

@@ -25,15 +25,7 @@ import org.instancio.settings.Settings;
  * @see Generator
  * @since 1.0.3
  */
-public final class GeneratorContext {
-
-    private final Settings settings;
-    private final Random random;
-
-    public GeneratorContext(final Settings settings, final Random random) {
-        this.settings = settings;
-        this.random = random;
-    }
+public interface GeneratorContext {
 
     /**
      * Returns a read-only instance of the settings used by Instancio.
@@ -48,9 +40,7 @@ public final class GeneratorContext {
      * @return the settings
      * @since 1.0.3
      */
-    public Settings getSettings() {
-        return settings;
-    }
+    Settings settings();
 
     /**
      * Returns the random instance used by Instancio to generate data.
@@ -60,7 +50,5 @@ public final class GeneratorContext {
      * @return the random instance
      * @since 1.0.3
      */
-    public Random random() {
-        return random;
-    }
+    Random random();
 }

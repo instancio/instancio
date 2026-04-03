@@ -25,9 +25,9 @@ public class ShortGenerator extends AbstractRandomComparableNumberGeneratorSpec<
 
     public ShortGenerator(final GeneratorContext context) {
         super(context,
-                context.getSettings().get(Keys.SHORT_MIN),
-                context.getSettings().get(Keys.SHORT_MAX),
-                context.getSettings().get(Keys.SHORT_NULLABLE));
+                context.settings().get(Keys.SHORT_MIN),
+                context.settings().get(Keys.SHORT_MAX),
+                context.settings().get(Keys.SHORT_NULLABLE));
     }
 
     @Override

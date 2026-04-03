@@ -27,6 +27,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.Hints;
 import org.instancio.generators.Generators;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.generator.sequence.IntegerSequenceGenerator;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -58,7 +59,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CustomGeneratorProvider implements InstancioServiceProvider {
 
-    private static final GeneratorContext GENERATOR_CONTEXT = new GeneratorContext(
+    private static final GeneratorContext GENERATOR_CONTEXT = new InternalGeneratorContext(
             Settings.defaults(), ThreadLocalRandom.getInstance().get());
 
     public static final String STRING_GENERATOR_VALUE = "overridden string generator from SPI Generator!";

@@ -30,7 +30,7 @@ public class CharacterGenerator extends AbstractGenerator<Character>
 
     public CharacterGenerator(final GeneratorContext context) {
         super(context);
-        super.nullable(context.getSettings().get(Keys.CHARACTER_NULLABLE));
+        super.nullable(context.settings().get(Keys.CHARACTER_NULLABLE));
     }
 
     @Override

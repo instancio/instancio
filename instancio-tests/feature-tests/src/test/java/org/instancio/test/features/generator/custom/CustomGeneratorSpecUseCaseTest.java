@@ -83,7 +83,7 @@ class CustomGeneratorSpecUseCaseTest {
         @SuppressWarnings("NullAway")
         public void init(final @NonNull GeneratorContext context) {
             random = context.random();
-            settings = context.getSettings();
+            settings = context.settings();
 
             // User may have invoked positive() or negative() method,
             // which would initialise the size. If that's the case,

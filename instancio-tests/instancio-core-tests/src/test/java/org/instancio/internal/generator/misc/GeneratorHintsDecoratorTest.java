@@ -19,6 +19,7 @@ import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.verify;
 
 class GeneratorHintsDecoratorTest {
     private static final Hints HINTS = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
-    private static final GeneratorContext CONTEXT = new GeneratorContext(
+    private static final GeneratorContext CONTEXT = new InternalGeneratorContext(
             Settings.create(), new DefaultRandom());
 
     @Test

@@ -25,9 +25,9 @@ public class LongGenerator extends AbstractRandomComparableNumberGeneratorSpec<L
 
     public LongGenerator(final GeneratorContext context) {
         super(context,
-                context.getSettings().get(Keys.LONG_MIN),
-                context.getSettings().get(Keys.LONG_MAX),
-                context.getSettings().get(Keys.LONG_NULLABLE));
+                context.settings().get(Keys.LONG_MIN),
+                context.settings().get(Keys.LONG_MAX),
+                context.settings().get(Keys.LONG_NULLABLE));
     }
 
     @Override
