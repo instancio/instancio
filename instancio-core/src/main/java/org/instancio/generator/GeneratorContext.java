@@ -47,8 +47,27 @@ public final class GeneratorContext {
      *
      * @return the settings
      * @since 1.0.3
+     * @deprecated for removal in 6.0.0. Use {@link #settings()} instead.
      */
+    @Deprecated(since = "5.6.0", forRemoval = true)
     public Settings getSettings() {
+        return settings();
+    }
+
+    /**
+     * Returns a read-only instance of the settings used by Instancio.
+     * <p>
+     * The returned settings includes overrides specified using
+     *
+     * <ul>
+     *   <li>{@link org.instancio.InstancioApi#withSettings(Settings)}</li>
+     *   <li>{@code @WithSettings} annotation used with {@code InstancioExtension} for JUnit 5</li>
+     * </ul>
+     *
+     * @return the settings
+     * @since 5.6.0
+     */
+    public Settings settings() {
         return settings;
     }
 
