@@ -18,6 +18,7 @@ package org.instancio.support;
 import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.context.PropertiesLoader;
+import org.instancio.internal.settings.InternalSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.jspecify.annotations.Nullable;
@@ -25,7 +26,7 @@ import org.jspecify.annotations.Nullable;
 @InternalApi
 public final class Global {
 
-    private static final Settings PROPERTIES_FILE_SETTINGS = Settings.defaults()
+    private static final Settings PROPERTIES_FILE_SETTINGS = InternalSettings.getLockedDefaults()
             .merge(Settings.from(PropertiesLoader.loadDefaultPropertiesFile()))
             .lock();
 
@@ -40,6 +41,23 @@ public final class Global {
      */
     public static Settings getPropertiesFileSettings() {
         return PROPERTIES_FILE_SETTINGS;
+    }
+
+    /**
+     * Resolves effective settings by layering:
+     * properties file, thread-local, and {@code overrides}.
+     *
+     * @param overrides optional overrides with the highest priority
+     * @return merged (possibly locked) settings
+     */
+    public static Settings resolveEffectiveSettings(@Nullable final Settings overrides) {
+        final Settings threadLocalSettings = ThreadLocalSettings.getInstance().get();
+        if (threadLocalSettings == null && overrides == null) {
+            return PROPERTIES_FILE_SETTINGS; // locked instance
+        }
+        return InternalSettings.from(PROPERTIES_FILE_SETTINGS)
+                .copyFrom(threadLocalSettings)
+                .copyFrom(overrides);
     }
 
     @Nullable

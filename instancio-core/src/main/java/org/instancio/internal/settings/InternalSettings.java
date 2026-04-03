@@ -28,7 +28,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 
@@ -39,26 +38,38 @@ import static org.instancio.internal.ApiValidator.validateSubtype;
 public final class InternalSettings implements Settings {
     private static final String TYPE_MAPPING_PREFIX = "subtype.";
     private static final boolean AUTO_ADJUST_ENABLED = true;
+    private static final InternalSettings LOCKED_DEFAULTS = createLockedDefaults();
 
     private boolean isLockedForModifications;
     private Map<SettingKey<?>, Object> settingsMap;
     private Map<Class<?>, Class<?>> subtypeMap;
 
+    private InternalSettings(
+            final Map<SettingKey<?>, Object> settingsMap,
+            final Map<Class<?>, Class<?>> subtypeMap) {
+
+        this.settingsMap = new HashMap<>(settingsMap);
+        this.subtypeMap = new HashMap<>(subtypeMap);
+    }
+
     InternalSettings() {
-        this.settingsMap = new HashMap<>();
-        this.subtypeMap = new HashMap<>();
+        this(new HashMap<>(), new HashMap<>());
+    }
+
+    public static InternalSettings getLockedDefaults() {
+        return LOCKED_DEFAULTS;
     }
 
     public static InternalSettings create() {
         return new InternalSettings();
     }
 
-    public static InternalSettings defaults() {
-        InternalSettings settings = new InternalSettings();
+    private static InternalSettings createLockedDefaults() {
+        final InternalSettings settings = new InternalSettings();
         for (SettingKey<Object> setting : Keys.all()) {
             settings.set(setting, setting.defaultValue());
         }
-        return settings;
+        return settings.lock();
     }
 
     @SuppressWarnings("PMD.UseDiamondOperator")
@@ -90,23 +101,35 @@ public final class InternalSettings implements Settings {
     }
 
     public static InternalSettings from(final Settings other) {
-        final InternalSettings settings = new InternalSettings();
-        settings.settingsMap.putAll(((InternalSettings) other).settingsMap);
-        settings.subtypeMap.putAll(((InternalSettings) other).subtypeMap);
-        return settings;
+        final InternalSettings src = (InternalSettings) other;
+        return new InternalSettings(src.settingsMap, src.subtypeMap);
     }
 
     @Override
     public InternalSettings merge(@Nullable final Settings other) {
-        final InternalSettings merged = create();
-        merged.settingsMap.putAll(settingsMap);
-        merged.subtypeMap.putAll(subtypeMap);
+        final InternalSettings merged = new InternalSettings(settingsMap, subtypeMap);
 
         if (other != null) {
-            merged.settingsMap.putAll(((InternalSettings) other).settingsMap);
-            merged.subtypeMap.putAll(((InternalSettings) other).subtypeMap);
+            final InternalSettings src = (InternalSettings) other;
+            merged.settingsMap.putAll(src.settingsMap);
+            merged.subtypeMap.putAll(src.subtypeMap);
         }
         return merged;
+    }
+
+    /**
+     * Copies from {@code other} settings to this instance.
+     *
+     * @param other the other settings to copy from
+     * @return this instance of settings
+     */
+    public InternalSettings copyFrom(@Nullable final Settings other) {
+        if (other instanceof InternalSettings src) {
+            checkLockedForModifications();
+            settingsMap.putAll(src.settingsMap);
+            subtypeMap.putAll(src.subtypeMap);
+        }
+        return this;
     }
 
     @NullUnmarked
@@ -146,9 +169,10 @@ public final class InternalSettings implements Settings {
         settingsMap.put(key, value);
 
         if (autoAdjust && value != null && key instanceof AutoAdjustable) {
-            final Optional<SettingKey<T>> adjustable = SettingsSupport.getAutoAdjustable(key);
-            adjustable.ifPresent(settingKey -> ((AutoAdjustable) settingKey)
-                    .autoAdjust(this, new NumberCaster<>().cast(value)));
+            final SettingKey<T> adjustable = SettingsSupport.getAutoAdjustable(key);
+            if (adjustable != null) {
+                doAutoAdjust((AutoAdjustable) adjustable, value);
+            }
         }
         return this;
     }
@@ -221,10 +245,8 @@ public final class InternalSettings implements Settings {
     }
 
     // a hack to workaround generics... we know the type is valid since it's a numeric settings
-    private static final class NumberCaster<T extends Number & Comparable<T>> {
-        @SuppressWarnings("unchecked")
-        private T cast(final Object obj) {
-            return (T) obj;
-        }
+    @SuppressWarnings("unchecked")
+    private <V extends Number & Comparable<V>> void doAutoAdjust(final AutoAdjustable key, final Object value) {
+        key.autoAdjust(this, (V) value);
     }
 }

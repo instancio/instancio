@@ -21,15 +21,17 @@ import org.instancio.settings.SettingKey;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
 
 final class SettingsSupport {
 
     private static final Map<SettingKey<?>, SettingKey<?>> AUTO_ADJUSTABLE_MAP = getAutoAdjustableKeys();
 
+    @Nullable
     @SuppressWarnings("unchecked")
-    static <T> Optional<SettingKey<T>> getAutoAdjustable(final SettingKey<T> key) {
-        return Optional.ofNullable((SettingKey<T>) AUTO_ADJUSTABLE_MAP.get(key));
+    static <T> SettingKey<T> getAutoAdjustable(final SettingKey<T> key) {
+        return (SettingKey<T>) AUTO_ADJUSTABLE_MAP.get(key);
     }
 
     private static Map<SettingKey<?>, SettingKey<?>> getAutoAdjustableKeys() {

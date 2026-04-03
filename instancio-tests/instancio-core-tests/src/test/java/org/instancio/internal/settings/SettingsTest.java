@@ -98,6 +98,46 @@ class SettingsTest {
     }
 
     @Test
+    void mergeNull() {
+        final Settings settings = Settings.create()
+                .set(Keys.ARRAY_NULLABLE, true);
+
+        final Settings merged = settings.merge(null);
+
+        assertThat(merged).isNotNull();
+        assertThat(merged.get(Keys.ARRAY_NULLABLE)).isTrue();
+    }
+
+    @Test
+    void copyFrom() {
+        final InternalSettings settings = (InternalSettings) Settings.create();
+
+        final InternalSettings updatedSettings = settings.copyFrom(Settings.create()
+                .set(Keys.ARRAY_NULLABLE, true));
+
+        assertThat(updatedSettings).isSameAs(settings);
+        assertThat(updatedSettings.get(Keys.ARRAY_NULLABLE)).isTrue();
+    }
+
+    @Test
+    void copyFromNull() {
+        final InternalSettings settings = (InternalSettings) Settings.create();
+
+        final InternalSettings updatedSettings = settings.copyFrom(null);
+
+        assertThat(updatedSettings).isSameAs(settings);
+    }
+
+    @Test
+    void copyFrom_withLockedInstance() {
+        final InternalSettings settings = (InternalSettings) Settings.create().lock();
+        final Settings overrides = Settings.create();
+
+        assertThatThrownBy(() -> settings.copyFrom(overrides))
+                .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
     void getReturnsNullIfKeyHasNoValue() {
         assertThat(Settings.create().get(Keys.BYTE_MIN)).isNull();
     }

@@ -42,4 +42,26 @@ class ValueSpecWithSettingsAnnotationTest {
     void shouldHaveLengthSpecifiedByTheSettings() {
         assertThat(Instancio.gen().string().get()).hasSize(EXPECTED_LENGTH);
     }
+
+    @Test
+    void withMultipleSettingsInstanceOverrides() {
+        final String result = Instancio.gen()
+                .withSettings(Settings.create().set(Keys.STRING_MIN_LENGTH, EXPECTED_LENGTH + 10))
+                .withSettings(Settings.create().set(Keys.STRING_MIN_LENGTH, EXPECTED_LENGTH + 20))
+                .string()
+                .get();
+
+        assertThat(result).hasSizeGreaterThanOrEqualTo(EXPECTED_LENGTH + 20);
+    }
+
+    @Test
+    void withMultipleSettingsKeyValueOverrides() {
+        final String result = Instancio.gen()
+                .withSetting(Keys.STRING_MIN_LENGTH, EXPECTED_LENGTH + 10)
+                .withSetting(Keys.STRING_MIN_LENGTH, EXPECTED_LENGTH + 20)
+                .string()
+                .get();
+
+        assertThat(result).hasSizeGreaterThanOrEqualTo(EXPECTED_LENGTH + 20);
+    }
 }
