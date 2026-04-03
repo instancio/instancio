@@ -81,6 +81,7 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     name: "Verify snapshots with early access JDK"
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
       - name: "Set up JDK"
