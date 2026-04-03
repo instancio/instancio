@@ -35,11 +35,9 @@ import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -316,8 +314,8 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         if (candidateScopes.isEmpty()) {
             return true;
         }
-        final Deque<Scope> deq = new ArrayDeque<>(candidateScopes);
-        Scope scope = deq.removeLast();
+        int index = candidateScopes.size() - 1;
+        Scope scope = candidateScopes.get(index);
         InternalNode node = targetNode;
 
         while (node != null) {
@@ -326,11 +324,10 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
                     : isPredicateScopeMatch((PredicateScopeImpl) scope, node);
 
             if (scopeMatched) {
-                scope = deq.pollLast();
-
-                if (scope == null) { // All scopes have been matched
+                if (--index < 0) { // All scopes have been matched
                     return true;
                 }
+                scope = candidateScopes.get(index);
 
                 // allow consecutive scopes to match the same node
                 continue;
@@ -366,20 +363,20 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
             if (scope.getTarget() instanceof TargetField) {
                 final Field field = node.getField();
                 matched = field != null
-                          && Objects.equals(scope.getTargetClass(), field.getDeclaringClass())
-                          && Objects.equals(scope.getField(), field);
+                        && Objects.equals(scope.getTargetClass(), field.getDeclaringClass())
+                        && Objects.equals(scope.getField(), field);
 
             } else if (scope.getTarget() instanceof TargetSetter) {
                 final Method setter = node.getSetter();
                 final Class<?> parameterType = scope.getParameterType();
                 matched = setter != null
-                          && Objects.equals(scope.getTargetClass(), setter.getDeclaringClass())
-                          && Objects.equals(scope.getMethodName(), setter.getName())
-                          && Objects.equals(parameterType, setter.getParameterTypes()[0]);
+                        && Objects.equals(scope.getTargetClass(), setter.getDeclaringClass())
+                        && Objects.equals(scope.getMethodName(), setter.getName())
+                        && Objects.equals(parameterType, setter.getParameterTypes()[0]);
 
             } else {
                 matched = Objects.equals(node.getRawType(), scope.getTargetClass())
-                          || Objects.equals(node.getTargetClass(), scope.getTargetClass());
+                        || Objects.equals(node.getTargetClass(), scope.getTargetClass());
             }
         }
         return matched;
@@ -403,13 +400,5 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         return sb.append('}').toString();
     }
 
-    private static final class PredicateSelectorEntry<V> {
-        private final PredicateSelectorImpl predicateSelector;
-        private final V value;
-
-        private PredicateSelectorEntry(final PredicateSelectorImpl predicateSelector, final V value) {
-            this.predicateSelector = predicateSelector;
-            this.value = value;
-        }
-    }
+    private record PredicateSelectorEntry<V>(PredicateSelectorImpl predicateSelector, V value) {}
 }
