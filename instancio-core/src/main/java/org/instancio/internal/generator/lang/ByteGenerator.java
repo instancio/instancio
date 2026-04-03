@@ -25,9 +25,9 @@ public class ByteGenerator extends AbstractRandomComparableNumberGeneratorSpec<B
 
     public ByteGenerator(final GeneratorContext context) {
         super(context,
-                context.getSettings().get(Keys.BYTE_MIN),
-                context.getSettings().get(Keys.BYTE_MAX),
-                context.getSettings().get(Keys.BYTE_NULLABLE));
+                context.settings().get(Keys.BYTE_MIN),
+                context.settings().get(Keys.BYTE_MAX),
+                context.settings().get(Keys.BYTE_NULLABLE));
     }
 
     @Override

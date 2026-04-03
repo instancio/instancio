@@ -19,6 +19,7 @@ import org.instancio.Random;
 import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
@@ -51,7 +52,7 @@ class MapGeneratorTest {
             .set(Keys.MAP_MAX_SIZE, MAX_SIZE);
 
     private final Random random = new DefaultRandom();
-    private final GeneratorContext context = new GeneratorContext(settings, random);
+    private final GeneratorContext context = new InternalGeneratorContext(settings, random);
 
     private MapGenerator<?, ?> generator() {
         return new MapGenerator<>(context);

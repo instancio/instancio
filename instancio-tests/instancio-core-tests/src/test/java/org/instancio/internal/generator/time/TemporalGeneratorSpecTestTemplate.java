@@ -18,6 +18,7 @@ package org.instancio.internal.generator.time;
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable<? super T>> {
     protected final int SAMPLE_SIZE = 100_000;
     protected final Random random = new DefaultRandom();
-    protected final GeneratorContext context = new GeneratorContext(Settings.create(), random);
+    protected final GeneratorContext context = new InternalGeneratorContext(Settings.create(), random);
 
     private JavaTimeTemporalGenerator<T> generator;
 

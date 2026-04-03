@@ -17,6 +17,7 @@ package org.instancio.internal.generator.lang;
 
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.tags.Feature;
@@ -76,7 +77,7 @@ class StringGeneratorTest extends AbstractGeneratorTestTemplate<String, StringGe
     @Test
     void generateOverrideSettings() {
         final int length = 10;
-        final GeneratorContext ctxWithUpdatedSettings = new GeneratorContext(
+        final GeneratorContext ctxWithUpdatedSettings = new InternalGeneratorContext(
                 Settings.from(settings)
                         .set(Keys.STRING_NULLABLE, false)
                         .set(Keys.STRING_ALLOW_EMPTY, false),

@@ -35,9 +35,9 @@ public class DoubleGenerator extends AbstractGenerator<Double>
     public DoubleGenerator(final GeneratorContext context) {
         super(context);
         delegate = new BigDecimalGenerator(context)
-                .min(new BigDecimal(String.valueOf(context.getSettings().get(Keys.DOUBLE_MIN))))
-                .max(new BigDecimal(String.valueOf(context.getSettings().get(Keys.DOUBLE_MAX))))
-                .nullable(context.getSettings().get(Keys.DOUBLE_NULLABLE));
+                .min(new BigDecimal(String.valueOf(context.settings().get(Keys.DOUBLE_MIN))))
+                .max(new BigDecimal(String.valueOf(context.settings().get(Keys.DOUBLE_MAX))))
+                .nullable(context.settings().get(Keys.DOUBLE_NULLABLE));
     }
 
     @Override

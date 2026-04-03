@@ -22,6 +22,7 @@ import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.generator.SpiGeneratorResolver;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Fail;
@@ -52,7 +53,7 @@ public class GeneratorFacade {
         this.nullSubstitutorFacade = nullSubstitutorFacade;
         this.generatedPojoStore = GeneratedPojoStore.createStore(context);
 
-        final GeneratorContext generatorContext = new GeneratorContext(
+        final GeneratorContext generatorContext = new InternalGeneratorContext(
                 context.getSettings(), context.getRandom());
 
         final GeneratorResolver generatorResolver = new GeneratorResolver(generatorContext);

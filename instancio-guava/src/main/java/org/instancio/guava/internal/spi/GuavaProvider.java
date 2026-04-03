@@ -58,6 +58,7 @@ import org.instancio.guava.internal.generator.GuavaHashBasedTableGenerator;
 import org.instancio.guava.internal.generator.GuavaHostAndPortGenerator;
 import org.instancio.guava.internal.generator.GuavaInternetDomainNameGenerator;
 import org.instancio.guava.internal.generator.GuavaRangeGenerator;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.spi.InstancioServiceProvider;
@@ -74,7 +75,7 @@ public class GuavaProvider implements InstancioServiceProvider {
     @Initializer
     @Override
     public void init(final ServiceProviderContext providerContext) {
-        this.generatorContext = new GeneratorContext(
+        this.generatorContext = new InternalGeneratorContext(
                 providerContext.getSettings(),
                 providerContext.random());
     }

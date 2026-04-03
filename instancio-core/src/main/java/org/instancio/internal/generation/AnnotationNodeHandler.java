@@ -27,6 +27,7 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generation.AnnotationProcessorHelper.AnnotatedMethod;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.settings.Keys;
@@ -77,7 +78,7 @@ final class AnnotationNodeHandler implements NodeHandler {
         this.annotationExtractor = new AnnotationExtractor(modelContext);
         this.stringPostProcessor = new StringPrefixingPostProcessor(
                 modelContext.getSettings().get(Keys.STRING_FIELD_PREFIX_ENABLED));
-        this.generatorContext = new GeneratorContext(modelContext.getSettings(), modelContext.getRandom());
+        this.generatorContext = new InternalGeneratorContext(modelContext.getSettings(), modelContext.getRandom());
         this.annotationProcessorMethods = new AnnotationProcessorHelper(annotationProcessors);
         this.beanValidationOrJpaEnabled = beanValidationOrJpaEnabled;
     }

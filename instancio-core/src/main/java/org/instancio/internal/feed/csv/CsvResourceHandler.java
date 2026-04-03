@@ -34,7 +34,7 @@ public final class CsvResourceHandler implements ResourceHandler {
     public InternalFeed createFeed(final InternalFeedContext<?> feedContext) {
         final FormatOptions options = feedContext.getFormatOptions();
         final FormatOptions csvOptions = options == null
-                ? InternalCsvFormatOptions.defaults(feedContext.getGeneratorContext().getSettings())
+                ? InternalCsvFormatOptions.defaults(feedContext.getGeneratorContext().settings())
                 : options;
 
         final DataLoader<?> dataLoader = new CsvDataLoader((InternalCsvFormatOptions) csvOptions);

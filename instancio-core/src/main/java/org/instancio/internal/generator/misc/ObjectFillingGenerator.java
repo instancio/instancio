@@ -62,7 +62,7 @@ public final class ObjectFillingGenerator extends AbstractGenerator<Object> {
             @Nullable final FillType userSuppliedFillType) {
 
         final FillType fillType = ObjectUtils.defaultIfNull(
-                userSuppliedFillType, () -> getContext().getSettings().get(Keys.FILL_TYPE));
+                userSuppliedFillType, () -> getContext().settings().get(Keys.FILL_TYPE));
 
         if (fillType == FillType.POPULATE_NULLS) {
             return AfterGenerate.POPULATE_NULLS;

@@ -17,7 +17,7 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.util.Constants;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
@@ -36,7 +36,7 @@ class DurationGeneratorTest {
     private static final int SAMPLE_SIZE = 500;
     private static final Random random = new DefaultRandom();
     private final DurationGenerator generator = new DurationGenerator(
-            new GeneratorContext(Settings.defaults(), random));
+            new InternalGeneratorContext(Settings.defaults(), random));
 
     @Test
     void apiMethod() {

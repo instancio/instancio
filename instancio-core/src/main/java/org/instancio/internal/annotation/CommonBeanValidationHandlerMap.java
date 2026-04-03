@@ -241,7 +241,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                                   final Class<?> targetClass,
                                   final GeneratorContext generatorContext) {
 
-            final Settings settings = generatorContext.getSettings();
+            final Settings settings = generatorContext.settings();
 
             if (spec instanceof InternalLengthGeneratorSpec<?> lengthSpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
@@ -278,7 +278,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                             final Class<?> targetClass,
                             final GeneratorContext generatorContext) {
 
-            final Settings settings = generatorContext.getSettings();
+            final Settings settings = generatorContext.settings();
 
             if (spec instanceof final StringGenerator generator) {
                 generator.minLength(Math.max(generator.getMinLength(), 1))

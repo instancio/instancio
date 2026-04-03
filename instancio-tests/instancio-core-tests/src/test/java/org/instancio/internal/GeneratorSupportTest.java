@@ -17,6 +17,7 @@ package org.instancio.internal;
 
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.generator.lang.BooleanGenerator;
 import org.instancio.internal.generator.lang.EnumGenerator;
 import org.instancio.internal.generator.lang.IntegerGenerator;
@@ -46,7 +47,7 @@ import static org.instancio.internal.GeneratorSupport.supports;
 
 class GeneratorSupportTest {
 
-    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new DefaultRandom());
+    private final GeneratorContext context = new InternalGeneratorContext(Settings.defaults(), new DefaultRandom());
     private final Generator<?> booleanGenerator = new BooleanGenerator(context);
     private final Generator<?> integerGenerator = new IntegerGenerator(context);
     private final Generator<?> stringGenerator = new StringGenerator(context);

@@ -35,7 +35,7 @@ final class GeneratorInitialiser {
 
     GeneratorInitialiser(final GeneratorContext generatorContext) {
         this.context = generatorContext;
-        this.defaultAfterGenerate = generatorContext.getSettings().get(Keys.AFTER_GENERATE_HINT);
+        this.defaultAfterGenerate = generatorContext.settings().get(Keys.AFTER_GENERATE_HINT);
     }
 
     <T> Generator<T> initGenerator(final TargetSelector targetSelector, final Generator<T> g) {

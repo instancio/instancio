@@ -17,6 +17,7 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.tags.NonDeterministicTag;
@@ -37,7 +38,7 @@ class ZoneOffsetGeneratorTest {
     private static final int TOTAL_POSSIBLE_OUTCOMES = 2102;
 
     private static final Random random = new DefaultRandom();
-    private static final GeneratorContext context = new GeneratorContext(Settings.defaults(), random);
+    private static final GeneratorContext context = new InternalGeneratorContext(Settings.defaults(), random);
     private final ZoneOffsetGenerator generator = new ZoneOffsetGenerator(context);
 
     @Test

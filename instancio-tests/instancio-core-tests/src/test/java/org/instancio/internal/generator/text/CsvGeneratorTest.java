@@ -17,7 +17,7 @@ package org.instancio.internal.generator.text;
 
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class CsvGeneratorTest {
     private static final Random random = new DefaultRandom();
 
     private final CsvGenerator generator = new CsvGenerator(
-            new GeneratorContext(Settings.defaults(), random));
+            new InternalGeneratorContext(Settings.defaults(), random));
 
     @Test
     void apiMethod() {

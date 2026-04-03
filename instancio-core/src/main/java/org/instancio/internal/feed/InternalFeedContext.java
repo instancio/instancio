@@ -31,6 +31,7 @@ import org.instancio.internal.feed.datasource.CacheableDataSource;
 import org.instancio.internal.feed.datasource.FileDataSource;
 import org.instancio.internal.feed.datasource.ResourceDataSource;
 import org.instancio.internal.feed.datasource.StringDataSource;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.settings.FeedDataAccess;
@@ -61,7 +62,7 @@ public final class InternalFeedContext<F extends Feed> {
         this.feedClass = builder.feedClass;
         this.generatorContext = resolveGeneratorContext(builder);
 
-        final Settings settings = generatorContext.getSettings();
+        final Settings settings = generatorContext.settings();
         final Feed.Source feedSource = builder.feedClass.getDeclaredAnnotation(Feed.Source.class);
         this.tagKey = resolveTagKey(settings, feedClass, builder.tagKey);
         this.tagValue = builder.tagValue != null ? builder.tagValue : settings.get(Keys.FEED_TAG_VALUE);
@@ -112,7 +113,7 @@ public final class InternalFeedContext<F extends Feed> {
         }
         final Settings settings = Global.resolveEffectiveSettings(builder.settings).lock();
 
-        return new GeneratorContext(
+        return new InternalGeneratorContext(
                 settings, RandomHelper.resolveRandom(settings.get(Keys.SEED), null));
     }
 

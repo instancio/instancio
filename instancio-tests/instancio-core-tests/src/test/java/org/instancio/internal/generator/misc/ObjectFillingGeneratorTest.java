@@ -18,6 +18,7 @@ package org.instancio.internal.generator.misc;
 import org.instancio.Random;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.FillType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -48,7 +49,7 @@ class ObjectFillingGeneratorTest {
             final FillType fillType,
             final AfterGenerate expectedAfterGenerate) {
 
-        final GeneratorContext generatorContext = new GeneratorContext(settings, random);
+        final GeneratorContext generatorContext = new InternalGeneratorContext(settings, random);
         final ObjectFillingGenerator generator = new ObjectFillingGenerator(
                 generatorContext, new Object(), fillType);
 
@@ -64,7 +65,7 @@ class ObjectFillingGeneratorTest {
             final AfterGenerate expectedAfterGenerate) {
 
         settings.set(Keys.FILL_TYPE, fillTypeFromSettings);
-        final GeneratorContext generatorContext = new GeneratorContext(settings, random);
+        final GeneratorContext generatorContext = new InternalGeneratorContext(settings, random);
 
         final ObjectFillingGenerator generator = new ObjectFillingGenerator(
                 generatorContext, new Object(), /* fillType = */ null);

@@ -17,6 +17,7 @@ package org.instancio.internal.generator.util;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.util.Constants;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
@@ -30,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class MapGeneratorSpecTest {
     private static final int PERCENTAGE = Constants.RANGE_ADJUSTMENT_PERCENTAGE;
 
-    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), new DefaultRandom());
+    private final GeneratorContext context = new InternalGeneratorContext(Settings.defaults(), new DefaultRandom());
 
     private final MapGeneratorExt<?, ?> generator = new MapGeneratorExt<>(context);
 

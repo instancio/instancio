@@ -47,7 +47,7 @@ public abstract class AbstractGeneratorTestTemplate<T, G extends AbstractGenerat
     }
 
     protected GeneratorContext getGeneratorContext() {
-        return new GeneratorContext(getSettings(), random);
+        return new InternalGeneratorContext(getSettings(), random);
     }
 
     @Test

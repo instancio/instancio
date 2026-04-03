@@ -17,7 +17,6 @@ package org.instancio.internal;
 
 import org.instancio.InstancioGenApi;
 import org.instancio.Random;
-import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.BooleanSpec;
 import org.instancio.generator.specs.ByteSpec;
 import org.instancio.generator.specs.CharacterSpec;
@@ -45,6 +44,7 @@ import org.instancio.generators.NioSpecs;
 import org.instancio.generators.SpatialSpecs;
 import org.instancio.generators.TemporalSpecs;
 import org.instancio.generators.TextSpecs;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.settings.InternalSettings;
 import org.instancio.settings.Keys;
@@ -83,7 +83,7 @@ public final class GenApiImpl implements InstancioGenApi {
     private BuiltInGenerators generators() {
         final Settings effectiveSettings = Global.resolveEffectiveSettings(settings);
         final Random random = RandomHelper.resolveRandom(effectiveSettings.get(Keys.SEED), null);
-        return new BuiltInGenerators(new GeneratorContext(effectiveSettings, random));
+        return new BuiltInGenerators(new InternalGeneratorContext(effectiveSettings, random));
     }
 
     @Override

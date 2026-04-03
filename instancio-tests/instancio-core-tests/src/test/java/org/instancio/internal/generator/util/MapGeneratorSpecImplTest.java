@@ -18,6 +18,7 @@ package org.instancio.internal.generator.util;
 import org.instancio.Random;
 import org.instancio.exception.InstancioException;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class MapGeneratorSpecImplTest {
 
     private final Random random = new DefaultRandom();
-    private final GeneratorContext context = new GeneratorContext(Settings.defaults(), random);
+    private final GeneratorContext context = new InternalGeneratorContext(Settings.defaults(), random);
 
     private final MapGeneratorSpecImpl<?, ?> generator = new MapGeneratorSpecImpl<>(context);
 

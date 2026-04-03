@@ -44,7 +44,7 @@ public class BigDecimalGenerator extends AbstractRandomComparableNumberGenerator
             final GeneratorContext context, final BigDecimal min, final BigDecimal max, final boolean nullable) {
         super(context, min, max, nullable);
 
-        this.scale = context.getSettings().get(Keys.BIG_DECIMAL_SCALE);
+        this.scale = context.settings().get(Keys.BIG_DECIMAL_SCALE);
     }
 
     @Override

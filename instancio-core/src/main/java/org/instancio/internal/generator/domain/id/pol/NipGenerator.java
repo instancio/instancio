@@ -46,7 +46,7 @@ public class NipGenerator extends WeightsModCheckGenerator implements NipSpec {
 
     @Override
     protected String payload(final Random random) {
-        final int maxGenerationAttempts = getContext().getSettings().get(Keys.MAX_GENERATION_ATTEMPTS);
+        final int maxGenerationAttempts = getContext().settings().get(Keys.MAX_GENERATION_ATTEMPTS);
         for (int count = 0; count < maxGenerationAttempts; count++) {
             final String payload = super.payload(random);
             if (modulo(payload) < 10) {
@@ -54,7 +54,7 @@ public class NipGenerator extends WeightsModCheckGenerator implements NipSpec {
             }
         }
 
-        if (getContext().getSettings().get(Keys.FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED)) {
+        if (getContext().settings().get(Keys.FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED)) {
             throw Fail.withUsageError(
                     "Unable to generate a valid NIP within the maximum of %s attempts (configurable via '%s')",
                     maxGenerationAttempts,

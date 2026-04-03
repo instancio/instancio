@@ -17,7 +17,7 @@ package org.instancio.internal.generator.misc;
 
 import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.misc.EmitGenerator.WhenEmptyAction;
 import org.instancio.settings.Settings;
@@ -33,7 +33,7 @@ class EmitGeneratorTest {
     private final Random random = new DefaultRandom();
 
     private final EmitGenerator<@Nullable Number> generator = new EmitGenerator<>(
-            new GeneratorContext(Settings.defaults(), random));
+            new InternalGeneratorContext(Settings.defaults(), random));
 
     @Test
     void apiMethod() {

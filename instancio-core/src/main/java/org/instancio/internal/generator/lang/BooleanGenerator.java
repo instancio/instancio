@@ -30,7 +30,7 @@ public class BooleanGenerator extends AbstractGenerator<Boolean>
 
     public BooleanGenerator(final GeneratorContext context) {
         super(context);
-        super.nullable(context.getSettings().get(Keys.BOOLEAN_NULLABLE));
+        super.nullable(context.settings().get(Keys.BOOLEAN_NULLABLE));
     }
 
     @Override

@@ -56,11 +56,11 @@ public class MapGenerator<K extends @Nullable Object, V extends @Nullable Object
 
     public MapGenerator(final GeneratorContext context) {
         super(context);
-        this.minSize = context.getSettings().get(Keys.MAP_MIN_SIZE);
-        this.maxSize = context.getSettings().get(Keys.MAP_MAX_SIZE);
-        super.nullable(context.getSettings().get(Keys.MAP_NULLABLE));
-        this.nullableKeys = context.getSettings().get(Keys.MAP_KEYS_NULLABLE);
-        this.nullableValues = context.getSettings().get(Keys.MAP_VALUES_NULLABLE);
+        this.minSize = context.settings().get(Keys.MAP_MIN_SIZE);
+        this.maxSize = context.settings().get(Keys.MAP_MAX_SIZE);
+        super.nullable(context.settings().get(Keys.MAP_NULLABLE));
+        this.nullableKeys = context.settings().get(Keys.MAP_KEYS_NULLABLE);
+        this.nullableValues = context.settings().get(Keys.MAP_VALUES_NULLABLE);
         this.mapType = DEFAULT_MAP_TYPE;
     }
 
@@ -152,7 +152,7 @@ public class MapGenerator<K extends @Nullable Object, V extends @Nullable Object
         } catch (Exception ex) {
             final String msg = String.format("Error creating instance of: %s", mapType);
 
-            if (getContext().getSettings().get(Keys.FAIL_ON_ERROR)) {
+            if (getContext().settings().get(Keys.FAIL_ON_ERROR)) {
                 throw Fail.withFataInternalError(msg, ex);
             }
             ExceptionUtils.logException(msg, ex);
