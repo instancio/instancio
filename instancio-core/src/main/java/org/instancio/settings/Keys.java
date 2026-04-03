@@ -835,7 +835,7 @@ public final class Keys {
      * @deprecated for removal in 6.0.0. Use {@link #ofType(Class, Object)}
      */
     @ExperimentalApi
-    @Deprecated(since = "5.6.0", forRemoval = true)
+    @Deprecated
     public static <T> SettingKeyBuilder<T> ofType(final Class<T> type) {
         return InternalKey.builder(type, null);
     }

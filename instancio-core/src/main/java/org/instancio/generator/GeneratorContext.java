@@ -49,7 +49,7 @@ public final class GeneratorContext {
      * @since 1.0.3
      * @deprecated for removal in 6.0.0. Use {@link #settings()} instead.
      */
-    @Deprecated(since = "5.6.0", forRemoval = true)
+    @Deprecated
     public Settings getSettings() {
         return settings();
     }

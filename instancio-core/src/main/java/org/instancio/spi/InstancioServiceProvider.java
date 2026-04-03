@@ -32,6 +32,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ServiceLoader;
 
 /**
@@ -220,8 +221,43 @@ public interface InstancioServiceProvider {
          * @throws InstancioSpiException if the returned class is not
          *                               a subtype of the argument class
          * @since 2.11.0
+         * @deprecated for removal in 6.0.0. Use {@link #getSubtype(Node)} instead.
+         * Implementors switching to the new method should return {@code null}
+         * from this method and remove it when upgrading to 6.0.0.
          */
+        @Deprecated
         Class<?> getSubtype(Class<?> type);
+
+        /**
+         * Returns a subtype for the given {@code node}.
+         *
+         * <p>Similar functionality can be achieved using:
+         *
+         * <ul>
+         *   <li>{@link InstancioApi#subtype(TargetSelector, Class)}</li>
+         *   <li>{@link Settings#mapType(Class, Class)}</li>
+         * </ul>
+         *
+         * <p>However, the methods above require specifying the subtypes
+         * manually. This class allows subtype resolution to be done
+         * automatically. For example, if this method maps an abstract
+         * {@code Animal} class to a concrete {@code Dog} class, then
+         * Instancio will generate objects based on this mapping:
+         *
+         * <pre>{@code
+         *   Animal animal = Instancio.create(Animal.class);
+         *   assertThat(animal).isExactlyInstanceOf(Dog.class);
+         * }</pre>
+         *
+         * @param node the node to map to a subtype
+         * @return the subtype, or {@code null} if no subtype is defined
+         * @throws InstancioSpiException if the returned class is not
+         *                               a subtype of the argument class
+         * @since 5.6.0
+         */
+        default Type getSubtype(Node node) {
+            return null;
+        }
     }
 
     /**

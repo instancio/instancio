@@ -34,7 +34,7 @@ public interface ServiceProviderContext {
      * @since 2.12.0
      * @deprecated for removal in 6.0.0. Use {@link #settings()} instead.
      */
-    @Deprecated(since = "5.6.0", forRemoval = true)
+    @Deprecated
     Settings getSettings();
 
     /**

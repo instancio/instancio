@@ -16,9 +16,11 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.internal.spi.ProviderEntry;
+import org.instancio.internal.util.TypeUtils;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.InstancioSpiException;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,23 +32,30 @@ class TypeResolverFacade {
         this.providerEntries = providerEntries;
     }
 
-    Optional<Class<?>> resolve(final Class<?> typeToResolve) {
-        final Class<?> type = resolveViaSPI(typeToResolve);
+    Optional<Class<?>> resolve(final InternalNode node) {
+        final Class<?> type = resolveViaSPI(node);
         return Optional.ofNullable(type);
     }
 
-    private Class<?> resolveViaSPI(final Class<?> typeToResolve) {
+    private Class<?> resolveViaSPI(final InternalNode node) {
+        final Class<?> typeToResolve = node.getRawType();
         for (ProviderEntry<TypeResolver> entry : providerEntries) {
-            final Class<?> resolved = entry.getProvider().getSubtype(typeToResolve);
+            final TypeResolver typeResolver = entry.getProvider();
+            Type resolved = typeResolver.getSubtype(node);
+            if (resolved == null) {
+                //noinspection removal
+                resolved = typeResolver.getSubtype(typeToResolve);
+            }
 
             if (resolved != null) {
-                if (!typeToResolve.isAssignableFrom(resolved)) {
+                final Class<?> resolvedClass = TypeUtils.getRawType(resolved);
+                if (!typeToResolve.isAssignableFrom(resolvedClass)) {
                     throw new InstancioSpiException(String.format(
                             "%n%s provided an invalid subtype:%n" +
                                     " -> %s%nis not a subtype of:%n -> %s",
-                            entry.getInstancioProviderClass(), resolved, typeToResolve));
+                            entry.getInstancioProviderClass(), resolvedClass, typeToResolve));
                 }
-                return resolved;
+                return resolvedClass;
             }
         }
         return null;
