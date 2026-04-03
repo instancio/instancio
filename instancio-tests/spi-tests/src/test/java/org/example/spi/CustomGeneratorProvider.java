@@ -105,7 +105,7 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
         assertThat(context).isNotNull();
         assertThat(context.random()).isNotNull();
 
-        final Settings settings = context.getSettings();
+        final Settings settings = context.settings();
         assertThatThrownBy(() -> settings.set(Keys.STRING_MIN_LENGTH, 1))
                 .isExactlyInstanceOf(UnsupportedOperationException.class)
                 .hasMessage("This instance of Settings has been locked and is read-only");

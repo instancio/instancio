@@ -47,7 +47,7 @@ class ProtoGeneratorProvider implements InstancioServiceProvider.GeneratorProvid
     private final GeneratorContext generatorContext;
 
     ProtoGeneratorProvider(final ServiceProviderContext spContext) {
-        this.generatorContext = new InternalGeneratorContext(spContext.getSettings(), spContext.random());
+        this.generatorContext = new InternalGeneratorContext(spContext.settings(), spContext.random());
     }
 
     @Nullable

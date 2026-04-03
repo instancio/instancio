@@ -76,7 +76,7 @@ public class GuavaProvider implements InstancioServiceProvider {
     @Override
     public void init(final ServiceProviderContext providerContext) {
         this.generatorContext = new InternalGeneratorContext(
-                providerContext.getSettings(),
+                providerContext.settings(),
                 providerContext.random());
     }
 
