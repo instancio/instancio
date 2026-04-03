@@ -32,8 +32,20 @@ public interface ServiceProviderContext {
      *
      * @return read-only instance of settings
      * @since 2.12.0
+     * @deprecated for removal in 6.0.0. Use {@link #settings()} instead.
      */
+    @Deprecated(since = "5.6.0", forRemoval = true)
     Settings getSettings();
+
+    /**
+     * Returns a read-only instance of the {@code Settings}.
+     *
+     * @return read-only instance of settings
+     * @since 5.6.0
+     */
+    default Settings settings() {
+        return getSettings();
+    }
 
     /**
      * Returns the random instance that should be used for generating

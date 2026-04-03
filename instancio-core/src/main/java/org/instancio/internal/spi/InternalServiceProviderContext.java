@@ -31,6 +31,11 @@ public final class InternalServiceProviderContext implements ServiceProviderCont
 
     @Override
     public Settings getSettings() {
+        return settings();
+    }
+
+    @Override
+    public Settings settings() {
         return settings;
     }
 
