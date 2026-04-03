@@ -81,7 +81,7 @@ final class SubtypeResolver {
         final Class<?> subtypeFromSettings = settings.getSubtypeMap().get(node.getRawType());
 
         return subtypeFromSettings == null
-                ? typeResolverFacade.resolve(node.getRawType())
+                ? typeResolverFacade.resolve(node)
                 : Optional.of(subtypeFromSettings);
     }
 
