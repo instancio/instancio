@@ -46,6 +46,7 @@ import static org.instancio.internal.util.Constants.NUMERIC_MIN;
  * @see Settings
  * @since 1.1.10
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public final class Keys {
 
     private static final RangeAdjuster MIN_ADJUSTER = RangeAdjuster.MIN_ADJUSTER;
@@ -831,10 +832,32 @@ public final class Keys {
      * @param <T>  the value type
      * @return key builder
      * @since 2.12.0
+     * @deprecated for removal in 6.0.0. Use {@link #ofType(Class, Object)}
      */
     @ExperimentalApi
+    @Deprecated(since = "5.6.0", forRemoval = true)
     public static <T> SettingKeyBuilder<T> ofType(final Class<T> type) {
-        return InternalKey.builder(type);
+        return InternalKey.builder(type, null);
+    }
+
+    /**
+     * A builder for creating custom setting keys.
+     *
+     * <p>When defining custom keys, specifying
+     * {@link SettingKeyBuilder#withPropertyKey(String)} is optional since
+     * not all settings will be defined in a properties file.
+     * If {@code withPropertyKey()} is not specified, then a random
+     * property key will be assigned.
+     *
+     * @param type         of the value the key is associated with, not {@code null}
+     * @param defaultValue the default value for the key
+     * @param <T>          the value type
+     * @return key builder
+     * @since 5.6.0
+     */
+    @ExperimentalApi
+    public static <T> SettingKeyBuilder<T> ofType(final Class<T> type, final T defaultValue) {
+        return InternalKey.builder(type, defaultValue);
     }
 
     private static <T> SettingKey<T> register(

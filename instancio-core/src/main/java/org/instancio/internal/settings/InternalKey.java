@@ -122,21 +122,23 @@ public final class InternalKey<T>
                 propertyKey, type.getSimpleName());
     }
 
-    public static <T> SettingKeyBuilder<T> builder(final Class<T> type) {
-        return new InternalKeyBuilder<>(type);
+    public static <T> SettingKeyBuilder<T> builder(final Class<T> type, final T defaultValue) {
+        return new InternalKeyBuilder<>(type, defaultValue);
     }
 
     public static final class InternalKeyBuilder<T> implements SettingKeyBuilder<T> {
         private final Class<T> type;
+        private final T defaultValue;
         private String propertyKey;
 
-        private InternalKeyBuilder(final Class<T> type) {
+        private InternalKeyBuilder(final Class<T> type, final T defaultValue) {
             this.type = ApiValidator.notNull(type, "type must not be null");
+            this.defaultValue = defaultValue;
         }
 
         @Override
         public SettingKeyBuilder<T> ofType(final Class<T> type) {
-            return new InternalKeyBuilder<>(type);
+            return new InternalKeyBuilder<>(type, defaultValue);
         }
 
         @Override
@@ -155,7 +157,7 @@ public final class InternalKey<T>
             } else {
                 key = propertyKey;
             }
-            return new InternalKey<>(key, type, null, null, true, false);
+            return new InternalKey<>(key, type, defaultValue, null, true, false);
         }
     }
 }
