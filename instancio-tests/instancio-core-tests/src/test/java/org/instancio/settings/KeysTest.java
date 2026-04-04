@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2025 the original author or authors.
+ * Copyright 2022-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,19 +37,20 @@ class KeysTest {
 
     @Test
     void create() {
-        final SettingKey<Integer> key = Keys.ofType(Integer.class)
+        final int defaultValue = 1234;
+        final SettingKey<Integer> key = Keys.ofType(Integer.class, defaultValue)
                 .withPropertyKey("foo.bar")
                 .create();
 
         assertThat(key.propertyKey()).isEqualTo("foo.bar");
         assertThat(key.type()).isEqualTo(Integer.class);
-        assertThat(key.defaultValue()).isNull();
+        assertThat(key.defaultValue()).isEqualTo(defaultValue);
         assertThat(key.allowsNullValue()).isTrue();
     }
 
     @Test
     void createWithoutPropertyKey() {
-        final SettingKey<String> key = Keys.ofType(String.class).create();
+        final SettingKey<String> key = Keys.ofType(String.class, null).create();
 
         assertThat(key.propertyKey()).matches("custom\\.key\\.[0-9a-f]{20}");
         assertThat(key.type()).isEqualTo(String.class);
@@ -58,15 +59,17 @@ class KeysTest {
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void validationNullType() {
-        assertThatThrownBy(() -> Keys.ofType(null))
+        assertThatThrownBy(() -> Keys.ofType(null, null))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("type must not be null");
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void validationNullPropertyKey() {
-        final SettingKey.SettingKeyBuilder<String> builder = Keys.ofType(String.class);
+        final SettingKey.SettingKeyBuilder<String> builder = Keys.ofType(String.class, null);
 
         assertThatThrownBy(() -> builder.withPropertyKey(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -77,11 +80,12 @@ class KeysTest {
     class EqualsHashCodeTest {
         @Test
         void withTypeAndPropertyKey() {
-            final SettingKey<Integer> key1 = Keys.ofType(Integer.class)
+            final int defaultValue = 1234;
+            final SettingKey<Integer> key1 = Keys.ofType(Integer.class, defaultValue)
                     .withPropertyKey("foo.bar")
                     .create();
 
-            final SettingKey<Integer> key2 = Keys.ofType(Integer.class)
+            final SettingKey<Integer> key2 = Keys.ofType(Integer.class, defaultValue)
                     .withPropertyKey("foo.bar")
                     .create();
 
@@ -90,8 +94,9 @@ class KeysTest {
 
         @Test
         void withoutTypeAndPropertyKey() {
-            final SettingKey<Integer> key1 = Keys.ofType(Integer.class).create();
-            final SettingKey<Integer> key2 = Keys.ofType(Integer.class).create();
+            final int defaultValue = 1234;
+            final SettingKey<Integer> key1 = Keys.ofType(Integer.class, defaultValue).create();
+            final SettingKey<Integer> key2 = Keys.ofType(Integer.class, defaultValue).create();
 
             assertThat(key1).isNotEqualTo(key2).doesNotHaveSameHashCodeAs(key2);
         }
