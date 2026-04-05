@@ -44,7 +44,7 @@ import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeMultimap;
 import com.google.common.collect.TreeMultiset;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.util.CollectionUtils;
 import org.jspecify.annotations.NullUnmarked;
 
@@ -61,7 +61,7 @@ import static org.instancio.guava.internal.util.GuavaFunctions.fromMultimap;
 import static org.instancio.guava.internal.util.GuavaFunctions.fromTable;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-public class GuavaInternalServiceProvider implements InternalServiceProvider {
+public class GuavaInternalExtension implements InternalExtension {
     private static final Map<Class<?>, Function<?, ?>> MAPPING_FUNCTIONS = getMappingFunctions();
     private static final Set<Class<?>> CONTAINER_CLASSES = getContainerClasses();
 

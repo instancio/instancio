@@ -16,13 +16,13 @@
 package org.instancio.protobuf.internal.spi;
 
 import com.google.protobuf.Message;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnSetMethodError;
 import org.instancio.settings.Settings;
 
-public final class ProtoInternalServiceProvider implements InternalServiceProvider {
+public final class ProtoInternalExtension implements InternalExtension {
 
     private static final Settings PROTO_BUILDER_ASSIGNER_SETTINGS =
             Settings.create()

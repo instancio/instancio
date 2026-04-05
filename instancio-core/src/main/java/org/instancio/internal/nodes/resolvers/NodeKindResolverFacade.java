@@ -17,7 +17,7 @@ package org.instancio.internal.nodes.resolvers;
 
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.NodeKindResolver;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,13 +27,13 @@ public class NodeKindResolverFacade {
 
     private final NodeKindResolver[] resolvers;
 
-    public NodeKindResolverFacade(final List<InternalServiceProvider> containerFactories) {
+    public NodeKindResolverFacade(final List<InternalExtension> internalExtensions) {
         this.resolvers = new NodeKindResolver[]{
                 new NodeKindCollectionResolver(),
                 new NodeKindMapResolver(),
                 new NodeKindArrayResolver(),
                 new NodeKindRecordResolver(),
-                new NodeKindContainerResolver(Collections.unmodifiableList(containerFactories)),
+                new NodeKindContainerResolver(Collections.unmodifiableList(internalExtensions)),
                 new NodeKindJdkResolver()
         };
     }

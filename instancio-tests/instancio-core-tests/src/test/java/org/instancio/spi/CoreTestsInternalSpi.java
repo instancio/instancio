@@ -16,11 +16,11 @@
 package org.instancio.spi;
 
 import lombok.Data;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 
 import java.lang.reflect.Field;
 
-public class CoreTestsInternalSpi implements InternalServiceProvider {
+public class CoreTestsInternalSpi implements InternalExtension {
 
     public static @Data class IgnoredAndPrunedFieldPojo {
         public static final String IGNORED_FIELD_NAME = "thisFieldShouldBeIgnored";

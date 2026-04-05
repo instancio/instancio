@@ -1,5 +1,7 @@
-import org.instancio.protobuf.internal.spi.ProtoInternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
+import org.instancio.protobuf.internal.spi.ProtoInternalExtension;
 import org.instancio.protobuf.internal.spi.ProtoServiceProvider;
+import org.instancio.spi.InstancioServiceProvider;
 
 module org.instancio.protobuf {
     requires transitive org.instancio.core;
@@ -10,6 +12,6 @@ module org.instancio.protobuf {
     exports org.instancio.protobuf;
     exports org.instancio.protobuf.generator.specs;
 
-    provides org.instancio.spi.InstancioServiceProvider with ProtoServiceProvider;
-    provides org.instancio.internal.spi.InternalServiceProvider with ProtoInternalServiceProvider;
+    provides InstancioServiceProvider with ProtoServiceProvider;
+    provides InternalExtension with ProtoInternalExtension;
 }

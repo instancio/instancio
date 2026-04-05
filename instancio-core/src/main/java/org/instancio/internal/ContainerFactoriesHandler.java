@@ -17,8 +17,8 @@ package org.instancio.internal;
 
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.spi.InternalServiceProvider;
-import org.instancio.internal.spi.InternalServiceProvider.InternalContainerFactoryProvider;
+import org.instancio.internal.spi.InternalExtension;
+import org.instancio.internal.spi.InternalExtension.InternalContainerFactoryProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +26,10 @@ import java.util.function.Function;
 
 class ContainerFactoriesHandler {
 
-    private final List<InternalServiceProvider> internalServiceProviders;
+    private final List<InternalExtension> internalExtensions;
 
-    ContainerFactoriesHandler(final List<InternalServiceProvider> providers) {
-        this.internalServiceProviders = providers;
+    ContainerFactoriesHandler(final List<InternalExtension> internalExtensions) {
+        this.internalExtensions = internalExtensions;
     }
 
     /**
@@ -44,7 +44,7 @@ class ContainerFactoriesHandler {
             final InternalNode node,
             final GeneratorResult result) {
 
-        if (internalServiceProviders.isEmpty()) {
+        if (internalExtensions.isEmpty()) {
             return result;
         }
 
@@ -53,8 +53,8 @@ class ContainerFactoriesHandler {
             typeArgs.add(child.getTargetClass());
         }
 
-        for (InternalServiceProvider isp : internalServiceProviders) {
-            final InternalContainerFactoryProvider cfp = isp.getContainerFactoryProvider();
+        for (InternalExtension ext : internalExtensions) {
+            final InternalContainerFactoryProvider cfp = ext.getContainerFactoryProvider();
             if (cfp == null) {
                 continue;
             }

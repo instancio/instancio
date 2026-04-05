@@ -1,3 +1,8 @@
+import org.instancio.guava.internal.spi.GuavaInternalExtension;
+import org.instancio.guava.internal.spi.GuavaProvider;
+import org.instancio.internal.spi.InternalExtension;
+import org.instancio.spi.InstancioServiceProvider;
+
 module org.instancio.guava {
     requires transitive org.instancio.core;
 
@@ -7,6 +12,6 @@ module org.instancio.guava {
     exports org.instancio.guava;
     exports org.instancio.guava.generator.specs;
 
-    provides org.instancio.spi.InstancioServiceProvider with org.instancio.guava.internal.spi.GuavaProvider;
-    provides org.instancio.internal.spi.InternalServiceProvider with org.instancio.guava.internal.spi.GuavaInternalServiceProvider;
+    provides InstancioServiceProvider with GuavaProvider;
+    provides InternalExtension with GuavaInternalExtension;
 }

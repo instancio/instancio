@@ -46,9 +46,9 @@ import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.SelectorProcessor;
 import org.instancio.internal.selectors.SetterSelectorHolder;
 import org.instancio.internal.settings.InternalSettings;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.spi.InternalServiceProviderContext;
-import org.instancio.internal.spi.InternalServiceProviderImpl;
+import org.instancio.internal.spi.InternalExtensionImpl;
 import org.instancio.internal.spi.Providers;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ErrorMessageUtils;
@@ -86,10 +86,10 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
 public final class ModelContext {
 
-    private static final List<InternalServiceProvider> INTERNAL_SERVICE_PROVIDERS =
+    private static final List<InternalExtension> INTERNAL_EXTENSIONS =
             CollectionUtils.combine(
-                    ServiceLoaders.loadAll(InternalServiceProvider.class),
-                    new InternalServiceProviderImpl());
+                    ServiceLoaders.loadAll(InternalExtension.class),
+                    new InternalExtensionImpl());
 
     private final ModelContextSource contextSource;
     private final RootType rootType;
@@ -145,8 +145,8 @@ public final class ModelContext {
         return settings.lock();
     }
 
-    public List<InternalServiceProvider> getInternalServiceProviders() {
-        return INTERNAL_SERVICE_PROVIDERS;
+    public List<InternalExtension> getInternalExtensions() {
+        return INTERNAL_EXTENSIONS;
     }
 
     public Providers getServiceProviders() {
@@ -316,7 +316,7 @@ public final class ModelContext {
             ApiValidator.validateRootClass(rootType);
             this.rootType = rootType;
             this.selectorProcessor = new SelectorProcessor(
-                    TypeUtils.getRawType(rootType), INTERNAL_SERVICE_PROVIDERS, setMethodSelectorHolder);
+                    TypeUtils.getRawType(rootType), INTERNAL_EXTENSIONS, setMethodSelectorHolder);
         }
 
         public Builder withFillObject(final Object fillObject) {

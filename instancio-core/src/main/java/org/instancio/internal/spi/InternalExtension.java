@@ -33,7 +33,7 @@ import java.util.function.Function;
  * @since 4.0.0
  */
 @InternalApi
-public interface InternalServiceProvider {
+public interface InternalExtension {
 
     @Nullable
     default InternalContainerFactoryProvider getContainerFactoryProvider() {

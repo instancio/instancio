@@ -17,7 +17,7 @@ package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.spi.CoreTestsInternalSpi.IgnoredAndPrunedFieldPojo;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 /**
- * Verifies node pruning behaviour of {@link InternalServiceProvider.InternalNodeFilter}.
+ * Verifies node pruning behaviour of {@link InternalExtension.InternalNodeFilter}.
  *
  * @see org.instancio.spi.CoreTestsInternalSpi
  */

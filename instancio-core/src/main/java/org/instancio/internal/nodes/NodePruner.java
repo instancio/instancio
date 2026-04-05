@@ -16,9 +16,9 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.spi.InternalServiceProvider;
-import org.instancio.internal.spi.InternalServiceProvider.InternalNodeFilter;
-import org.instancio.internal.spi.InternalServiceProvider.InternalNodeFilter.Decision;
+import org.instancio.internal.spi.InternalExtension;
+import org.instancio.internal.spi.InternalExtension.InternalNodeFilter;
+import org.instancio.internal.spi.InternalExtension.InternalNodeFilter.Decision;
 import org.instancio.internal.util.StringUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -88,10 +88,10 @@ final class NodePruner {
     }
 
     private static List<InternalNodeFilter> getNodeFilters(final ModelContext modelContext) {
-        final List<InternalServiceProvider> providers = modelContext.getInternalServiceProviders();
-        final List<InternalNodeFilter> filters = new ArrayList<>(providers.size());
-        for (InternalServiceProvider provider : providers) {
-            final InternalNodeFilter filter = provider.getNodeFilter();
+        final List<InternalExtension> extensions = modelContext.getInternalExtensions();
+        final List<InternalNodeFilter> filters = new ArrayList<>(extensions.size());
+        for (InternalExtension extension : extensions) {
+            final InternalNodeFilter filter = extension.getNodeFilter();
             if (filter != null) {
                 filters.add(filter);
             }
