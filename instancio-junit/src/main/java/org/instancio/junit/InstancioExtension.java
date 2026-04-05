@@ -36,8 +36,6 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -117,7 +115,6 @@ public class InstancioExtension implements
         AfterTestExecutionCallback,
         ParameterResolver {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InstancioExtension.class);
     private static final String ELEMENT_ANNOTATIONS = "elementAnnotations";
 
     private final ThreadLocalRandom threadLocalRandom;
@@ -235,7 +232,6 @@ public class InstancioExtension implements
                     testMethod.getName(), seed, random.getSource().getDescription());
 
             context.publishReportEntry("Instancio", seedMsg);
-            LOG.error(seedMsg);
         }
     }
 

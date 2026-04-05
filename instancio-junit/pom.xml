@@ -54,7 +54,6 @@
                             org.junit.jupiter.api.extension;version=!,
                             org.junit.jupiter.params.provider;version=!;resolution:=optional,
                             org.junit.jupiter.params.support;version=!;resolution:=optional,
-                            org.slf4j;version=!
                         </Import-Package>
                     </instructions>
                 </configuration>

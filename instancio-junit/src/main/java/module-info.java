@@ -5,7 +5,6 @@ module org.instancio.junit {
 
   requires org.jspecify;
   requires org.junit.jupiter.api;
-  requires org.slf4j;
 
   exports org.instancio.junit;
 }
