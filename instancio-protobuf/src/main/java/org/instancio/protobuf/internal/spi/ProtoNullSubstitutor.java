@@ -17,7 +17,7 @@ package org.instancio.protobuf.internal.spi;
 
 import com.google.protobuf.ByteString;
 import org.instancio.Node;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -27,7 +27,7 @@ import java.util.Map;
  * Substitutes {@code null} values with protobuf type-specific defaults
  * since proto fields do not allow null values.
  */
-class ProtoNullSubstitutor implements InternalServiceProvider.InternalNullSubstitutor {
+class ProtoNullSubstitutor implements InternalExtension.InternalNullSubstitutor {
 
     private static final Map<Class<?>, Object> PROTO_SCALAR_DEFAULTS = Map.of(
             String.class, "",

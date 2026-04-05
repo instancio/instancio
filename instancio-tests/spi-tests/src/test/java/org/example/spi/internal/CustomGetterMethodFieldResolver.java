@@ -15,7 +15,7 @@
  */
 package org.example.spi.internal;
 
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.util.ReflectionUtils;
 
 /**
@@ -24,7 +24,7 @@ import org.instancio.internal.util.ReflectionUtils;
  *
  * <p>This SPI maps {@code getFoo} to field name {@code "foo_"}.
  */
-public class CustomGetterMethodFieldResolver implements InternalServiceProvider {
+public class CustomGetterMethodFieldResolver implements InternalExtension {
 
     @Override
     public InternalGetterMethodFieldResolver getGetterMethodFieldResolver() {

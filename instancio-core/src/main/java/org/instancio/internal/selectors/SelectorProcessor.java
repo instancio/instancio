@@ -20,7 +20,7 @@ import org.instancio.Scope;
 import org.instancio.SetMethodSelector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethodSelector;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.util.Verify;
 
 import java.util.ArrayList;
@@ -35,11 +35,11 @@ public final class SelectorProcessor {
 
     public SelectorProcessor(
             final Class<?> rootClass,
-            final List<InternalServiceProvider> internalServiceProviders,
+            final List<InternalExtension> internalExtensions,
             final SetterSelectorHolder setMethodSelectorHolder) {
 
         this.setMethodSelectorHolder = setMethodSelectorHolder;
-        this.targetContext = new Target.TargetContext(rootClass, internalServiceProviders);
+        this.targetContext = new Target.TargetContext(rootClass, internalExtensions);
     }
 
     /**

@@ -16,7 +16,7 @@
 package org.instancio.protobuf.internal.spi;
 
 import com.google.protobuf.Message;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.Verify;
 import org.jspecify.annotations.Nullable;
@@ -29,7 +29,7 @@ import java.lang.reflect.Field;
  * field in that class (e.g. {@code name_}), enabling
  * {@code Select.field(Person::getName)} to work with protobuf messages.
  */
-class ProtoGetterMethodFieldResolver implements InternalServiceProvider.InternalGetterMethodFieldResolver {
+class ProtoGetterMethodFieldResolver implements InternalExtension.InternalGetterMethodFieldResolver {
 
     @Nullable
     @Override

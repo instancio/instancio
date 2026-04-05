@@ -16,7 +16,8 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.GetMethodSelector;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
+import org.instancio.internal.spi.InternalExtension.InternalGetterMethodFieldResolver;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.jspecify.annotations.Nullable;
@@ -42,7 +43,7 @@ public final class TargetGetterReference implements Target {
     public Target withRootClass(final TargetContext targetContext) {
         final MethodRef mr = MethodRef.from(selector);
         final Field field = resolveFieldFromGetterMethodReference(
-                targetContext.getInternalServiceProviders(), mr.getTargetClass(), mr.getMethodName());
+                targetContext.getInternalExtensions(), mr.getTargetClass(), mr.getMethodName());
         final String description = mr.getTargetClass().getSimpleName() + "::" + mr.getMethodName();
         return new TargetField(field, description);
     }
@@ -55,12 +56,12 @@ public final class TargetGetterReference implements Target {
      * and {@code methodName} would be {@code getAge}.
      */
     private Field resolveFieldFromGetterMethodReference(
-            final List<InternalServiceProvider> internalServiceProviders,
+            final List<InternalExtension> internalExtensions,
             final Class<?> declaringClass,
             final String methodName) {
 
-        for (InternalServiceProvider provider : internalServiceProviders) {
-            final InternalServiceProvider.InternalGetterMethodFieldResolver resolver = provider.getGetterMethodFieldResolver();
+        for (InternalExtension extension : internalExtensions) {
+            final InternalGetterMethodFieldResolver resolver = extension.getGetterMethodFieldResolver();
             if (resolver == null) {
                 continue;
             }

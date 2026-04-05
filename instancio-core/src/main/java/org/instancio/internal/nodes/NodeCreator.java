@@ -57,7 +57,7 @@ class NodeCreator {
     NodeCreator(final ModelContext modelContext) {
         this.modelContext = modelContext;
         this.typeHelper = new TypeHelper(modelContext.getRootType());
-        this.nodeKindResolverFacade = new NodeKindResolverFacade(modelContext.getInternalServiceProviders());
+        this.nodeKindResolverFacade = new NodeKindResolverFacade(modelContext.getInternalExtensions());
         this.predefinedNodeCreator = new PredefinedNodeCreator(modelContext.getRootType(), nodeKindResolverFacade);
         this.subtypeResolver = new SubtypeResolver(modelContext);
         this.nodePruner = new NodePruner(modelContext);

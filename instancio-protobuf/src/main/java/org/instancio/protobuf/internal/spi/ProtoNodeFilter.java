@@ -17,12 +17,12 @@ package org.instancio.protobuf.internal.spi;
 
 import com.google.protobuf.Descriptors;
 import org.instancio.Node;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.util.StringUtils;
 
 import java.lang.reflect.Field;
 
-class ProtoNodeFilter implements InternalServiceProvider.InternalNodeFilter {
+class ProtoNodeFilter implements InternalExtension.InternalNodeFilter {
 
     private static final String PROTOBUF_PACKAGE_NAME = "com.google.protobuf";
 

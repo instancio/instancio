@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public final class InternalServiceProviderImpl implements InternalServiceProvider {
+public final class InternalExtensionImpl implements InternalExtension {
 
     @Override
     public InternalContainerFactoryProvider getContainerFactoryProvider() {

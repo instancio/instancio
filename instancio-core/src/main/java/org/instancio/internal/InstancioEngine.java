@@ -99,7 +99,7 @@ class InstancioEngine {
         rootNode = model.getRootNode();
         errorHandler = new ErrorHandler(context);
         callbackHandler = CallbackHandler.create(context);
-        containerFactoriesHandler = new ContainerFactoriesHandler(context.getInternalServiceProviders());
+        containerFactoriesHandler = new ContainerFactoriesHandler(context.getInternalExtensions());
         assigmentObjectStore = AssigmentObjectStore.create(context);
         nullSubstitutorFacade = new NullSubstitutorFacade(context);
         generatorFacade = new GeneratorFacade(context, nullSubstitutorFacade, assigmentObjectStore);

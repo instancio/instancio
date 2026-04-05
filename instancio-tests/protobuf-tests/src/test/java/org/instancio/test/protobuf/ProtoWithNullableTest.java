@@ -18,7 +18,7 @@ package org.instancio.test.protobuf;
 import com.google.protobuf.ByteString;
 import org.instancio.Instancio;
 import org.instancio.TypeToken;
-import org.instancio.internal.spi.InternalServiceProvider.InternalNullSubstitutor;
+import org.instancio.internal.spi.InternalExtension.InternalNullSubstitutor;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;

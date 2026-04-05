@@ -17,8 +17,8 @@ package org.instancio.internal.assigners;
 
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
-import org.instancio.internal.spi.InternalServiceProvider;
-import org.instancio.internal.spi.InternalServiceProvider.InternalAssignerSettingsProvider;
+import org.instancio.internal.spi.InternalExtension;
+import org.instancio.internal.spi.InternalExtension.InternalAssignerSettingsProvider;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -43,7 +43,7 @@ final class AssignerResolverImpl implements AssignerResolver {
                 context.getServiceProviders().getSetterMethodResolvers());
         this.primaryAssigner = resolvePrimaryAssigner();
         this.assignerSettingsProviders = getAssignerSettingsProviders(
-                context.getInternalServiceProviders());
+                context.getInternalExtensions());
     }
 
     @Override
@@ -57,13 +57,13 @@ final class AssignerResolverImpl implements AssignerResolver {
     }
 
     private static List<InternalAssignerSettingsProvider> getAssignerSettingsProviders(
-            final List<InternalServiceProvider> internalServiceProviders) {
+            final List<InternalExtension> internalExtensions) {
 
         final List<InternalAssignerSettingsProvider> providers = new ArrayList<>(
-                internalServiceProviders.size());
+                internalExtensions.size());
 
-        for (InternalServiceProvider p : internalServiceProviders) {
-            final InternalAssignerSettingsProvider provider = p.getAssignerSettingsProvider();
+        for (InternalExtension extension : internalExtensions) {
+            final InternalAssignerSettingsProvider provider = extension.getAssignerSettingsProvider();
             if (provider != null) {
                 providers.add(provider);
             }

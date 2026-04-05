@@ -342,7 +342,7 @@ class ModelContextTest {
                 .as("Model type should be added as a type parameter")
                 .isEqualTo(Person.class);
 
-        assertThat(ctx.getInternalServiceProviders()).isEqualTo(elementModel.getInternalServiceProviders());
+        assertThat(ctx.getInternalExtensions()).isEqualTo(elementModel.getInternalExtensions());
         assertThat(ctx.getContextSource().getSubtypeMap())
                 .isNotEmpty()
                 .isEqualTo(elementModel.getContextSource().getSubtypeMap());

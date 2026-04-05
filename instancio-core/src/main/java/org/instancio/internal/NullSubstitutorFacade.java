@@ -18,8 +18,8 @@ package org.instancio.internal;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.spi.InternalServiceProvider;
-import org.instancio.internal.spi.InternalServiceProvider.InternalNullSubstitutor;
+import org.instancio.internal.spi.InternalExtension;
+import org.instancio.internal.spi.InternalExtension.InternalNullSubstitutor;
 
 import static org.instancio.internal.util.Constants.DO_NOT_MODIFY_HINT;
 
@@ -39,8 +39,8 @@ public class NullSubstitutorFacade {
     }
 
     private static InternalNullSubstitutor resolveNullSubstitutor(final ModelContext context) {
-        for (InternalServiceProvider provider : context.getInternalServiceProviders()) {
-            final InternalNullSubstitutor ns = provider.getNullSubstitutor();
+        for (InternalExtension extension : context.getInternalExtensions()) {
+            final InternalNullSubstitutor ns = extension.getNullSubstitutor();
             if (ns != null) {
                 return ns;
             }

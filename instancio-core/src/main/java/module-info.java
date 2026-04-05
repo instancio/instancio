@@ -1,3 +1,6 @@
+import org.instancio.internal.spi.InternalExtension;
+import org.instancio.spi.InstancioServiceProvider;
+
 module org.instancio.core {
     requires org.jspecify;
     requires org.slf4j;
@@ -41,8 +44,8 @@ module org.instancio.core {
     exports org.instancio.internal.util to org.instancio.guava, org.instancio.junit, org.instancio.protobuf;
     exports org.instancio.support to org.instancio.junit;
 
-    uses org.instancio.spi.InstancioServiceProvider;
+    uses InstancioServiceProvider;
 
     // only for other instancio modules
-    uses org.instancio.internal.spi.InternalServiceProvider;
+    uses InternalExtension;
 }

@@ -15,7 +15,7 @@
  */
 package org.instancio.internal.spi;
 
-import org.instancio.internal.spi.InternalServiceProviderImpl.InternalGetterMethodFieldResolverImpl;
+import org.instancio.internal.spi.InternalExtensionImpl.InternalGetterMethodFieldResolverImpl;
 import org.instancio.test.support.pojo.misc.getters.BeanStylePojo;
 import org.instancio.test.support.pojo.misc.getters.PropertyStylePojo;
 import org.junit.jupiter.api.Nested;
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class InternalServiceProviderImplTest {
+class InternalExtensionImplTest {
 
     @Nested
     class InternalGetterMethodFieldResolverImplTest {

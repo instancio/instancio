@@ -16,7 +16,7 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.documentation.InternalApi;
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.util.Fail;
 import org.jspecify.annotations.Nullable;
 
@@ -64,19 +64,19 @@ public sealed interface Target permits
     final class TargetContext {
 
         private final Class<?> rootClass;
-        private final List<InternalServiceProvider> internalServiceProviders;
+        private final List<InternalExtension> internalExtensions;
 
-        TargetContext(final Class<?> rootClass, final List<InternalServiceProvider> internalServiceProviders) {
+        TargetContext(final Class<?> rootClass, final List<InternalExtension> internalExtensions) {
             this.rootClass = rootClass;
-            this.internalServiceProviders = internalServiceProviders;
+            this.internalExtensions = internalExtensions;
         }
 
         Class<?> getRootClass() {
             return rootClass;
         }
 
-        List<InternalServiceProvider> getInternalServiceProviders() {
-            return internalServiceProviders;
+        List<InternalExtension> getInternalExtensions() {
+            return internalExtensions;
         }
     }
 }

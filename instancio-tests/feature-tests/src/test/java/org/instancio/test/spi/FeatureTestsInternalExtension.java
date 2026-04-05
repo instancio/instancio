@@ -15,7 +15,7 @@
  */
 package org.instancio.test.spi;
 
-import org.instancio.internal.spi.InternalServiceProvider;
+import org.instancio.internal.spi.InternalExtension;
 import org.instancio.test.support.pojo.containers.BuildableList;
 import org.instancio.test.support.pojo.containers.OptionalLike;
 import org.instancio.test.support.pojo.containers.UnresolvableContainer;
@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
-public class FeatureTestsInternalServiceProvider implements InternalServiceProvider {
+public class FeatureTestsInternalExtension implements InternalExtension {
 
     @Override
     public InternalContainerFactoryProvider getContainerFactoryProvider() {
