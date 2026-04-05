@@ -79,6 +79,7 @@ jobs:
         run: cd instancio-tests && mvn verify -pl :instancio-guava-tests,:jpms-guava-tests -am -Dversion.guava=${{ matrix.guava }}
   experimental-jdk:
     needs: deploy
+    if: false # temporarily disabled due to failing early access JDK build
     runs-on: ubuntu-latest
     name: "Verify snapshots with early access JDK"
     continue-on-error: true
