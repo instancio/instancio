@@ -62,8 +62,8 @@ public final class InternalExtensionImpl implements InternalExtension {
 
             final char[] ch = methodName.toCharArray();
             ch[getPrefixLength] = Character.toLowerCase(ch[getPrefixLength]);
-            final String filedName = new String(ch, getPrefixLength, ch.length - getPrefixLength);
-            return ReflectionUtils.getFieldOrNull(targetClass, filedName);
+            final String fieldName = new String(ch, getPrefixLength, ch.length - getPrefixLength);
+            return ReflectionUtils.getFieldOrNull(targetClass, fieldName);
         }
 
         private static boolean hasPrefix(final String prefix, final String methodName) {
