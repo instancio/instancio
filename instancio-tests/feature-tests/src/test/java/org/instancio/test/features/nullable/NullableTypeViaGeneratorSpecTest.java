@@ -60,7 +60,7 @@ class NullableTypeViaGeneratorSpecTest {
     @Test
     void arrayElements() {
         final String[] results = Instancio.of(String[].class)
-                .generate(all(String[].class), gen -> gen.array().length(SAMPLE_SIZE))
+                .generate(all(String[].class), gen -> gen.array().size(SAMPLE_SIZE))
                 .generate(allStrings(), gen -> gen.string().nullable())
                 .create();
 

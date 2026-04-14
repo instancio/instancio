@@ -264,9 +264,9 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                 mapSpec.minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof ArrayGeneratorSpec<?> arraySpec) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), settings.get(Keys.ARRAY_MAX_LENGTH));
+                        getMin(annotation), getMax(annotation), settings.get(Keys.ARRAY_MAX_SIZE));
 
-                arraySpec.minLength(range.min()).maxLength(range.max());
+                arraySpec.minSize(range.min()).maxSize(range.max());
             }
         }
     }
@@ -288,7 +288,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
             } else if (spec instanceof ArrayGenerator<?> arraySpec) {
                 arraySpec
                         .nullable(false)
-                        .minLength(settings.get(Keys.ARRAY_MIN_LENGTH));
+                        .minSize(settings.get(Keys.ARRAY_MIN_SIZE));
 
             } else if (spec instanceof CollectionGenerator<?> collectionSpec) {
                 collectionSpec

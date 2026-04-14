@@ -17,12 +17,11 @@ package org.instancio.internal.settings;
 
 import org.instancio.settings.Keys;
 import org.instancio.settings.SettingKey;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jspecify.annotations.Nullable;
 
 final class SettingsSupport {
 
@@ -36,8 +35,8 @@ final class SettingsSupport {
 
     private static Map<SettingKey<?>, SettingKey<?>> getAutoAdjustableKeys() {
         final Map<SettingKey<?>, SettingKey<?>> map = new HashMap<>();
-        map.put(Keys.ARRAY_MAX_LENGTH, Keys.ARRAY_MIN_LENGTH);
-        map.put(Keys.ARRAY_MIN_LENGTH, Keys.ARRAY_MAX_LENGTH);
+        map.put(Keys.ARRAY_MAX_SIZE, Keys.ARRAY_MIN_SIZE);
+        map.put(Keys.ARRAY_MIN_SIZE, Keys.ARRAY_MAX_SIZE);
         map.put(Keys.BYTE_MAX, Keys.BYTE_MIN);
         map.put(Keys.BYTE_MIN, Keys.BYTE_MAX);
         map.put(Keys.COLLECTION_MAX_SIZE, Keys.COLLECTION_MIN_SIZE);

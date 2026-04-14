@@ -128,7 +128,7 @@ class ArrayUtilsTest {
 
     private static <T> T createArray(final Class<T> arrayClass) {
         return Instancio.of(arrayClass)
-                .generate(all(arrayClass), gen -> gen.array().length(100))
+                .generate(all(arrayClass), gen -> gen.array().size(100))
                 .create();
     }
 }

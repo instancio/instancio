@@ -70,7 +70,7 @@ class RootSelectorTest {
     void withArray() {
         final int size = 10;
         final String[] result = Instancio.of(String[].class)
-                .generate(root(), gen -> gen.array().length(size))
+                .generate(root(), gen -> gen.array().size(size))
                 .create();
 
         assertThat(result).hasSize(size);

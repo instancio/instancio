@@ -175,7 +175,7 @@ class ModelContextTest {
         final GeneratorContext genContext = new InternalGeneratorContext(Settings.defaults(), mock(Random.class));
         final Generators generators = new BuiltInGenerators(genContext);
 
-        final ArrayGeneratorSpec<Object> petsSpec = generators.array().subtype(Pet[].class).length(3);
+        final ArrayGeneratorSpec<Object> petsSpec = generators.array().subtype(Pet[].class).size(3);
 
         final GeneratorSpec<String> stringSpec = generators.string().minLength(5).allowEmpty();
 

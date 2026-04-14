@@ -111,7 +111,7 @@ class WithNullableTest {
     void arrayElements() {
         final String[] results = Instancio.of(String[].class)
                 .withNullable(allStrings())
-                .generate(all(String[].class), gen -> gen.array().length(SAMPLE_SIZE))
+                .generate(all(String[].class), gen -> gen.array().size(SAMPLE_SIZE))
                 .create();
 
         assertThat(results)

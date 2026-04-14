@@ -141,7 +141,7 @@ public class CustomGeneratorProvider implements InstancioServiceProvider {
                     return generators.collection().size(10);
                 }
                 if (parentClass == WithIntegerArray.class && fieldType == Integer[].class) {
-                    return generators.array().length(10);
+                    return generators.array().size(10);
                 }
                 if (parentClass == MapIntegerString.class && fieldType == Map.class) {
                     return generators.map().size(10);

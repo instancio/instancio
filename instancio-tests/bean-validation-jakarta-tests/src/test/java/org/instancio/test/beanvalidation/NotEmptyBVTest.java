@@ -41,7 +41,7 @@ class NotEmptyBVTest {
             .set(Keys.STRING_NULLABLE, true)
             .set(Keys.STRING_ALLOW_EMPTY, true)
             .set(Keys.STRING_MAX_LENGTH, 20)
-            .set(Keys.ARRAY_MIN_LENGTH, 1)
+            .set(Keys.ARRAY_MIN_SIZE, 1)
             .set(Keys.COLLECTION_MIN_SIZE, 1)
             .set(Keys.MAP_MIN_SIZE, 1);
 

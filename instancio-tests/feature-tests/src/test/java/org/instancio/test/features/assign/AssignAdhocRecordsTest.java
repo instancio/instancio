@@ -105,7 +105,7 @@ class AssignAdhocRecordsTest {
 
         final List<A> results = Instancio.ofList(A.class)
                 .size(100)
-                .generate(field(A::array), gen -> gen.array().length(2))
+                .generate(field(A::array), gen -> gen.array().size(2))
                 .generate(field(A::val), gen -> gen.ints().range(1, 3))
                 .assign(Assign.given(A::val).is(1).supply(all(B.class), r -> new B(r.intRange(-199, -100))))
                 .assign(Assign.given(A::val).is(2).supply(all(B.class), r -> new B(r.intRange(-299, -200))))

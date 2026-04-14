@@ -207,7 +207,7 @@ class AssignPojoAndRecordTest {
         final Root result = Instancio.of(Root.class)
                 .set(field(PojoB::getString), "B")
                 .assign(Assign.given(PojoB::getString).is("B")
-                        .generate(field(PojoA::getArray), gen -> gen.array().length(2)))
+                        .generate(field(PojoA::getArray), gen -> gen.array().size(2)))
                 .create();
 
         assertThat(result.pojoA.array)

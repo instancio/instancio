@@ -205,8 +205,8 @@ class CustomGeneratorWithDataStructuresTest {
                     .supply(all(Container.class), generator)
                     .generate(field("list"), gen -> gen.collection().size(NEW_SIZE))
                     .generate(field("blankList"), gen -> gen.collection().size(NEW_SIZE))
-                    .generate(field("array"), gen -> gen.array().length(NEW_SIZE))
-                    .generate(field("blankArray"), gen -> gen.array().length(NEW_SIZE))
+                    .generate(field("array"), gen -> gen.array().size(NEW_SIZE))
+                    .generate(field("blankArray"), gen -> gen.array().size(NEW_SIZE))
                     .onComplete(all(Container.class), (Container result) -> {
                         if (result.map != null) {
                             result.map.put("foo", 1L);

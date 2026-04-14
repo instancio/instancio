@@ -64,7 +64,7 @@ class ArrayGeneratorWithElementTest {
         final Long[] sorted = LongStream.range(1, 100).boxed().toArray(Long[]::new);
 
         final ArrayLong result = Instancio.of(ArrayLong.class)
-                .generate(all(all(long[].class), all(Long[].class)), gen -> gen.array().maxLength(0).with(sorted))
+                .generate(all(all(long[].class), all(Long[].class)), gen -> gen.array().maxSize(0).with(sorted))
                 .create();
 
         assertThat(result.getPrimitive()).containsOnly(sorted);

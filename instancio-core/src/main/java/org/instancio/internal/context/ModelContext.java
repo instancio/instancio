@@ -547,7 +547,7 @@ public final class ModelContext {
             withSupplier(BlankSelectors.leafSelector().within(scopes), () -> null);
             withGeneratorSpec(BlankSelectors.collectionSelector().within(scopes).lenient(), gen -> gen.collection().size(0));
             withGeneratorSpec(BlankSelectors.mapSelector().within(scopes).lenient(), gen -> gen.map().size(0));
-            withGeneratorSpec(BlankSelectors.arraySelector().within(scopes).lenient(), gen -> gen.array().length(0));
+            withGeneratorSpec(BlankSelectors.arraySelector().within(scopes).lenient(), gen -> gen.array().size(0));
         }
 
         public Builder lenient() {

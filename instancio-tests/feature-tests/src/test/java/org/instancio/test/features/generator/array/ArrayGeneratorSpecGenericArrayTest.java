@@ -38,7 +38,7 @@ class ArrayGeneratorSpecGenericArrayTest {
 
     @Test
     void create() {
-        final GenericArrayHolder<Phone> result = Instancio.create(new TypeToken<GenericArrayHolder<Phone>>() {});
+        final GenericArrayHolder<Phone> result = Instancio.create(new TypeToken<>() {});
 
         assertThat(result.getArray())
                 .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
@@ -49,7 +49,7 @@ class ArrayGeneratorSpecGenericArrayTest {
     @Test
     void arraySpecWithNoSubtypeSpecified() {
         final GenericArrayHolder<Phone> result = Instancio.of(new TypeToken<GenericArrayHolder<Phone>>() {})
-                .generate(field(GenericArrayHolder.class, "array"), gen -> gen.array().length(SIZE))
+                .generate(field(GenericArrayHolder.class, "array"), gen -> gen.array().size(SIZE))
                 .create();
 
         assertThat(result.getArray())
@@ -61,7 +61,7 @@ class ArrayGeneratorSpecGenericArrayTest {
     @Test
     void arraySpecWithSubtype() {
         final GenericArrayHolder<Phone> result = Instancio.of(new TypeToken<GenericArrayHolder<Phone>>() {})
-                .generate(field(GenericArrayHolder.class, "array"), gen -> gen.array().length(SIZE)
+                .generate(field(GenericArrayHolder.class, "array"), gen -> gen.array().size(SIZE)
                         .subtype(PhoneWithType[].class))
                 .create();
 
