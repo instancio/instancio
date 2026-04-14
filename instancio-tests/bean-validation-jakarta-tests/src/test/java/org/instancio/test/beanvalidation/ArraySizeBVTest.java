@@ -35,7 +35,7 @@ class ArraySizeBVTest {
 
     @WithSettings
     private final Settings settings = Settings.create()
-            .set(Keys.ARRAY_MAX_LENGTH, 3);
+            .set(Keys.ARRAY_MAX_SIZE, 3);
 
     @RepeatedTest(SAMPLE_SIZE_DD)
     void withMinSize() {
@@ -46,7 +46,7 @@ class ArraySizeBVTest {
     @RepeatedTest(SAMPLE_SIZE_DD)
     void withMinSizeZero() {
         final ArraySizeBV.WithMinSizeZero result = Instancio.create(ArraySizeBV.WithMinSizeZero.class);
-        assertThat(result.getValue()).hasSizeBetween(0, settings.get(Keys.ARRAY_MAX_LENGTH));
+        assertThat(result.getValue()).hasSizeBetween(0, settings.get(Keys.ARRAY_MAX_SIZE));
     }
 
     @RepeatedTest(SAMPLE_SIZE_DD)

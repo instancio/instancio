@@ -44,8 +44,8 @@ class ArrayGeneratorTest extends AbstractGeneratorTestTemplate<String[], ArrayGe
     private static final int PERCENTAGE_THRESHOLD = 10;
 
     private static final Settings SETTINGS = Settings.defaults()
-            .set(Keys.ARRAY_MIN_LENGTH, MIN_SIZE)
-            .set(Keys.ARRAY_MAX_LENGTH, MAX_SIZE)
+            .set(Keys.ARRAY_MIN_SIZE, MIN_SIZE)
+            .set(Keys.ARRAY_MAX_SIZE, MAX_SIZE)
             .set(Keys.ARRAY_NULLABLE, true)
             .set(Keys.ARRAY_ELEMENTS_NULLABLE, true)
             .lock();

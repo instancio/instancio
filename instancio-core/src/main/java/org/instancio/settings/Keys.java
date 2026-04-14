@@ -92,17 +92,41 @@ public final class Keys {
 
     /**
      * Specifies minimum length for arrays;
-     * default is 2; property name {@code array.min.length}.
+     * default is {@code null}; property name {@code array.min.length}.
+     *
+     * @deprecated use {@link #ARRAY_MIN_SIZE}
      */
-    public static final SettingKey<Integer> ARRAY_MIN_LENGTH = registerRequiredAdjustable(
-            "array.min.length", Integer.class, MIN_SIZE, MIN_ADJUSTER, false);
+    @Deprecated
+    public static final SettingKey<Integer> ARRAY_MIN_LENGTH = register(
+            "array.min.length", Integer.class, null, MIN_ADJUSTER, true, false);
 
     /**
      * Specifies maximum length for arrays;
-     * default is 6; property name {@code array.max.length}.
+     * default is {@code null}; property name {@code array.max.length}.
+     *
+     * @deprecated use {@link #ARRAY_MAX_SIZE}
      */
-    public static final SettingKey<Integer> ARRAY_MAX_LENGTH = registerRequiredAdjustable(
-            "array.max.length", Integer.class, MAX_SIZE, MAX_ADJUSTER, false);
+    @Deprecated
+    public static final SettingKey<Integer> ARRAY_MAX_LENGTH = register(
+            "array.max.length", Integer.class, null, MAX_ADJUSTER, true, false);
+
+    /**
+     * Specifies minimum length for arrays;
+     * default is 2; property name {@code array.min.size}.
+     *
+     * @since 5.6.0
+     */
+    public static final SettingKey<Integer> ARRAY_MIN_SIZE = registerRequiredAdjustable(
+            "array.min.size", Integer.class, MIN_SIZE, MIN_ADJUSTER, false);
+
+    /**
+     * Specifies maximum length for arrays;
+     * default is 6; property name {@code array.max.size}.
+     *
+     * @since 5.6.0
+     */
+    public static final SettingKey<Integer> ARRAY_MAX_SIZE = registerRequiredAdjustable(
+            "array.max.size", Integer.class, MAX_SIZE, MAX_ADJUSTER, false);
 
     /**
      * Specifies whether a null can be generated for arrays;

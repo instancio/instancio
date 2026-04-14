@@ -33,6 +33,7 @@ import org.instancio.internal.generator.specs.InternalNumberGeneratorSpec;
 import org.instancio.internal.generator.util.CollectionGenerator;
 import org.instancio.internal.generator.util.MapGenerator;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.Range;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -236,6 +237,7 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
 
         abstract int getMax(Annotation annotation);
 
+        @SuppressWarnings("NullAway")
         @Override
         public final void process(final Annotation annotation,
                                   final GeneratorSpec<?> spec,
@@ -265,14 +267,17 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
                 ((MapGeneratorSpec<?, ?>) spec).minSize(range.min()).maxSize(range.max());
             } else if (spec instanceof ArrayGeneratorSpec<?>) {
                 final Range<Integer> range = AnnotationUtils.calculateRange(
-                        getMin(annotation), getMax(annotation), settings.get(Keys.ARRAY_MAX_LENGTH));
+                        getMin(annotation), getMax(annotation), ObjectUtils.defaultIfNull(
+                                settings.get(Keys.ARRAY_MAX_LENGTH),
+                                settings.get(Keys.ARRAY_MAX_SIZE)));
 
-                ((ArrayGeneratorSpec<?>) spec).minLength(range.min()).maxLength(range.max());
+                ((ArrayGeneratorSpec<?>) spec).minSize(range.min()).maxSize(range.max());
             }
         }
     }
 
     static final class NotEmptyHandler implements FieldAnnotationHandler {
+        @SuppressWarnings("NullAway")
         @Override
         public void process(final Annotation annotation,
                             final GeneratorSpec<?> spec,
@@ -290,7 +295,9 @@ class CommonBeanValidationHandlerMap extends AnnotationHandlerMap {
             } else if (spec instanceof ArrayGenerator<?>) {
                 ((ArrayGenerator<?>) spec)
                         .nullable(false)
-                        .minLength(settings.get(Keys.ARRAY_MIN_LENGTH));
+                        .minSize(ObjectUtils.defaultIfNull(
+                                settings.get(Keys.ARRAY_MIN_LENGTH),
+                                settings.get(Keys.ARRAY_MIN_SIZE)));
 
             } else if (spec instanceof CollectionGenerator<?>) {
                 ((CollectionGenerator<?>) spec)

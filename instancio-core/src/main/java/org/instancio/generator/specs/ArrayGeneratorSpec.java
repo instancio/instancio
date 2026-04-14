@@ -19,15 +19,49 @@ package org.instancio.generator.specs;
  * Generator spec for arrays.
  *
  * @param <T> array type
+ * @since 1.0.1
  */
-public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T>, SubtypeGeneratorSpec<T> {
+public interface ArrayGeneratorSpec<T>
+        extends NullableGeneratorSpec<T>, SizeGeneratorSpec<T>, SubtypeGeneratorSpec<T> {
+
+    /**
+     * Size of array to generate.
+     *
+     * @param size of array
+     * @return spec builder
+     * @since 5.6.0
+     */
+    @Override
+    ArrayGeneratorSpec<T> size(int size);
+
+    /**
+     * Minimum size of array to generate.
+     *
+     * @param size minimum size (inclusive)
+     * @return spec builder
+     * @since 5.6.0
+     */
+    @Override
+    ArrayGeneratorSpec<T> minSize(int size);
+
+    /**
+     * Maximum size of array to generate.
+     *
+     * @param size maximum size (inclusive)
+     * @return spec builder
+     * @since 5.6.0
+     */
+    @Override
+    ArrayGeneratorSpec<T> maxSize(int size);
 
     /**
      * length of array to generate.
      *
      * @param length of array
      * @return spec builder
+     * @deprecated use {@link #size(int)} instead
      */
+    @Deprecated
     ArrayGeneratorSpec<T> length(int length);
 
     /**
@@ -35,7 +69,9 @@ public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T>, Subtype
      *
      * @param length minimum length (inclusive)
      * @return spec builder
+     * @deprecated use {@link #minSize(int)} instead
      */
+    @Deprecated
     ArrayGeneratorSpec<T> minLength(int length);
 
     /**
@@ -43,7 +79,9 @@ public interface ArrayGeneratorSpec<T> extends NullableGeneratorSpec<T>, Subtype
      *
      * @param length maximum length (inclusive)
      * @return spec builder
+     * @deprecated use {@link #maxSize(int)} instead
      */
+    @Deprecated
     ArrayGeneratorSpec<T> maxLength(int length);
 
     /**

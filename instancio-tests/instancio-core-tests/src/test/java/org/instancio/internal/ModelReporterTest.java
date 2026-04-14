@@ -98,8 +98,6 @@ class ModelReporterTest {
                         isLockedForModifications: true
                         settingsMap:
                         	'array.elements.nullable': false
-                        	'array.max.length': 6
-                        	'array.min.length': 2
                         """,
 
                 """

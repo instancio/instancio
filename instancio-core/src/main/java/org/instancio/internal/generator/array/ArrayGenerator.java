@@ -26,6 +26,7 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.NumberUtils;
+import org.instancio.internal.util.ObjectUtils;
 import org.instancio.settings.Keys;
 
 import java.lang.reflect.Array;
@@ -35,18 +36,25 @@ import java.util.List;
 
 public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGeneratorSpec<T> {
 
-    protected int minLength;
-    protected int maxLength;
+    protected int minSize;
+    protected int maxSize;
     private boolean nullableElements;
     private Class<?> arrayType;
     private List<Object> withElements;
 
+    @SuppressWarnings("NullAway")
     public ArrayGenerator(final GeneratorContext context) {
         super(context);
-        this.minLength = context.getSettings().get(Keys.ARRAY_MIN_LENGTH);
-        this.maxLength = context.getSettings().get(Keys.ARRAY_MAX_LENGTH);
-        super.nullable(context.getSettings().get(Keys.ARRAY_NULLABLE));
-        this.nullableElements = context.getSettings().get(Keys.ARRAY_ELEMENTS_NULLABLE);
+        this.minSize = ObjectUtils.defaultIfNull(
+                context.settings().get(Keys.ARRAY_MIN_LENGTH),
+                context.settings().get(Keys.ARRAY_MIN_SIZE));
+
+        this.maxSize = ObjectUtils.defaultIfNull(
+                context.settings().get(Keys.ARRAY_MAX_LENGTH),
+                context.settings().get(Keys.ARRAY_MAX_SIZE));
+
+        super.nullable(context.settings().get(Keys.ARRAY_NULLABLE));
+        this.nullableElements = context.settings().get(Keys.ARRAY_ELEMENTS_NULLABLE);
     }
 
     public ArrayGenerator(final GeneratorContext context, final Class<?> arrayType) {
@@ -59,24 +67,42 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
         return "array()";
     }
 
+    @SuppressWarnings("removal")
     @Override
     public ArrayGenerator<T> minLength(final int length) {
-        this.minLength = ApiValidator.validateLength(length);
-        this.maxLength = NumberUtils.calculateNewMaxSize(maxLength, minLength);
-        return this;
+        return minSize(length);
     }
 
+    @SuppressWarnings("removal")
     @Override
     public ArrayGenerator<T> maxLength(final int length) {
-        this.maxLength = ApiValidator.validateLength(length);
-        this.minLength = NumberUtils.calculateNewMinSize(minLength, maxLength);
+        return maxSize(length);
+    }
+
+    @SuppressWarnings("removal")
+    @Override
+    public ArrayGenerator<T> length(final int length) {
+        return size(length);
+    }
+
+    @Override
+    public ArrayGenerator<T> minSize(int size) {
+        this.minSize = ApiValidator.validateSize(size);
+        this.maxSize = NumberUtils.calculateNewMaxSize(maxSize, minSize);
         return this;
     }
 
     @Override
-    public ArrayGenerator<T> length(final int length) {
-        this.maxLength = ApiValidator.validateLength(length);
-        this.minLength = length;
+    public ArrayGenerator<T> maxSize(int size) {
+        this.maxSize = ApiValidator.validateSize(size);
+        this.minSize = NumberUtils.calculateNewMinSize(minSize, maxSize);
+        return this;
+    }
+
+    @Override
+    public ArrayGenerator<T> size(int size) {
+        this.maxSize = ApiValidator.validateSize(size);
+        this.minSize = size;
         return this;
     }
 
@@ -120,7 +146,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     @Override
     @SuppressWarnings("unchecked")
     protected T tryGenerateNonNull(final Random random) {
-        final int length = random.intRange(minLength, maxLength)
+        final int length = random.intRange(minSize, maxSize)
                 + (withElements == null ? 0 : withElements.size());
 
         return (T) Array.newInstance(arrayType.getComponentType(), length);
