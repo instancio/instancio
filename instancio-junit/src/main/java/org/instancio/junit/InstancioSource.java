@@ -48,7 +48,9 @@ import java.lang.annotation.Target;
  * a randomly populated instance of the {@code Person} class.
  *
  * @since 1.1.8
+ * @deprecated use {@link Given @Given} annotation instead
  */
+@Deprecated(since = "5.6.0", forRemoval = true)
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
