@@ -18,6 +18,7 @@ package org.instancio.junit;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.junit.internal.InstancioSourceArgumentsProvider;
 import org.instancio.settings.Keys;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.lang.annotation.Documented;
@@ -48,7 +49,9 @@ import java.lang.annotation.Target;
  * a randomly populated instance of the {@code Person} class.
  *
  * @since 1.1.8
+ * @deprecated for removal; use {@link Given @Given} annotation instead
  */
+@Deprecated
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
