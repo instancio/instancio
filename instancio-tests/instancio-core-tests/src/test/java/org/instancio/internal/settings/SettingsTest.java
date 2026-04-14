@@ -213,8 +213,8 @@ class SettingsTest {
                 .set(Keys.DOUBLE_MIN, 345.9)
                 .set(Keys.STRING_NULLABLE, true)
                 .set(customKey, "custom-key-value")
-                .set(Keys.ARRAY_MIN_LENGTH, 1)
-                .set(Keys.ARRAY_MAX_LENGTH, 5)
+                .set(Keys.ARRAY_MIN_SIZE, 1)
+                .set(Keys.ARRAY_MAX_SIZE, 5)
                 .mapType(List.class, ArrayList.class)
                 .lock()
                 .toString()
@@ -222,8 +222,8 @@ class SettingsTest {
                 "Settings[",
                 "isLockedForModifications: true",
                 "settingsMap:",
-                "\t'array.max.length': 5",
-                "\t'array.min.length': 1",
+                "\t'array.max.size': 5",
+                "\t'array.min.size': 1",
                 "\t'custom.key.", "': custom-key-value",
                 "\t'double.min': 345.9",
                 "\t'long.min': 123",
@@ -243,11 +243,11 @@ class SettingsTest {
             final int minLength = 1000;
             final int newMaxLength = 100;
             final Settings settings = Settings.defaults()
-                    .set(Keys.ARRAY_MIN_LENGTH, minLength)
-                    .set(Keys.ARRAY_MAX_LENGTH, newMaxLength);
+                    .set(Keys.ARRAY_MIN_SIZE, minLength)
+                    .set(Keys.ARRAY_MAX_SIZE, newMaxLength);
 
             final int expected = newMaxLength - newMaxLength * Constants.RANGE_ADJUSTMENT_PERCENTAGE / 100;
-            final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
+            final int newMin = settings.get(Keys.ARRAY_MIN_SIZE);
             assertThat(newMin).isEqualTo(expected);
         }
 
@@ -290,7 +290,7 @@ class SettingsTest {
         @Test
         void minSizeShouldAutoAdjustToZeroIfMaxIsSetToToZero() {
             final Map<SettingKey<Integer>, SettingKey<Integer>> sizeKeys = Map.of(
-                    Keys.ARRAY_MIN_LENGTH, Keys.ARRAY_MAX_LENGTH,
+                    Keys.ARRAY_MIN_SIZE, Keys.ARRAY_MAX_SIZE,
                     Keys.COLLECTION_MIN_SIZE, Keys.COLLECTION_MAX_SIZE,
                     Keys.MAP_MIN_SIZE, Keys.MAP_MAX_SIZE,
                     Keys.STRING_MIN_LENGTH, Keys.STRING_MAX_LENGTH
@@ -345,11 +345,11 @@ class SettingsTest {
             final int minLength = 1000;
             final int newMaxLength = 100;
             final Settings settings = Settings.defaults()
-                    .set(Keys.ARRAY_MIN_LENGTH, minLength);
+                    .set(Keys.ARRAY_MIN_SIZE, minLength);
 
-            ((InternalSettings) settings).set(Keys.ARRAY_MAX_LENGTH, newMaxLength, AUTO_ADJUST_DISABLED);
+            ((InternalSettings) settings).set(Keys.ARRAY_MAX_SIZE, newMaxLength, AUTO_ADJUST_DISABLED);
 
-            final int newMin = settings.get(Keys.ARRAY_MIN_LENGTH);
+            final int newMin = settings.get(Keys.ARRAY_MIN_SIZE);
             assertThat(newMin).isEqualTo(minLength);
         }
     }

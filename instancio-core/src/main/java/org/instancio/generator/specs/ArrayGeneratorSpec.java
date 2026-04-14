@@ -21,33 +21,40 @@ import org.jspecify.annotations.Nullable;
  * Generator spec for arrays.
  *
  * @param <T> array type
+ * @since 1.0.1
  */
 public interface ArrayGeneratorSpec<T extends @Nullable Object>
-        extends NullableGeneratorSpec<T>, SubtypeGeneratorSpec<T> {
+        extends NullableGeneratorSpec<T>, SizeGeneratorSpec<T>, SubtypeGeneratorSpec<T> {
 
     /**
-     * length of array to generate.
+     * Size of array to generate.
      *
-     * @param length of array
+     * @param size of array
      * @return spec builder
+     * @since 5.6.0
      */
-    ArrayGeneratorSpec<T> length(int length);
+    @Override
+    ArrayGeneratorSpec<T> size(int size);
 
     /**
-     * Minimum length of array to generate.
+     * Minimum size of array to generate.
      *
-     * @param length minimum length (inclusive)
+     * @param size minimum size (inclusive)
      * @return spec builder
+     * @since 5.6.0
      */
-    ArrayGeneratorSpec<T> minLength(int length);
+    @Override
+    ArrayGeneratorSpec<T> minSize(int size);
 
     /**
-     * Maximum length of array to generate.
+     * Maximum size of array to generate.
      *
-     * @param length maximum length (inclusive)
+     * @param size maximum size (inclusive)
      * @return spec builder
+     * @since 5.6.0
      */
-    ArrayGeneratorSpec<T> maxLength(int length);
+    @Override
+    ArrayGeneratorSpec<T> maxSize(int size);
 
     /**
      * Indicates that {@code null} value can be generated for the array.

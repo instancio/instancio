@@ -38,16 +38,16 @@ import static java.util.Objects.requireNonNull;
 
 public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGeneratorSpec<T> {
 
-    protected int minLength;
-    protected int maxLength;
+    protected int minSize;
+    protected int maxSize;
     private boolean nullableElements;
     private @Nullable Class<?> arrayType;
     private @Nullable List<Object> withElements;
 
     public ArrayGenerator(final GeneratorContext context) {
         super(context);
-        this.minLength = context.settings().get(Keys.ARRAY_MIN_LENGTH);
-        this.maxLength = context.settings().get(Keys.ARRAY_MAX_LENGTH);
+        this.minSize = context.settings().get(Keys.ARRAY_MIN_SIZE);
+        this.maxSize = context.settings().get(Keys.ARRAY_MAX_SIZE);
         super.nullable(context.settings().get(Keys.ARRAY_NULLABLE));
         this.nullableElements = context.settings().get(Keys.ARRAY_ELEMENTS_NULLABLE);
     }
@@ -63,23 +63,23 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     }
 
     @Override
-    public ArrayGenerator<T> minLength(final int length) {
-        this.minLength = ApiValidator.validateLength(length);
-        this.maxLength = NumberUtils.calculateNewMaxSize(maxLength, minLength);
+    public ArrayGenerator<T> minSize(int size) {
+        this.minSize = ApiValidator.validateSize(size);
+        this.maxSize = NumberUtils.calculateNewMaxSize(maxSize, minSize);
         return this;
     }
 
     @Override
-    public ArrayGenerator<T> maxLength(final int length) {
-        this.maxLength = ApiValidator.validateLength(length);
-        this.minLength = NumberUtils.calculateNewMinSize(minLength, maxLength);
+    public ArrayGenerator<T> maxSize(int size) {
+        this.maxSize = ApiValidator.validateSize(size);
+        this.minSize = NumberUtils.calculateNewMinSize(minSize, maxSize);
         return this;
     }
 
     @Override
-    public ArrayGenerator<T> length(final int length) {
-        this.maxLength = ApiValidator.validateLength(length);
-        this.minLength = length;
+    public ArrayGenerator<T> size(int size) {
+        this.maxSize = ApiValidator.validateSize(size);
+        this.minSize = size;
         return this;
     }
 
@@ -124,8 +124,8 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     @Override
     @SuppressWarnings("unchecked")
     protected T tryGenerateNonNull(final Random random) {
-        final int length = random.intRange(minLength, maxLength)
-                           + (withElements == null ? 0 : withElements.size());
+        final int length = random.intRange(minSize, maxSize)
+                + (withElements == null ? 0 : withElements.size());
 
         requireNonNull(arrayType);
         return (T) Array.newInstance(arrayType.getComponentType(), length);

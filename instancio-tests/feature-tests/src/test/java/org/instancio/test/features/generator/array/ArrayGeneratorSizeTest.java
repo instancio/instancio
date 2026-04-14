@@ -42,28 +42,28 @@ class ArrayGeneratorSizeTest {
 
     @Test
     void size() {
-        assertSize(spec -> spec.length(EXPECTED_SIZE), EXPECTED_SIZE);
+        assertSize(spec -> spec.size(EXPECTED_SIZE), EXPECTED_SIZE);
     }
 
     @Test
     void sizeZero() {
-        assertSize(spec -> spec.length(0), 0);
+        assertSize(spec -> spec.size(0), 0);
     }
 
     @Test
     void minLength() {
         final int maxSize = EXPECTED_SIZE + EXPECTED_SIZE * Constants.RANGE_ADJUSTMENT_PERCENTAGE / 100;
-        assertSizeBetween(spec -> spec.minLength(EXPECTED_SIZE), EXPECTED_SIZE, maxSize);
+        assertSizeBetween(spec -> spec.minSize(EXPECTED_SIZE), EXPECTED_SIZE, maxSize);
     }
 
     @Test
     void maxLength() {
-        assertSize(spec -> spec.maxLength(1), 1);
+        assertSize(spec -> spec.maxSize(1), 1);
     }
 
     @Test
     void minLengthEqualToMaxLength() {
-        assertSizeBetween(spec -> spec.minLength(EXPECTED_SIZE).maxLength(EXPECTED_SIZE), EXPECTED_SIZE, EXPECTED_SIZE);
+        assertSizeBetween(spec -> spec.minSize(EXPECTED_SIZE).maxSize(EXPECTED_SIZE), EXPECTED_SIZE, EXPECTED_SIZE);
     }
 
     private void assertSize(Function<ArrayGeneratorSpec<?>, ArrayGeneratorSpec<?>> fn, int size) {

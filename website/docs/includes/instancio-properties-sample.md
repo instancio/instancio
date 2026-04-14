@@ -1,7 +1,7 @@
 ```properties linenums="1" title="Sample instancio.properties"
 array.elements.nullable=false
-array.max.length=6
-array.min.length=2
+array.max.size=6
+array.min.size=2
 array.nullable=false
 bigdecimal.scale=2
 boolean.nullable=false

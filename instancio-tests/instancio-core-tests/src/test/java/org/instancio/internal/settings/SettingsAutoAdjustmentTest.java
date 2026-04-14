@@ -69,10 +69,10 @@ class SettingsAutoAdjustmentTest {
         final int max = 100;
         final int newMin = 101;
         settings
-                .set(Keys.ARRAY_MAX_LENGTH, max)
-                .set(Keys.ARRAY_MIN_LENGTH, newMin);
+                .set(Keys.ARRAY_MAX_SIZE, max)
+                .set(Keys.ARRAY_MIN_SIZE, newMin);
 
-        assertThat(settings.get(Keys.ARRAY_MAX_LENGTH))
+        assertThat(settings.get(Keys.ARRAY_MAX_SIZE))
                 .as("Expecting newMax value to be greater than newMin by %s%%", PERCENTAGE)
                 .isEqualTo((int) Math.round((newMin * (100 + PERCENTAGE)) / 100d));
     }
@@ -183,7 +183,7 @@ class SettingsAutoAdjustmentTest {
                     Arguments.of(Keys.LONG_MIN),
                     Arguments.of(Keys.FLOAT_MIN),
                     Arguments.of(Keys.DOUBLE_MIN),
-                    Arguments.of(Keys.ARRAY_MIN_LENGTH),
+                    Arguments.of(Keys.ARRAY_MIN_SIZE),
                     Arguments.of(Keys.COLLECTION_MIN_SIZE),
                     Arguments.of(Keys.MAP_MIN_SIZE),
                     Arguments.of(Keys.STRING_MIN_LENGTH));
@@ -197,7 +197,7 @@ class SettingsAutoAdjustmentTest {
                     Arguments.of(Keys.LONG_MAX),
                     Arguments.of(Keys.FLOAT_MAX),
                     Arguments.of(Keys.DOUBLE_MAX),
-                    Arguments.of(Keys.ARRAY_MAX_LENGTH),
+                    Arguments.of(Keys.ARRAY_MAX_SIZE),
                     Arguments.of(Keys.COLLECTION_MAX_SIZE),
                     Arguments.of(Keys.MAP_MAX_SIZE),
                     Arguments.of(Keys.STRING_MAX_LENGTH));

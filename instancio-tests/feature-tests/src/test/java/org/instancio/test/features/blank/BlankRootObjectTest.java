@@ -107,15 +107,15 @@ class BlankRootObjectTest {
                 .set(Keys.FAIL_ON_ERROR, true);
 
         @Test
-        void overrideArrayLength() {
-            final int length = 5;
+        void overrideArraySize() {
+            final int size = 5;
             final Pojo result = Instancio.ofBlank(Pojo.class)
-                    .generate(field(Pojo::getArrayString), gen -> gen.array().length(length))
-                    .generate(field(Pojo::getArrayStringHolder), gen -> gen.array().length(length))
+                    .generate(field(Pojo::getArrayString), gen -> gen.array().size(size))
+                    .generate(field(Pojo::getArrayStringHolder), gen -> gen.array().size(size))
                     .create();
 
-            assertThat(result.getArrayString()).hasSize(length).doesNotContainNull();
-            assertThat(result.getArrayStringHolder()).hasSize(length)
+            assertThat(result.getArrayString()).hasSize(size).doesNotContainNull();
+            assertThat(result.getArrayStringHolder()).hasSize(size)
                     .allSatisfy(e -> assertThat(e.getValue()).isNull());
         }
 

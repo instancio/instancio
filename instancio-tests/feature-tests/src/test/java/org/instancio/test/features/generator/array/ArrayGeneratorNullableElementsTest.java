@@ -34,16 +34,16 @@ import static org.instancio.Select.all;
 @FeatureTag({Feature.GENERATE, Feature.ARRAY_GENERATOR_NULLABLE_ELEMENTS})
 @ExtendWith(InstancioExtension.class)
 class ArrayGeneratorNullableElementsTest {
-    private static final int ARRAY_LENGTH = 1000;
+    private static final int ARRAY_SIZE = 1000;
 
     @Test
     void nullableElements() {
         final ArrayLong result = Instancio.of(ArrayLong.class)
-                .generate(all(Long[].class), gen -> gen.array().length(ARRAY_LENGTH).nullableElements())
+                .generate(all(Long[].class), gen -> gen.array().size(ARRAY_SIZE).nullableElements())
                 .create();
 
-        assertThat(result.getWrapper()).hasSize(ARRAY_LENGTH).containsNull();
-        assertThat(new HashSet<>(Arrays.asList(result.getWrapper()))).hasSizeGreaterThan(ARRAY_LENGTH / 2);
+        assertThat(result.getWrapper()).hasSize(ARRAY_SIZE).containsNull();
+        assertThat(new HashSet<>(Arrays.asList(result.getWrapper()))).hasSizeGreaterThan(ARRAY_SIZE / 2);
     }
 
 }

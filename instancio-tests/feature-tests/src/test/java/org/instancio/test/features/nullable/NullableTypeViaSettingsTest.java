@@ -65,7 +65,7 @@ class NullableTypeViaSettingsTest {
     @Test
     void arrayElements() {
         final String[] results = Instancio.of(String[].class)
-                .generate(all(String[].class), gen -> gen.array().length(SAMPLE_SIZE))
+                .generate(all(String[].class), gen -> gen.array().size(SAMPLE_SIZE))
                 .create();
 
         assertThat(results)

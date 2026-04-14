@@ -40,8 +40,8 @@ class ArraySettingsTest {
     private static final int MAX_SIZE_OVERRIDE = 102;
 
     private static final Settings settings = Settings.create()
-            .set(Keys.ARRAY_MIN_LENGTH, MIN_SIZE_OVERRIDE)
-            .set(Keys.ARRAY_MAX_LENGTH, MAX_SIZE_OVERRIDE)
+            .set(Keys.ARRAY_MIN_SIZE, MIN_SIZE_OVERRIDE)
+            .set(Keys.ARRAY_MAX_SIZE, MAX_SIZE_OVERRIDE)
             .lock();
 
     @Test

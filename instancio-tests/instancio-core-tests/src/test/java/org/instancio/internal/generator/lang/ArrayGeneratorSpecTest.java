@@ -38,7 +38,7 @@ class ArrayGeneratorSpecTest {
 
     @BeforeEach
     void setUp() {
-        generator.minLength(0).minLength(1);
+        generator.minSize(0).minSize(1);
     }
 
     @Test
@@ -46,9 +46,9 @@ class ArrayGeneratorSpecTest {
     void newMaxIsLessThanMin() {
         final int newMax = 50;
         generator
-                .minLength(Integer.MAX_VALUE)
-                .maxLength(newMax);
-        assertThat(generator.getMinLength()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
+                .minSize(Integer.MAX_VALUE)
+                .maxSize(newMax);
+        assertThat(generator.getMinSize()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
     }
 
     @Test
@@ -56,17 +56,17 @@ class ArrayGeneratorSpecTest {
     void newMaxIsEqualToMin() {
         final int newMax = 100;
         generator
-                .minLength(Integer.MAX_VALUE)
-                .maxLength(newMax);
-        assertThat(generator.getMinLength()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
+                .minSize(Integer.MAX_VALUE)
+                .maxSize(newMax);
+        assertThat(generator.getMinSize()).isEqualTo(calculatePercentage(newMax, -PERCENTAGE));
     }
 
     @Test
     @DisplayName("newMin > max: new nax should be set to greater than newMin by PERCENTAGE")
     void newMinIsGreaterThanMax() {
         final int newMin = 100;
-        generator.minLength(newMin);
-        assertThat(generator.getMaxLength()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
+        generator.minSize(newMin);
+        assertThat(generator.getMaxSize()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
     }
 
     @Test
@@ -74,31 +74,31 @@ class ArrayGeneratorSpecTest {
     void newMinIsEqualToMax() {
         final int newMin = 100;
         generator
-                .maxLength(0)
-                .minLength(newMin);
-        assertThat(generator.getMaxLength()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
+                .maxSize(0)
+                .minSize(newMin);
+        assertThat(generator.getMaxSize()).isEqualTo(calculatePercentage(newMin, PERCENTAGE));
     }
 
     @Test
-    void length() {
-        final int length = 2;
-        generator.length(length);
-        assertThat(generator.getMinLength()).isEqualTo(length);
-        assertThat(generator.getMaxLength()).isEqualTo(length);
+    void size() {
+        final int size = 2;
+        generator.size(size);
+        assertThat(generator.getMinSize()).isEqualTo(size);
+        assertThat(generator.getMaxSize()).isEqualTo(size);
     }
 
     @Test
     void minValidation() {
-        assertThatThrownBy(() -> generator.minLength(-1))
+        assertThatThrownBy(() -> generator.minSize(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("length must not be negative: -1");
+                .hasMessageContaining("size must not be negative: -1");
     }
 
     @Test
     void maxValidation() {
-        assertThatThrownBy(() -> generator.maxLength(-1))
+        assertThatThrownBy(() -> generator.maxSize(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("length must not be negative: -1");
+                .hasMessageContaining("size must not be negative: -1");
     }
 
     private static int calculatePercentage(final int initial, final int percentage) {
@@ -113,12 +113,12 @@ class ArrayGeneratorSpecTest {
             super(context);
         }
 
-        int getMinLength() {
-            return minLength;
+        int getMinSize() {
+            return minSize;
         }
 
-        int getMaxLength() {
-            return maxLength;
+        int getMaxSize() {
+            return maxSize;
         }
     }
 

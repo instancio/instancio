@@ -145,7 +145,7 @@ class GivenWithProviderTest {
 
             return Instancio.of(context::getTargetType)
                     .generate(Select.root(), gen -> {
-                        ArrayGeneratorSpec<Object> spec = gen.array().length(size.value());
+                        ArrayGeneratorSpec<Object> spec = gen.array().size(size.value());
                         return nullableElements ? spec.nullableElements() : spec;
                     })
                     .create();

@@ -107,7 +107,7 @@ class EmitGeneratorTest {
     void emitNullArrayElements() {
         final int size = 5;
         final Integer[] result = Instancio.of(Integer[].class)
-                .generate(root(), gen -> gen.array().length(size))
+                .generate(root(), gen -> gen.array().size(size))
                 .generate(all(Integer.class), gen -> gen.emit().item(null, size))
                 .create();
 
@@ -129,7 +129,7 @@ class EmitGeneratorTest {
     void whenEmptyEmitNullWithArray() {
         final int size = 5;
         final Integer[] result = Instancio.of(Integer[].class)
-                .generate(root(), gen -> gen.array().length(size))
+                .generate(root(), gen -> gen.array().size(size))
                 .generate(all(Integer.class), gen -> gen.emit().items(1).whenEmptyEmitNull())
                 .create();
 

@@ -47,8 +47,8 @@ class ArrayGeneratorWithElementOrderTest {
     @RepeatedTest(5)
     void shuffledElementShouldBeInTheSameOrderForAGivenSeed() {
         final ArrayLong result = Instancio.of(ArrayLong.class)
-                .generate(all(long[].class), gen -> gen.array().maxLength(5).with((Object[]) EXPECTED_LONGS))
-                .generate(all(Long[].class), gen -> gen.array().maxLength(5).with((Object[]) EXPECTED_LONGS))
+                .generate(all(long[].class), gen -> gen.array().maxSize(5).with((Object[]) EXPECTED_LONGS))
+                .generate(all(Long[].class), gen -> gen.array().maxSize(5).with((Object[]) EXPECTED_LONGS))
                 .create();
 
         assertThat(result.getPrimitive()).contains(EXPECTED_LONGS);

@@ -139,7 +139,7 @@ class SelectWithGenerateTest {
                                 all(Long[].class),
                                 all(String[].class),
                                 all(Item[].class)),
-                        gen -> gen.array().length(expectedLength))
+                        gen -> gen.array().size(expectedLength))
                 .create();
 
         assertThat(result.getPrimitiveLongArray()).hasSize(expectedLength);
