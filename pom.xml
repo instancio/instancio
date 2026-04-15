@@ -55,7 +55,7 @@
             ${maven.multiModuleProjectDirectory}/instancio-tests/kotlin-tests/instancio-kotlin-api-tests/target/kover/report.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <latest.release.version>6.0.0-RC2</latest.release.version>
-        <version.guava>33.5.0-jre</version.guava>
+        <version.guava>33.6.0-jre</version.guava>
         <version.hibernate.validator>9.1.0.Final</version.hibernate.validator>
         <version.highlight.js>11.11.1</version.highlight.js>
         <version.jackson>3.1.2</version.jackson>
