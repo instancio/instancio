@@ -68,7 +68,7 @@
         <version.protobuf-java>4.34.1</version.protobuf-java>
         <version.slf4j>2.0.17</version.slf4j>
         <version.errorprone>2.49.0</version.errorprone>
-        <version.nullaway>0.13.2</version.nullaway>
+        <version.nullaway>0.13.3</version.nullaway>
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.10.0</version.central-publishing-maven-plugin>
         <version.jacoco-maven-plugin>0.8.14</version.jacoco-maven-plugin>
