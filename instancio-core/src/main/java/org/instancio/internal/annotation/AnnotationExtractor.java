@@ -23,10 +23,15 @@ import org.instancio.settings.Keys;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
+import java.lang.reflect.AnnotatedArrayType;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class AnnotationExtractor {
     private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
@@ -47,17 +52,19 @@ public final class AnnotationExtractor {
         }
 
         if (beanValidationTarget == BeanValidationTarget.FIELD) {
-            return field.getDeclaredAnnotations();
+            return mergeDedup(field.getDeclaredAnnotations(), field.getAnnotatedType().getAnnotations());
         }
 
         // Get constraint annotations from the getter, if exists
         final Method getter = getterMethodResolver.getGetter(node);
-        return getter == null ? EMPTY_ANNOTATIONS : getter.getDeclaredAnnotations();
+        return getter == null
+                ? EMPTY_ANNOTATIONS
+                : mergeDedup(getter.getDeclaredAnnotations(), getter.getAnnotatedReturnType().getAnnotations());
     }
 
     /**
      * Extract field's {@link ElementType#TYPE_USE} annotations,
-     * e.g. {@code Map<@Email String, @Negative Integer>}.
+     * e.g. {@code Map<@Email String, @Negative Integer>} or {@code @Email String[]}.
      */
     private static Annotation[] getTypeUseAnnotations(final InternalNode node) {
         final InternalNode parent = node.getParent();
@@ -66,15 +73,40 @@ public final class AnnotationExtractor {
         }
 
         final Field parentField = parent.getField();
-        if (parentField != null && parentField.getAnnotatedType() instanceof AnnotatedParameterizedType) {
-            final AnnotatedParameterizedType apt = (AnnotatedParameterizedType) parentField.getAnnotatedType();
-            final int childIndex = CollectionUtils.identityIndexOf(node, parent.getChildren());
+        if (parentField == null) {
+            return EMPTY_ANNOTATIONS;
+        }
 
-            if (childIndex != -1) {
-                final AnnotatedType[] annotatedTypes = apt.getAnnotatedActualTypeArguments();
-                return annotatedTypes[childIndex].getAnnotations();
+        final AnnotatedType parentAnnotatedType = parentField.getAnnotatedType();
+
+        if (parentAnnotatedType instanceof AnnotatedArrayType aat) {
+            return aat.getAnnotatedGenericComponentType().getAnnotations();
+        }
+        final AnnotatedParameterizedType apt = (AnnotatedParameterizedType) parentAnnotatedType;
+        final int childIndex = CollectionUtils.identityIndexOf(node, parent.getChildren());
+        return apt.getAnnotatedActualTypeArguments()[childIndex].getAnnotations();
+    }
+
+    @SuppressWarnings("PMD.UseVarargs")
+    private static Annotation[] mergeDedup(final Annotation[] primary, final Annotation[] secondary) {
+        if (secondary.length == 0) {
+            return primary;
+        }
+        if (primary.length == 0) {
+            return secondary;
+        }
+        final List<Annotation> merged = new ArrayList<>(primary.length + secondary.length);
+        final Set<Class<? extends Annotation>> seen = new HashSet<>(primary.length + secondary.length);
+        for (Annotation a : primary) {
+            if (seen.add(a.annotationType())) {
+                merged.add(a);
             }
         }
-        return EMPTY_ANNOTATIONS;
+        for (Annotation a : secondary) {
+            if (seen.add(a.annotationType())) {
+                merged.add(a);
+            }
+        }
+        return merged.toArray(EMPTY_ANNOTATIONS);
     }
 }

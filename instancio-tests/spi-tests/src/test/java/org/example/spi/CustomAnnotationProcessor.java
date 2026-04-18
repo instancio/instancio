@@ -20,12 +20,15 @@ import org.instancio.generator.specs.InstantSpec;
 import org.instancio.generator.specs.LocalDateSpec;
 import org.instancio.generator.specs.LongSpec;
 import org.instancio.generator.specs.MapGeneratorSpec;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 import org.instancio.generator.specs.NumberGeneratorSpec;
 import org.instancio.generator.specs.StringGeneratorSpec;
 import org.instancio.spi.InstancioServiceProvider;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,10 +41,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CustomAnnotationProcessor implements InstancioServiceProvider {
 
     private static final AtomicInteger DUPLICATE_HANDLER_INVOCATION_COUNT = new AtomicInteger();
+    private static final AtomicInteger DUAL_TARGET_HANDLER_INVOCATION_COUNT = new AtomicInteger();
 
     @Retention(RetentionPolicy.RUNTIME)
     public @interface WithKeys {
         String[] value();
+    }
+
+    @Target(ElementType.TYPE_USE)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface TypeUseLongValue {
+        long value();
+    }
+
+    @Target({ElementType.FIELD, ElementType.TYPE_USE})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface DualTargetLongValue {
+        long value();
+    }
+
+    @Target(ElementType.TYPE_USE)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface CustomNullable {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -82,6 +103,10 @@ public class CustomAnnotationProcessor implements InstancioServiceProvider {
         return DUPLICATE_HANDLER_INVOCATION_COUNT.get();
     }
 
+    public static int getDualTargetHandlerInvocationCount() {
+        return DUAL_TARGET_HANDLER_INVOCATION_COUNT.get();
+    }
+
     @Override
     public AnnotationProcessor getAnnotationProcessor() {
         return new AnnotationProcessorImpl();
@@ -107,22 +132,38 @@ public class CustomAnnotationProcessor implements InstancioServiceProvider {
         }
 
         @AnnotationHandler
+        void typeUseLongValue(final TypeUseLongValue annotation, final LongSpec spec) {
+            spec.min(annotation.value()).max(annotation.value());
+        }
+
+        @AnnotationHandler
+        void dualTargetLongValue(final DualTargetLongValue annotation, final LongSpec spec) {
+            DUAL_TARGET_HANDLER_INVOCATION_COUNT.incrementAndGet();
+            spec.min(annotation.value()).max(annotation.value());
+        }
+
+        @AnnotationHandler
+        void customNullable(final CustomNullable annotation, final NullableGeneratorSpec<?> spec) {
+            spec.nullable();
+        }
+
+        @AnnotationHandler
         void emptyString(final EmptyString annotation, final StringGeneratorSpec spec) {
             failIfCalled();
         }
 
         @AnnotationHandler
         void dupe1(final AnnotationWithTwoAnnotationHandlerMethods annotation, final NumberGeneratorSpec<Long> spec) {
-            incrementInvocationCount(spec);
+            processAnnotationWithTwoAnnotationHandlerMethods(spec);
         }
 
         @AnnotationHandler
         void dupe2(final AnnotationWithTwoAnnotationHandlerMethods annotation, final NumberGeneratorSpec<Long> spec) {
-            incrementInvocationCount(spec);
+            processAnnotationWithTwoAnnotationHandlerMethods(spec);
         }
 
-        private static void incrementInvocationCount(final NumberGeneratorSpec<Long> spec) {
-            long next = DUPLICATE_HANDLER_INVOCATION_COUNT.incrementAndGet();
+        private static void processAnnotationWithTwoAnnotationHandlerMethods(final NumberGeneratorSpec<Long> spec) {
+            final long next = DUPLICATE_HANDLER_INVOCATION_COUNT.incrementAndGet();
             spec.min(next).max(next);
         }
 

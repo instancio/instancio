@@ -19,16 +19,22 @@ import org.example.spi.CustomAnnotationProcessor;
 import org.example.spi.CustomAnnotationProcessor.AnnotationWithTwoAnnotationHandlerMethods;
 import org.example.spi.CustomAnnotationProcessor.CustomLongMax;
 import org.example.spi.CustomAnnotationProcessor.CustomLongMin;
+import org.example.spi.CustomAnnotationProcessor.CustomNullable;
+import org.example.spi.CustomAnnotationProcessor.DualTargetLongValue;
 import org.example.spi.CustomAnnotationProcessor.EmptyString;
+import org.example.spi.CustomAnnotationProcessor.TypeUseLongValue;
 import org.example.spi.CustomAnnotationProcessor.WithKeys;
 import org.example.spi.CustomGeneratorProvider;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
-import org.jspecify.annotations.Nullable;
+import org.instancio.test.support.util.Constants;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
@@ -38,13 +44,16 @@ import static org.instancio.Select.field;
  *
  * @see CustomAnnotationProcessor
  */
+// JSpecify annotations are intentionally omitted: seeing @Nullable on a field
+// might imply that nullable values should be produced via the SPI annotation
+// processor, which is not what is being tested here, hence @NullUnmarked.
+@NullUnmarked
 @ExtendWith(InstancioExtension.class)
 class AnnotationProcessorSpiTest {
 
     @Test
     void customAnnotation() {
         class Pojo {
-            @Nullable
             @WithKeys({"foo", "bar"})
             Map<CharSequence, Long> map;
         }
@@ -57,7 +66,6 @@ class AnnotationProcessorSpiTest {
     @Test
     void generatorProviderTakesPrecedenceOverAnnotationProcessor() {
         class Pojo {
-            @Nullable
             // since GeneratorProvider takes precedence, this annotation is ignored
             @EmptyString
             String value;
@@ -107,5 +115,77 @@ class AnnotationProcessorSpiTest {
                 .create();
 
         assertThat(result.value).isEqualTo(-2);
+    }
+
+    @Test
+    void typeUseOnlyAnnotationOnClassField() {
+        class Pojo {
+            @TypeUseLongValue(42)
+            Long value;
+        }
+
+        final Pojo result = Instancio.create(Pojo.class);
+
+        assertThat(result.value).isEqualTo(42L);
+    }
+
+    @Test
+    void typeUseOnlyAnnotationOnRecordComponent() {
+        record Rec(@TypeUseLongValue(7) Long value) {}
+
+        final Rec result = Instancio.create(Rec.class);
+
+        assertThat(result.value()).isEqualTo(7L);
+    }
+
+    @Test
+    void typeUseOnlyAnnotationOnArrayComponent() {
+        class Pojo {
+            @TypeUseLongValue(99)
+            Long[] arr;
+        }
+
+        final Pojo result = Instancio.create(Pojo.class);
+
+        assertThat(result.arr)
+                .isNotEmpty()
+                .allSatisfy(v -> assertThat(v).isEqualTo(99L));
+    }
+
+    /**
+     * NOTE: using {@code Long} instead of {@link String} because
+     * {@link org.example.spi.CustomGeneratorProvider} overrides the String
+     * generator in this module which bypasses annotation processing.
+     */
+    @Test
+    void typeUseNullableAnnotationOnRecordComponent() {
+        record Foo(@CustomNullable Long value) {}
+
+        final Stream<Foo> result = Instancio.of(Foo.class)
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DD);
+
+        assertThat(result)
+                .map(Foo::value)
+                .anyMatch(Objects::nonNull)
+                .containsNull();
+    }
+
+    @Test
+    void dualTargetAnnotationInvokesHandlerExactlyOnce() {
+        class Pojo {
+            @DualTargetLongValue(123)
+            Long value;
+        }
+
+        final int before = CustomAnnotationProcessor.getDualTargetHandlerInvocationCount();
+        final Pojo result = Instancio.create(Pojo.class);
+        final int after = CustomAnnotationProcessor.getDualTargetHandlerInvocationCount();
+
+        assertThat(after - before)
+                .as("handler invoked exactly once for dual-target annotation")
+                .isEqualTo(1);
+
+        assertThat(result.value).isEqualTo(123L);
     }
 }
