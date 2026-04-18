@@ -16,14 +16,19 @@
 package org.instancio.test.beanvalidation;
 
 import org.instancio.Instancio;
+import org.instancio.internal.util.StringUtils;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.BeanValidationTarget;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.test.pojo.beanvalidation.GetterConstraintBV;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -62,6 +67,20 @@ class GetterConstraintBVTest {
 
         assertThat(result.isPrimitiveBoolean()).isTrue();
         assertThat(result.isBooleanWrapper()).isTrue();
+    }
+
+    @Test
+    void fieldWithoutGetter_constraintIsNotApplied() {
+        final Stream<GetterConstraintBV.FieldWithoutGetter> result = Instancio.of(GetterConstraintBV.FieldWithoutGetter.class)
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DDD);
+
+        assertThat(result)
+                .as("@NotNull, @NotBlank, and @Digits annotations are ignored")
+                .map(it -> it.digits)
+                .anyMatch(Objects::isNull)
+                .anyMatch(StringUtils::isEmpty)
+                .anySatisfy(value -> assertThat(value).matches("[A-Z]+"));
     }
 
     @Test

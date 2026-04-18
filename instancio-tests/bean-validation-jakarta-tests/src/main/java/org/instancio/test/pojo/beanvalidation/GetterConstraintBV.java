@@ -17,6 +17,7 @@ package org.instancio.test.pojo.beanvalidation;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.ToString;
 
@@ -79,6 +80,14 @@ public class GetterConstraintBV {
         public Boolean isBooleanWrapper() {
             return booleanWrapper;
         }
+    }
+
+    @ToString
+    public static class FieldWithoutGetter {
+        @NotNull
+        @NotBlank
+        @Digits(integer = 5, fraction = 0)
+        public String digits;
     }
 
     @ToString
