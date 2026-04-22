@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.instancio</groupId>
     <artifactId>instancio-parent</artifactId>
-    <version>6.0.0-RC3-SNAPSHOT</version>
+    <version>6.0.0-RC3</version>
     <packaging>pom</packaging>
 
     <name>Instancio Parent</name>
@@ -37,13 +37,11 @@
         </developer>
     </developers>
 
-    <scm child.scm.url.inherit.append.path="false"
-         child.scm.developerConnection.inherit.append.path="false"
-         child.scm.connection.inherit.append.path="false">
+    <scm child.scm.url.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.connection.inherit.append.path="false">
         <url>https://github.com/instancio/instancio</url>
         <connection>scm:git:https://github.com/instancio/instancio.git</connection>
         <developerConnection>scm:git:git@github.com:instancio/instancio.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>instancio-parent-6.0.0-RC3</tag>
     </scm>
 
     <properties>
@@ -56,7 +54,7 @@
             ${maven.multiModuleProjectDirectory}/instancio-tests/report-aggregate/target/site/jacoco-aggregate/jacoco.xml,
             ${maven.multiModuleProjectDirectory}/instancio-tests/kotlin-tests/instancio-kotlin-api-tests/target/kover/report.xml
         </sonar.coverage.jacoco.xmlReportPaths>
-        <latest.release.version>6.0.0-RC2</latest.release.version>
+        <latest.release.version>6.0.0-RC3</latest.release.version>
         <version.guava>33.6.0-jre</version.guava>
         <version.hibernate.validator>9.1.0.Final</version.hibernate.validator>
         <version.highlight.js>11.11.1</version.highlight.js>

@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>kotlin-tests</artifactId>
-        <version>6.0.0-RC3-SNAPSHOT</version>
+        <version>6.0.0-RC3</version>
     </parent>
     <artifactId>java-interop-kotlin-tests</artifactId>
     <name>Instancio tests: Java-Kotlin Interop Tests</name>
