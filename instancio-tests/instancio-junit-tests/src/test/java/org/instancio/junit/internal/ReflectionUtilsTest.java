@@ -19,6 +19,7 @@ import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -50,14 +51,26 @@ class ReflectionUtilsTest {
         assertThat(ReflectionUtils.getAnnotatedFields(StringHolder.class, AnnotationX.class)).isEmpty();
     }
 
+    @Test
+    @SuppressWarnings({"rawtypes"})
+    void collectionAnnotations() {
+        final List<Annotation> annotations = ReflectionUtils.collectionAnnotations(WithAnnotatedField.class);
+
+        assertThat(annotations).hasSize(1)
+                .extracting(Annotation::annotationType)
+                .contains((Class) AnnotationY.class);
+    }
+
 
     @Retention(RetentionPolicy.RUNTIME)
     private @interface AnnotationX {}
 
+    @AnnotationY
     @Retention(RetentionPolicy.RUNTIME)
     private @interface AnnotationY {}
 
     @SuppressWarnings("all")
+    @AnnotationY
     private static class WithAnnotatedField {
         @AnnotationX
         private String foo;
