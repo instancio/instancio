@@ -18,7 +18,6 @@ package org.instancio.junit;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.junit.internal.InstancioSourceArgumentsProvider;
 import org.instancio.settings.Keys;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.lang.annotation.Documented;
