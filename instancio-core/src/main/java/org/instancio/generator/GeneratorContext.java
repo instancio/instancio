@@ -38,7 +38,7 @@ public interface GeneratorContext {
      * </ul>
      *
      * @return the settings
-     * @since 1.0.3
+     * @since 5.6.0
      */
     Settings settings();
 

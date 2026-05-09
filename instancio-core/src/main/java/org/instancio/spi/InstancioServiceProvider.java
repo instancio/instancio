@@ -232,7 +232,7 @@ public interface InstancioServiceProvider {
          * @return the subtype, or {@code null} if no subtype is defined for this node
          * @throws InstancioSpiException if the returned type is not
          *                               a subtype of the node's target class
-         * @since 2.11.0
+         * @since 5.6.0
          */
         @Nullable
         Type getSubtype(Node node);
