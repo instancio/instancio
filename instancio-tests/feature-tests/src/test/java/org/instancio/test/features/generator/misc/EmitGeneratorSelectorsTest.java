@@ -16,9 +16,6 @@
 package org.instancio.test.features.generator.misc;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioApi;
-import org.instancio.TargetSelector;
-import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -28,15 +25,10 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
 import static org.instancio.Select.root;
@@ -56,27 +48,52 @@ class EmitGeneratorSelectorsTest {
             .set(Keys.COLLECTION_MIN_SIZE, 10)
             .set(Keys.COLLECTION_MAX_SIZE, 10);
 
-    public static Stream<Arguments> getSelectors() {
-        return Stream.of(
-                Arguments.of(allInts()),
-                Arguments.of(all(all(int.class), all(Integer.class)))
-        );
-    }
-
-    @MethodSource("getSelectors")
-    @ParameterizedTest
-    void eachSelectorShouldHaveItsOwnEmitItems(final TargetSelector selector) {
+    @Test
+    void eachSelectorShouldHaveItsOwnEmitItems() {
         final List<IntegerHolder> result = Instancio.ofList(IntegerHolder.class)
-                .generate(selector, gen -> gen.emit().items(1, 2, 3))
+                .generate(all(all(int.class), all(Integer.class)), gen -> gen.emit().items(1, 2, 3))
                 .create();
 
-        assertThat(result).extracting(IntegerHolder::getPrimitive)
+        assertThat(result)
+                .hasSize(10)
+                .extracting(IntegerHolder::getPrimitive)
                 .startsWith(1, 2, 3)
                 .filteredOn(it -> it == -1).hasSize(7);
 
-        assertThat(result).extracting(IntegerHolder::getWrapper)
+        assertThat(result)
+                .hasSize(10)
+                .extracting(IntegerHolder::getWrapper)
                 .startsWith(1, 2, 3)
                 .filteredOn(it -> it == -1).hasSize(7);
+    }
+
+    @Test
+    void usingAllInts_listOfIntegerHolders() {
+        final List<IntegerHolder> result = Instancio.ofList(IntegerHolder.class)
+                .generate(allInts(), gen -> gen.emit().items(1, 2, 3))
+                .create();
+
+        assertThat(result)
+                .hasSize(10)
+                .extracting(IntegerHolder::getPrimitive)
+                .startsWith(1, 3)
+                .filteredOn(it -> it == -1).hasSize(8);
+
+        assertThat(result)
+                .hasSize(10)
+                .extracting(IntegerHolder::getWrapper)
+                .startsWith(2)
+                .filteredOn(it -> it == -1).hasSize(9);
+    }
+
+
+    @Test
+    void usingAllInts_singleFieldValue() {
+        final IntHolder result = Instancio.of(IntHolder.class)
+                .generate(allInts(), gen -> gen.emit().items(-1))
+                .create();
+
+        assertThat(result.value).isEqualTo(-1);
     }
 
     @Test
@@ -96,16 +113,6 @@ class EmitGeneratorSelectorsTest {
 
         assertThat(result.getPrimitive()).isEqualTo(1);
         assertThat(result.getWrapper()).isEqualTo(2);
-    }
-
-    @Test
-    void usingPrimitiveAndWrapperSelector() {
-        final InstancioApi<IntHolder> api = Instancio.of(IntHolder.class)
-                .generate(allInts(), gen -> gen.emit().items(1));
-
-        assertThatThrownBy(api::create)
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("not all the items provided via the 'emit()' method have been consumed");
     }
 
     private static class IntHolder {

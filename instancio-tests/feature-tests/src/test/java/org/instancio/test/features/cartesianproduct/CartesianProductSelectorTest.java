@@ -29,6 +29,7 @@ import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.dynamic.DynPerson;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -52,14 +53,29 @@ import static org.instancio.Select.types;
 @ExtendWith(InstancioExtension.class)
 class CartesianProductSelectorTest {
 
+    /**
+     * Not supported after replacing primitive/wrapper selector
+     * with predicate selector because {@code allInts()} is now
+     * a single selector that matches multiple targets:
+     *
+     * <ul>
+     *   <li>{@link IntegerHolder#getPrimitive()}</li>
+     *   <li>{@link IntegerHolder#getWrapper()}</li>
+     * </ul>
+     *
+     * <p>The original primitive/wrapper selector was composed of two separate
+     * selectors: {@code all(int.class)} and {@code all(Integer.class}).
+     */
+    @FeatureTag(Feature.UNSUPPORTED)
+    @Disabled
     @Test
     void withAllInts() {
         final List<IntegerHolder> results = Instancio.ofCartesianProduct(IntegerHolder.class)
                 .with(allInts(), 1, 2)
                 .create();
 
-        assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(1, 2);
-        assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(1, 2);
+        assertThat(results).extracting(IntegerHolder::getPrimitive).containsExactly(1);
+        assertThat(results).extracting(IntegerHolder::getWrapper).containsExactly(2);
     }
 
     @Test

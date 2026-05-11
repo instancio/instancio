@@ -17,17 +17,14 @@ package org.instancio.internal.context;
 
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
-import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.PredicateScopeImpl;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
-import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.ScopelessSelector;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.Target;
-import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
 import org.instancio.internal.selectors.TargetSetter;
 import org.instancio.internal.util.Fail;
@@ -49,7 +46,6 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
 import static org.instancio.internal.util.Constants.NL;
 
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessiveImports"})
@@ -217,17 +213,6 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
     }
 
     private void markUsed(final SelectorImpl selector) {
-        // Special treatment of convenience PrimitiveAndWrapper selectors such as Select.allInts(),
-        // which contains all(Integer.class) and all(int.class). If we only
-        // match one, consider the equivalent to be matched as well.
-        if (selector.getParent() instanceof PrimitiveAndWrapperSelectorImpl) {
-            final Class<?> equivalentType = PrimitiveWrapperBiLookup.getEquivalent(selector.getTargetClass());
-
-            final SelectorImpl equivalent = selector.toBuilder(new TargetClass(requireNonNull(equivalentType)))
-                    .build();
-
-            unusedSelectors.remove(equivalent);
-        }
         unusedSelectors.remove(selector);
     }
 

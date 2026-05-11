@@ -24,7 +24,6 @@ import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.util.Verify;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,20 +75,6 @@ public final class SelectorProcessor {
             return process(SelectorImpl.builder(new TargetSetterReference((SetMethodSelector<?, ?>) selector))
                     .apiMethodSelector(apiMethodSelector)
                     .build(), apiMethodSelector);
-
-        } else if (selector instanceof PrimitiveAndWrapperSelectorImpl ps) {
-            final SelectorImpl.Builder primitiveBuilder = ps.getPrimitive().toBuilder().apiMethodSelector(apiMethodSelector);
-            final SelectorImpl.Builder wrapperBuilder = ps.getWrapper().toBuilder().apiMethodSelector(apiMethodSelector);
-
-            if (ps.isScoped()) {
-                final List<Scope> scopes = createScopeWithRootClass(ps.getPrimitive().getScopes());
-
-                return Arrays.asList(
-                        primitiveBuilder.scopes(scopes).build(),
-                        wrapperBuilder.scopes(scopes).build());
-            }
-
-            return Arrays.asList(primitiveBuilder.build(), wrapperBuilder.build());
 
         } else if (selector instanceof PredicateSelectorImpl ps) {
             final PredicateSelectorImpl processed = ps.toBuilder()

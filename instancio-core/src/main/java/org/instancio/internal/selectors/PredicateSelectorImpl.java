@@ -19,6 +19,7 @@ import org.instancio.GroupableSelector;
 import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
+import org.instancio.Selector;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
@@ -34,7 +35,7 @@ import java.util.function.Predicate;
 
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-public class PredicateSelectorImpl extends BaseSelector implements PredicateSelector {
+public class PredicateSelectorImpl extends BaseSelector implements Selector, PredicateSelector {
 
     private static final int FIELD_PRIORITY = 1;
     private static final int TYPE_PRIORITY = 2;
@@ -137,6 +138,25 @@ public class PredicateSelectorImpl extends BaseSelector implements PredicateSele
             s += ".lenient()";
         }
         return s;
+    }
+
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PredicateSelectorImpl that)) return false;
+        return priority == that.priority
+                && Objects.equals(apiInvocationDescription, that.apiInvocationDescription)
+                && Objects.equals(selectorDepth, that.selectorDepth)
+                && Objects.equals(getApiMethodSelector(), that.getApiMethodSelector())
+                && Objects.equals(isLenient(), that.isLenient())
+                && Objects.equals(getScopes(), that.getScopes())
+                && Objects.equals(isHiddenFromVerboseOutput(), that.isHiddenFromVerboseOutput());
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hash(priority, apiInvocationDescription, selectorDepth,
+                getApiMethodSelector(), isLenient(), getScopes(), isHiddenFromVerboseOutput());
     }
 
     public Builder toBuilder() {

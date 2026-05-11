@@ -65,16 +65,17 @@ class NumericSequenceGeneratorTest {
 
             assertEachField123(result);
         }
+    }
 
-        @Test
-        void ofListAllInts() {
-            final List<IntegerHolder> result = Instancio.ofList(IntegerHolder.class)
-                    .size(3)
-                    .generate(allInts(), Generators::intSeq)
-                    .create();
+    @Test
+    void ofListAllInts() {
+        final List<IntegerHolder> result = Instancio.ofList(IntegerHolder.class)
+                .size(3)
+                .generate(allInts(), Generators::intSeq)
+                .create();
 
-            assertEachField123(result);
-        }
+        assertThat(result).extracting(IntegerHolder::getPrimitive).containsExactly(1, 3, 5);
+        assertThat(result).extracting(IntegerHolder::getWrapper).containsExactly(2, 4, 6);
     }
 
     @Nested

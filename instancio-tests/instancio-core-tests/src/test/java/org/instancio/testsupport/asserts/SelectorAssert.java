@@ -16,9 +16,10 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
+import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
-import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
+import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.Target;
 import org.instancio.internal.selectors.TargetClass;
@@ -115,49 +116,26 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     }
 
     public SelectorAssert hasScopeSize(final int expected) {
-        assertThat(getAs(SelectorImpl.class).getScopes()).hasSize(expected);
+        assertThat(getAs(InternalSelector.class).getScopes()).hasSize(expected);
         return this;
     }
 
     public List<Scope> getScopes() {
-        return getAs(SelectorImpl.class).getScopes();
+        return getAs(InternalSelector.class).getScopes();
     }
 
     public SelectorAssert hasNoScope() {
-        assertThat(getAs(SelectorImpl.class).getScopes()).isEmpty();
+        assertThat(getAs(InternalSelector.class).getScopes()).isEmpty();
+        return this;
+    }
+
+    public SelectorAssert isPredicateSelector() {
+        assertThat(actual).isInstanceOf(PredicateSelector.class);
         return this;
     }
 
     public SelectorAssert isClassSelectorWithNoScope() {
-        assertThat(getAs(SelectorImpl.class).getScopes()).isEmpty();
+        assertThat(getAs(InternalSelector.class).getScopes()).isEmpty();
         return isClassSelector();
-    }
-
-    public SelectorAssert isCoreTypeSelector(final Class<?> primitive, final Class<?> wrapper) {
-        final PrimitiveAndWrapperSelectorImpl selector = getAs(PrimitiveAndWrapperSelectorImpl.class);
-        assertThat(selector.flatten()).hasSize(2);
-        assertSelector(selector.flatten().get(0))
-                .isNotRootSelector()
-                .isClassSelector()
-                .hasTargetClass(primitive);
-        assertSelector(selector.flatten().get(1))
-                .isNotRootSelector()
-                .isClassSelector()
-                .hasTargetClass(wrapper);
-        return this;
-    }
-
-    public SelectorAssert isCoreTypeSelectorWithoutScope(final Class<?> primitive, final Class<?> wrapper) {
-        final PrimitiveAndWrapperSelectorImpl selector = getAs(PrimitiveAndWrapperSelectorImpl.class);
-        assertThat(selector.flatten()).hasSize(2);
-        assertSelector(selector.flatten().get(0))
-                .isNotRootSelector()
-                .isClassSelectorWithNoScope()
-                .hasTargetClass(primitive);
-        assertSelector(selector.flatten().get(1))
-                .isNotRootSelector()
-                .isClassSelectorWithNoScope()
-                .hasTargetClass(wrapper);
-        return this;
     }
 }

@@ -23,7 +23,6 @@ import org.instancio.documentation.Contract;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
@@ -285,17 +284,6 @@ public final class ApiValidator {
                         Therefore origin selector cannot be a group such as:
 
                         %s""", selector);
-
-        if (selector instanceof final PrimitiveAndWrapperSelectorImpl pw) {
-            throw Fail.withUsageError(
-                    """
-                            assignment origin must not be a primitive/wrapper selector such as %s
-
-                            Please specify the type explicitly, for example: 'all(%s.class)' or 'all(%s.class)'""",
-                    selector,
-                    requireNonNull(pw.getWrapper().getTargetClass()).getSimpleName(),
-                    requireNonNull(pw.getPrimitive().getTargetClass()).getSimpleName());
-        }
     }
 
     public static void validateValueIsAssignableToTargetClass(
