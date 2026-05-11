@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.selectors;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.instancio.FieldSelectorBuilder;
 import org.instancio.PredicateSelector;
 import org.instancio.Select;
@@ -42,6 +43,13 @@ import static org.instancio.Select.scope;
 import static org.instancio.Select.types;
 
 class PredicateSelectorImplTest {
+
+    @Test
+    void verifyEqualsAndHashCode() {
+        EqualsVerifier.forClass(PredicateSelectorImpl.class)
+                .withIgnoredFields("stackTraceHolder", "nodePredicate")
+                .verify();
+    }
 
     @Test
     void getDescription() {

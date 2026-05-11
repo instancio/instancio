@@ -15,14 +15,11 @@
  */
 package org.instancio.internal.selectors;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.Flattener;
-import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.testsupport.asserts.SelectorAssert;
 import org.junit.jupiter.api.Test;
 
@@ -30,33 +27,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Select.scope;
 
 class PrimitiveAndWrapperSelectorImplTest {
-
-    @Test
-    void withinReturnsANewSelectorInstance() {
-        final PrimitiveAndWrapperSelectorImpl selector = (PrimitiveAndWrapperSelectorImpl) Select.allInts();
-        final PrimitiveAndWrapperSelectorImpl scopedSelector = (PrimitiveAndWrapperSelectorImpl) selector.within(scope(IntegerHolder.class));
-
-        assertThat(selector)
-                .as("within() should return a new selector")
-                .isNotSameAs(scopedSelector)
-                .isNotEqualTo(scopedSelector);
-
-        SelectorAssert.assertSelector(selector).isCoreTypeSelectorWithoutScope(int.class, Integer.class);
-        SelectorAssert.assertSelector(scopedSelector).isCoreTypeSelector(int.class, Integer.class);
-        assertThat(((SelectorImpl) scopedSelector.flatten().get(0)).getScopes()).containsExactly(scope(IntegerHolder.class));
-        assertThat(((SelectorImpl) scopedSelector.flatten().get(1)).getScopes()).containsExactly(scope(IntegerHolder.class));
-    }
-
-    @Test
-    void verifyEqualsAndHashcode() {
-        EqualsVerifier.forClass(PrimitiveAndWrapperSelectorImpl.class)
-                .suppress(Warning.NONFINAL_FIELDS)
-                .withNonnullFields("primitive", "wrapper")
-                .verify();
-    }
 
     @Test
     void verifyToString() {
@@ -77,17 +49,8 @@ class PrimitiveAndWrapperSelectorImplTest {
     void flatten() {
         final Selector selector = Select.allBooleans();
         final List<TargetSelector> results = ((Flattener<TargetSelector>) selector).flatten();
-        assertThat(results).hasSize(2);
-        SelectorAssert.assertSelector(results.get(0)).isClassSelectorWithNoScope().hasTargetClass(boolean.class);
-        SelectorAssert.assertSelector(results.get(1)).isClassSelectorWithNoScope().hasTargetClass(Boolean.class);
-    }
-
-    @Test
-    void toScope() {
-        final Selector selector = Select.allInts();
-        assertThatThrownBy(selector::toScope)
-                .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining("method 'toScope()' is not supported for selector 'allInts()'");
+        assertThat(results).hasSize(1);
+        SelectorAssert.assertSelector(results.get(0)).isPredicateSelector();
     }
 
     @Test

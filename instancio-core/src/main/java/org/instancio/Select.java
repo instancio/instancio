@@ -21,7 +21,6 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.FieldSelectorBuilderImpl;
 import org.instancio.internal.selectors.PredicateScopeImpl;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
-import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.SelectorImpl;
@@ -429,6 +428,7 @@ public final class Select {
         return SelectorImpl.createRootSelector();
     }
 
+
     /**
      * Shorthand for {@code all(String.class)}.
      *
@@ -446,7 +446,10 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector allBytes() {
-        return new PrimitiveAndWrapperSelectorImpl(byte.class, Byte.class);
+        return PredicateSelectorImpl.builder()
+                .typePredicate(t -> t == byte.class || t == Byte.class)
+                .apiInvocationDescription("allBytes()")
+                .build();
     }
 
     /**
@@ -456,7 +459,10 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector allFloats() {
-        return new PrimitiveAndWrapperSelectorImpl(float.class, Float.class);
+        return PredicateSelectorImpl.builder()
+                .typePredicate(t -> t == float.class || t == Float.class)
+                .apiInvocationDescription("allFloats()")
+                .build();
     }
 
     /**
@@ -466,7 +472,10 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector allShorts() {
-        return new PrimitiveAndWrapperSelectorImpl(short.class, Short.class);
+        return PredicateSelectorImpl.builder()
+                .typePredicate(t -> t == short.class || t == Short.class)
+                .apiInvocationDescription("allShorts()")
+                .build();
     }
 
     /**
@@ -476,7 +485,10 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector allInts() {
-        return new PrimitiveAndWrapperSelectorImpl(int.class, Integer.class);
+        return PredicateSelectorImpl.builder()
+                .typePredicate(t -> t == int.class || t == Integer.class)
+                .apiInvocationDescription("allInts()")
+                .build();
     }
 
     /**
@@ -486,7 +498,10 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector allLongs() {
-        return new PrimitiveAndWrapperSelectorImpl(long.class, Long.class);
+        return PredicateSelectorImpl.builder()
+                .typePredicate(t -> t == long.class || t == Long.class)
+                .apiInvocationDescription("allLongs()")
+                .build();
     }
 
     /**
@@ -496,7 +511,10 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector allDoubles() {
-        return new PrimitiveAndWrapperSelectorImpl(double.class, Double.class);
+        return PredicateSelectorImpl.builder()
+                .typePredicate(t -> t == double.class || t == Double.class)
+                .apiInvocationDescription("allDoubles()")
+                .build();
     }
 
     /**
@@ -506,7 +524,10 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector allBooleans() {
-        return new PrimitiveAndWrapperSelectorImpl(boolean.class, Boolean.class);
+        return PredicateSelectorImpl.builder()
+                .typePredicate(t -> t == boolean.class || t == Boolean.class)
+                .apiInvocationDescription("allBooleans()")
+                .build();
     }
 
     /**
@@ -516,7 +537,10 @@ public final class Select {
      * @since 1.2.0
      */
     public static Selector allChars() {
-        return new PrimitiveAndWrapperSelectorImpl(char.class, Character.class);
+        return PredicateSelectorImpl.builder()
+                .typePredicate(t -> t == char.class || t == Character.class)
+                .apiInvocationDescription("allChars()")
+                .build();
     }
 
     /**

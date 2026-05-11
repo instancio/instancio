@@ -72,16 +72,17 @@ class SelectorGroupImplTest {
                 Select.allBytes().within(Select.scope(Bar.class)),
                 Select.field(Foo.class, "fooValue"),
                 Select.all(String.class)
-        )).hasToString(String.format("all(%n" +
-                "\tallBytes(), scope(Bar),%n" +
-                "\tfield(Foo, \"fooValue\"),%n" +
-                "\tall(String)%n" +
-                ")"));
+        )).hasToString("""
+                all(
+                \tallBytes().within(scope(Bar)),
+                \tfield(Foo, "fooValue"),
+                \tall(String)
+                )""");
     }
 
     @Test
     void empty() {
-        assertThatThrownBy(() -> Select.all())
+        assertThatThrownBy(Select::all)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Selector group must contain at least one selector");
     }
@@ -94,10 +95,9 @@ class SelectorGroupImplTest {
                 Select.all(String.class)
         )).flatten();
 
-        assertThat(results).hasSize(4);
-        SelectorAssert.assertSelector(results.get(0)).hasTargetClass(byte.class).hasScopeSize(1);
-        SelectorAssert.assertSelector(results.get(1)).hasTargetClass(Byte.class).hasScopeSize(1);
-        SelectorAssert.assertSelector(results.get(2)).hasTargetClass(Foo.class).hasFieldName("fooValue");
-        SelectorAssert.assertSelector(results.get(3)).isClassSelectorWithNoScope().hasTargetClass(String.class);
+        assertThat(results).hasSize(3);
+        SelectorAssert.assertSelector(results.get(0)).isPredicateSelector().hasScopeSize(1);
+        SelectorAssert.assertSelector(results.get(1)).hasTargetClass(Foo.class).hasFieldName("fooValue");
+        SelectorAssert.assertSelector(results.get(2)).isClassSelectorWithNoScope().hasTargetClass(String.class);
     }
 }

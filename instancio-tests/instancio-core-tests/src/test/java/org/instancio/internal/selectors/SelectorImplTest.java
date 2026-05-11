@@ -183,7 +183,6 @@ class SelectorImplTest {
             final SelectorImpl selector = SelectorImpl.builder(new TargetFieldName(Person.class, "name"))
                     .scopes(Collections.singletonList(scope(List.class)))
                     .depth(1)
-                    .parent(SelectorImpl.builder(new TargetClass(Person.class)).build())
                     .stackTraceHolder(new Throwable())
                     .build();
 

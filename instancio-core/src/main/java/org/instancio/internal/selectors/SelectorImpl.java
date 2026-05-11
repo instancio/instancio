@@ -33,7 +33,6 @@ import java.util.Objects;
 public final class SelectorImpl extends BaseSelector implements Selector, GroupableSelector {
 
     private final Target target;
-    private final @Nullable Selector parent;
     private final @Nullable Integer depth;
     private int hash;
 
@@ -44,21 +43,18 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
      * @param apiMethodSelector the API method the selector was passed to
      * @param target            selector's target
      * @param scopes            optional scopes specified top-down, from outermost to innermost
-     * @param parent            required only for {@link PrimitiveAndWrapperSelectorImpl} for checking unused selectors
      * @param stackTraceHolder  stacktrace for reporting locations of unused selectors
      */
     private SelectorImpl(
             @Nullable final ApiMethodSelector apiMethodSelector,
             final Target target,
             final List<Scope> scopes,
-            @Nullable final Selector parent,
             final Throwable stackTraceHolder,
             @Nullable final Integer depth,
             final boolean isLenient) {
 
         super(apiMethodSelector, scopes, stackTraceHolder, isLenient, /*isHiddenFromVerboseOutput*/ false);
         this.target = target;
-        this.parent = parent;
         this.depth = depth;
     }
 
@@ -67,7 +63,6 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
                 builder.apiMethodSelector,
                 builder.target,
                 ObjectUtils.defaultIfNull(builder.scopes, Collections.emptyList()),
-                builder.parent,
                 ObjectUtils.defaultIfNull(builder.stackTraceHolder, Throwable::new),
                 builder.depth,
                 builder.isLenient);
@@ -108,11 +103,6 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
     }
 
     @Nullable
-    public Selector getParent() {
-        return parent;
-    }
-
-    @Nullable
     public Class<?> getTargetClass() {
         return target.getTargetClass();
     }
@@ -132,8 +122,8 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
         if (this == o) return true;
         if (!(o instanceof SelectorImpl that)) return false;
         return Objects.equals(getTarget(), that.getTarget())
-               && Objects.equals(getScopes(), that.getScopes())
-               && Objects.equals(getDepth(), that.getDepth());
+                && Objects.equals(getScopes(), that.getScopes())
+                && Objects.equals(getDepth(), that.getDepth());
     }
 
     @Override
@@ -153,9 +143,6 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
 
     @Override
     public String toString() {
-        if (parent instanceof PrimitiveAndWrapperSelectorImpl) {
-            return parent.toString();
-        }
         if (target instanceof TargetRoot) {
             return "root()";
         }
@@ -179,7 +166,6 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
         Builder builder = new Builder(target);
         builder.apiMethodSelector = this.getApiMethodSelector();
         builder.scopes = this.getScopes();
-        builder.parent = this.parent;
         builder.stackTraceHolder = this.getStackTraceHolder();
         builder.depth = this.depth;
         builder.isLenient = this.isLenient();
@@ -198,7 +184,6 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
         private final Target target;
         private @Nullable ApiMethodSelector apiMethodSelector;
         private @Nullable List<Scope> scopes;
-        private @Nullable Selector parent;
         private @Nullable Throwable stackTraceHolder;
         private @Nullable Integer depth;
         private boolean isLenient;
@@ -214,11 +199,6 @@ public final class SelectorImpl extends BaseSelector implements Selector, Groupa
 
         public Builder scopes(final List<Scope> scopes) {
             this.scopes = scopes;
-            return this;
-        }
-
-        public Builder parent(final Selector parent) {
-            this.parent = parent;
             return this;
         }
 
