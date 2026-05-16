@@ -17,7 +17,6 @@ package org.instancio.internal.selectors;
 
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.spi.InternalExtension;
-import org.instancio.internal.util.Fail;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -41,10 +40,6 @@ public sealed interface Target permits
 
     @Nullable
     Class<?> getTargetClass();
-
-    default ScopelessSelector toScopelessSelector() {
-        throw Fail.withFataInternalError("Unhandled selector target: %s", this);
-    }
 
     /**
      * Creates a new {@link Target} by associating the root class from

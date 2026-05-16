@@ -25,7 +25,6 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,7 +66,7 @@ class CustomPredicateNodeSelectorTest {
     private static class AddressStringSelector extends PredicateSelectorImpl {
         private static final int PRIORITY = Integer.MAX_VALUE; // lowest priority
 
-        AddressStringSelector(final Predicate<@Nullable InternalNode> nodePredicate, final String apiInvocationDescription) {
+        AddressStringSelector(final Predicate<InternalNode> nodePredicate, final String apiInvocationDescription) {
             super(ApiMethodSelector.NONE,
                     PRIORITY,
                     nodePredicate,
@@ -76,6 +75,7 @@ class CustomPredicateNodeSelectorTest {
                     /* isLenient = */ false,
                     /* isHiddenFromVerboseOutput = */ false,
                     apiInvocationDescription,
+                    /* target */ null,
                     new Throwable());
         }
     }

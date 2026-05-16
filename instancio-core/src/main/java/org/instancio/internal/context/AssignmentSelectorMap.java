@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 final class AssignmentSelectorMap {
 
@@ -115,8 +114,8 @@ final class AssignmentSelectorMap {
     }
 
     List<InternalAssignment> getAssignments(final InternalNode node) {
-        final Optional<List<InternalAssignment>> value = destinationToAssignmentsMap.getValue(node);
-        return value.orElse(Collections.emptyList());
+        final List<List<InternalAssignment>> values = destinationToAssignmentsMap.getValues(node);
+        return CollectionUtils.flatMap(values);
     }
 
     /**

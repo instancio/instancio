@@ -26,6 +26,7 @@ import java.util.function.Predicate;
  * @since 1.6.0
  */
 public interface PredicateSelector extends
+        Selector,
         DepthSelector,
         DepthPredicateSelector,
         ScopeableSelector {

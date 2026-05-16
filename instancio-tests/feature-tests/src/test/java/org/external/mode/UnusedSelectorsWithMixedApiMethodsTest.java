@@ -45,6 +45,7 @@ import static org.instancio.test.support.UnusedSelectorsAssert.line;
 @FeatureTag(Feature.MODE)
 @ExtendWith(InstancioExtension.class)
 class UnusedSelectorsWithMixedApiMethodsTest {
+
     @Test
     void unusedWithAllMethods() {
         final InstancioApi<Person> api = Instancio.of(Person.class)
@@ -56,13 +57,13 @@ class UnusedSelectorsWithMixedApiMethodsTest {
                 .withNullable(all(SortedSet.class))
                 .subtype(all(CharSequence.class), String.class);
 
-        int l = 51;
+        int l = 52;
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(7)
                 .ignoreSelector(field(Foo.class, "fooValue"), line(getClass(), l++))
                 .setSelector(field(Bar.class, "barValue"), line(getClass(), l++))
                 .generateSelector(field(Baz.class, "bazValue"), line(getClass(), l++))
-                .supplySelector(allStrings().within(field(Person.class, "age").toScope()), line(getClass(), l++))
+                .supplySelector(allStrings().within(field(Person::getAge).toScope()), line(getClass(), l++))
                 .onCompleteSelector(all(LinkedList.class), line(getClass(), l++))
                 .withNullableSelector(all(SortedSet.class), line(getClass(), l++))
                 .subtypeSelector(all(CharSequence.class), line(getClass(), l));

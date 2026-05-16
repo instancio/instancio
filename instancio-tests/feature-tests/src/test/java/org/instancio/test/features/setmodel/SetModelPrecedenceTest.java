@@ -47,7 +47,7 @@ class SetModelPrecedenceTest {
     @DisplayName("setModel() then set()")
     void setModel_thenSet_shouldUseOverriddenValueFromSet() {
         final Model<StringsDef> model = Instancio.of(StringsDef.class)
-                .set(field(StringsDef::getD).lenient(), VALUE_FROM_MODEL)
+                .set(field(StringsDef::getD), VALUE_FROM_MODEL)
                 .toModel();
 
         final StringsAbc result = Instancio.of(StringsAbc.class)
@@ -64,7 +64,7 @@ class SetModelPrecedenceTest {
     @DisplayName("set() then setModel()")
     void set_thenSetModel_shouldUseOverriddenValueFromSet() {
         final Model<StringsDef> model = Instancio.of(StringsDef.class)
-                .set(field(StringsDef::getD).lenient(), VALUE_FROM_MODEL)
+                .set(field(StringsDef::getD), VALUE_FROM_MODEL)
                 .toModel();
 
         final StringsAbc result = Instancio.of(StringsAbc.class)
@@ -80,7 +80,6 @@ class SetModelPrecedenceTest {
     @Test
     void overrideSelectorUsingTheSameScope_shouldNotThrowUnusedSelectorError() {
         final Model<StringsDef> model = Instancio.of(StringsDef.class)
-                // lenient() not required because we override using the same scope
                 .set(field(StringsDef::getD), VALUE_FROM_MODEL)
                 .toModel();
 

@@ -16,9 +16,8 @@
 package org.instancio.internal.nodes;
 
 import org.instancio.internal.context.ModelContext;
-import org.instancio.internal.selectors.SelectorImpl;
-import org.instancio.internal.selectors.TargetField;
-import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
+import org.instancio.internal.selectors.TargetFieldName;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.cyclic.onetomany.MainPojo;
 import org.instancio.test.support.pojo.dynamic.DynPhone;
@@ -86,7 +85,8 @@ class NodeStatsTest {
 
     @Test
     void withIgnoredNode() {
-        final SelectorImpl fieldH = SelectorImpl.builder(new TargetField(ReflectionUtils.getField(StringsGhi.class, "h")))
+        final PredicateSelectorImpl fieldH = PredicateSelectorImpl.builder()
+                .target(new TargetFieldName(StringsGhi.class, "h"))
                 .build();
 
         final ModelContext ctx = ModelContext.builder(StringsDef.class)

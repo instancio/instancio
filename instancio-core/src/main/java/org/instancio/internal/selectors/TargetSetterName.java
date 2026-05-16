@@ -26,7 +26,7 @@ public final class TargetSetterName implements Target {
 
     private final @Nullable Class<?> targetClass;
     private final String methodName;
-    private final @Nullable Class<?> parameterType; // null unless explicitly specified by the user
+    private final @Nullable Class<?> parameterType;
 
     public TargetSetterName(
             @Nullable final Class<?> targetClass,
@@ -42,15 +42,6 @@ public final class TargetSetterName implements Target {
     @Override
     public Class<?> getTargetClass() {
         return targetClass;
-    }
-
-    public String getMethodName() {
-        return methodName;
-    }
-
-    @Nullable
-    public Class<?> getParameterType() {
-        return parameterType;
     }
 
     @Override
@@ -70,14 +61,14 @@ public final class TargetSetterName implements Target {
         if (!(o instanceof TargetSetterName that)) return false;
 
         return Objects.equals(targetClass, that.targetClass)
-               && Objects.equals(methodName, that.methodName)
-               && Objects.equals(parameterType, that.parameterType);
+                && Objects.equals(methodName, that.methodName)
+                && Objects.equals(parameterType, that.parameterType);
     }
 
     @Override
     public int hashCode() {
         int result = targetClass != null ? targetClass.hashCode() : 0;
-        result = 31 * result + (methodName != null ? methodName.hashCode() : 0);
+        result = 31 * result + methodName.hashCode();
         result = 31 * result + (parameterType != null ? parameterType.hashCode() : 0);
         return result;
     }

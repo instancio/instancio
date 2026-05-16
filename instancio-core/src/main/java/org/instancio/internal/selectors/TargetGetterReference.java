@@ -40,7 +40,7 @@ public final class TargetGetterReference implements Target {
     }
 
     @Override
-    public Target withRootClass(final TargetContext targetContext) {
+    public TargetField withRootClass(final TargetContext targetContext) {
         final MethodRef mr = MethodRef.from(selector);
         final Field field = resolveFieldFromGetterMethodReference(
                 targetContext.getInternalExtensions(), mr.getTargetClass(), mr.getMethodName());

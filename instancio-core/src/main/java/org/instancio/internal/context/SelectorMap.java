@@ -30,10 +30,6 @@ import java.util.function.BiConsumer;
  * The question this map answers is: given a node, which selector(s) can be applied to it?
  * Since selectors can have scopes that are specified top-down, the lookup will traverse up
  * the node tree and selector scopes to determine if a selector can be applied.
- * <p>
- * Although this class is named a 'Map', it also contains a List of predicate selectors.
- * Since predicate matches can only be resolved by applying the predicate to a target,
- * a map cannot be used like with regular selectors.
  *
  * @param <V> value type
  */
@@ -56,10 +52,6 @@ public interface SelectorMap<V> {
 
     /**
      * Returns last value for given node (in the order values were added).
-     * <p>
-     * Regular selectors have higher precedence than predicate selectors.
-     * Therefore, if a regular selector is found, it will be returned
-     * even if there is a predicate selector that also matches the target node.
      *
      * @param node for which to look up the value
      * @return value for given node, if present
@@ -67,7 +59,7 @@ public interface SelectorMap<V> {
     Optional<V> getValue(InternalNode node);
 
     /**
-     * Returns all values for given node, including those matched by predicate selectors.
+     * Returns all values for given node.
      *
      * @param node for which to look up the values
      * @return all values for given node, or an empty list if none found

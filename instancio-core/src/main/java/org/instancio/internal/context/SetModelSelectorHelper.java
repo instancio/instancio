@@ -18,8 +18,9 @@ package org.instancio.internal.context;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.selectors.InternalSelector;
-import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.TargetClass;
+import org.instancio.internal.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,8 +96,14 @@ final class SetModelSelectorHelper {
         scopes.addAll(internalModelSelector.getScopes());
 
         if (internalModelSelector.isRootSelector()) {
-            // convert root() to a regular class selector
-            return SelectorImpl.builder(new TargetClass(rootClass))
+            // Convert root() to a class selector.
+            // The typePredicate ensures the selector only matches nodes
+            // of the inner model's root class type (e.g. List.class for ofList()),
+            // preventing the selector from leaking into child nodes (e.g. list elements).
+            return PredicateSelectorImpl.builder()
+                    .target(new TargetClass(rootClass))
+                    .priority(Constants.SelectorPriority.SET_MODEL)
+                    .typePredicate(cls -> cls == rootClass)
                     .scopes(scopes)
                     .apiMethodSelector(internalModelTarget.getApiMethodSelector())
                     .build();

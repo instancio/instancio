@@ -131,8 +131,8 @@ class TypeSelectorBuilderImplTest {
                     .toString();
 
             assertThat(result).isEqualTo(
-                    "types().atDepth(Predicate<Integer>)"
-                    + ".within(scope(Person), scope(fields().ofType(Phone)))");
+                    "types().atDepth(Predicate<Integer>)" +
+                            ".within(scope(Person), scope(fields().ofType(Phone)))");
         }
 
         @Test
@@ -148,9 +148,9 @@ class TypeSelectorBuilderImplTest {
                     .toString();
 
             assertThat(result).isEqualTo(
-                    "types().of(Object).excluding(Foo).excluding(Bar)"
-                    + ".annotated(Pojo).annotated(PersonName).atDepth(5)"
-                    + ".within(scope(List))");
+                    "types().of(Object).excluding(Foo).excluding(Bar)" +
+                            ".annotated(Pojo).annotated(PersonName).atDepth(5)" +
+                            ".within(scope(List))");
         }
     }
 

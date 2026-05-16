@@ -42,12 +42,8 @@ public final class TargetFieldName implements Target {
         return targetClass;
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
-
     @Override
-    public Target withRootClass(final TargetContext targetContext) {
+    public TargetField withRootClass(final TargetContext targetContext) {
         final Class<?> resolvedTargetClass = ObjectUtils.defaultIfNull(
                 targetClass, targetContext.getRootClass());
 
@@ -72,7 +68,7 @@ public final class TargetFieldName implements Target {
     @Override
     public int hashCode() {
         int result = targetClass != null ? targetClass.hashCode() : 0;
-        result = 31 * result + (fieldName != null ? fieldName.hashCode() : 0);
+        result = 31 * result + fieldName.hashCode();
         return result;
     }
 

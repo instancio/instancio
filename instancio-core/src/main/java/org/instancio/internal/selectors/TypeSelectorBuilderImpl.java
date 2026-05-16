@@ -20,6 +20,7 @@ import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.TypeSelectorBuilder;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.util.Constants;
 
 import java.lang.annotation.Annotation;
 
@@ -36,7 +37,9 @@ public class TypeSelectorBuilderImpl
 
     @Override
     protected PredicateSelectorImpl.Builder createBuilder() {
-        return PredicateSelectorImpl.builder().typePredicate(buildPredicate());
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.TYPES)
+                .typePredicate(buildPredicate());
     }
 
     @Override

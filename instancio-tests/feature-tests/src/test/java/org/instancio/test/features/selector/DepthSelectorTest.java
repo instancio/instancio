@@ -240,7 +240,6 @@ class DepthSelectorTest {
             final Pojo0 result = Instancio.of(Pojo0.class)
                     .set(allInts().atDepth(3), 3) // unused selector, since allInts() wins
                     .set(allInts(), 1)
-                    .lenient()
                     .create();
 
             assertThat(result.val).isEqualTo(1);
@@ -276,38 +275,32 @@ class DepthSelectorTest {
             void descendingDepthOrder() {
                 final Selector id = all(MultipleClassesWithId.ID.class);
 
-                // Run in lenient mode since last selector atDepth(2)
-                // consumes all the matches of selectors atDepth(3) and atDepth(4)
                 final MultipleClassesWithId<String> result = Instancio.of(new TypeToken<MultipleClassesWithId<String>>() {})
-                        .set(allStrings().within(id.atDepth(4).toScope()), "baz") // unused!
-                        .set(allStrings().within(id.atDepth(3).toScope()), "bar") // unused!
+                        .set(allStrings().within(id.atDepth(4).toScope()), "baz")
+                        .set(allStrings().within(id.atDepth(3).toScope()), "bar")
                         .set(allStrings().within(id.atDepth(2).toScope()), "foo")
-                        .lenient()
                         .create();
 
                 assertThat(result.getA().getId().getValue()).isEqualTo("foo");
-                assertThat(result.getA().getB().getId().getValue()).isEqualTo("foo");
-                assertThat(result.getA().getC().getB().getId().getValue()).isEqualTo("foo");
-                assertThat(result.getA().getC().getD().getId().getValue()).isEqualTo("foo");
+                assertThat(result.getA().getB().getId().getValue()).isEqualTo("bar");
+                assertThat(result.getA().getC().getB().getId().getValue()).isEqualTo("baz");
+                assertThat(result.getA().getC().getD().getId().getValue()).isEqualTo("baz");
             }
 
             @Test
             void mixedDepthOrder() {
                 final Selector id = all(MultipleClassesWithId.ID.class);
 
-                // Run in lenient mode since last selector atDepth(3)
-                // consumes all the matches of selector atDepth(4)
                 final MultipleClassesWithId<String> result = Instancio.of(new TypeToken<MultipleClassesWithId<String>>() {})
-                        .set(allStrings().within(id.atDepth(4).toScope()), "baz") // unused!
+                        .set(allStrings().within(id.atDepth(4).toScope()), "baz")
                         .set(allStrings().within(id.atDepth(2).toScope()), "foo")
                         .set(allStrings().within(id.atDepth(3).toScope()), "bar")
-                        .lenient()
                         .create();
 
                 assertThat(result.getA().getId().getValue()).isEqualTo("foo");
                 assertThat(result.getA().getB().getId().getValue()).isEqualTo("bar");
-                assertThat(result.getA().getC().getB().getId().getValue()).isEqualTo("bar");
-                assertThat(result.getA().getC().getD().getId().getValue()).isEqualTo("bar");
+                assertThat(result.getA().getC().getB().getId().getValue()).isEqualTo("baz");
+                assertThat(result.getA().getC().getD().getId().getValue()).isEqualTo("baz");
             }
 
             @Test

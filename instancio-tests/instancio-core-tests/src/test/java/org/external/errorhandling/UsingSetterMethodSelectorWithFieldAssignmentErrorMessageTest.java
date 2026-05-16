@@ -32,40 +32,40 @@ class UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest extends Abstr
     @Override
     String expectedMessage() {
         return """
-
-
+                
+                
                 Error creating an object
                  -> at org.external.errorhandling.UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest.methodUnderTest(UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest.java:29)
-
+                
                 Reason: setter() selector cannot be used with AssignmentType.FIELD:
                  -> setter(StringFields::setOne)
                     at org.external.errorhandling.UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest.methodUnderTest(UsingSetterMethodSelectorWithFieldAssignmentErrorMessageTest.java:28)
-
+                
                 Root cause:
-
+                
                 Instancio provides the 'Keys.ASSIGNMENT_TYPE' setting that
                 determines how objects are populated. The setting supports two options:
-
+                
                  -> AssignmentType.FIELD (default behaviour)
                     Objects are populated via fields only. Setter methods are ignored.
                     This is the recommended setting for most uses cases.
-
+                
                  -> AssignmentType.METHOD
                     Objects are populated via methods and (optionally) fields.
-
+                
                 Using setter() selectors is only supported with METHOD assignment.
-
+                
                     // Example
                     Settings settings = Settings.create()
                         .set(Keys.ASSIGNMENT_TYPE, AssignmentType.METHOD);
-
+                
                     Pojo pojo = Instancio.of(Pojo.class)
                         .withSettings(settings)
                         .set(setter(Pojo::setValue), "foo")
                         .create();
-
+                
                 See https://www.instancio.org/user-guide/#assignment-settings for details
-
+                
                 """;
     }
 }
