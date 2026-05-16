@@ -43,7 +43,7 @@ import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParameter
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
 import static org.instancio.internal.util.ErrorMessageUtils.createSetterSelectorWithFieldAssignmentErrorMessage;
 
-@SuppressWarnings({"PMD.GodClass", "PMD.CyclomaticComplexity"})
+@SuppressWarnings("PMD.GodClass")
 public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
@@ -266,11 +266,6 @@ public final class ApiValidator {
     @Contract("true, _ -> fail")
     public static void isFalse(final boolean condition, final Supplier<String> message) {
         if (condition) throw Fail.withUsageError(message.get());
-    }
-
-    public static int validateDepth(final int depth) {
-        if (depth < 0) throw Fail.withUsageError("depth must not be negative: %s", depth);
-        return depth;
     }
 
     public static void validateAssignmentOrigin(final TargetSelector selector) {

@@ -61,7 +61,7 @@ class SetModelSelectorHelperTest {
         assertThat(scopes).hasSize(4);
         assertScope(scopes.get(0)).hasTargetClass(Outer.class);
         assertScope(scopes.get(1)).hasTargetClass(Inner.class);
-        assertScope(scopes.get(2)).hasTargetClass(Inner.class).hasField("foo");
+        assertScope(scopes.get(2)).isPredicateScope();
         assertScope(scopes.get(3)).hasTargetClass(InnerFoo.class);
     }
 

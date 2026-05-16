@@ -21,18 +21,13 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.FieldSource;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
@@ -40,6 +35,8 @@ import static org.instancio.Select.types;
 
 /**
  * Tests for specifying supply() and generate() on the same target.
+ * Given the same selector, supply() takes precedence over generate(),
+ * regardless of which comes first
  */
 @FeatureTag({
         Feature.SELECTOR,
@@ -50,102 +47,39 @@ import static org.instancio.Select.types;
 @ExtendWith(InstancioExtension.class)
 class GenerateSupplyPrecedenceTest {
 
-    private static final String SHOULD_WIN = "should-win";
-    private static final String WRONG = "wrong-answer";
+    private static final String WINNING_VALUE = "winning-value";
+    private static final String LOSING_VALUE = "losing-value";
 
-    private static Stream<Arguments> selectors() {
-        return Stream.of(Arguments.of(
-                // regular
-                allStrings(),
-                field("value"),
-                // predicate
-                types().of(String.class),
-                fields().named("value")
-        ));
+    private static final List<TargetSelector> SELECTORS = List.of(
+            // regular
+            allStrings(),
+            field("value"),
+            // predicate
+            types().of(String.class),
+            fields().named("value")
+    );
+
+    @ParameterizedTest
+    @FieldSource("SELECTORS")
+    void supplyFirst(final TargetSelector selector) {
+        final StringHolder result = Instancio.of(StringHolder.class)
+                // supply first
+                .supply(selector, () -> WINNING_VALUE)
+                .generate(selector, gen -> gen.text().pattern(LOSING_VALUE))
+                .create();
+
+        assertThat(result.getValue()).isEqualTo(WINNING_VALUE);
     }
 
-    @Nested
-    @DisplayName("Given the same selector, supply() takes precedence over generate(), regardless of which comes first")
-    class SameSelectorTest {
+    @ParameterizedTest
+    @FieldSource("SELECTORS")
+    void generateFirst(final TargetSelector selector) {
+        final StringHolder result = Instancio.of(StringHolder.class)
+                // generate first
+                .generate(selector, gen -> gen.text().pattern(LOSING_VALUE))
+                .supply(selector, () -> WINNING_VALUE)
+                .create();
 
-        @ParameterizedTest
-        @MethodSource("org.instancio.test.features.generator.GenerateSupplyPrecedenceTest#selectors")
-        void supplyFirst(final TargetSelector selector) {
-            final StringHolder result = Instancio.of(StringHolder.class)
-                    // supply first
-                    .supply(selector, () -> SHOULD_WIN)
-                    .generate(selector, gen -> gen.text().pattern(WRONG))
-                    .create();
-
-            assertThat(result.getValue()).isEqualTo(SHOULD_WIN);
-        }
-
-        @ParameterizedTest
-        @MethodSource("org.instancio.test.features.generator.GenerateSupplyPrecedenceTest#selectors")
-        void generateFirst(final TargetSelector selector) {
-            final StringHolder result = Instancio.of(StringHolder.class)
-                    // generate first
-                    .generate(selector, gen -> gen.text().pattern(WRONG))
-                    .supply(selector, () -> SHOULD_WIN)
-                    .create();
-
-            assertThat(result.getValue()).isEqualTo(SHOULD_WIN);
-        }
-    }
-
-    /**
-     * Regular selector always wins over predicate selector,
-     * regardless of which method is used, generate() or supply().
-     */
-    @Nested
-    class RegularAndPredicateSelectorsTest {
-
-        @Test
-        @DisplayName("Field: supply() with regular selector takes precedence over generate() with predicate selector")
-        void supplyWithRegularFieldSelector() {
-            final StringHolder result = Instancio.of(StringHolder.class)
-                    .supply(field("value"), () -> SHOULD_WIN)
-                    .generate(fields().named("value"), gen -> gen.text().pattern(WRONG))
-                    .lenient()
-                    .create();
-
-            assertThat(result.getValue()).isEqualTo(SHOULD_WIN);
-        }
-
-        @Test
-        @DisplayName("Field: supply() with predicate selector has LOWER precedence than generate() with regular selector")
-        void supplyWithPredicateFieldSelector() {
-            final StringHolder result = Instancio.of(StringHolder.class)
-                    .supply(fields().named("value"), () -> WRONG)
-                    .generate(field("value"), gen -> gen.text().pattern(SHOULD_WIN))
-                    .lenient()
-                    .create();
-
-            assertThat(result.getValue()).isEqualTo(SHOULD_WIN);
-        }
-
-        @Test
-        @DisplayName("Type: generate() with regular selector takes precedence over supply() with predicate selector")
-        void generateWithRegularTypeSelector() {
-            final StringHolder result = Instancio.of(StringHolder.class)
-                    .generate(all(String.class), gen -> gen.text().pattern(SHOULD_WIN))
-                    .supply(types().of(String.class), () -> WRONG)
-                    .lenient()
-                    .create();
-
-            assertThat(result.getValue()).isEqualTo(SHOULD_WIN);
-        }
-
-        @Test
-        @DisplayName("Type: generate() with predicate selector has LOWER precedence than supply() with regular selector")
-        void generateWithPredicateTypeSelector() {
-            final StringHolder result = Instancio.of(StringHolder.class)
-                    .generate(types().of(String.class), gen -> gen.text().pattern(WRONG))
-                    .supply(all(String.class), () -> SHOULD_WIN)
-                    .lenient()
-                    .create();
-
-            assertThat(result.getValue()).isEqualTo(SHOULD_WIN);
-        }
+        assertThat(result.getValue()).isEqualTo(WINNING_VALUE);
     }
 }

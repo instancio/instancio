@@ -16,8 +16,7 @@
 package org.instancio;
 
 /**
- * Represents regular field and class selectors,
- * including primitive and wrapper selectors.
+ * Represents a selector for matching field and class.
  *
  * @see Select
  * @see TargetSelector

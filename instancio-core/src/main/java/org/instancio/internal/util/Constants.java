@@ -58,17 +58,6 @@ public final class Constants {
      */
     public static final int MAX_CODE_POINT = 0x3FFFF;
 
-    /**
-     * Internal selector with the lowest priority.
-     */
-    public static final int BLANK_SELECTOR_PRIORITY = Integer.MAX_VALUE;
-
-    /**
-     * Higher priority than blank selectors to allow overriding blank
-     * fields with the data from a feed.
-     */
-    public static final int FEED_SELECTOR_PRIORITY = BLANK_SELECTOR_PRIORITY - 1;
-
     public static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
 
     public static final LocalDateTime DEFAULT_MIN = LocalDateTime.of(1970, 1, 1, 0, 0);
@@ -78,6 +67,26 @@ public final class Constants {
     public static final long DURATION_MAX_NANOS = Duration.ofDays(1000).toNanos();
 
     public static final Hints DO_NOT_MODIFY_HINT = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
+
+    public static final class SelectorPriority {
+        public static final int FIELD = 10;
+        public static final int SETTER = 20;
+        public static final int FIELDS = 30;
+        public static final int ALL = 40;
+        public static final int TYPES = 50;
+        public static final int SET_MODEL = 80;
+        public static final int FEED = 90;
+
+        /**
+         * Internal selector with the lowest priority
+         * for {@code setBlank() / ofBlank()} fields/models.
+         */
+        public static final int BLANK = Integer.MAX_VALUE;
+
+        private SelectorPriority() {
+            // non-instantiable
+        }
+    }
 
     private Constants() {
         // non-instantiable

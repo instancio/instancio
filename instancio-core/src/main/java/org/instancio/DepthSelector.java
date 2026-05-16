@@ -30,12 +30,6 @@ public interface DepthSelector {
      * Restricts this selector's targets to the specified depth.
      * The selector will only apply to targets at the specified depth.
      *
-     * <p>When a selector with {@code atDepth(N)} is converted
-     * using {@code toScope()}, the semantics of the
-     * {@link Selector#within(Scope...)} method still apply,
-     * meaning that the selection applies to targets at depth
-     * equal to <b>or greater than</b> {@code N}.
-     *
      * <p>The root object is considered to be at depth 0.
      *
      * @param depth the depth at which the selector should apply

@@ -18,29 +18,24 @@ package org.instancio.internal.selectors;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
-import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-/**
- * For predicate selectors, depth can be specified as an {@code int}
- * or a {@code Predicate<Integer>}. This class hides the details
- * of how depth was specified.
- */
 final class SelectorDepth {
 
-    private final @Nullable Integer depth;
     private final Predicate<InternalNode> depthPredicate;
+    private final String description; // used for selector descriptions/reporting
 
     SelectorDepth(final int depth) {
-        this.depth = ApiValidator.validateDepth(depth);
+        ApiValidator.isTrue(depth >= 0, "depth must not be negative: %s", depth);
         this.depthPredicate = toNodePredicate(d -> d == depth);
+        this.description = String.valueOf(depth);
     }
 
     SelectorDepth(final Predicate<Integer> depthPredicate) {
         ApiValidator.notNull(depthPredicate, "Selector depth predicate must not be null");
-        this.depth = null;
         this.depthPredicate = toNodePredicate(depthPredicate);
+        this.description = "Predicate<Integer>";
     }
 
     @SuppressWarnings(Sonar.FUNCTIONAL_INTERFACES_SHOULD_BE_SPECIALISED)
@@ -48,12 +43,11 @@ final class SelectorDepth {
         return n -> p.test(n.getDepth());
     }
 
-    @Nullable
-    Integer getDepth() {
-        return depth;
-    }
-
     Predicate<InternalNode> getDepthPredicate() {
         return depthPredicate;
+    }
+
+    String getDescription() {
+        return description;
     }
 }

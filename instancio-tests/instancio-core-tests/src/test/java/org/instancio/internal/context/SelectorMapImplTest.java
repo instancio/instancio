@@ -19,7 +19,6 @@ import org.instancio.GroupableSelector;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
-import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeFactory;
@@ -46,7 +45,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 import static org.instancio.Select.scope;
@@ -70,10 +68,12 @@ class SelectorMapImplTest {
     private final SelectorProcessor processor = new SelectorProcessor(
             Person.class, Collections.emptyList(), new SetterSelectorHolder());
 
-    private void put(final TargetSelector selector, final String value) {
+    private TargetSelector put(final TargetSelector selector, final String value) {
         final List<TargetSelector> processed = processor.process(selector, ApiMethodSelector.NONE);
         assertThat(processed).hasSize(1);
-        selectorMap.put(processed.get(0), value);
+        final TargetSelector processedSelector = processed.get(0);
+        selectorMap.put(processedSelector, value);
+        return processedSelector;
     }
 
     @Test
@@ -88,7 +88,7 @@ class SelectorMapImplTest {
 
         // get all values
         assertThat(selectorMap.getValues(richPersonPhoneFieldNumberFieldNode)).containsOnly("foo");
-        assertThat(selectorMap.getValues(richPersonListOfPhonesPhoneNumberFieldNode)).containsOnly("baz");
+        assertThat(selectorMap.getValues(richPersonListOfPhonesPhoneNumberFieldNode)).containsOnly("baz", "bar");
     }
 
     @Test
@@ -110,19 +110,6 @@ class SelectorMapImplTest {
     void phoneNumberFieldScopeMatches(TargetSelector selector) {
         put(selector, "foo");
         assertThat(selectorMap.getValue(phoneNumberNode)).contains("foo");
-    }
-
-    @Test
-    void putUnprocessedSelectorShouldThrowError() {
-        final List<TargetSelector> selectors = List.of(
-                Select.field(Person.class, "name"),
-                Select.setter(Person.class, "setName"));
-
-        selectors.forEach(selector ->
-                assertThatThrownBy(() -> selectorMap.put(selector, "foo"))
-                        .as("Selector: %s", selector.toString())
-                        .isExactlyInstanceOf(InstancioTerminatingException.class)
-                        .hasMessageContaining("Unhandled selector target"));
     }
 
     private static Stream<Arguments> phoneNumberFieldMatchingSelectors() {
@@ -229,11 +216,13 @@ class SelectorMapImplTest {
             put(Select.field(Phone.class, "number"), "bar");
             put(Select.fields().named("countryCode").declaredIn(Phone.class), "baz");
 
+            // Note: toString order is different from put order
+            // because it is determined by selector priority
             assertThat(selectorMap.toString()).isEqualToNormalizingNewlines("""
                     SelectorMap{
-                      [REGULAR] all(byte)=foo
-                      [REGULAR] field(Phone, "number")=bar
-                      [PREDICATE] fields().named("countryCode").declaredIn(Phone)=baz
+                      field(Phone, "number")=bar
+                      fields().named("countryCode").declaredIn(Phone)=baz
+                      all(byte)=foo
                     }""");
         }
     }
@@ -260,8 +249,9 @@ class SelectorMapImplTest {
 
             assertThat(selectorMap.getUnusedKeys()).isEmpty();
 
+            // put() returns the re-processed selector that was actually stored
+            final TargetSelector addressOnePhoneKey = put(addressOnePhoneSelector, "bar");
             put(nameSelector, "foo");
-            put(addressOnePhoneSelector, "bar");
 
             assertThat(selectorMap.getUnusedKeys()).hasSize(2);
 
@@ -271,7 +261,7 @@ class SelectorMapImplTest {
 
             // get name
             selectorMap.getValue(personNameNode);
-            assertThat(selectorMap.getUnusedKeys()).containsExactlyInAnyOrder(addressOnePhoneSelector);
+            assertThat(selectorMap.getUnusedKeys()).containsOnly(addressOnePhoneKey);
 
             // get address1...phone
             selectorMap.getValue(richPersonListOfPhonesPhoneNumberFieldNode);

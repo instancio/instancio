@@ -20,14 +20,12 @@ import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.selectors.InternalSelector;
-import org.instancio.internal.selectors.SelectorImpl;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.Target;
 import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
-import org.instancio.internal.selectors.TargetFieldName;
 import org.instancio.internal.selectors.TargetRoot;
 import org.instancio.internal.selectors.TargetSetter;
-import org.instancio.internal.selectors.TargetSetterName;
 
 import java.util.List;
 
@@ -51,12 +49,7 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     }
 
     public SelectorAssert hasTargetClass(Class<?> expected) {
-        assertThat(getAs(SelectorImpl.class).getTargetClass()).isEqualTo(expected);
-        return this;
-    }
-
-    public SelectorAssert hasNullTargetClass() {
-        assertThat(getAs(SelectorImpl.class).getTargetClass()).isNull();
+        assertThat(getAs(PredicateSelectorImpl.class).getTarget().getTargetClass()).isEqualTo(expected);
         return this;
     }
 
@@ -65,53 +58,40 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     }
 
     public SelectorAssert hasFieldName(String expected) {
-        final Target target = getAs(SelectorImpl.class).getTarget();
-        if (target instanceof TargetField targetField) {
-            assertThat(targetField.getField().getName()).isEqualTo(expected);
-        } else {
-            assertThat(((TargetFieldName) target).getFieldName()).isEqualTo(expected);
-        }
+        final Target target = getAs(PredicateSelectorImpl.class).getTarget();
+        assertThat(((TargetField) target).getField().getName()).isEqualTo(expected);
         return this;
     }
 
     public SelectorAssert hasMethodName(String expected) {
-        final Target target = getAs(SelectorImpl.class).getTarget();
-        if (target instanceof TargetSetter targetSetter) {
-            assertThat(targetSetter.getSetter().getName()).isEqualTo(expected);
-        } else {
-            assertThat(((TargetSetterName) target).getMethodName()).isEqualTo(expected);
-        }
+        final Target target = getAs(PredicateSelectorImpl.class).getTarget();
+        assertThat(((TargetSetter) target).getSetter().getName()).isEqualTo(expected);
         return this;
     }
 
     public SelectorAssert isFieldSelector() {
-        return isOfType(TargetField.class);
+        return hasTargetOfType(TargetField.class);
     }
 
     public SelectorAssert isSetterSelector() {
-        return isOfType(TargetSetter.class);
+        return hasTargetOfType(TargetSetter.class);
     }
 
     public SelectorAssert isClassSelector() {
-        return isOfType(TargetClass.class);
+        return hasTargetOfType(TargetClass.class);
     }
 
-    private SelectorAssert isOfType(final Class<?> type) {
-        assertThat(getAs(SelectorImpl.class).getTarget()).isExactlyInstanceOf(type);
+    private SelectorAssert hasTargetOfType(final Class<?> type) {
+        assertThat(getAs(PredicateSelectorImpl.class).getTarget()).isExactlyInstanceOf(type);
         return this;
     }
 
     public SelectorAssert isRootSelector() {
-        final SelectorImpl selector = getAs(SelectorImpl.class);
+        final PredicateSelectorImpl selector = getAs(PredicateSelectorImpl.class);
         assertThat(selector.getTarget()).isExactlyInstanceOf(TargetRoot.class);
-        assertThat(selector.getTargetClass()).isNull();
+        assertThat(selector.getTarget().getTargetClass()).isNull();
         assertThat(selector.getScopes()).isEmpty();
         assertThat(selector.getStackTraceHolder()).isNotNull();
-        return this;
-    }
-
-    public SelectorAssert isNotRootSelector() {
-        assertThat(getAs(SelectorImpl.class).getTarget()).isNotInstanceOf(TargetRoot.class);
         return this;
     }
 

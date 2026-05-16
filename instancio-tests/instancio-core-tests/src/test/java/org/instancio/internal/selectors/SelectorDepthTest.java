@@ -15,20 +15,18 @@
  */
 package org.instancio.internal.selectors;
 
-import org.jspecify.annotations.Nullable;
+import org.junit.jupiter.api.Test;
 
-public enum TargetRoot implements Target {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    INSTANCE;
+class SelectorDepthTest {
 
-    @Nullable
-    @Override
-    public Class<?> getTargetClass() {
-        return null;
-    }
+    @Test
+    void getDescription() {
+        assertThat(new SelectorDepth(3).getDescription())
+                .hasToString("3");
 
-    @Override
-    public String toString() {
-        return "root()";
+        assertThat(new SelectorDepth(d -> d == 3).getDescription())
+                .hasToString("Predicate<Integer>");
     }
 }

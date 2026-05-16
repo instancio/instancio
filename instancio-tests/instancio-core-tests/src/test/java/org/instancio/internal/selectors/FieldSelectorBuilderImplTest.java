@@ -164,8 +164,8 @@ class FieldSelectorBuilderImplTest {
                     .toString();
 
             assertThat(result).isEqualTo(
-                    "fields().atDepth(Predicate<Integer>)"
-                    + ".within(scope(Person), scope(fields().ofType(Phone)))");
+                    "fields().atDepth(Predicate<Integer>)" +
+                            ".within(scope(Person), scope(fields().ofType(Phone)))");
         }
 
         @Test
@@ -183,8 +183,8 @@ class FieldSelectorBuilderImplTest {
 
             assertThat(result).isEqualTo(
                     "fields().named(\"name\").matching(\"regex\").ofType(String)"
-                    + ".declaredIn(Person).annotated(Pojo).annotated(PersonName).atDepth(5)"
-                    + ".within(scope(List))");
+                            + ".declaredIn(Person).annotated(Pojo).annotated(PersonName).atDepth(5)"
+                            + ".within(scope(List))");
         }
     }
 

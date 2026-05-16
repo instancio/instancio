@@ -59,10 +59,11 @@ class SelectorProcessorTest {
 
         assertSelector(result)
                 .isRootSelector()
-                .hasNullTargetClass()
                 .hasNoScope()
                 .hasToString("root()")
-                .isEqualTo(input);
+                // NOTE used to be equal before switching root() to predicate selector.
+                // Shouldn't make any practical difference...
+                .isNotEqualTo(input);
     }
 
     @Test

@@ -28,12 +28,8 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Internal selector class that exposes common methods
- * between {@link SelectorImpl} and {@link PredicateSelectorImpl}.
- */
 @InternalApi
-public interface InternalSelector extends ScopeableSelector, Flattener<TargetSelector> {
+public interface InternalSelector extends Flattener<TargetSelector>, ScopeableSelector, UnusedSelectorDescription {
 
     @Nullable
     ApiMethodSelector getApiMethodSelector();
@@ -52,7 +48,5 @@ public interface InternalSelector extends ScopeableSelector, Flattener<TargetSel
      * Returns {@code true} if this selector is the root
      * selector, that is {@link Select#root()}.
      */
-    default boolean isRootSelector() {
-        return false;
-    }
+    boolean isRootSelector();
 }

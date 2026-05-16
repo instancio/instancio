@@ -20,6 +20,7 @@ import org.instancio.GroupableSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.util.Constants;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -37,7 +38,9 @@ public class FieldSelectorBuilderImpl
 
     @Override
     protected PredicateSelectorImpl.Builder createBuilder() {
-        return PredicateSelectorImpl.builder().fieldPredicate(buildPredicate());
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.FIELDS)
+                .fieldPredicate(buildPredicate());
     }
 
     @Override

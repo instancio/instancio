@@ -89,15 +89,18 @@ class SelectorGroupImplTest {
 
     @Test
     void flatten() {
-        final List<TargetSelector> results = ((Flattener<TargetSelector>) Select.all(
-                Select.allBytes().within(Select.scope(Bar.class)),
-                Select.field(Foo.class, "fooValue"),
-                Select.all(String.class)
-        )).flatten();
+        final var s0 = Select.allBytes().within(Select.scope(Bar.class));
+        final var s1 = Select.field(Foo.class, "fooValue");
+        final var s2 = Select.all(String.class);
 
-        assertThat(results).hasSize(3);
+        final List<TargetSelector> results = ((Flattener<TargetSelector>) Select.all(s0, s1, s2)).flatten();
+
+        assertThat(results)
+                .hasSize(3)
+                .containsExactly(s0, s1, s2);
+
         SelectorAssert.assertSelector(results.get(0)).isPredicateSelector().hasScopeSize(1);
-        SelectorAssert.assertSelector(results.get(1)).hasTargetClass(Foo.class).hasFieldName("fooValue");
-        SelectorAssert.assertSelector(results.get(2)).isClassSelectorWithNoScope().hasTargetClass(String.class);
+        SelectorAssert.assertSelector(results.get(1)).isPredicateSelector();
+        SelectorAssert.assertSelector(results.get(2)).isPredicateSelector();
     }
 }
