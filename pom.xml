@@ -75,7 +75,7 @@
         <version.maven-bundle-plugin>6.0.2</version.maven-bundle-plugin>
         <version.maven-checkstyle-plugin>3.6.0</version.maven-checkstyle-plugin>
         <version.maven-compiler-plugin>3.15.0</version.maven-compiler-plugin>
-        <version.maven-enforcer-plugin>3.6.2</version.maven-enforcer-plugin>
+        <version.maven-enforcer-plugin>3.6.3</version.maven-enforcer-plugin>
         <version.maven-gpg-plugin>3.2.8</version.maven-gpg-plugin>
         <version.maven-jar-plugin>3.5.0</version.maven-jar-plugin>
         <version.maven-javadoc-plugin>3.12.0</version.maven-javadoc-plugin>
