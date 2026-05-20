@@ -812,6 +812,54 @@ public final class Keys {
     public static final SettingKey<StringType> STRING_TYPE = registerRequiredNonAdjustable(
             "string.type", StringType.class, StringType.ALPHABETIC);
 
+            
+    /**
+     * Enables the Truncated Gaussian (Normal) distribution for numeric generation.
+     * When enabled, generated doubles follow a normal distribution bounded
+     * by {@link #GAUSSIAN_MIN} and {@link #GAUSSIAN_MAX}.
+     * Default is {@code false}; property name {@code gaussian.enabled}.
+     *
+     * @since 5.3.0
+     */
+    public static final SettingKey<Boolean> GAUSSIAN_ENABLED = registerRequiredNonAdjustable(
+            "gaussian.enabled", Boolean.class, false);
+
+    /**
+     * Specifies the mean (μ) of the Truncated Gaussian distribution.
+     * Default is {@code 0.0}; property name {@code gaussian.mean}.
+     *
+     * @since 5.3.0
+     */
+    public static final SettingKey<Double> GAUSSIAN_MEAN = registerRequiredNonAdjustable(
+            "gaussian.mean", Double.class, 0.0);
+
+    /**
+     * Specifies the standard deviation (σ) of the Truncated Gaussian distribution.
+     * Must be positive. Default is {@code 1.0}; property name {@code gaussian.sd}.
+     *
+     * @since 5.3.0
+     */
+    public static final SettingKey<Double> GAUSSIAN_SD = registerRequiredNonAdjustable(
+            "gaussian.sd", Double.class, 1.0);
+
+    /**
+     * Specifies the lower truncation bound for the Gaussian distribution.
+     * Default is {@code Double.NEGATIVE_INFINITY}; property name {@code gaussian.min}.
+     *
+     * @since 5.3.0
+     */
+    public static final SettingKey<Double> GAUSSIAN_MIN = registerRequiredAdjustable(
+            "gaussian.min", Double.class, Double.NEGATIVE_INFINITY, MIN_ADJUSTER, true);
+
+    /**
+     * Specifies the upper truncation bound for the Gaussian distribution.
+     * Default is {@code Double.POSITIVE_INFINITY}; property name {@code gaussian.max}.
+     *
+     * @since 5.3.0
+     */
+    public static final SettingKey<Double> GAUSSIAN_MAX = registerRequiredAdjustable(
+            "gaussian.max", Double.class, Double.POSITIVE_INFINITY, MAX_ADJUSTER, true);
+
     // Note: keys must be collected after all keys have been initialised
     private static final Map<String, SettingKey<?>> SETTING_KEY_MAP = Collections.unmodifiableMap(settingKeyMap());
 
