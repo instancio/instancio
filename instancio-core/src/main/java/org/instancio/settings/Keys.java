@@ -828,6 +828,27 @@ public final class Keys {
     @ExperimentalApi
     public static final SettingKey<StringType> STRING_TYPE = registerRequiredNonAdjustable(
             "string.type", StringType.class, StringType.ALPHABETIC);
+        /**
+     * Specifies the probability of injecting a statistical outlier into numeric data.
+     * The value must be a double between 0.0 and 1.0 (e.g., 0.01 for 1% probability).
+     * This is highly useful for testing anomaly detection pipelines with dirty data.
+     *
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Double> OUTLIER_PROBABILITY = registerRequiredNonAdjustable(
+            "outlier.probability", Double.class, 0.0);
+
+    /**
+     * Specifies the severity multiplier when an outlier is triggered.
+     * The base generated value will be multiplied by this factor (or its negative)
+     * to push the value completely outside normal physical boundaries.
+     *
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Double> OUTLIER_SEVERITY = registerRequiredNonAdjustable(
+            "outlier.severity", Double.class, 10.0);
 
             
     /**
