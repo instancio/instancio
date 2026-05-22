@@ -337,7 +337,7 @@ public final class Keys {
      */
     public static final SettingKey<Double> BINOMIAL_PROBABILITY = registerRequiredNonAdjustable(
             "binomial.probability", Double.class, 0.5);
-
+// Statistical distribution settings
     /**
      * Specifies number of trials for Binomial distribution.
      */
