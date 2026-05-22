@@ -17,8 +17,36 @@ package org.instancio.internal.generator;
 
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 
 public record InternalGeneratorContext(Settings settings, Random random)
         implements GeneratorContext {
+/**
+     * Safely retrieves the outlier probability from the current settings.
+     * If the setting is missing or null, it defaults to 0.0 (disabled).
+     *
+     * @return the probability of generating an outlier
+     */
+    public double getOutlierProbability() {
+        Double probability = settings().get(Keys.OUTLIER_PROBABILITY);
+        if (probability != null) {
+            return probability;
+        }
+        return 0.0;
+    }
+
+    /**
+     * Safely retrieves the outlier severity multiplier from the settings.
+     * If the setting is missing or null, it defaults to a standard 10.0 multiplier.
+     *
+     * @return the severity multiplier for the anomaly
+     */
+    public double getOutlierSeverity() {
+        Double severity = settings().get(Keys.OUTLIER_SEVERITY);
+        if (severity != null) {
+            return severity;
+        }
+        return 10.0;
+    }
 }
