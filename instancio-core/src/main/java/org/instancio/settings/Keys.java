@@ -326,6 +326,23 @@ public final class Keys {
      */
     public static final SettingKey<Boolean> INTEGER_NULLABLE = registerRequiredNonAdjustable(
             "integer.nullable", Boolean.class, false);
+    /**
+     * Specifies lambda value for Poisson distribution.
+     */
+    public static final SettingKey<Double> POISSON_LAMBDA = registerRequiredNonAdjustable(
+            "poisson.lambda", Double.class, 1.0);
+
+    /**
+     * Specifies success probability for Binomial distribution.
+     */
+    public static final SettingKey<Double> BINOMIAL_PROBABILITY = registerRequiredNonAdjustable(
+            "binomial.probability", Double.class, 0.5);
+
+    /**
+     * Specifies number of trials for Binomial distribution.
+     */
+    public static final SettingKey<Integer> BINOMIAL_TRIALS = registerRequiredNonAdjustable(
+            "binomial.trials", Integer.class, 10);
 
     /**
      * Specifies whether values should be generated based on
