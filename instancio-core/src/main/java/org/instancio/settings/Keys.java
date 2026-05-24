@@ -326,6 +326,23 @@ public final class Keys {
      */
     public static final SettingKey<Boolean> INTEGER_NULLABLE = registerRequiredNonAdjustable(
             "integer.nullable", Boolean.class, false);
+    /**
+     * Specifies lambda value for Poisson distribution.
+     */
+    public static final SettingKey<Double> POISSON_LAMBDA = registerRequiredNonAdjustable(
+            "poisson.lambda", Double.class, 2.0);
+
+    /**
+     * Specifies success probability for Binomial distribution.
+     */
+    public static final SettingKey<Double> BINOMIAL_PROBABILITY = registerRequiredNonAdjustable(
+            "binomial.probability", Double.class, 0.6);
+// Statistical distribution settings
+    /**
+     * Specifies number of trials for Binomial distribution.
+     */
+    public static final SettingKey<Integer> BINOMIAL_TRIALS = registerRequiredNonAdjustable(
+            "binomial.trials", Integer.class, 20);
 
     /**
      * Specifies whether values should be generated based on
@@ -811,6 +828,27 @@ public final class Keys {
     @ExperimentalApi
     public static final SettingKey<StringType> STRING_TYPE = registerRequiredNonAdjustable(
             "string.type", StringType.class, StringType.ALPHABETIC);
+        /**
+     * Specifies the probability of injecting a statistical outlier into numeric data.
+     * The value must be a double between 0.0 and 1.0 (e.g., 0.01 for 1% probability).
+     * This is highly useful for testing anomaly detection pipelines with dirty data.
+     *
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Double> OUTLIER_PROBABILITY = registerRequiredNonAdjustable(
+            "outlier.probability", Double.class, 0.0);
+
+    /**
+     * Specifies the severity multiplier when an outlier is triggered.
+     * The base generated value will be multiplied by this factor (or its negative)
+     * to push the value completely outside normal physical boundaries.
+     *
+     * @since 5.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<Double> OUTLIER_SEVERITY = registerRequiredNonAdjustable(
+            "outlier.severity", Double.class, 10.0);
 
             
     /**

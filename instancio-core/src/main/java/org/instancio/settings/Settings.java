@@ -226,6 +226,19 @@ public interface Settings {
                 .set(Keys.GAUSSIAN_MEAN, mean)
                 .set(Keys.GAUSSIAN_SD, sd)
                 .set(Keys.GAUSSIAN_MIN, min)
-                .set(Keys.GAUSSIAN_MAX, max);
+                .set(Keys.GAUSSIAN_MAX, max);}
+  /**
+     * A convenience method for quickly configuring outlier injection parameters.
+     * This method applies both the probability and severity settings required
+     * to simulate realistic dirty data generation for testing environments.
+     *
+     * @param probability the chance of generating an anomaly (range 0.0 to 1.0)
+     * @param severity the severity multiplier applied to the base value
+     * @return this instance of settings for method chaining
+     */
+    default Settings withOutlierInjection(double probability, double severity) {
+        return this
+            .set(Keys.OUTLIER_PROBABILITY, probability)
+            .set(Keys.OUTLIER_SEVERITY, severity);
     }
 }

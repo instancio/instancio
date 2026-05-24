@@ -262,4 +262,7 @@ and improve code health, while paying the maintainers of the exact dependencies 
 
 ## Contributors
 İrem Kılıç 64220042 (Ankara Medipol Üniversitesi)
+
 Selin İşci 64230041 
+
+Azra Karagülle 64230038
