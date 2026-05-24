@@ -201,4 +201,31 @@ public interface Settings {
      * @since 4.4.0
      */
     boolean isLocked();
+
+    /**
+     * Enables the Truncated Gaussian distribution with the given parameters
+     * and sets {@link Keys#GAUSSIAN_ENABLED} to {@code true}.
+     *
+     * @param mean the mean (μ) of the distribution
+     * @param sd   the standard deviation (σ); must be positive
+     * @param min  the lower truncation bound (inclusive)
+     * @param max  the upper truncation bound (inclusive)
+     * @return this instance of settings
+     * @throws IllegalArgumentException if sd is not positive, or if min is greater than max
+     * @since 5.3.0
+     */
+    default Settings withGaussian(double mean, double sd, double min, double max) {
+        if (sd <= 0) {
+            throw new IllegalArgumentException("Standard deviation (sd) must be strictly positive, but was: " + sd);
+        }
+        if (min > max) {
+            throw new IllegalArgumentException(String.format("Min bound (%s) cannot be greater than max bound (%s)", min, max));
+        }
+
+        return set(Keys.GAUSSIAN_ENABLED, true)
+                .set(Keys.GAUSSIAN_MEAN, mean)
+                .set(Keys.GAUSSIAN_SD, sd)
+                .set(Keys.GAUSSIAN_MIN, min)
+                .set(Keys.GAUSSIAN_MAX, max);
+    }
 }
