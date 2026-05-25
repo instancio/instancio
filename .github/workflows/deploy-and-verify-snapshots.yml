@@ -43,11 +43,10 @@ jobs:
       - name: "Test"
         run: cd instancio-tests && mvn verify
   junit:
-    if: false # Disabled until junit 6.1.0
     needs: deploy
     strategy:
       matrix:
-        junit: [ 6.0.1 ]
+        junit: [ 6.0.3 ]
     runs-on: ubuntu-latest
     name: "Verify snapshots with Junit ${{ matrix.junit }}"
     steps:
