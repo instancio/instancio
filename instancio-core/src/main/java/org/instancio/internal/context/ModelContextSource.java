@@ -22,6 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.InternalSize;
 import org.instancio.internal.util.Sonar;
 import org.jspecify.annotations.Nullable;
 
@@ -49,6 +50,7 @@ final class ModelContextSource {
     private final Map<TargetSelector, List<Assignment>> assignmentMap;
     private final Map<TargetSelector, ModelContext> setModelMap;
     private final Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap;
+    private final Map<TargetSelector, InternalSize> containerSizeMap;
     private final Set<TargetSelector> ignoreSet;
     private final Set<TargetSelector> withNullableSet;
 
@@ -63,6 +65,7 @@ final class ModelContextSource {
             @Nullable final Map<TargetSelector, List<Assignment>> assignmentMap,
             @Nullable final Map<TargetSelector, ModelContext> setModelMap,
             @Nullable final Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap,
+            @Nullable final Map<TargetSelector, InternalSize> containerSizeMap,
             @Nullable final Set<TargetSelector> ignoreSet,
             @Nullable final Set<TargetSelector> withNullableSet) {
 
@@ -75,6 +78,7 @@ final class ModelContextSource {
         this.assignmentMap = asUnmodifiableLinkedHashMapOfLists(assignmentMap);
         this.setModelMap = asUnmodifiableMap(setModelMap);
         this.feedMap = asUnmodifiableMap(feedMap);
+        this.containerSizeMap = asUnmodifiableMap(containerSizeMap);
         this.ignoreSet = asUnmodifiableSet(ignoreSet);
         this.withNullableSet = asUnmodifiableSet(withNullableSet);
     }
@@ -113,6 +117,10 @@ final class ModelContextSource {
 
     Map<TargetSelector, Function<GeneratorContext, Feed>> getFeedMap() {
         return feedMap;
+    }
+
+    Map<TargetSelector, InternalSize> getContainerSizeMap() {
+        return containerSizeMap;
     }
 
     Set<TargetSelector> getIgnoreSet() {

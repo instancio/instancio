@@ -297,4 +297,22 @@ public interface InstancioCartesianProductApi<T extends @Nullable Object> extend
      */
     @Override
     InstancioCartesianProductApi<T> verbose();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 6.0.0
+     */
+    @Override
+    @ExperimentalApi
+    InstancioCartesianProductApi<T> size(TargetSelector selector, int size);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 6.0.0
+     */
+    @Override
+    @ExperimentalApi
+    InstancioCartesianProductApi<T> size(TargetSelector selector, Size size);
 }

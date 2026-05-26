@@ -22,6 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.feed.Feed;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
+import org.instancio.internal.InternalSize;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.util.TypeUtils;
 
@@ -43,6 +44,7 @@ public final class SelectorMaps {
     private final OnCompleteCallbackSelectorMap onCompleteSelectorMap = new OnCompleteCallbackSelectorMap();
     private final PredicateSelectorMap filterSelectorMap = new PredicateSelectorMap();
     private final SubtypeSelectorMap subtypeSelectorMap = new SubtypeSelectorMap();
+    private final ContainerSizeSelectorMap containerSizeSelectorMap = new ContainerSizeSelectorMap();
 
     SelectorMaps(final ModelContextSource contextSource, final GeneratorContext generatorContext) {
         this.generatorContext = generatorContext;
@@ -70,6 +72,7 @@ public final class SelectorMaps {
         filterSelectorMap.putAll(contextSource.getFilterMap());
         generatorSelectorMap.putAllGeneratorSpecs(contextSource.getGeneratorSpecMap());
         generatorSelectorMap.putAllGenerators(contextSource.getGeneratorMap());
+        containerSizeSelectorMap.putAll(contextSource.getContainerSizeMap());
         assignmentSelectorMap.putAll(contextSource.getAssignmentMap());
 
         // subtype map must be last as it needs subtypes from assignment/generator spec subtypes
@@ -146,6 +149,11 @@ public final class SelectorMaps {
             subtypeSelectorMap.put(resolvedSelector, entry.getValue());
         }
 
+        for (Map.Entry<TargetSelector, InternalSize> entry : src.getContainerSizeMap().entrySet()) {
+            final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
+            containerSizeSelectorMap.put(resolvedSelector, entry.getValue());
+        }
+
         for (Map.Entry<TargetSelector, ModelContext> entry : src.getSetModelMap().entrySet()) {
             final TargetSelector resolvedSelector = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, entry.getKey());
             setModelSelectorMap.put(resolvedSelector, entry.getValue());
@@ -190,6 +198,10 @@ public final class SelectorMaps {
         return subtypeSelectorMap;
     }
 
+    ContainerSizeSelectorMap getContainerSizeSelectorMap() {
+        return containerSizeSelectorMap;
+    }
+
     public boolean allEmpty() {
         return !hasAssignments()
                 && !hasGenerators()
@@ -199,7 +211,8 @@ public final class SelectorMaps {
                 && feedSelectorMap.getSelectorMap().isEmpty()
                 && ignoreSelectorMap.getSelectorMap().isEmpty()
                 && withNullableSelectorMap.getSelectorMap().isEmpty()
-                && subtypeSelectorMap.getSelectorMap().isEmpty();
+                && subtypeSelectorMap.getSelectorMap().isEmpty()
+                && containerSizeSelectorMap.getSelectorMap().isEmpty();
     }
 
     public boolean hasGenerators() {

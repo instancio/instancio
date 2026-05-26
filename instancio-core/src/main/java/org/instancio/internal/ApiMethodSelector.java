@@ -30,6 +30,7 @@ public enum ApiMethodSelector {
     ON_COMPLETE("onComplete()"),
     SET("set()"),
     SET_MODEL("setModel()"),
+    SIZE("size()"),
     SUBTYPE("subtype()"),
     SUPPLY("supply()"),
     WITH_NULLABLE("withNullable()"),

@@ -80,7 +80,7 @@ public final class InternalNode implements Node {
         return cyclic;
     }
 
-    boolean isContainer() {
+    public boolean isContainer() {
         return is(NodeKind.COLLECTION)
                || is(NodeKind.MAP)
                || is(NodeKind.ARRAY)

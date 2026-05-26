@@ -50,7 +50,7 @@ public final class CollectionsApiImpl<T, C extends Collection<T>>
 
     @Override
     public InstancioCollectionsApi<C> size(final int size) {
-        generate(Select.root(), gen -> gen.collection().size(size));
+        size(Select.root(), size);
         return this;
     }
 }

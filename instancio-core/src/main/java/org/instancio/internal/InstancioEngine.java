@@ -127,13 +127,13 @@ class InstancioEngine {
         final GeneratorResult generatorResult = createObject(rootNode);
         callbackHandler.invokeCallbacks();
         processDelayedNodes(true);
-        context.reportWarnings();
+        context.reportWarnings(rootNode);
 
         if (generatorResult.isUnresolved()) {
             final Class<?> rootClass = rootNode.getTargetClass();
 
             if (Modifier.isAbstract(rootClass.getModifiers())
-                && !context.getSubtypeSelectorMap().getSubtype(rootNode).isPresent()) {
+                    && !context.getSubtypeSelectorMap().getSubtype(rootNode).isPresent()) {
                 throw Fail.withUsageError(ErrorMessageUtils.abstractRootWithoutSubtype(rootClass));
             }
         }
@@ -182,7 +182,7 @@ class InstancioEngine {
                 } else {
                     Log.msg(Log.Category.MAX_GENERATION_ATTEMPTS,
                             "Max generation attempts ({}) reached (configurable via '{}'). " +
-                            "Using random value as fallback.",
+                                    "Using random value as fallback.",
                             maxGenerationAttempts,
                             Keys.MAX_GENERATION_ATTEMPTS.propertyKey());
                     break;
@@ -281,6 +281,7 @@ class InstancioEngine {
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
     private GeneratorResult generateMap(final InternalNode node) {
         final GeneratorResult generatorResult = generateValue(node);
+        final InternalSize sizeOverride = context.getContainerSize(node);
 
         if (generatorResult.getValue() == null || node.getChildren().size() < 2) {
             return generatorResult;
@@ -312,10 +313,14 @@ class InstancioEngine {
         final boolean nullableValue = hint.nullableMapValues();
         final Iterator<Object> withKeysIterator = hint.withKeys().iterator();
 
-        int entriesToGenerate = hint.generateEntries();
+        final int targetSize = sizeOverride != null
+                ? context.getRandom().intRange(sizeOverride.min(), sizeOverride.max())
+                : hint.generateEntries();
+
+        int remaining = targetSize;
         int failedAdditions = 0;
 
-        while (entriesToGenerate > 0) {
+        while (remaining > 0) {
 
             assigmentObjectStore.enterScope();
             final GeneratorResult mapKeyResult = createObject(keyNode, nullableKey);
@@ -334,7 +339,7 @@ class InstancioEngine {
 
             // Note: map key does not support emit() null
             if ((mapKey != null || nullableKey)
-                && (mapValue != null || nullableValue || mapValueResult.hasEmitNullHint())) {
+                    && (mapValue != null || nullableValue || mapValueResult.hasEmitNullHint())) {
                 if (!map.containsKey(mapKey)) {
                     ApiValidator.validateValueIsAssignableToElementNode(
                             "error adding key to map", mapKey, node, keyNode);
@@ -343,7 +348,7 @@ class InstancioEngine {
                             "error adding value to map", mapValue, node, valueNode);
 
                     map.put(mapKey, mapValue);
-                    entriesToGenerate--;
+                    remaining--;
                 } else {
                     failedAdditions++;
                 }
@@ -356,7 +361,7 @@ class InstancioEngine {
                     errorHandler.conditionalFailOnError(() -> {
                         throw Fail.withInternalError(
                                 ErrorMessageUtils.mapCouldNotBePopulated(
-                                        context, node, hint.generateEntries()));
+                                        context, node, targetSize));
                     });
                 }
                 break;
@@ -376,17 +381,29 @@ class InstancioEngine {
             "PMD.AvoidReassigningLoopVariables"})
     private GeneratorResult generateArray(final InternalNode node) {
         final GeneratorResult generatorResult = generateValue(node);
+        final InternalSize sizeOverride = context.getContainerSize(node);
 
         if (generatorResult.getValue() == null || node.getChildren().isEmpty()) {
             return generatorResult;
         }
 
-        final Object arrayObj = generatorResult.getValue();
+        Object arrayObj = generatorResult.getValue();
+        if (sizeOverride != null) {
+            final int overrideLength = context.getRandom().intRange(sizeOverride.min(), sizeOverride.max());
+            arrayObj = Array.newInstance(arrayObj.getClass().getComponentType(), overrideLength);
+        }
         final Hints hints = generatorResult.getHints();
         final ArrayHint hint = defaultIfNull(hints.get(ArrayHint.class), ArrayHint.empty());
 
         final List<?> withElements = hint.withElements();
         final int arrayLength = Array.getLength(arrayObj);
+
+        if (sizeOverride != null && withElements.size() > arrayLength) {
+            throw Fail.withUsageError(
+                    "array generator specifies more 'with()' elements (%s) than the size() override allows (%s)"
+                            .formatted(withElements.size(), arrayLength));
+        }
+
         final InternalNode elementNode = node.getOnlyChild();
         int lastIndex = 0;
 
@@ -445,10 +462,10 @@ class InstancioEngine {
 
             // If elements are not nullable, keep generating until a non-null
             while (elementValue == null
-                   && !hint.nullableElements()
-                   && !elementResult.hasEmitNullHint()
-                   && !context.isIgnored(elementNode)
-                   && failedAdditions < maxGenerationAttempts) {
+                    && !hint.nullableElements()
+                    && !elementResult.hasEmitNullHint()
+                    && !context.isIgnored(elementNode)
+                    && failedAdditions < maxGenerationAttempts) {
 
                 failedAdditions++;
                 elementValue = createObject(elementNode, false).getValue();
@@ -466,12 +483,13 @@ class InstancioEngine {
         if (hint.shuffle()) {
             ArrayUtils.shuffle(arrayObj, context.getRandom());
         }
-        return generatorResult;
+        return GeneratorResult.resolved(arrayObj, hints);
     }
 
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
     private GeneratorResult generateCollection(final InternalNode node) {
         final GeneratorResult generatorResult = generateValue(node);
+        final InternalSize sizeOverride = context.getContainerSize(node);
 
         if (generatorResult.getValue() == null || node.getChildren().isEmpty()) {
             return generatorResult;
@@ -498,12 +516,16 @@ class InstancioEngine {
         final boolean nullableElements = hint.nullableElements();
         final boolean requireUnique = hint.unique();
 
-        int elementsToGenerate = hint.generateElements();
+        final int targetSize = sizeOverride != null
+                ? context.getRandom().intRange(sizeOverride.min(), sizeOverride.max())
+                : hint.generateElements();
+
+        final Set<Object> generated = new HashSet<>(targetSize);
+
+        int remaining = targetSize;
         int failedAdditions = 0;
 
-        final Set<Object> generated = new HashSet<>(elementsToGenerate);
-
-        while (elementsToGenerate > 0) {
+        while (remaining > 0) {
             assigmentObjectStore.enterScope();
             final GeneratorResult elementResult = createObject(elementNode, nullableElements);
             assigmentObjectStore.exitScope();
@@ -526,7 +548,7 @@ class InstancioEngine {
                     ApiValidator.validateValueIsAssignableToElementNode(
                             "error adding element to collection", elementValue, node, elementNode);
 
-                    elementsToGenerate--;
+                    remaining--;
 
                 } else {
                     // Special case for hash based collections.
@@ -544,7 +566,7 @@ class InstancioEngine {
                     errorHandler.conditionalFailOnError(() -> {
                         throw Fail.withInternalError(
                                 ErrorMessageUtils.collectionCouldNotBePopulated(
-                                        context, node, hint.generateElements()));
+                                        context, node, targetSize));
                     });
                 }
                 break;
@@ -737,10 +759,15 @@ class InstancioEngine {
             return generatorResult;
         }
 
+        final InternalSize sizeOverride = context.getContainerSize(node);
         final ContainerAddFunction<Object> addFunction = hint.addFunction();
 
         if (addFunction != null) {
-            for (int i = 0; i < hint.generateEntries(); i++) {
+            int remaining = sizeOverride != null
+                    ? context.getRandom().intRange(sizeOverride.min(), sizeOverride.max())
+                    : hint.generateEntries();
+
+            for (int i = 0; i < remaining; i++) {
                 final @Nullable Object[] args = new Object[children.size()];
 
                 assigmentObjectStore.enterScope();
