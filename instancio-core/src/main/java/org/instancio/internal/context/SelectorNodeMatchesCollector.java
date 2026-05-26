@@ -34,6 +34,7 @@ final class SelectorNodeMatchesCollector {
 
     private final SelectorMap<?> assignDestinationToAssignmentsMap;
     private final SelectorMap<?> assignOriginToDestinationSelectorsMap;
+    private final SelectorMap<?> containerSizeSelectorMap;
     private final SelectorMap<?> feedSelectorMap;
     private final SelectorMap<?> filterSelectorMap;
     private final SelectorMap<?> generatorSelectorMap;
@@ -46,6 +47,7 @@ final class SelectorNodeMatchesCollector {
     SelectorNodeMatchesCollector(final SelectorMaps selectorMaps) {
         this.assignDestinationToAssignmentsMap = selectorMaps.getAssignmentSelectorMap().getDestinationToAssignmentsMap();
         this.assignOriginToDestinationSelectorsMap = selectorMaps.getAssignmentSelectorMap().getOriginToDestinationSelectorsMap();
+        this.containerSizeSelectorMap = selectorMaps.getContainerSizeSelectorMap().getSelectorMap();
         this.feedSelectorMap = selectorMaps.getFeedSelectorMap().getSelectorMap();
         this.filterSelectorMap = selectorMaps.getFilterSelectorMap().getSelectorMap();
         this.generatorSelectorMap = selectorMaps.getGeneratorSelectorMap().getSelectorMap();
@@ -72,6 +74,7 @@ final class SelectorNodeMatchesCollector {
             collectNodes(map, ApiMethodSelector.ON_COMPLETE, node, onCompleteCallbackSelectorMap);
             collectNodes(map, ApiMethodSelector.SET_MODEL, node, setModelSelectorMap);
             collectNodes(map, ApiMethodSelector.SET, node, generatorSelectorMap);
+            collectNodes(map, ApiMethodSelector.SIZE, node, containerSizeSelectorMap);
             collectNodes(map, ApiMethodSelector.SUBTYPE, node, subtypeSelectorMap);
             collectNodes(map, ApiMethodSelector.SUPPLY, node, generatorSelectorMap);
             collectNodes(map, ApiMethodSelector.WITH_NULLABLE, node, nullableSelectorMap);
@@ -102,6 +105,29 @@ final class SelectorNodeMatchesCollector {
     }
 
     /**
+     * Returns all size selectors that match any non-container node, without duplicates.
+     * Reports selectors regardless of whether they also matched a container node.
+     */
+    Set<TargetSelector> findMisappliedSizeSelectors(final InternalNode rootNode) {
+        if (containerSizeSelectorMap.isEmpty()) {
+            return Set.of();
+        }
+
+        final Set<TargetSelector> results = new LinkedHashSet<>();
+        final Queue<InternalNode> queue = new ArrayDeque<>();
+        queue.offer(rootNode);
+
+        while (!queue.isEmpty()) {
+            final InternalNode node = queue.poll();
+            if (!node.isContainer()) {
+                results.addAll(containerSizeSelectorMap.getSelectors(node));
+            }
+            queue.addAll(node.getChildren());
+        }
+        return results;
+    }
+
+    /**
      * {@link SelectorMap} marks keys (selectors) that have an associated value
      * when doing a lookup. Therefore, this method must be called after the root
      * object has been created (all map lookups have been done).
@@ -110,6 +136,7 @@ final class SelectorNodeMatchesCollector {
         List<TargetSelector> results = new ArrayList<>();
         results.addAll(assignDestinationToAssignmentsMap.getUnusedKeys());
         results.addAll(assignOriginToDestinationSelectorsMap.getUnusedKeys());
+        results.addAll(containerSizeSelectorMap.getUnusedKeys());
         results.addAll(feedSelectorMap.getUnusedKeys());
         results.addAll(filterSelectorMap.getUnusedKeys());
         results.addAll(generatorSelectorMap.getUnusedKeys());

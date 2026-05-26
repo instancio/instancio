@@ -108,6 +108,7 @@ public enum Feature {
     SET,
     SET_BACK_REFERENCES,
     SETTINGS,
+    SIZE,
     BLANK, // createBlank(), ofBlank(), setBlank() APIs
     STREAM,
     STRING_FIELD_PREFIX,

@@ -15,24 +15,19 @@
  */
 package org.instancio.internal;
 
-import org.instancio.InstancioCollectionsApi;
-import org.instancio.Select;
-import org.instancio.internal.reflect.ParameterizedTypeImpl;
+import org.instancio.Size;
 
-import java.lang.reflect.Type;
-import java.util.Map;
+public record InternalSize(int min, int max) implements Size {
 
-public final class MapApiImpl<K, V, M extends Map<K, V>>
-        extends ClassApiImpl<M>
-        implements InstancioCollectionsApi<M> {
-
-    public MapApiImpl(final Class<M> mapType, final Type keyType, final Type valueType) {
-        super(new ParameterizedTypeImpl(mapType, keyType, valueType));
+    public InternalSize(final int min, final int max) {
+        this.min = ApiValidator.validateSize(min);
+        this.max = ApiValidator.validateSize(max);
+        ApiValidator.isTrue(min <= max,
+                "min (%s) must be less than or equal to max (%s)".formatted(min, max));
     }
 
     @Override
-    public InstancioCollectionsApi<M> size(final int size) {
-        size(Select.root(), size);
-        return this;
+    public String toString() {
+        return "Size[min=%s, max=%s]".formatted(min, max);
     }
 }

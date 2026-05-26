@@ -233,15 +233,15 @@ class ModelContextTest {
                 .withIgnored(field("address"))
                 .build();
 
-        assertThatThrownBy(ctx::reportUnusedSelectorWarnings).isInstanceOf(UnusedSelectorException.class);
+        assertThatThrownBy(() -> ctx.reportUnusedSelectorWarnings(null)).isInstanceOf(UnusedSelectorException.class);
 
         ctx.getGenerator(mockNode(Person.class, NAME_FIELD));
         ctx.isIgnored(mockNode(Person.class, ADDRESS_FIELD));
-        ctx.reportUnusedSelectorWarnings(); // no error
+        ctx.reportUnusedSelectorWarnings(null); // no error
 
         final ModelContext newCtx = ctx.toBuilder().build();
 
-        assertThatThrownBy(newCtx::reportUnusedSelectorWarnings)
+        assertThatThrownBy(() -> newCtx.reportUnusedSelectorWarnings(null))
                 .as("Cloned context should have its own unused selectors state")
                 .isInstanceOf(UnusedSelectorException.class);
     }

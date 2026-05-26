@@ -15,24 +15,15 @@
  */
 package org.instancio.internal;
 
-import org.instancio.InstancioCollectionsApi;
-import org.instancio.Select;
-import org.instancio.internal.reflect.ParameterizedTypeImpl;
+import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Type;
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public final class MapApiImpl<K, V, M extends Map<K, V>>
-        extends ClassApiImpl<M>
-        implements InstancioCollectionsApi<M> {
+class InternalSizeTest {
 
-    public MapApiImpl(final Class<M> mapType, final Type keyType, final Type valueType) {
-        super(new ParameterizedTypeImpl(mapType, keyType, valueType));
-    }
-
-    @Override
-    public InstancioCollectionsApi<M> size(final int size) {
-        size(Select.root(), size);
-        return this;
+    @Test
+    void verifyToString() {
+        assertThat(new InternalSize(3, 7))
+                .hasToString("Size[min=3, max=7]");
     }
 }

@@ -24,6 +24,7 @@ import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
 import org.instancio.Result;
+import org.instancio.Size;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.feed.Feed;
@@ -164,6 +165,17 @@ public class ApiImpl<T> implements InstancioApi<T>, InstancioObjectApi<T> {
     @Override
     public ApiImpl<T> withUnique(final TargetSelector selector) {
         modelContextBuilder.withUnique(selector);
+        return this;
+    }
+
+    @Override
+    public ApiImpl<T> size(final TargetSelector selector, final int size) {
+        return size(selector, Size.of(size));
+    }
+
+    @Override
+    public ApiImpl<T> size(final TargetSelector selector, final Size size) {
+        modelContextBuilder.withContainerSize(selector, size);
         return this;
     }
 
