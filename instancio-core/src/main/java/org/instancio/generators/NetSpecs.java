@@ -19,6 +19,7 @@ import org.instancio.generator.specs.EmailSpec;
 import org.instancio.generator.specs.Ip4Spec;
 import org.instancio.generator.specs.URISpec;
 import org.instancio.generator.specs.URLSpec;
+import org.instancio.generator.specs.MacAddressSpec;
 
 /**
  * Provides generators for {@code java.net} classes.
@@ -58,4 +59,12 @@ public interface NetSpecs extends NetGenerators {
      */
     @Override
     URLSpec url();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 6.0.0
+     */
+    @Override
+    MacAddressSpec mac();
 }

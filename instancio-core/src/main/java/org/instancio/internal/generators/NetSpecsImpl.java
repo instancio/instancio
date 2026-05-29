@@ -20,9 +20,11 @@ import org.instancio.generator.specs.EmailSpec;
 import org.instancio.generator.specs.Ip4Spec;
 import org.instancio.generator.specs.URISpec;
 import org.instancio.generator.specs.URLSpec;
+import org.instancio.generator.specs.MacAddressSpec;
 import org.instancio.generators.NetSpecs;
 import org.instancio.internal.generator.domain.internet.EmailGenerator;
 import org.instancio.internal.generator.domain.internet.Ip4Generator;
+import org.instancio.internal.generator.net.MacAddressGenerator;
 import org.instancio.internal.generator.net.URIGenerator;
 import org.instancio.internal.generator.net.URLGenerator;
 
@@ -52,6 +54,11 @@ final class NetSpecsImpl implements NetSpecs {
     @Override
     public URLSpec url() {
         return new URLGenerator(context);
+    }
+
+    @Override
+    public MacAddressSpec mac() {
+        return new MacAddressGenerator(context);
     }
 
 }

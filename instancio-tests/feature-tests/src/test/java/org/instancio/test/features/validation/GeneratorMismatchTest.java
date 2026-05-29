@@ -90,6 +90,7 @@ class GeneratorMismatchTest {
     void assertNetTypes() {
         assertMessageContains("uri()", gen -> gen.net().uri());
         assertMessageContains("url()", gen -> gen.net().url());
+        assertMessageContains("mac()", gen -> gen.net().mac());
     }
 
     @Test

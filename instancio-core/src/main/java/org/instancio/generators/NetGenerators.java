@@ -19,6 +19,7 @@ import org.instancio.generator.specs.EmailGeneratorSpec;
 import org.instancio.generator.specs.Ip4GeneratorSpec;
 import org.instancio.generator.specs.URIGeneratorSpec;
 import org.instancio.generator.specs.URLGeneratorSpec;
+import org.instancio.generator.specs.MacAddressSpec;
 
 import java.net.URI;
 import java.net.URL;
@@ -61,4 +62,12 @@ public interface NetGenerators {
      * @since 2.3.0
      */
     URLGeneratorSpec url();
+
+    /**
+     * Generates mac address.
+     *
+     * @return generator spec
+     * @since 6.0.0
+     */
+    MacAddressSpec mac();
 }
