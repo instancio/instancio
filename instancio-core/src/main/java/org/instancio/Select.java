@@ -21,16 +21,14 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.selectors.FieldSelectorBuilderImpl;
 import org.instancio.internal.selectors.PredicateScopeImpl;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
-import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
-import org.instancio.internal.selectors.ScopeImpl;
 import org.instancio.internal.selectors.SelectorGroupImpl;
-import org.instancio.internal.selectors.SelectorImpl;
 import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetFieldName;
 import org.instancio.internal.selectors.TargetGetterReference;
 import org.instancio.internal.selectors.TargetSetterName;
 import org.instancio.internal.selectors.TargetSetterReference;
 import org.instancio.internal.selectors.TypeSelectorBuilderImpl;
+import org.instancio.internal.util.Constants;
 import org.instancio.settings.Keys;
 import org.jspecify.annotations.Nullable;
 
@@ -39,37 +37,33 @@ import java.util.function.Predicate;
 
 /**
  * Provides static factory methods for creating selectors and selector scopes.
- * Selectors are used for targeting fields and classes.
- * Instancio supports two types of selectors: regular and predicate-based.
+ * Selectors are used for targeting fields and types during object generation.
  *
- * <p>Regular selectors allow matching by exact class (not including subtypes)
- * and field:
- *
- * <ul>
- *   <li>{@link #all(Class)}</li>
- *   <li>{@link #field(GetMethodSelector)}</li>
- *   <li>{@link #field(Class, String)}</li>
- *   <li>{@link #field(String)}</li>
- * </ul>
- *
- * <p>Predicate selectors, as the name suggests, use a {@link Predicate}
- * for matching targets:
+ * <h2>Exact Selectors</h2>
+ * <p>The following selectors match by exact class (excluding subtypes) or field:
  *
  * <ul>
- *   <li>{@link #fields()}</li>
- *   <li>{@link #types()}</li>
- *   <li>{@link #fields(Predicate)}</li>
- *   <li>{@link #types(Predicate)}</li>
+ *   <li>{@link #all(Class)} - targets all instances of the specified class</li>
+ *   <li>{@link #field(GetMethodSelector)} - targets a field via method reference</li>
+ *   <li>{@link #field(Class, String)} - targets a field by declaring class and name</li>
+ *   <li>{@link #field(String)} - targets a field by name across all classes</li>
  * </ul>
  *
- * <p>The first two allow constructing predicates using convenience builder
- * methods. The last two methods can be used with arbitrary predicates
- * where the builders are not sufficient.
+ * <h2>Predicate Selectors</h2>
+ * <p>The following selectors support flexible matching using predicates:
  *
- * <p>It should be noted that regular selectors have higher precedence than
- * predicate selectors. See the
+ * <ul>
+ *   <li>{@link #fields()} - builder API for constructing field selectors</li>
+ *   <li>{@link #types()} - builder API for constructing type selectors</li>
+ *   <li>{@link #fields(Predicate)} - matches fields using a custom predicate</li>
+ *   <li>{@link #types(Predicate)} - matches types using a custom predicate</li>
+ * </ul>
+ *
+ * <h2>Selector Precedence</h2>
+ * <p>When multiple selectors match the same target, more specific selectors take
+ * priority over more general ones. See the
  * <a href="https://www.instancio.org/user-guide/#selectors">Selectors</a>
- * section of the User Guide for more details.
+ * section of the User Guide for details.
  *
  * @see Selector
  * @see SelectorGroup
@@ -151,7 +145,10 @@ public final class Select {
      */
     public static PredicateSelector fields(final Predicate<Field> predicate) {
         ApiValidator.notNull(predicate, "Field predicate must not be null");
-        return PredicateSelectorImpl.builder().fieldPredicate(predicate).build();
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.FIELDS)
+                .fieldPredicate(predicate)
+                .build();
     }
 
     /**
@@ -166,7 +163,10 @@ public final class Select {
      */
     public static PredicateSelector types(final Predicate<Class<?>> predicate) {
         ApiValidator.notNull(predicate, "Type predicate must not be null");
-        return PredicateSelectorImpl.builder().typePredicate(predicate).build();
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.TYPES)
+                .typePredicate(predicate)
+                .build();
     }
 
     /**
@@ -184,9 +184,14 @@ public final class Select {
      * @return a selector for the given class
      * @since 1.2.0
      */
-    public static Selector all(final Class<?> type) {
+    public static PredicateSelector all(final Class<?> type) {
         ApiValidator.notNull(type, "Class must not be null");
-        return SelectorImpl.builder(new TargetClass(type))
+        return PredicateSelectorImpl
+                .builder()
+                .priority(Constants.SelectorPriority.ALL)
+                .target(new TargetClass(type))
+                .typePredicate(t -> t == type)
+                .apiInvocationDescription("all(" + type.getSimpleName() + ')')
                 .build();
     }
 
@@ -227,11 +232,16 @@ public final class Select {
      * @see #fields(Predicate)
      * @since 1.2.0
      */
-    public static Selector field(final Class<?> declaringClass, final String fieldName) {
+    public static PredicateSelector field(final Class<?> declaringClass, final String fieldName) {
         ApiValidator.notNull(declaringClass, "declaring class must not be null");
         ApiValidator.notNull(fieldName, "field name must not be null");
 
-        return SelectorImpl.builder(new TargetFieldName(declaringClass, fieldName))
+        return PredicateSelectorImpl
+                .builder()
+                .priority(Constants.SelectorPriority.FIELD)
+                .target(new TargetFieldName(declaringClass, fieldName))
+                .fieldPredicate(f -> declaringClass == f.getDeclaringClass() && f.getName().equals(fieldName))
+                .apiInvocationDescription("field(" + declaringClass.getSimpleName() + ", \"" + fieldName + "\")")
                 .build();
     }
 
@@ -253,9 +263,11 @@ public final class Select {
      * @see #fields(Predicate)
      * @since 1.2.0
      */
-    public static Selector field(final String fieldName) {
+    public static PredicateSelector field(final String fieldName) {
         ApiValidator.notNull(fieldName, "field name must not be null");
-        return SelectorImpl.builder(new TargetFieldName(null, fieldName))
+        return PredicateSelectorImpl.builder()
+                .target(new TargetFieldName(null, fieldName))
+                .apiInvocationDescription("field(\"%s\")".formatted(fieldName))
                 .build();
     }
 
@@ -308,9 +320,11 @@ public final class Select {
      * @see #field(Class, String)
      * @since 2.3.0
      */
-    public static <T, R> Selector field(final GetMethodSelector<T, R> methodReference) {
+    public static <T, R> PredicateSelector field(final GetMethodSelector<T, R> methodReference) {
         ApiValidator.notNull(methodReference, "getter method reference must not be null");
-        return SelectorImpl.builder(new TargetGetterReference(methodReference))
+
+        return PredicateSelectorImpl.builder()
+                .target(new TargetGetterReference(methodReference))
                 .build();
     }
 
@@ -338,8 +352,10 @@ public final class Select {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static Selector setter(final String methodName) {
-        return setterInternal(null, methodName, null);
+    public static PredicateSelector setter(final String methodName) {
+        final String description = "setter(\"%s\")".formatted(methodName);
+
+        return setterInternal(description, null, methodName, null);
     }
 
     /**
@@ -360,8 +376,12 @@ public final class Select {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static Selector setter(final Class<?> declaringClass, final String methodName) {
-        return setterInternal(declaringClass, methodName, null);
+    public static PredicateSelector setter(final Class<?> declaringClass, final String methodName) {
+        final String description = "setter(%s, \"%s\")".formatted(
+                declaringClass.getSimpleName(),
+                methodName);
+
+        return setterInternal(description, declaringClass, methodName, null);
     }
 
     /**
@@ -379,18 +399,27 @@ public final class Select {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static Selector setter(final Class<?> declaringClass, final String methodName, final Class<?> parameterType) {
+    public static PredicateSelector setter(final Class<?> declaringClass, final String methodName, final Class<?> parameterType) {
         ApiValidator.notNull(parameterType, "parameterType must not be null");
-        return setterInternal(declaringClass, methodName, parameterType);
+        final String description = "setter(%s, \"%s(%s)\")".formatted(
+                declaringClass.getSimpleName(),
+                methodName,
+                parameterType.getSimpleName());
+
+        return setterInternal(description, declaringClass, methodName, parameterType);
     }
 
-    private static Selector setterInternal(
+    private static PredicateSelector setterInternal(
+            final String description,
             @Nullable final Class<?> declaringClass,
             final String methodName,
             @Nullable final Class<?> parameterType) {
 
         ApiValidator.notNull(methodName, "method name must not be null");
-        return SelectorImpl.builder(new TargetSetterName(declaringClass, methodName, parameterType))
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.SETTER)
+                .apiInvocationDescription(description)
+                .target(new TargetSetterName(declaringClass, methodName, parameterType))
                 .build();
     }
 
@@ -413,9 +442,12 @@ public final class Select {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static <T, U> Selector setter(final SetMethodSelector<T, U> methodReference) {
+    public static <T, U> PredicateSelector setter(final SetMethodSelector<T, U> methodReference) {
         ApiValidator.notNull(methodReference, "setter method reference must not be null");
-        return SelectorImpl.builder(new TargetSetterReference(methodReference))
+
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.SETTER)
+                .target(new TargetSetterReference(methodReference))
                 .build();
     }
 
@@ -426,8 +458,9 @@ public final class Select {
      * @since 2.0.0
      */
     public static TargetSelector root() {
-        return SelectorImpl.createRootSelector();
+        return PredicateSelectorImpl.createRootSelector();
     }
+
 
     /**
      * Shorthand for {@code all(String.class)}.
@@ -435,7 +468,7 @@ public final class Select {
      * @return selector for all Strings
      * @since 1.2.0
      */
-    public static Selector allStrings() {
+    public static PredicateSelector allStrings() {
         return all(String.class);
     }
 
@@ -445,8 +478,12 @@ public final class Select {
      * @return selector for all bytes
      * @since 1.2.0
      */
-    public static Selector allBytes() {
-        return new PrimitiveAndWrapperSelectorImpl(byte.class, Byte.class);
+    public static PredicateSelector allBytes() {
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.ALL)
+                .typePredicate(t -> t == byte.class || t == Byte.class)
+                .apiInvocationDescription("allBytes()")
+                .build();
     }
 
     /**
@@ -455,8 +492,12 @@ public final class Select {
      * @return selector for all floats
      * @since 1.2.0
      */
-    public static Selector allFloats() {
-        return new PrimitiveAndWrapperSelectorImpl(float.class, Float.class);
+    public static PredicateSelector allFloats() {
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.ALL)
+                .typePredicate(t -> t == float.class || t == Float.class)
+                .apiInvocationDescription("allFloats()")
+                .build();
     }
 
     /**
@@ -465,8 +506,12 @@ public final class Select {
      * @return selector for all shorts
      * @since 1.2.0
      */
-    public static Selector allShorts() {
-        return new PrimitiveAndWrapperSelectorImpl(short.class, Short.class);
+    public static PredicateSelector allShorts() {
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.ALL)
+                .typePredicate(t -> t == short.class || t == Short.class)
+                .apiInvocationDescription("allShorts()")
+                .build();
     }
 
     /**
@@ -475,8 +520,12 @@ public final class Select {
      * @return selector for all integers
      * @since 1.2.0
      */
-    public static Selector allInts() {
-        return new PrimitiveAndWrapperSelectorImpl(int.class, Integer.class);
+    public static PredicateSelector allInts() {
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.ALL)
+                .typePredicate(t -> t == int.class || t == Integer.class)
+                .apiInvocationDescription("allInts()")
+                .build();
     }
 
     /**
@@ -485,8 +534,12 @@ public final class Select {
      * @return selector for all longs
      * @since 1.2.0
      */
-    public static Selector allLongs() {
-        return new PrimitiveAndWrapperSelectorImpl(long.class, Long.class);
+    public static PredicateSelector allLongs() {
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.ALL)
+                .typePredicate(t -> t == long.class || t == Long.class)
+                .apiInvocationDescription("allLongs()")
+                .build();
     }
 
     /**
@@ -495,8 +548,12 @@ public final class Select {
      * @return selector for all doubles
      * @since 1.2.0
      */
-    public static Selector allDoubles() {
-        return new PrimitiveAndWrapperSelectorImpl(double.class, Double.class);
+    public static PredicateSelector allDoubles() {
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.ALL)
+                .typePredicate(t -> t == double.class || t == Double.class)
+                .apiInvocationDescription("allDoubles()")
+                .build();
     }
 
     /**
@@ -505,8 +562,12 @@ public final class Select {
      * @return selector for all booleans
      * @since 1.2.0
      */
-    public static Selector allBooleans() {
-        return new PrimitiveAndWrapperSelectorImpl(boolean.class, Boolean.class);
+    public static PredicateSelector allBooleans() {
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.ALL)
+                .typePredicate(t -> t == boolean.class || t == Boolean.class)
+                .apiInvocationDescription("allBooleans()")
+                .build();
     }
 
     /**
@@ -515,8 +576,12 @@ public final class Select {
      * @return selector for all characters
      * @since 1.2.0
      */
-    public static Selector allChars() {
-        return new PrimitiveAndWrapperSelectorImpl(char.class, Character.class);
+    public static PredicateSelector allChars() {
+        return PredicateSelectorImpl.builder()
+                .priority(Constants.SelectorPriority.ALL)
+                .typePredicate(t -> t == char.class || t == Character.class)
+                .apiInvocationDescription("allChars()")
+                .build();
     }
 
     /**
@@ -538,7 +603,8 @@ public final class Select {
      * @since 1.3.0
      */
     public static Scope scope(final Class<?> targetClass, final String fieldName) {
-        return new ScopeImpl(new TargetFieldName(targetClass, fieldName), null);
+        return new PredicateScopeImpl(field(targetClass, fieldName),
+                "scope(%s, \"%s\")".formatted(targetClass.getSimpleName(), fieldName));
     }
 
     /**
@@ -559,7 +625,8 @@ public final class Select {
      */
     public static Scope scope(final Class<?> targetClass) {
         ApiValidator.notNull(targetClass, "Scope class must not be null");
-        return new ScopeImpl(new TargetClass(targetClass), null);
+        return new PredicateScopeImpl(all(targetClass),
+                "scope(%s)".formatted(targetClass.getSimpleName()));
     }
 
     /**
@@ -579,7 +646,7 @@ public final class Select {
      */
     public static <T, R> Scope scope(final GetMethodSelector<T, R> methodReference) {
         ApiValidator.notNull(methodReference, "getter method reference must not be null");
-        return new ScopeImpl(new TargetGetterReference(methodReference), null);
+        return new PredicateScopeImpl(field(methodReference));
     }
 
     /**

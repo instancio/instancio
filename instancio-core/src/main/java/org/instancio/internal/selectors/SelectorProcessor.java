@@ -21,11 +21,9 @@ import org.instancio.SetMethodSelector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.spi.InternalExtension;
-import org.instancio.internal.util.Verify;
+import org.instancio.internal.util.ObjectUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public final class SelectorProcessor {
@@ -60,65 +58,39 @@ public final class SelectorProcessor {
             final TargetSelector selector,
             final ApiMethodSelector apiMethodSelector) {
 
-        if (selector instanceof SelectorImpl s) {
-            final SelectorImpl result = processTargetAndScope(s, apiMethodSelector);
-            return Collections.singletonList(result);
+        if (selector instanceof PredicateSelectorImpl ps) {
+            final PredicateSelectorImpl processed = processPredicateSelectorTargetAndScope(ps, apiMethodSelector);
+            return List.of(processed);
 
         } else if (selector instanceof SelectorGroupImpl selectorGroup) {
             return processGroup(selectorGroup, apiMethodSelector);
 
         } else if (selector instanceof GetMethodSelector<?, ?> getMethodSelector) {
-            return process(SelectorImpl.builder(new TargetGetterReference(getMethodSelector))
+            return process(PredicateSelectorImpl.builder()
+                    .target(new TargetGetterReference(getMethodSelector))
                     .apiMethodSelector(apiMethodSelector)
                     .build(), apiMethodSelector);
 
         } else if (selector instanceof SetMethodSelector<?, ?>) {
-            return process(SelectorImpl.builder(new TargetSetterReference((SetMethodSelector<?, ?>) selector))
+            return process(PredicateSelectorImpl.builder()
+                    .target(new TargetSetterReference((SetMethodSelector<?, ?>) selector))
                     .apiMethodSelector(apiMethodSelector)
                     .build(), apiMethodSelector);
 
-        } else if (selector instanceof PrimitiveAndWrapperSelectorImpl ps) {
-            final SelectorImpl.Builder primitiveBuilder = ps.getPrimitive().toBuilder().apiMethodSelector(apiMethodSelector);
-            final SelectorImpl.Builder wrapperBuilder = ps.getWrapper().toBuilder().apiMethodSelector(apiMethodSelector);
-
-            if (ps.isScoped()) {
-                final List<Scope> scopes = createScopeWithRootClass(ps.getPrimitive().getScopes());
-
-                return Arrays.asList(
-                        primitiveBuilder.scopes(scopes).build(),
-                        wrapperBuilder.scopes(scopes).build());
-            }
-
-            return Arrays.asList(primitiveBuilder.build(), wrapperBuilder.build());
-
-        } else if (selector instanceof PredicateSelectorImpl ps) {
-            final PredicateSelectorImpl processed = ps.toBuilder()
-                    .apiMethodSelector(apiMethodSelector)
-                    .scopes(createScopeWithRootClass(ps.getScopes()))
-                    .build();
-
-            return Collections.singletonList(processed);
         } else {
             // only remaining option is SelectorBuilder
             final SelectorBuilder builder = (SelectorBuilder) selector;
-            return Collections.singletonList(builder.apiMethodSelector(apiMethodSelector).build());
+            return List.of(builder.apiMethodSelector(apiMethodSelector).build());
         }
     }
 
-    private SelectorImpl processTargetAndScope(
-            final SelectorImpl selector,
+    private PredicateSelectorImpl processPredicateSelectorTargetAndScope(
+            final PredicateSelectorImpl selector,
             final ApiMethodSelector apiMethodSelector) {
 
-        if (selector.getTarget() instanceof TargetRoot) {
-            return selector.toBuilder()
-                    .apiMethodSelector(apiMethodSelector)
-                    .build();
-        }
-
         final List<Scope> processedScopes = createScopeWithRootClass(selector.getScopes());
-        final Target target = selector.getTarget().withRootClass(targetContext);
 
-        final SelectorImpl result = selector.toBuilder(target)
+        final PredicateSelectorImpl result = selector.toBuilderWithContext(targetContext)
                 .apiMethodSelector(apiMethodSelector)
                 .scopes(processedScopes)
                 .build();
@@ -132,19 +104,21 @@ public final class SelectorProcessor {
 
     private List<Scope> createScopeWithRootClass(final List<Scope> scopes) {
         if (scopes.isEmpty()) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         final List<Scope> results = new ArrayList<>(scopes.size());
+
         for (Scope s : scopes) {
-            if (s instanceof ScopeImpl scope) {
-                final Target unprocessed = scope.getTarget();
-                final Target processed = unprocessed.withRootClass(targetContext);
-                results.add(new ScopeImpl(processed, scope.getDepth()));
-            } else {
-                Verify.isTrue(s instanceof PredicateScopeImpl, "expected predicate scope");
-                results.add(s);
-            }
+            final PredicateScopeImpl scope = (PredicateScopeImpl) s;
+            final PredicateSelectorImpl selector = (PredicateSelectorImpl) scope.getPredicateSelector();
+            final PredicateSelectorImpl processedSelector = selector.toBuilderWithContext(targetContext).build();
+
+            final String scopeDescription = ObjectUtils.defaultIfNull(
+                    scope.getApiInvocationDescription(),
+                    "scope(%s)".formatted(processedSelector.getApiInvocationDescription())); // TODO refactor description handling
+
+            results.add(new PredicateScopeImpl(processedSelector, scopeDescription));
         }
         return results;
     }

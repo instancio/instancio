@@ -20,6 +20,9 @@ import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.RootType;
+import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.nodes.NodeKind;
 import org.instancio.test.support.pojo.generics.foobarbaz.Bar;
 import org.instancio.test.support.pojo.generics.foobarbaz.Foo;
 import org.instancio.test.support.pojo.person.Address;
@@ -33,6 +36,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.asserts.ScopeAssert.assertScope;
 import static org.instancio.testsupport.asserts.SelectorAssert.assertSelector;
+import static org.mockito.Mockito.mock;
 
 class SelectorProcessorTest {
 
@@ -55,10 +59,11 @@ class SelectorProcessorTest {
 
         assertSelector(result)
                 .isRootSelector()
-                .hasNullTargetClass()
                 .hasNoScope()
                 .hasToString("root()")
-                .isEqualTo(input);
+                // NOTE used to be equal before switching root() to predicate selector.
+                // Shouldn't make any practical difference...
+                .isNotEqualTo(input);
     }
 
     @Test
@@ -317,13 +322,13 @@ class SelectorProcessorTest {
 
         final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
 
-        assertThat(results).hasSize(2).allSatisfy(selector -> {
+        assertThat(results).hasSize(1).allSatisfy(selector -> {
             assertSelector(selector).hasScopeSize(2);
 
-            assertScope(((SelectorImpl) selector).getScopes().get(0))
+            assertScope(((PredicateSelectorImpl) selector).getScopes().get(0))
                     .hasTargetClass(Foo.class);
 
-            assertScope(((SelectorImpl) selector).getScopes().get(1))
+            assertScope(((PredicateSelectorImpl) selector).getScopes().get(1))
                     .hasTargetClass(Bar.class)
                     .hasField("barValue");
         });
@@ -334,14 +339,14 @@ class SelectorProcessorTest {
             final Class<?> primitiveClass,
             final Class<?> wrapperClass) {
 
-        assertThat(results).hasSize(2);
+        assertThat(results).hasSize(1);
 
-        assertSelector(results.get(0))
-                .isClassSelectorWithNoScope()
-                .hasTargetClass(primitiveClass);
+        final PredicateSelectorImpl selector = assertSelector(results.get(0))
+                .getAs(PredicateSelectorImpl.class);
 
-        assertSelector(results.get(1))
-                .isClassSelectorWithNoScope()
-                .hasTargetClass(wrapperClass);
+        assertThat(selector.getNodePredicate()).accepts(
+                InternalNode.builder(primitiveClass, primitiveClass, mock(RootType.class)).nodeKind(NodeKind.JDK).build(),
+                InternalNode.builder(wrapperClass, wrapperClass, mock(RootType.class)).nodeKind(NodeKind.JDK).build()
+        );
     }
 }

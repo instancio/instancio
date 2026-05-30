@@ -58,12 +58,12 @@ class SelectorDepthRecordTest {
         final Selector id = all(Id.class);
 
         final Outer result = Instancio.of(Outer.class)
-                .set(allInts().within(id.atDepth(1).toScope()), 100)
-                .set(allInts().within(id.atDepth(2).toScope()), 200)
+                .set(allInts().within(id.atDepth(1).toScope()), -100)
+                .set(allInts().within(id.atDepth(2).toScope()), -200)
                 .create();
 
-        assertThat(result.id.value).isEqualTo(100);
-        assertThat(result.mid.id.value).isEqualTo(200);
-        assertThat(result.mid.inner.id.value).isEqualTo(200);
+        assertThat(result.id.value).isEqualTo(-100);
+        assertThat(result.mid.id.value).isEqualTo(-200);
+        assertThat(result.mid.inner.id.value).isPositive(); //  random value
     }
 }

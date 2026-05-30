@@ -25,19 +25,39 @@ import java.util.function.Predicate;
 public final class PredicateScopeImpl implements Scope {
 
     private final PredicateSelector predicateSelector;
-    private final Predicate<@Nullable InternalNode> nodePredicate;
+    private final Predicate<InternalNode> nodePredicate;
+    private final @Nullable String apiInvocationDescription;
 
-    public PredicateScopeImpl(final PredicateSelector predicateSelector) {
+    public PredicateScopeImpl(
+            final PredicateSelector predicateSelector,
+            final @Nullable String apiInvocationDescription) {
+
         this.predicateSelector = predicateSelector;
         this.nodePredicate = ((PredicateSelectorImpl) predicateSelector).getNodePredicate();
+        this.apiInvocationDescription = apiInvocationDescription;
     }
 
-    public Predicate<@Nullable InternalNode> getNodePredicate() {
+    public PredicateScopeImpl(final PredicateSelector predicateSelector) {
+        this(predicateSelector, null);
+    }
+
+    public Predicate<InternalNode> getNodePredicate() {
         return nodePredicate;
+    }
+
+    @Nullable
+    String getApiInvocationDescription() {
+        return apiInvocationDescription;
+    }
+
+    public PredicateSelector getPredicateSelector() {
+        return predicateSelector;
     }
 
     @Override
     public String toString() {
-        return String.format("scope(%s)", predicateSelector);
+        return apiInvocationDescription != null
+                ? apiInvocationDescription
+                : String.format("scope(%s)", predicateSelector);
     }
 }

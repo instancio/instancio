@@ -100,13 +100,12 @@ class PredicateSelectorPrecedenceTest {
     @Test
     void precedenceWithGroupViaAssign() {
         final Assignment[] assignments = {
-                Assign.valueOf(all(field(StringFields::getTwo))).set("bar"),
-                Assign.valueOf(all(fields().named("two"))).set("foo") // unused!
+                Assign.valueOf(all(field(StringFields::getTwo))).set("foo"),
+                Assign.valueOf(all(fields().named("two"))).set("bar") // last one wins
         };
 
         final StringFields result = Instancio.of(StringFields.class)
                 .assign(assignments)
-                .lenient()
                 .create();
 
         assertThat(result.getTwo()).isEqualTo("bar");

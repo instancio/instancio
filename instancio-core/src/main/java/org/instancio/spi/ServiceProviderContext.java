@@ -31,7 +31,7 @@ public interface ServiceProviderContext {
      * Returns a read-only instance of the {@code Settings}.
      *
      * @return read-only instance of settings
-     * @since 2.12.0
+     * @since 5.6.0
      */
     Settings settings();
 

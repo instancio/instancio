@@ -28,11 +28,6 @@ public enum TargetRoot implements Target {
     }
 
     @Override
-    public ScopelessSelector toScopelessSelector() {
-        return new ScopelessSelector(null);
-    }
-
-    @Override
     public String toString() {
         return "root()";
     }

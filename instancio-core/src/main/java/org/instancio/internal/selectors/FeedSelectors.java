@@ -19,7 +19,6 @@ import org.instancio.documentation.InternalApi;
 import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Constants;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -31,15 +30,16 @@ import static java.util.Objects.requireNonNull;
 public final class FeedSelectors {
 
     private static final class FeedSelector extends PredicateSelectorImpl {
-        private FeedSelector(final Predicate<@Nullable InternalNode> predicate, final String description) {
+        private FeedSelector(final Predicate<InternalNode> predicate, final String description) {
             super(ApiMethodSelector.NONE,
-                    Constants.FEED_SELECTOR_PRIORITY,
+                    Constants.SelectorPriority.FEED,
                     predicate,
                     Collections.emptyList(),
                     /* selectorDepth = */ null,
                     /* isLenient = */ true,
                     /* isHiddenFromVerboseOutput = */ true,
                     description,
+                    /* target */ null,
                     new Throwable());
         }
 

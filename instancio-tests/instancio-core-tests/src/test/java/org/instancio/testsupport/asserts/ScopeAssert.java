@@ -17,10 +17,12 @@ package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
 import org.instancio.Scope;
-import org.instancio.internal.selectors.ScopeImpl;
+import org.instancio.internal.selectors.PredicateScopeImpl;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
+import org.instancio.internal.selectors.Target;
 import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
-import org.instancio.internal.selectors.TargetFieldName;
+import org.jspecify.annotations.Nullable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,28 +38,25 @@ public class ScopeAssert extends AbstractAssert<ScopeAssert, Scope> {
         return new ScopeAssert(actual);
     }
 
-    public <T extends Scope> T getAs(final Class<T> type) {
-        assertThat(type).isAssignableFrom(actual.getClass());
-        return type.cast(actual);
-    }
-
     public ScopeAssert hasTargetClass(final Class<?> expected) {
-        assertThat(getAs(ScopeImpl.class).getTargetClass()).isEqualTo(expected);
-        return this;
-    }
+        final Target target = getTarget();
 
-    public ScopeAssert hasNullField() {
-        assertThat(getAs(ScopeImpl.class).getField()).isNull();
+        if (target instanceof TargetField tf) {
+            assertThat(tf.getTargetClass()).isEqualTo(expected);
+        } else {
+            assertThat(((TargetClass) target).getTargetClass()).isEqualTo(expected);
+        }
         return this;
     }
 
     public ScopeAssert hasField(final String expected) {
-        final ScopeImpl scope = getAs(ScopeImpl.class);
-        if (scope.getTarget() instanceof TargetField) {
-            assertThat(((TargetField) scope.getTarget()).getField().getName()).isEqualTo(expected);
-        } else {
-            assertThat(((TargetFieldName) scope.getTarget()).getFieldName()).isEqualTo(expected);
-        }
+        final Target target = getTarget();
+        assertThat(((TargetField) target).getField().getName()).isEqualTo(expected);
+        return this;
+    }
+
+    public ScopeAssert isPredicateScope() {
+        assertThat(actual).isExactlyInstanceOf(PredicateScopeImpl.class);
         return this;
     }
 
@@ -70,7 +69,18 @@ public class ScopeAssert extends AbstractAssert<ScopeAssert, Scope> {
     }
 
     private ScopeAssert isOfType(final Class<?> type) {
-        assertThat(getAs(ScopeImpl.class).getTarget()).isExactlyInstanceOf(type);
+        assertThat(getTarget()).isExactlyInstanceOf(type);
         return this;
+    }
+
+    @Nullable
+    private Target getTarget() {
+        final PredicateScopeImpl scope = getAs(PredicateScopeImpl.class);
+        return ((PredicateSelectorImpl) scope.getPredicateSelector()).getTarget();
+    }
+
+    private <T extends Scope> T getAs(final Class<T> type) {
+        assertThat(type).isAssignableFrom(actual.getClass());
+        return type.cast(actual);
     }
 }

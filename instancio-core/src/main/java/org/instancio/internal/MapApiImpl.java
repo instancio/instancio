@@ -32,7 +32,7 @@ public final class MapApiImpl<K, V, M extends Map<K, V>>
 
     @Override
     public InstancioCollectionsApi<M> size(final int size) {
-        generate(Select.root(), gen -> gen.map().size(size));
+        size(Select.root(), size);
         return this;
     }
 }

@@ -82,7 +82,9 @@ public final class AnnotationExtractor {
         if (parentAnnotatedType instanceof AnnotatedArrayType aat) {
             return aat.getAnnotatedGenericComponentType().getAnnotations();
         }
-        final AnnotatedParameterizedType apt = (AnnotatedParameterizedType) parentAnnotatedType;
+        if (!(parentAnnotatedType instanceof AnnotatedParameterizedType apt)) {
+            return EMPTY_ANNOTATIONS;
+        }
         final int childIndex = CollectionUtils.identityIndexOf(node, parent.getChildren());
         return apt.getAnnotatedActualTypeArguments()[childIndex].getAnnotations();
     }

@@ -757,4 +757,53 @@ public interface BaseApi<T extends @Nullable Object> {
      */
     @ExperimentalApi
     BaseApi<T> withUnique(TargetSelector selector);
+
+    /**
+     * Sets an exact size for the collection, array, or map targeted by the given selector.
+     *
+     * <p>This method provides a shorthand for {@link #size(TargetSelector, Size)}.
+     *
+     * @param selector for the collection, array, or map this method should be applied to
+     * @param size     the exact size
+     * @return API builder reference
+     * @see #size(TargetSelector, Size)
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    BaseApi<T> size(TargetSelector selector, int size);
+
+    /**
+     * Sets the size for the collection, array, or map targeted by the given selector
+     * using a {@link Size} specification.
+     *
+     * <p>This method supports both exact sizes and ranges:
+     * <pre>{@code
+     * // Exact size
+     * .size(field(Person::getAddresses), Size.of(3))
+     *
+     * // Random size within the given range, inclusive
+     * .size(field(Person::getAddresses), Size.range(1, 5))
+     * }</pre>
+     *
+     * <p>This method has a higher precedence than {@code generate()}, for example,
+     * the following will produce a collection of hobbies of size 1,
+     * despite the collection generator spec which specifies {@code size(2)}.
+     *
+     * <pre>{@code
+     * Person person = Instancio.of(Person.class)
+     *     .size(field(Person::getHobbies), Size.of(1))
+     *     .generate(field(Person::getHobbies), gen -> gen.collection().size(2))
+     *     .create();
+     * }</pre>
+     *
+     * @param selector for the collection, array, or map this method should be applied to
+     * @param size     the size specification
+     * @return API builder reference
+     * @see #size(TargetSelector, int)
+     * @see Size#of(int)
+     * @see Size#range(int, int)
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    BaseApi<T> size(TargetSelector selector, Size size);
 }

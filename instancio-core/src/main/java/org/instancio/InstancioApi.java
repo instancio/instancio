@@ -371,4 +371,22 @@ public interface InstancioApi<T extends @Nullable Object> extends
     @Override
     @ExperimentalApi
     InstancioApi<T> withUnique(TargetSelector selector);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 6.0.0
+     */
+    @Override
+    @ExperimentalApi
+    InstancioApi<T> size(TargetSelector selector, int size);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 6.0.0
+     */
+    @Override
+    @ExperimentalApi
+    InstancioApi<T> size(TargetSelector selector, Size size);
 }

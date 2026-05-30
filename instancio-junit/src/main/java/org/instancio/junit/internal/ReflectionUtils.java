@@ -24,7 +24,9 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
@@ -39,17 +41,25 @@ public final class ReflectionUtils {
     }
 
     public static List<Annotation> collectionAnnotations(final AnnotatedElement element) {
+        final Set<Annotation> results = new HashSet<>();
+        collectionAnnotations(element, results);
+        return new ArrayList<>(results);
+    }
+
+    private static void collectionAnnotations(final AnnotatedElement element, final Set<Annotation> results) {
         final Annotation[] annotations = element.getDeclaredAnnotations();
-        final List<Annotation> results = new ArrayList<>();
         for (Annotation annotation : annotations) {
+            if (results.contains(annotation)) {
+                continue;
+            }
             final Class<? extends Annotation> type = annotation.annotationType();
 
-            if (!type.getPackage().getName().startsWith("java.")) {
+            String packageName = type.getPackage().getName();
+            if (!packageName.startsWith("java.") && !packageName.startsWith("kotlin.") && !"kotlin".equals(packageName)) {
                 results.add(annotation);
-                results.addAll(collectionAnnotations(type));
+                collectionAnnotations(type, results);
             }
         }
-        return results;
     }
 
     static List<Field> getAnnotatedFields(final Class<?> klass, final Class<? extends Annotation> annotation) {

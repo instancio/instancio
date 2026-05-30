@@ -22,6 +22,7 @@ import org.instancio.InstancioCartesianProductApi;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
 import org.instancio.Select;
+import org.instancio.Size;
 import org.instancio.TargetSelector;
 import org.instancio.TypeTokenSupplier;
 import org.instancio.feed.Feed;
@@ -221,6 +222,17 @@ public class CartesianProductApiImpl<T> implements InstancioCartesianProductApi<
     @Override
     public InstancioCartesianProductApi<T> verbose() {
         modelContextBuilder.verbose();
+        return this;
+    }
+
+    @Override
+    public InstancioCartesianProductApi<T> size(final TargetSelector selector, final int size) {
+        return size(selector, Size.of(size));
+    }
+
+    @Override
+    public InstancioCartesianProductApi<T> size(final TargetSelector selector, final Size size) {
+        modelContextBuilder.withContainerSize(selector, size);
         return this;
     }
 

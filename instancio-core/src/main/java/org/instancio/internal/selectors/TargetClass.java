@@ -15,8 +15,6 @@
  */
 package org.instancio.internal.selectors;
 
-import java.util.Objects;
-
 public final class TargetClass implements Target {
 
     private final Class<?> targetClass; // NOSONAR
@@ -31,21 +29,16 @@ public final class TargetClass implements Target {
     }
 
     @Override
-    public ScopelessSelector toScopelessSelector() {
-        return new ScopelessSelector(targetClass);
-    }
-
-    @Override
     @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof TargetClass that)) return false;
-        return Objects.equals(targetClass, that.targetClass);
+        return targetClass.equals(that.targetClass);
     }
 
     @Override
     public int hashCode() {
-        return targetClass != null ? targetClass.hashCode() : 0;
+        return targetClass.hashCode();
     }
 
     @Override

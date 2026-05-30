@@ -23,6 +23,7 @@ import org.instancio.OnCompleteCallback;
 import org.instancio.Random;
 import org.instancio.Scope;
 import org.instancio.Select;
+import org.instancio.Size;
 import org.instancio.TargetSelector;
 import org.instancio.feed.Feed;
 import org.instancio.feed.FeedProvider;
@@ -32,6 +33,7 @@ import org.instancio.internal.ApiMethodSelector;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.InternalModel;
+import org.instancio.internal.InternalSize;
 import org.instancio.internal.RandomHelper;
 import org.instancio.internal.RootType;
 import org.instancio.internal.assignment.InternalAssignment;
@@ -47,8 +49,8 @@ import org.instancio.internal.selectors.SelectorProcessor;
 import org.instancio.internal.selectors.SetterSelectorHolder;
 import org.instancio.internal.settings.InternalSettings;
 import org.instancio.internal.spi.InternalExtension;
-import org.instancio.internal.spi.InternalServiceProviderContext;
 import org.instancio.internal.spi.InternalExtensionImpl;
+import org.instancio.internal.spi.InternalServiceProviderContext;
 import org.instancio.internal.spi.Providers;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ErrorMessageUtils;
@@ -153,8 +155,8 @@ public final class ModelContext {
         return providers;
     }
 
-    public void reportWarnings() {
-        reportUnusedSelectorWarnings();
+    public void reportWarnings(final InternalNode rootNode) {
+        reportUnusedSelectorWarnings(rootNode);
         reportEmitGeneratorWarnings();
     }
 
@@ -164,9 +166,9 @@ public final class ModelContext {
         reporter.report();
     }
 
-    void reportUnusedSelectorWarnings() {
+    void reportUnusedSelectorWarnings(final InternalNode rootNode) {
         if (settings.get(Keys.MODE) == Mode.STRICT && !selectorMaps.allEmpty()) {
-            new UnusedSelectorReporter(getMaxDepth(), selectorMaps).report();
+            new UnusedSelectorReporter(getMaxDepth(), selectorMaps).report(rootNode);
         }
     }
 
@@ -222,6 +224,11 @@ public final class ModelContext {
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
     public Optional<Generator<?>> getGenerator(final InternalNode node) {
         return selectorMaps.getGeneratorSelectorMap().getGenerator(node);
+    }
+
+    @Nullable
+    public InternalSize getContainerSize(final InternalNode node) {
+        return selectorMaps.getContainerSizeSelectorMap().getSize(node).orElse(null);
     }
 
     public void putGenerator(TargetSelector selector, Generator<?> generator) {
@@ -281,6 +288,7 @@ public final class ModelContext {
         builder.assignmentMap = new LinkedHashMap<>(copyAsLinkedHashMap(this.contextSource.getAssignmentMap()));
         builder.setModelMap = new LinkedHashMap<>(this.contextSource.getSetModelMap());
         builder.feedMap = new LinkedHashMap<>(this.contextSource.getFeedMap());
+        builder.containerSizeMap = new LinkedHashMap<>(this.contextSource.getContainerSizeMap());
         return builder;
     }
 
@@ -302,6 +310,7 @@ public final class ModelContext {
         private @Nullable Map<TargetSelector, List<Assignment>> assignmentMap;
         private @Nullable Map<TargetSelector, ModelContext> setModelMap;
         private @Nullable Map<TargetSelector, Function<GeneratorContext, Feed>> feedMap;
+        private @Nullable Map<TargetSelector, InternalSize> containerSizeMap;
         private @Nullable Set<TargetSelector> ignoreSet;
         private @Nullable Set<TargetSelector> withNullableSet;
         private @Nullable Settings settings;
@@ -525,6 +534,11 @@ public final class ModelContext {
             return this;
         }
 
+        public Builder withContainerSize(final TargetSelector selector, final Size size) {
+            containerSizeMap = CollectionUtils.newLinkedHashMapIfNull(containerSizeMap);
+            return addSelector(containerSizeMap, selector, (InternalSize) size, ApiMethodSelector.SIZE);
+        }
+
         public Builder setBlank(final TargetSelector selector) {
             if (selector instanceof InternalSelector internalSelector && internalSelector.isRootSelector()) {
                 setBlankTargets(); // special case for root selector (no scopes)
@@ -575,6 +589,7 @@ public final class ModelContext {
             assignmentMap = new LinkedHashMap<>(src.getAssignmentMap());
             setModelMap = new LinkedHashMap<>(src.getSetModelMap());
             feedMap = new LinkedHashMap<>(src.getFeedMap());
+            containerSizeMap = new LinkedHashMap<>(src.getContainerSizeMap());
 
             // Increment max depth to account for the additional layer added by the collection
             maxDepth = otherContext.maxDepth == null ? null : otherContext.maxDepth + 1; //NOPMD
@@ -620,6 +635,7 @@ public final class ModelContext {
                     assignmentMap,
                     setModelMap,
                     feedMap,
+                    containerSizeMap,
                     ignoreSet,
                     withNullableSet);
         }

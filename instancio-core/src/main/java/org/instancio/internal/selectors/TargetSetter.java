@@ -15,17 +15,16 @@
  */
 package org.instancio.internal.selectors;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.Method;
 import java.util.Objects;
-
-import org.jspecify.annotations.Nullable;
 
 public final class TargetSetter implements Target {
 
     private final Method setter;
     private final Class<?> parameterType;
-    @Nullable
-    private final String description;
+    private final @Nullable String description;
 
     public TargetSetter(final Method setter) {
         this(setter, null);
@@ -44,15 +43,6 @@ public final class TargetSetter implements Target {
 
     public Method getSetter() {
         return setter;
-    }
-
-    public Class<?> getParameterType() {
-        return parameterType;
-    }
-
-    @Override
-    public ScopelessSelector toScopelessSelector() {
-        return new ScopelessSelector(setter.getDeclaringClass(), setter);
     }
 
     @Override

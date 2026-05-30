@@ -18,12 +18,16 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
 import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
@@ -39,7 +43,12 @@ final class UnusedSelectorReporter {
     }
 
     @SuppressWarnings(Sonar.STRING_LITERALS_DUPLICATED)
-    void report() {
+    void report(final InternalNode rootNode) {
+        final Set<TargetSelector> misapplied = collector.findMisappliedSizeSelectors(rootNode);
+        if (!misapplied.isEmpty()) {
+            throw Fail.withUsageError(formatMisappliedSizeError(misapplied));
+        }
+
         final List<TargetSelector> unusedSelectors = collector.getUnusedSelectors();
         if (unusedSelectors.isEmpty()) {
             return;
@@ -140,5 +149,22 @@ final class UnusedSelectorReporter {
                 .sorted()
                 .map(it -> String.format(" %s: %s", count[0]++, it))
                 .collect(joining(NL));
+    }
+
+    private static String formatMisappliedSizeError(final Collection<TargetSelector> misapplied) {
+        final StringBuilder sb = new StringBuilder(512)
+                .append("'size()' can only be applied to a collection, array, or map.")
+                .append(NL)
+                .append(NL)
+                .append("Found selector(s) targeting an incompatible type:")
+                .append(NL);
+
+        for (TargetSelector selector : misapplied) {
+            sb.append(NL)
+                    .append(String.format(" -> %s", ((UnusedSelectorDescription) selector).getDescription()))
+                    .append(NL);
+        }
+
+        return sb.toString();
     }
 }

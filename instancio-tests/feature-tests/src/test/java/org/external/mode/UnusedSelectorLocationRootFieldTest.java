@@ -40,16 +40,14 @@ class UnusedSelectorLocationRootFieldTest {
         // Root field, specified without the class
         final TargetSelector rootClassFieldSelector = field("address").within(scope(byte.class));
 
-        // The above selector gets processed to include the root class,
-        // therefore when asserting for unused selectors, we must use the processed selector
-        final TargetSelector expected = field(Person.class, "address").within(scope(byte.class));
-
         final InstancioApi<Person> api = Instancio.of(Person.class)
                 .supply(rootClassFieldSelector, () -> fail("not called"));
 
         assertThrowsUnusedSelectorException(api)
                 .hasUnusedSelectorCount(1)
-                .supplySelector(expected, line(getClass(), 41));
+                // After selector is processed, it should include the root class so that
+                // `field("address")` becomes `field(Person, "address")`
+                .supplySelector(field(Person.class, "address").within(scope(byte.class)), line(getClass(), 41));
     }
 
 }

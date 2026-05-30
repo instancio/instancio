@@ -16,8 +16,6 @@
 package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
-import org.instancio.InstancioApi;
-import org.instancio.exception.UnusedSelectorException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.AssignmentType;
@@ -37,7 +35,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
@@ -67,27 +64,28 @@ import static org.instancio.Select.types;
 })
 @ExtendWith(InstancioExtension.class)
 class SelectorPrecedenceTest {
+
     private static final String VIA_FIELD = "via field selector";
     private static final String VIA_SETTER = "via setter selector";
     private static final String VIA_TYPE = "via type selector";
-    private static final String VIA_PREDICATE_FIELD = "via predicate field selector";
-    private static final String VIA_PREDICATE_TYPE = "via predicate type selector";
+    private static final String VIA_FIELD_BUILDER = "via field builder";
+    private static final String VIA_TYPE_BUILDER = "via type builder";
 
     @Test
     @DisplayName("Verify each selector's precedence using set()")
     void verifySelectorPrecedenceUsingSet() {
         // Note: the order of set() methods in this particular test does not matter.
         // It would have mattered, if there was more than 1 selector per target,
-        // in which case the last wins and the other(s) result in "unused selectors" error.
+        // in which case the last wins.
         final StringFields result = Instancio.of(StringFields.class)
                 .set(field("four"), VIA_FIELD)
-                .set(types().of(String.class), VIA_PREDICATE_TYPE)
-                .set(fields().ofType(String.class).annotated(StringFields.Two.class), VIA_PREDICATE_FIELD)
+                .set(types().of(String.class), VIA_TYPE_BUILDER) // blanket - all strings
+                .set(fields().ofType(String.class).annotated(StringFields.Two.class), VIA_FIELD_BUILDER)
                 .set(allStrings().within(scope(StringFields.class, "three")), VIA_TYPE)
                 .create();
 
-        assertThat(result.getOne()).isEqualTo(VIA_PREDICATE_TYPE);
-        assertThat(result.getTwo()).isEqualTo(VIA_PREDICATE_FIELD);
+        assertThat(result.getOne()).isEqualTo(VIA_TYPE_BUILDER);
+        assertThat(result.getTwo()).isEqualTo(VIA_FIELD_BUILDER);
         assertThat(result.getThree()).isEqualTo(VIA_TYPE);
         assertThat(result.getFour()).isEqualTo(VIA_FIELD);
     }
@@ -97,13 +95,13 @@ class SelectorPrecedenceTest {
     void verifySelectorPrecedenceUsingGenerate() {
         final StringFields result = Instancio.of(StringFields.class)
                 .generate(field("four"), gen -> gen.text().pattern(VIA_FIELD))
-                .generate(types().of(String.class), gen -> gen.text().pattern(VIA_PREDICATE_TYPE))
-                .generate(fields().ofType(String.class).annotated(StringFields.Two.class), gen -> gen.text().pattern(VIA_PREDICATE_FIELD))
+                .generate(types().of(String.class), gen -> gen.text().pattern(VIA_TYPE_BUILDER))
+                .generate(fields().ofType(String.class).annotated(StringFields.Two.class), gen -> gen.text().pattern(VIA_FIELD_BUILDER))
                 .generate(allStrings().within(scope(StringFields.class, "three")), gen -> gen.text().pattern(VIA_TYPE))
                 .create();
 
-        assertThat(result.getOne()).isEqualTo(VIA_PREDICATE_TYPE);
-        assertThat(result.getTwo()).isEqualTo(VIA_PREDICATE_FIELD);
+        assertThat(result.getOne()).isEqualTo(VIA_TYPE_BUILDER);
+        assertThat(result.getTwo()).isEqualTo(VIA_FIELD_BUILDER);
         assertThat(result.getThree()).isEqualTo(VIA_TYPE);
         assertThat(result.getFour()).isEqualTo(VIA_FIELD);
     }
@@ -118,7 +116,6 @@ class SelectorPrecedenceTest {
                 // Target strings using class first, then field
                 .set(allStrings(), "foo")
                 .set(field("name"), "bar")
-                .lenient()
                 .create();
 
         assertThat(result.getAddress()).isNull();
@@ -133,14 +130,14 @@ class SelectorPrecedenceTest {
     @DisplayName("generate() (even with regular selector) has higher precedence than set() with predicate selector")
     void setWithPredicateHasHigherPrecedenceThanGenerate() {
         final StringFields result = Instancio.of(StringFields.class)
-                .set(types().of(String.class), VIA_PREDICATE_TYPE)
+                .set(types().of(String.class), VIA_TYPE_BUILDER)
                 .generate(field("two"), gen -> gen.text().pattern(VIA_FIELD))
                 .create();
 
         assertThat(result.getTwo()).isEqualTo(VIA_FIELD);
-        assertThat(result.getOne()).isEqualTo(VIA_PREDICATE_TYPE);
-        assertThat(result.getThree()).isEqualTo(VIA_PREDICATE_TYPE);
-        assertThat(result.getFour()).isEqualTo(VIA_PREDICATE_TYPE);
+        assertThat(result.getOne()).isEqualTo(VIA_TYPE_BUILDER);
+        assertThat(result.getThree()).isEqualTo(VIA_TYPE_BUILDER);
+        assertThat(result.getFour()).isEqualTo(VIA_TYPE_BUILDER);
     }
 
     @Test
@@ -169,7 +166,6 @@ class SelectorPrecedenceTest {
             final StringFields result = Instancio.of(StringFields.class)
                     .set(field(StringFields::getOne), VIA_FIELD)
                     .set(setter(StringFields::setOne), VIA_SETTER)
-                    .lenient()
                     .create();
 
             assertThat(result.getOne()).isEqualTo(VIA_FIELD);
@@ -180,21 +176,9 @@ class SelectorPrecedenceTest {
             final StringFields result = Instancio.of(StringFields.class)
                     .set(setter(StringFields::setOne), VIA_SETTER)
                     .set(field(StringFields::getOne), VIA_FIELD)
-                    .lenient()
                     .create();
 
             assertThat(result.getOne()).isEqualTo(VIA_FIELD);
-        }
-
-        @Test
-        void unusedSelectorIsThrownInStrictMode() {
-            final InstancioApi<StringFields> api = Instancio.of(StringFields.class)
-                    .set(setter(StringFields::setOne), VIA_SETTER)
-                    .set(field(StringFields::getOne), VIA_FIELD);
-
-            assertThatThrownBy(api::create)
-                    .isExactlyInstanceOf(UnusedSelectorException.class)
-                    .hasMessageContaining("setter(StringFields::setOne)");
         }
     }
 
@@ -238,7 +222,7 @@ class SelectorPrecedenceTest {
         @Test
         void setterSelectorShouldTakePrecedenceOverPredicateFieldSelector() {
             final StringFields result = Instancio.of(StringFields.class)
-                    .set(fields().ofType(String.class), VIA_PREDICATE_FIELD)
+                    .set(fields().ofType(String.class), VIA_FIELD_BUILDER)
                     .set(setter(StringFields::setOne), VIA_SETTER)
                     .create();
 
@@ -248,7 +232,7 @@ class SelectorPrecedenceTest {
         @Test
         void setterSelectorShouldTakePrecedenceOverPredicateTypeSelector() {
             final StringFields result = Instancio.of(StringFields.class)
-                    .set(types().of(String.class), VIA_PREDICATE_TYPE)
+                    .set(types().of(String.class), VIA_TYPE_BUILDER)
                     .set(setter(StringFields::setOne), VIA_SETTER)
                     .create();
 

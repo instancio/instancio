@@ -40,7 +40,7 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
     }
 
     public static UnusedSelectorsAssert assertUnusedSelectorMessage(final Throwable actual) {
-        assertThat(actual).isExactlyInstanceOf(UnusedSelectorException.class);
+        assertThat(actual).as("null Throwable").isExactlyInstanceOf(UnusedSelectorException.class);
         return new UnusedSelectorsAssert((UnusedSelectorException) actual);
     }
 
@@ -67,31 +67,38 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
     }
 
     public UnusedSelectorsAssert ignoreSelector(final TargetSelector selector, final String stackTraceLine) {
-        return assertUnusedSelectorAt(selector, stackTraceLine, actual.getUnusedSelectorMap().get(ApiMethodSelector.IGNORE));
+        return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
+                actual.getUnusedSelectorMap().get(ApiMethodSelector.IGNORE));
     }
 
     public UnusedSelectorsAssert withNullableSelector(final TargetSelector selector, final String stackTraceLine) {
-        return assertUnusedSelectorAt(selector, stackTraceLine, actual.getUnusedSelectorMap().get(ApiMethodSelector.WITH_NULLABLE));
+        return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
+                actual.getUnusedSelectorMap().get(ApiMethodSelector.WITH_NULLABLE));
     }
 
     public UnusedSelectorsAssert generateSelector(final TargetSelector selector, final String stackTraceLine) {
-        return assertUnusedSelectorAt(selector, stackTraceLine, actual.getUnusedSelectorMap().get(ApiMethodSelector.GENERATE));
+        return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
+                actual.getUnusedSelectorMap().get(ApiMethodSelector.GENERATE));
     }
 
     public UnusedSelectorsAssert setSelector(final TargetSelector selector, final String stackTraceLine) {
-        return assertUnusedSelectorAt(selector, stackTraceLine, actual.getUnusedSelectorMap().get(ApiMethodSelector.SET));
+        return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
+                actual.getUnusedSelectorMap().get(ApiMethodSelector.SET));
     }
 
     public UnusedSelectorsAssert supplySelector(final TargetSelector selector, final String stackTraceLine) {
-        return assertUnusedSelectorAt(selector, stackTraceLine, actual.getUnusedSelectorMap().get(ApiMethodSelector.SUPPLY));
+        return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
+                actual.getUnusedSelectorMap().get(ApiMethodSelector.SUPPLY));
     }
 
     public UnusedSelectorsAssert onCompleteSelector(final TargetSelector selector, final String stackTraceLine) {
-        return assertUnusedSelectorAt(selector, stackTraceLine, actual.getUnusedSelectorMap().get(ApiMethodSelector.ON_COMPLETE));
+        return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
+                actual.getUnusedSelectorMap().get(ApiMethodSelector.ON_COMPLETE));
     }
 
     public UnusedSelectorsAssert subtypeSelector(final TargetSelector selector, final String stackTraceLine) {
-        return assertUnusedSelectorAt(selector, stackTraceLine, actual.getUnusedSelectorMap().get(ApiMethodSelector.SUBTYPE));
+        return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
+                actual.getUnusedSelectorMap().get(ApiMethodSelector.SUBTYPE));
     }
 
     //
@@ -99,48 +106,53 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
     //
 
     public UnusedSelectorsAssert ignoreSelector(final TargetSelector selector) {
-        return assertUnused(selector, actual.getUnusedSelectorMap().get(ApiMethodSelector.IGNORE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.IGNORE));
     }
 
     public UnusedSelectorsAssert withNullableSelector(final TargetSelector selector) {
-        return assertUnused(selector, actual.getUnusedSelectorMap().get(ApiMethodSelector.WITH_NULLABLE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.WITH_NULLABLE));
     }
 
     public UnusedSelectorsAssert generateSelector(final TargetSelector selector) {
-        return assertUnused(selector, actual.getUnusedSelectorMap().get(ApiMethodSelector.GENERATE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.GENERATE));
     }
 
     public UnusedSelectorsAssert setSelector(final TargetSelector selector) {
-        return assertUnused(selector, actual.getUnusedSelectorMap().get(ApiMethodSelector.SET));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.SET));
     }
 
     public UnusedSelectorsAssert supplySelector(final TargetSelector selector) {
-        return assertUnused(selector, actual.getUnusedSelectorMap().get(ApiMethodSelector.SUPPLY));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.SUPPLY));
     }
 
     public UnusedSelectorsAssert onCompleteSelector(final TargetSelector selector) {
-        return assertUnused(selector, actual.getUnusedSelectorMap().get(ApiMethodSelector.ON_COMPLETE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.ON_COMPLETE));
     }
 
     public UnusedSelectorsAssert subtypeSelector(final TargetSelector selector) {
-        return assertUnused(selector, actual.getUnusedSelectorMap().get(ApiMethodSelector.SUBTYPE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.SUBTYPE));
     }
 
     private UnusedSelectorsAssert assertUnusedSelectorAt(
-            final TargetSelector selector,
+            final String selectorDescription,
             final String stackTraceLine,
             final List<TargetSelector> selectors) {
 
-        assertThat(getActualStackTraceLine(selector.toString())).containsSubsequence(stackTraceLine);
-        return assertUnused(selector, selectors);
+        assertThat(getActualStackTraceLine(selectorDescription)).containsSubsequence(stackTraceLine);
+        return assertUnused(selectorDescription, selectors);
     }
 
     private UnusedSelectorsAssert assertUnused(
-            final TargetSelector selector,
+            final String selectorDescription,
             final List<TargetSelector> selectors) {
 
-        assertThat(isUnusedSelector(selector, selectors))
-                .as("Expected selector %s to be unused", selector)
+        // We can't look up the selector in the Set use contains() because
+        // the passed in 'selector' is unprocessed, and equals() cannot be used
+        // to compare processed and unprocessed selectors
+        assertThat(selectors.stream()
+                .map(Object::toString)
+                .anyMatch(it -> it.equals(selectorDescription)))
+                .as("Expected selector %s to be unused", selectorDescription)
                 .isTrue();
 
         return this;
@@ -156,6 +168,18 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
                 break;
             }
         }
+
+        assertThat(actualStackTraceLine)
+                .as("""
+                                Could not find a stacktrace line containing the expected string: '%s'
+                                
+                                The actual unused selector error message is:
+                                ---
+                                %s
+                                ---
+                                """,
+                        expected, message.trim())
+                .isNotNull();
         return actualStackTraceLine;
     }
 
@@ -163,14 +187,5 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
         // Remove everything after "possible causes" from the exception message.
         // This is to prevent examples selectors in the error message from being counted.
         return message.substring(0, message.indexOf("Possible causes"));
-    }
-
-    private boolean isUnusedSelector(final TargetSelector selector, final List<TargetSelector> selectors) {
-        // We can't look up the selector in the Set use contains() because
-        // the passed in 'selector' is unprocessed, and equals() cannot be used
-        // to compare processed and unprocessed selectors
-        return selectors.stream()
-                .map(Object::toString)
-                .anyMatch(it -> it.equals(selector.toString()));
     }
 }

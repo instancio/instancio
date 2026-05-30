@@ -62,9 +62,9 @@ class OfListSizeTest {
 
     @Test
     void withNegativeSize() {
-        final InstancioCollectionsApi<List<Phone>> api = Instancio.ofList(Phone.class).size(-1);
+        final InstancioCollectionsApi<List<Phone>> api = Instancio.ofList(Phone.class);
 
-        assertThatThrownBy(api::create)
+        assertThatThrownBy(() -> api.size(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("size must not be negative: -1");
     }

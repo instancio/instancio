@@ -44,11 +44,6 @@ public final class TargetField implements Target {
     }
 
     @Override
-    public ScopelessSelector toScopelessSelector() {
-        return new ScopelessSelector(field.getDeclaringClass(), field);
-    }
-
-    @Override
     @SuppressWarnings("PMD.SimplifyBooleanReturns")
     public boolean equals(final Object o) {
         if (this == o) return true;

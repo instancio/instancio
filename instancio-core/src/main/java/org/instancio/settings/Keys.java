@@ -943,7 +943,7 @@ public final class Keys {
      * @param defaultValue the default value for this key
      * @param <T>          the value type
      * @return key builder
-     * @since 2.12.0
+     * @since 5.6.0
      */
     @ExperimentalApi
     public static <T extends @Nullable Object> SettingKeyBuilder<T> ofType(final Class<T> type, final T defaultValue) {

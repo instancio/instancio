@@ -58,15 +58,15 @@
         <version.guava>33.6.0-jre</version.guava>
         <version.hibernate.validator>9.1.0.Final</version.hibernate.validator>
         <version.highlight.js>11.11.1</version.highlight.js>
-        <version.jackson>3.1.2</version.jackson>
-        <version.groovy>5.0.5</version.groovy>
+        <version.jackson>3.1.3</version.jackson>
+        <version.groovy>5.0.6</version.groovy>
         <version.jakarta.persistence>3.2.0</version.jakarta.persistence>
         <version.jakarta.validation>3.1.1</version.jakarta.validation>
         <version.jspecify>1.0.0</version.jspecify>
-        <version.junit>6.0.3</version.junit>
+        <version.junit>6.1.0</version.junit>
         <version.kotlin>2.3.21</version.kotlin>
-        <version.protobuf-java>4.34.1</version.protobuf-java>
-        <version.slf4j>2.0.17</version.slf4j>
+        <version.protobuf-java>4.35.0</version.protobuf-java>
+        <version.slf4j>2.0.18</version.slf4j>
         <version.errorprone>2.49.0</version.errorprone>
         <version.nullaway>0.13.4</version.nullaway>
         <!-- plugins -->
@@ -75,17 +75,17 @@
         <version.maven-bundle-plugin>6.0.2</version.maven-bundle-plugin>
         <version.maven-checkstyle-plugin>3.6.0</version.maven-checkstyle-plugin>
         <version.maven-compiler-plugin>3.15.0</version.maven-compiler-plugin>
-        <version.maven-enforcer-plugin>3.6.2</version.maven-enforcer-plugin>
+        <version.maven-enforcer-plugin>3.6.3</version.maven-enforcer-plugin>
         <version.maven-gpg-plugin>3.2.8</version.maven-gpg-plugin>
         <version.maven-jar-plugin>3.5.0</version.maven-jar-plugin>
         <version.maven-javadoc-plugin>3.12.0</version.maven-javadoc-plugin>
         <version.maven-pmd-plugin>3.28.0</version.maven-pmd-plugin>
         <version.pmd>7.24.0</version.pmd>
         <version.maven-release-plugin>3.3.1</version.maven-release-plugin>
-        <version.maven-site-plugin>3.21.0</version.maven-site-plugin>
+        <version.maven-site-plugin>3.22.0</version.maven-site-plugin>
         <version.maven-source-plugin>3.4.0</version.maven-source-plugin>
         <version.kover-maven-plugin>0.9.8</version.kover-maven-plugin>
-        <version.sonar-maven-plugin>5.6.0.6792</version.sonar-maven-plugin>
+        <version.sonar-maven-plugin>5.7.0.6970</version.sonar-maven-plugin>
         <version.spotbugs-maven-plugin>4.9.8.3</version.spotbugs-maven-plugin>
         <version.versions-maven-plugin>2.21.0</version.versions-maven-plugin>
         <version.flatten-maven-plugin>1.7.3</version.flatten-maven-plugin>
@@ -93,8 +93,8 @@
         <version.maven-resources-plugin>3.5.0</version.maven-resources-plugin>
         <version.maven-install-plugin>3.1.4</version.maven-install-plugin>
         <version.maven-deploy-plugin>3.1.4</version.maven-deploy-plugin>
-        <version.maven-failsafe-plugin>3.5.5</version.maven-failsafe-plugin>
-        <version.maven-surefire-plugin>3.5.5</version.maven-surefire-plugin>
+        <version.maven-failsafe-plugin>3.5.6</version.maven-failsafe-plugin>
+        <version.maven-surefire-plugin>3.5.6</version.maven-surefire-plugin>
     </properties>
 
     <issueManagement>
@@ -424,7 +424,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>13.4.1</version>
+                            <version>13.4.2</version>
                         </dependency>
                         <dependency>
                             <groupId>org.instancio</groupId>

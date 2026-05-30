@@ -62,9 +62,9 @@ class OfMapSizeTest {
 
     @Test
     void withNegativeSize() {
-        final InstancioCollectionsApi<Map<String, Integer>> api = Instancio.ofMap(String.class, Integer.class).size(-1);
+        final InstancioCollectionsApi<Map<String, Integer>> api = Instancio.ofMap(String.class, Integer.class);
 
-        assertThatThrownBy(api::create)
+        assertThatThrownBy(() -> api.size(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("size must not be negative: -1");
     }

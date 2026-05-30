@@ -72,32 +72,35 @@ class SelectorGroupImplTest {
                 Select.allBytes().within(Select.scope(Bar.class)),
                 Select.field(Foo.class, "fooValue"),
                 Select.all(String.class)
-        )).hasToString(String.format("all(%n" +
-                "\tallBytes(), scope(Bar),%n" +
-                "\tfield(Foo, \"fooValue\"),%n" +
-                "\tall(String)%n" +
-                ")"));
+        )).hasToString("""
+                all(
+                \tallBytes().within(scope(Bar)),
+                \tfield(Foo, "fooValue"),
+                \tall(String)
+                )""");
     }
 
     @Test
     void empty() {
-        assertThatThrownBy(() -> Select.all())
+        assertThatThrownBy(Select::all)
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("Selector group must contain at least one selector");
     }
 
     @Test
     void flatten() {
-        final List<TargetSelector> results = ((Flattener<TargetSelector>) Select.all(
-                Select.allBytes().within(Select.scope(Bar.class)),
-                Select.field(Foo.class, "fooValue"),
-                Select.all(String.class)
-        )).flatten();
+        final var s0 = Select.allBytes().within(Select.scope(Bar.class));
+        final var s1 = Select.field(Foo.class, "fooValue");
+        final var s2 = Select.all(String.class);
 
-        assertThat(results).hasSize(4);
-        SelectorAssert.assertSelector(results.get(0)).hasTargetClass(byte.class).hasScopeSize(1);
-        SelectorAssert.assertSelector(results.get(1)).hasTargetClass(Byte.class).hasScopeSize(1);
-        SelectorAssert.assertSelector(results.get(2)).hasTargetClass(Foo.class).hasFieldName("fooValue");
-        SelectorAssert.assertSelector(results.get(3)).isClassSelectorWithNoScope().hasTargetClass(String.class);
+        final List<TargetSelector> results = ((Flattener<TargetSelector>) Select.all(s0, s1, s2)).flatten();
+
+        assertThat(results)
+                .hasSize(3)
+                .containsExactly(s0, s1, s2);
+
+        SelectorAssert.assertSelector(results.get(0)).isPredicateSelector().hasScopeSize(1);
+        SelectorAssert.assertSelector(results.get(1)).isPredicateSelector();
+        SelectorAssert.assertSelector(results.get(2)).isPredicateSelector();
     }
 }

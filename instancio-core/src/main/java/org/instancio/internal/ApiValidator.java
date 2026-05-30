@@ -23,7 +23,6 @@ import org.instancio.documentation.Contract;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.selectors.PrimitiveAndWrapperSelectorImpl;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
@@ -44,7 +43,7 @@ import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParameter
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
 import static org.instancio.internal.util.ErrorMessageUtils.createSetterSelectorWithFieldAssignmentErrorMessage;
 
-@SuppressWarnings({"PMD.GodClass", "PMD.CyclomaticComplexity"})
+@SuppressWarnings("PMD.GodClass")
 public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
@@ -269,11 +268,6 @@ public final class ApiValidator {
         if (condition) throw Fail.withUsageError(message.get());
     }
 
-    public static int validateDepth(final int depth) {
-        if (depth < 0) throw Fail.withUsageError("depth must not be negative: %s", depth);
-        return depth;
-    }
-
     public static void validateAssignmentOrigin(final TargetSelector selector) {
         notNull(selector, "origin selector must not be null");
 
@@ -285,17 +279,6 @@ public final class ApiValidator {
                         Therefore origin selector cannot be a group such as:
 
                         %s""", selector);
-
-        if (selector instanceof final PrimitiveAndWrapperSelectorImpl pw) {
-            throw Fail.withUsageError(
-                    """
-                            assignment origin must not be a primitive/wrapper selector such as %s
-
-                            Please specify the type explicitly, for example: 'all(%s.class)' or 'all(%s.class)'""",
-                    selector,
-                    requireNonNull(pw.getWrapper().getTargetClass()).getSimpleName(),
-                    requireNonNull(pw.getPrimitive().getTargetClass()).getSimpleName());
-        }
     }
 
     public static void validateValueIsAssignableToTargetClass(
