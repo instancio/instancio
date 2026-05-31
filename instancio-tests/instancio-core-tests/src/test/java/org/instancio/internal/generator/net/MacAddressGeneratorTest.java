@@ -16,12 +16,8 @@
 package org.instancio.internal.generator.net;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class MacAddressGeneratorTest extends AbstractGeneratorTestTemplate<String, MacAddressGenerator> {
+class MacAddressGeneratorTest extends AbstractGeneratorTestTemplate<String, MacAddressGenerator> {
 
     private final MacAddressGenerator generator = new MacAddressGenerator(getGeneratorContext());
 
@@ -33,11 +29,5 @@ public class MacAddressGeneratorTest extends AbstractGeneratorTestTemplate<Strin
     @Override
     protected MacAddressGenerator generator() {
         return generator;
-    }
-
-    @Test
-    @DisplayName("Test the default Mac generation")
-    void macDefaultGeneration() {
-        assertThat(generator.generate(random)).matches("^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$");
     }
 }

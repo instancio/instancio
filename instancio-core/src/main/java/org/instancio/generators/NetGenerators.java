@@ -17,9 +17,9 @@ package org.instancio.generators;
 
 import org.instancio.generator.specs.EmailGeneratorSpec;
 import org.instancio.generator.specs.Ip4GeneratorSpec;
+import org.instancio.generator.specs.MacAddressSpec;
 import org.instancio.generator.specs.URIGeneratorSpec;
 import org.instancio.generator.specs.URLGeneratorSpec;
-import org.instancio.generator.specs.MacAddressSpec;
 
 import java.net.URI;
 import java.net.URL;
@@ -64,7 +64,7 @@ public interface NetGenerators {
     URLGeneratorSpec url();
 
     /**
-     * Generates mac address.
+     * Generates MAC addresses using the colon character as the separator.
      *
      * @return generator spec
      * @since 6.0.0

@@ -23,33 +23,33 @@ import org.jspecify.annotations.Nullable;
 
 public class MacAddressGenerator extends AbstractGenerator<String> implements MacAddressSpec {
 
+    private static final int MAC_ADDRESS_LENGTH = 17;
+
     public MacAddressGenerator(GeneratorContext context) {
         super(context);
     }
 
-    @Nullable
     @Override
     public String apiMethod() {
         return "mac()";
-    }
-
-    @Nullable
-    @Override
-    protected String tryGenerateNonNull(final Random random) {
-        if (isNullable()) return null;
-        StringBuilder sb = new StringBuilder(17);
-        for (int i = 0; i < 6; i++) {
-            if (i > 0) sb.append(':');
-            int octet = random.intRange(0, 255);
-            sb.append(String.format("%02X", octet));
-        }
-        return sb.toString();
     }
 
     @Override
     public MacAddressGenerator nullable() {
         super.nullable();
         return this;
+    }
+
+    @Nullable
+    @Override
+    protected String tryGenerateNonNull(final Random random) {
+        StringBuilder sb = new StringBuilder(MAC_ADDRESS_LENGTH);
+        for (int i = 0; i < 6; i++) {
+            if (i > 0) sb.append(':');
+            int octet = random.intRange(0, 255);
+            sb.append(String.format("%02X", octet));
+        }
+        return sb.toString();
     }
 
 }

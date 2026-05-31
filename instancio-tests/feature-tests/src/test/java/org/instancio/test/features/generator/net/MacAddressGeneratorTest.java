@@ -19,9 +19,12 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.root;
@@ -29,21 +32,26 @@ import static org.instancio.Select.root;
 @FeatureTag(Feature.GENERATOR)
 @ExtendWith(InstancioExtension.class)
 class MacAddressGeneratorTest {
+
     @Test
     void create() {
         final String result = Instancio.of(String.class)
                 .generate(root(), gen -> gen.net().mac())
                 .create();
-        assertThat(result).contains(":");
+
         assertThat(result).matches("^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$");
     }
 
     @Test
     void nullable() {
-        final String result = Instancio.of(String.class)
+        final Stream<String> results = Instancio.of(String.class)
                 .generate(root(), gen -> gen.net().mac().nullable())
-                .create();
-        assertThat(result).isNull();
+                .stream()
+                .limit(Constants.SAMPLE_SIZE_DD);
+
+        assertThat(results)
+                .containsNull()
+                .anyMatch(Objects::nonNull);
     }
 
 }

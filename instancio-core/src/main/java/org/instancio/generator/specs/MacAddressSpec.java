@@ -18,12 +18,17 @@ package org.instancio.generator.specs;
 import org.instancio.generator.ValueSpec;
 
 /**
- * A spec for generating mac address.
+ * A spec for generating MAC addresses.
  *
  * @since 6.0.0
  */
 public interface MacAddressSpec extends MacAddressGeneratorSpec, ValueSpec<String> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 6.0.0
+     */
     @Override
-    MacAddressSpec nullable();
+    ValueSpec<String> nullable();
 }

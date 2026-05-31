@@ -18,7 +18,7 @@ package org.instancio.generator.specs;
 import org.instancio.generator.GeneratorSpec;
 
 /**
- * A spec for generating mac address.
+ * A spec for generating MAC addresses.
  *
  * @since 6.0.0
  */
