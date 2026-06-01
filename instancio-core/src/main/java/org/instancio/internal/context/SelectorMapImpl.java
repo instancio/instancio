@@ -18,6 +18,7 @@ package org.instancio.internal.context;
 import org.instancio.Scope;
 import org.instancio.TargetSelector;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.PredicateScopeImpl;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 
@@ -43,14 +44,19 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
      * Predicate selector precedence is based on priority (lower values are higher priority)
      * and insertion order (last added wins).
      */
-    private final Set<PredicateSelectorEntry<V>> predicateSelectors = new SortedSetWithReverseInsertionOrder<>(
-            Comparator.comparingInt(o -> o.predicateSelector.getPriority()));
+    private final Set<SelectorEntry<V>> selectorEntries = new SortedSetWithReverseInsertionOrder<>(
+            Comparator.comparingInt(o -> o.selector.getPriority()));
 
     @Override
     public void forEach(final BiConsumer<TargetSelector, ? super V> action) {
-        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
-            action.accept(entry.predicateSelector, entry.value);
+        for (SelectorEntry<V> entry : selectorEntries) {
+            action.accept(entry.selector, entry.value);
         }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return isEmpty;
     }
 
     @Override
@@ -58,7 +64,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         isEmpty = false;
 
         final PredicateSelectorImpl selector = (PredicateSelectorImpl) targetSelector;
-        predicateSelectors.add(new PredicateSelectorEntry<>(selector, value));
+        selectorEntries.add(new SelectorEntry<>(selector, value));
 
         if (!selector.isLenient()) {
             unusedSelectors.add(targetSelector);
@@ -77,9 +83,9 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         }
 
         V result = null;
-        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
+        for (SelectorEntry<V> entry : selectorEntries) {
             // continue even after finding the first match to mark all matching selectors as "used"
-            if (isPredicateMatch(node, entry) && result == null) {
+            if (isPredicateMatch(node, entry.selector) && result == null) {
                 result = entry.value;
             }
         }
@@ -93,18 +99,13 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         }
         final List<V> values = new ArrayList<>();
 
-        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
-            if (isPredicateMatch(node, entry)) {
+        for (SelectorEntry<V> entry : selectorEntries) {
+            if (isPredicateMatch(node, entry.selector)) {
                 values.add(entry.value);
             }
         }
 
         return values;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return isEmpty;
     }
 
     @Override
@@ -114,8 +115,8 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         }
         final List<V> results = new ArrayList<>();
 
-        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
-            if (entry.predicateSelector.equals(selector)) {
+        for (SelectorEntry<V> entry : selectorEntries) {
+            if (entry.selector.equals(selector)) {
                 results.add(entry.value);
             }
         }
@@ -129,21 +130,22 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
         }
 
         final Set<TargetSelector> results = new HashSet<>();
-        for (PredicateSelectorEntry<V> entry : predicateSelectors) {
-            if (isPredicateMatch(node, entry)) {
-                results.add(entry.predicateSelector);
+        for (SelectorEntry<V> entry : selectorEntries) {
+            if (isPredicateMatch(node, entry.selector)) {
+                results.add(entry.selector);
             }
         }
         return results;
     }
 
-    private boolean isPredicateMatch(final InternalNode targetNode, final PredicateSelectorEntry<?> entry) {
+    private boolean isPredicateMatch(final InternalNode targetNode, final InternalSelector selector) {
+        final PredicateSelectorImpl predicateSelector = (PredicateSelectorImpl) selector;
         // Verify predicate matches the node, including depth
-        final boolean isMatch = entry.predicateSelector.getNodePredicate().test(targetNode)
-                && selectorScopesMatchNodeHierarchy(entry.predicateSelector.getScopes(), targetNode);
+        final boolean isMatch = predicateSelector.getNodePredicate().test(targetNode)
+                && selectorScopesMatchNodeHierarchy(selector.getScopes(), targetNode);
 
         if (isMatch) {
-            unusedSelectors.remove(entry.predicateSelector);
+            unusedSelectors.remove(selector);
         }
 
         return isMatch;
@@ -180,7 +182,7 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
 
     @Override
     public String toString() {
-        if (predicateSelectors.isEmpty()) {
+        if (selectorEntries.isEmpty()) {
             return "SelectorMap{}";
         }
 
@@ -188,11 +190,11 @@ final class SelectorMapImpl<V> implements SelectorMap<V> {
                 .append("SelectorMap{")
                 .append(NL);
 
-        for (PredicateSelectorEntry<V> it : predicateSelectors) {
-            sb.append("  ").append(it.predicateSelector).append('=').append(it.value).append(NL);
+        for (SelectorEntry<V> it : selectorEntries) {
+            sb.append("  ").append(it.selector).append('=').append(it.value).append(NL);
         }
         return sb.append('}').toString();
     }
 
-    private record PredicateSelectorEntry<V>(PredicateSelectorImpl predicateSelector, V value) {}
+    private record SelectorEntry<V>(InternalSelector selector, V value) {}
 }

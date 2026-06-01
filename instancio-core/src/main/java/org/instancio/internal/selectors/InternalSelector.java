@@ -36,6 +36,8 @@ public interface InternalSelector extends Flattener<TargetSelector>, ScopeableSe
 
     List<Scope> getScopes();
 
+    int getPriority();
+
     boolean isLenient();
 
     /**

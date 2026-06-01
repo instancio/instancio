@@ -152,6 +152,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
      *
      * @return priority of this selector
      */
+    @Override
     public int getPriority() {
         return priority;
     }
