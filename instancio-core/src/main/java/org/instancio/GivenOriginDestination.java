@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * Represents an origin and a destination of a conditional assigment.
+ * Represents an origin and a destination of a conditional assignment.
  *
  * @see Assign#given(TargetSelector, TargetSelector)
  * @see Assignment

@@ -31,7 +31,7 @@ import static org.instancio.Select.field;
 
 @FeatureTag({Feature.GENERATOR, Feature.AS_GENERATOR_SPEC})
 @ExtendWith(InstancioExtension.class)
-class AsGeneratorSpecAssigmentErrorTest {
+class AsGeneratorSpecAssignmentErrorTest {
 
     @Test
     @DisplayName("The result of 'as()' does not match target field's type")

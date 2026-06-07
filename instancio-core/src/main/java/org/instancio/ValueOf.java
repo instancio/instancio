@@ -37,7 +37,7 @@ public interface ValueOf {
      * Specifies the destination selector for the assignment.
      *
      * @param destination selector
-     * @return an assigment containing origin and destination selectors
+     * @return an assignment containing origin and destination selectors
      * @since 3.0.0
      */
     ValueOfOriginDestination to(TargetSelector destination);
@@ -59,7 +59,7 @@ public interface ValueOf {
      * @param destination method reference
      * @param <T>         type declaring the method
      * @param <R>         return type of the method
-     * @return an assigment containing origin and destination selectors
+     * @return an assignment containing origin and destination selectors
      * @since 3.0.0
      */
     <T, R> ValueOfOriginDestination to(GetMethodSelector<T, R> destination);

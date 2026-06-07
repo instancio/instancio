@@ -40,27 +40,27 @@ class AssignmentNodeHandler implements NodeHandler {
     private static final Logger LOG = LoggerFactory.getLogger(AssignmentNodeHandler.class);
 
     private final ModelContext context;
-    private final AssigmentObjectStore assigmentObjectStore;
+    private final AssignmentObjectStore assignmentObjectStore;
     private final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor;
     private final Set<InternalAssignment> unresolvedAssignments = new LinkedHashSet<>();
 
     private AssignmentNodeHandler(
             final ModelContext context,
-            final AssigmentObjectStore assigmentObjectStore,
+            final AssignmentObjectStore assignmentObjectStore,
             final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
 
         this.context = context;
-        this.assigmentObjectStore = assigmentObjectStore;
+        this.assignmentObjectStore = assignmentObjectStore;
         this.userSuppliedGeneratorProcessor = userSuppliedGeneratorProcessor;
     }
 
     static AssignmentNodeHandler create(
             final ModelContext context,
-            final AssigmentObjectStore assigmentObjectStore,
+            final AssignmentObjectStore assignmentObjectStore,
             final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor) {
 
         return context.getSelectorMaps().hasAssignments()
-                ? new AssignmentNodeHandler(context, assigmentObjectStore, userSuppliedGeneratorProcessor)
+                ? new AssignmentNodeHandler(context, assignmentObjectStore, userSuppliedGeneratorProcessor)
                 : new NoopAssignmentNodeHandler();
     }
 
@@ -81,7 +81,7 @@ class AssignmentNodeHandler implements NodeHandler {
                 return userSuppliedGeneratorProcessor.getGeneratorResult(node, assignmentGenerator);
             }
 
-            final GeneratorResult candidateResult = assigmentObjectStore.getValue(assignment.getDestination());
+            final GeneratorResult candidateResult = assignmentObjectStore.getValue(assignment.getDestination());
 
             if (candidateResult == null) {
                 LOG.trace("Delayed result for {}", assignment.getDestination());

@@ -21,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.Predicate;
 
 /**
- * An assigment containing origin and destination selectors,
+ * An assignment containing origin and destination selectors,
  * and a predicate that the origin value must satisfy
  * for the assignment to be applied.
  *
