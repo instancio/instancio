@@ -151,7 +151,7 @@ public final class Assign {
     }
 
     /**
-     * Creates a conditional assigment for a given pair of {@code origin} and
+     * Creates a conditional assignment for a given pair of {@code origin} and
      * {@code destination} selectors. This method allows mapping predicates
      * to destination values, and also supports {@code else} semantics with
      * the following syntax:

@@ -35,8 +35,8 @@ import java.util.Map;
  * A store for keeping track of generated values for destination
  * selectors of assignments.
  */
-public class AssigmentObjectStore implements GenerationListener {
-    private static final Logger LOG = LoggerFactory.getLogger(AssigmentObjectStore.class);
+public class AssignmentObjectStore implements GenerationListener {
+    private static final Logger LOG = LoggerFactory.getLogger(AssignmentObjectStore.class);
     private static final GeneratorResult EMPTY_RESULT = GeneratorResult.unresolvedResult();
 
     // A map containing "scope" objects as keys, and a Map of destination
@@ -47,15 +47,15 @@ public class AssigmentObjectStore implements GenerationListener {
 
     private boolean hasNewValues;
 
-    private AssigmentObjectStore(final ModelContext context) {
+    private AssignmentObjectStore(final ModelContext context) {
         this.context = context;
         enterScope(); // root object's scope
     }
 
-    public static AssigmentObjectStore create(final ModelContext context) {
+    public static AssignmentObjectStore create(final ModelContext context) {
         return context.getSelectorMaps().hasAssignments()
-                ? new AssigmentObjectStore(context)
-                : new NoopAssigmentObjectStore();
+                ? new AssignmentObjectStore(context)
+                : new NoopAssignmentObjectStore();
     }
 
     public boolean hasNewValues() {
@@ -115,8 +115,8 @@ public class AssigmentObjectStore implements GenerationListener {
     //@formatter:off
     @SuppressWarnings({"NullAway", "DataFlowIssue", Sonar.ANNOTATE_PARAMETER_NULLABLE})
     @VisibleForTesting
-    static final class NoopAssigmentObjectStore extends AssigmentObjectStore {
-        NoopAssigmentObjectStore() { super(null); }
+    static final class NoopAssignmentObjectStore extends AssignmentObjectStore {
+        NoopAssignmentObjectStore() { super(null); }
         @Override public boolean hasNewValues() { return false; }
         @Override public void enterScope() { /* no-op */ }
         @Override public void exitScope() { /* no-op */ }

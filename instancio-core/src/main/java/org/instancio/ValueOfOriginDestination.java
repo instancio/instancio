@@ -22,7 +22,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * An assigment containing origin and destination selectors.
+ * An assignment containing origin and destination selectors.
  *
  * @since 3.0.0
  */

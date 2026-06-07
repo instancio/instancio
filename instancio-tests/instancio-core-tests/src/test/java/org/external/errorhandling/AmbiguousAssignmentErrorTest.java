@@ -24,7 +24,7 @@ import org.instancio.test.support.pojo.person.Phone;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
-class AmbiguousAssigmentErrorTest extends AbstractErrorMessageTestTemplate {
+class AmbiguousAssignmentErrorTest extends AbstractErrorMessageTestTemplate {
 
     @Override
     void methodUnderTest() {
@@ -44,7 +44,7 @@ class AmbiguousAssigmentErrorTest extends AbstractErrorMessageTestTemplate {
 
 
                 Error creating an object
-                 -> at org.external.errorhandling.AmbiguousAssigmentErrorTest.methodUnderTest(AmbiguousAssigmentErrorTest.java:33)
+                 -> at org.external.errorhandling.AmbiguousAssignmentErrorTest.methodUnderTest(AmbiguousAssignmentErrorTest.java:33)
 
                 Reason: ambiguous assignment expression
 

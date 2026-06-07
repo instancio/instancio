@@ -47,7 +47,7 @@ public class GeneratorFacade {
     public GeneratorFacade(
             final ModelContext context,
             final NullSubstitutorFacade nullSubstitutorFacade,
-            final AssigmentObjectStore assigmentObjectStore) {
+            final AssignmentObjectStore assignmentObjectStore) {
 
         this.context = context;
         this.nullSubstitutorFacade = nullSubstitutorFacade;
@@ -63,7 +63,7 @@ public class GeneratorFacade {
         final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
                 context, generatorResolver, spiGeneratorResolver);
 
-        assignmentNodeHandler = AssignmentNodeHandler.create(context, assigmentObjectStore, userSuppliedGeneratorProcessor);
+        assignmentNodeHandler = AssignmentNodeHandler.create(context, assignmentObjectStore, userSuppliedGeneratorProcessor);
         userSuppliedGeneratorHandler = UserSuppliedGeneratorHandler.create(context, userSuppliedGeneratorProcessor);
 
         // handlers in order of precedence, starting from highest
