@@ -105,7 +105,7 @@ final class SetModelSelectorHelper {
                     .priority(Constants.SelectorPriority.SET_MODEL)
                     .typePredicate(cls -> cls == rootClass)
                     .scopes(scopes)
-                    .apiMethodSelector(internalModelTarget.getApiMethodSelector())
+                    .apiMethod(internalModelTarget.getApiMethod())
                     .build();
         }
 

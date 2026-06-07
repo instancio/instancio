@@ -97,7 +97,7 @@ final class SelectorNodeMatchesCollector {
 
         for (TargetSelector selector : selectors) {
             final InternalSelector internalSelector = (InternalSelector) selector;
-            if (internalSelector.getApiMethodSelector() == apiMethod) {
+            if (internalSelector.getApiMethod() == apiMethod) {
                 Set<InternalNode> nodes = selectorNodeMap.computeIfAbsent(selector, k -> new LinkedHashSet<>());
                 nodes.add(node);
             }

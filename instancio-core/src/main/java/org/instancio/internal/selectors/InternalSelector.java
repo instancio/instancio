@@ -32,7 +32,7 @@ import java.util.List;
 public interface InternalSelector extends Flattener<TargetSelector>, ScopeableSelector, UnusedSelectorDescription {
 
     @Nullable
-    ApiMethod getApiMethodSelector();
+    ApiMethod getApiMethod();
 
     List<Scope> getScopes();
 

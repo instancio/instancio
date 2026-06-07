@@ -27,7 +27,7 @@ import org.instancio.internal.ApiMethod;
 @InternalApi
 public interface SelectorBuilder {
 
-    SelectorBuilder apiMethodSelector(ApiMethod apiMethod);
+    SelectorBuilder apiMethod(ApiMethod apiMethod);
 
     /**
      * Builds a selector.

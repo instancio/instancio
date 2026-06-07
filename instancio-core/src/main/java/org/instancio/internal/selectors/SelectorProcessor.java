@@ -68,19 +68,19 @@ public final class SelectorProcessor {
         } else if (selector instanceof GetMethodSelector<?, ?> getMethodSelector) {
             return process(PredicateSelectorImpl.builder()
                     .target(new TargetGetterReference(getMethodSelector))
-                    .apiMethodSelector(apiMethod)
+                    .apiMethod(apiMethod)
                     .build(), apiMethod);
 
         } else if (selector instanceof SetMethodSelector<?, ?>) {
             return process(PredicateSelectorImpl.builder()
                     .target(new TargetSetterReference((SetMethodSelector<?, ?>) selector))
-                    .apiMethodSelector(apiMethod)
+                    .apiMethod(apiMethod)
                     .build(), apiMethod);
 
         } else {
             // only remaining option is SelectorBuilder
             final SelectorBuilder builder = (SelectorBuilder) selector;
-            return List.of(builder.apiMethodSelector(apiMethod).build());
+            return List.of(builder.apiMethod(apiMethod).build());
         }
     }
 
@@ -91,7 +91,7 @@ public final class SelectorProcessor {
         final List<Scope> processedScopes = createScopeWithRootClass(selector.getScopes());
 
         final PredicateSelectorImpl result = selector.toBuilderWithContext(targetContext)
-                .apiMethodSelector(apiMethod)
+                .apiMethod(apiMethod)
                 .scopes(processedScopes)
                 .build();
 

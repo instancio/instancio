@@ -60,7 +60,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
     }
 
     @Override
-    public final SelectorBuilder apiMethodSelector(final ApiMethod apiMethod) {
+    public final SelectorBuilder apiMethod(final ApiMethod apiMethod) {
         this.apiMethod = apiMethod;
         return this;
     }
@@ -118,7 +118,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
             builder.lenient();
         }
         return builder
-                .apiMethodSelector(apiMethod)
+                .apiMethod(apiMethod)
                 .apiInvocationDescription(description.toString())
                 .build();
     }

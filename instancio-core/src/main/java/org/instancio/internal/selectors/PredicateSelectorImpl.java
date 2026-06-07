@@ -108,7 +108,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
 
     @Nullable
     @Override
-    public ApiMethod getApiMethodSelector() {
+    public ApiMethod getApiMethod() {
         return apiMethod;
     }
 
@@ -276,7 +276,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
 
     public Builder toBuilder() {
         Builder builder = new Builder();
-        builder.apiMethod = getApiMethodSelector();
+        builder.apiMethod = getApiMethod();
         builder.priority = priority;
         builder.nodePredicate = nodePredicate;
         builder.scopes = getScopes();
@@ -308,7 +308,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
         private Builder() {
         }
 
-        public Builder apiMethodSelector(@Nullable final ApiMethod apiMethod) {
+        public Builder apiMethod(@Nullable final ApiMethod apiMethod) {
             this.apiMethod = apiMethod;
             return this;
         }

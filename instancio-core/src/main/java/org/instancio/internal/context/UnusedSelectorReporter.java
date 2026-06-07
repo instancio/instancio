@@ -57,7 +57,7 @@ final class UnusedSelectorReporter {
         final Map<ApiMethod, List<TargetSelector>> unused = unusedSelectors.stream()
                 .collect(Collectors.groupingBy((TargetSelector s) -> {
                     final InternalSelector selector = (InternalSelector) s;
-                    return selector.getApiMethodSelector();
+                    return selector.getApiMethod();
                 }));
 
         final StringBuilder sb = new StringBuilder(2048)
