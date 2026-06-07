@@ -16,7 +16,7 @@
 package org.instancio.exception;
 
 import org.instancio.TargetSelector;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 import org.instancio.internal.util.Sonar;
 
 import java.util.Collections;
@@ -31,17 +31,17 @@ import java.util.Map;
 @SuppressWarnings({Sonar.NUMBER_OF_PARENTS, Sonar.GENERIC_WILDCARD_IN_RETURN})
 public class UnusedSelectorException extends InstancioApiException {
 
-    private final transient Map<ApiMethodSelector, List<TargetSelector>> unusedSelectorMap;
+    private final transient Map<ApiMethod, List<TargetSelector>> unusedSelectorMap;
 
     public UnusedSelectorException(
             final String message,
-            final Map<ApiMethodSelector, List<TargetSelector>> unusedSelectorMap) {
+            final Map<ApiMethod, List<TargetSelector>> unusedSelectorMap) {
 
         super(message);
         this.unusedSelectorMap = Collections.unmodifiableMap(unusedSelectorMap);
     }
 
-    public Map<ApiMethodSelector, List<TargetSelector>> getUnusedSelectorMap() {
+    public Map<ApiMethod, List<TargetSelector>> getUnusedSelectorMap() {
         return unusedSelectorMap;
     }
 }

@@ -17,7 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.instancio.TargetSelector;
 import org.instancio.documentation.InternalApi;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 
 /**
  * An internal builder for constructing selectors.
@@ -27,7 +27,7 @@ import org.instancio.internal.ApiMethodSelector;
 @InternalApi
 public interface SelectorBuilder {
 
-    SelectorBuilder apiMethodSelector(ApiMethodSelector apiMethodSelector);
+    SelectorBuilder apiMethodSelector(ApiMethod apiMethod);
 
     /**
      * Builds a selector.

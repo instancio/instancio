@@ -104,14 +104,14 @@ final class ModelReporter {
     private static void appendSelectorMatches(final StringBuilder sb, final InternalModel<?> model) {
         final InternalNode rootNode = model.getRootNode();
         final ModelContext context = model.getModelContext();
-        final Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> map = context.getSelectors(rootNode);
+        final Map<ApiMethod, Map<TargetSelector, Set<InternalNode>>> map = context.getSelectors(rootNode);
 
         sb.append("### Selectors").append(NL)
                 .append(NL)
                 .append("Selectors and matching nodes, if any:").append(NL)
                 .append(NL);
 
-        for (Map.Entry<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> entry : map.entrySet()) {
+        for (Map.Entry<ApiMethod, Map<TargetSelector, Set<InternalNode>>> entry : map.entrySet()) {
             final Map<TargetSelector, Set<InternalNode>> selectorNodes = entry.getValue();
 
             if (selectorNodes.isEmpty()) {
@@ -137,7 +137,7 @@ final class ModelReporter {
                     .collect(Collectors.joining(""));
 
             if (!StringUtils.isBlank(section)) {
-                final ApiMethodSelector method = entry.getKey();
+                final ApiMethod method = entry.getKey();
                 sb.append(" -> Method: ").append(method.getDescription()).append(NL)
                         .append(section);
             }

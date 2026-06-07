@@ -19,7 +19,7 @@ import org.instancio.GetMethodSelector;
 import org.instancio.Scope;
 import org.instancio.SetMethodSelector;
 import org.instancio.TargetSelector;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.util.ObjectUtils;
 
@@ -56,42 +56,42 @@ public final class SelectorProcessor {
      */
     public List<TargetSelector> process(
             final TargetSelector selector,
-            final ApiMethodSelector apiMethodSelector) {
+            final ApiMethod apiMethod) {
 
         if (selector instanceof PredicateSelectorImpl ps) {
-            final PredicateSelectorImpl processed = processPredicateSelectorTargetAndScope(ps, apiMethodSelector);
+            final PredicateSelectorImpl processed = processPredicateSelectorTargetAndScope(ps, apiMethod);
             return List.of(processed);
 
         } else if (selector instanceof SelectorGroupImpl selectorGroup) {
-            return processGroup(selectorGroup, apiMethodSelector);
+            return processGroup(selectorGroup, apiMethod);
 
         } else if (selector instanceof GetMethodSelector<?, ?> getMethodSelector) {
             return process(PredicateSelectorImpl.builder()
                     .target(new TargetGetterReference(getMethodSelector))
-                    .apiMethodSelector(apiMethodSelector)
-                    .build(), apiMethodSelector);
+                    .apiMethodSelector(apiMethod)
+                    .build(), apiMethod);
 
         } else if (selector instanceof SetMethodSelector<?, ?>) {
             return process(PredicateSelectorImpl.builder()
                     .target(new TargetSetterReference((SetMethodSelector<?, ?>) selector))
-                    .apiMethodSelector(apiMethodSelector)
-                    .build(), apiMethodSelector);
+                    .apiMethodSelector(apiMethod)
+                    .build(), apiMethod);
 
         } else {
             // only remaining option is SelectorBuilder
             final SelectorBuilder builder = (SelectorBuilder) selector;
-            return List.of(builder.apiMethodSelector(apiMethodSelector).build());
+            return List.of(builder.apiMethodSelector(apiMethod).build());
         }
     }
 
     private PredicateSelectorImpl processPredicateSelectorTargetAndScope(
             final PredicateSelectorImpl selector,
-            final ApiMethodSelector apiMethodSelector) {
+            final ApiMethod apiMethod) {
 
         final List<Scope> processedScopes = createScopeWithRootClass(selector.getScopes());
 
         final PredicateSelectorImpl result = selector.toBuilderWithContext(targetContext)
-                .apiMethodSelector(apiMethodSelector)
+                .apiMethodSelector(apiMethod)
                 .scopes(processedScopes)
                 .build();
 
@@ -125,13 +125,13 @@ public final class SelectorProcessor {
 
     private List<TargetSelector> processGroup(
             final SelectorGroupImpl selectorGroup,
-            final ApiMethodSelector apiMethodSelector) {
+            final ApiMethod apiMethod) {
 
         final List<TargetSelector> flattened = selectorGroup.flatten();
         final List<TargetSelector> results = new ArrayList<>(flattened.size());
 
         for (TargetSelector selector : flattened) {
-            results.addAll(process(selector, apiMethodSelector));
+            results.addAll(process(selector, apiMethod));
         }
         return results;
     }

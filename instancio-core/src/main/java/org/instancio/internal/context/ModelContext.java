@@ -29,7 +29,7 @@ import org.instancio.feed.Feed;
 import org.instancio.feed.FeedProvider;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.Flattener;
 import org.instancio.internal.InternalModel;
@@ -172,7 +172,7 @@ public final class ModelContext {
         }
     }
 
-    public Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> getSelectors(final InternalNode rootNode) {
+    public Map<ApiMethod, Map<TargetSelector, Set<InternalNode>>> getSelectors(final InternalNode rootNode) {
         return new SelectorNodeMatchesCollector(selectorMaps).getNodeMatches(rootNode);
     }
 
@@ -351,9 +351,9 @@ public final class ModelContext {
                 final Map<TargetSelector, V> map,
                 final TargetSelector selector,
                 final V value,
-                final ApiMethodSelector apiMethodSelector) {
+                final ApiMethod apiMethod) {
 
-            final List<TargetSelector> processed = selectorProcessor.process(selector, apiMethodSelector);
+            final List<TargetSelector> processed = selectorProcessor.process(selector, apiMethod);
             for (TargetSelector s : processed) {
                 map.put(s, value);
             }
@@ -363,46 +363,46 @@ public final class ModelContext {
         public Builder withSubtype(final TargetSelector selector, final Class<?> subtype) {
             ApiValidator.notNull(subtype, "subtype must not be null");
             subtypeMap = CollectionUtils.newLinkedHashMapIfNull(subtypeMap);
-            return addSelector(subtypeMap, selector, subtype, ApiMethodSelector.SUBTYPE);
+            return addSelector(subtypeMap, selector, subtype, ApiMethod.SUBTYPE);
         }
 
         public Builder withGenerator(final TargetSelector selector, final Generator<?> generator) {
             ApiValidator.validateGeneratorNotNull(generator);
-            return addGenerator(selector, generator, ApiMethodSelector.GENERATE);
+            return addGenerator(selector, generator, ApiMethod.GENERATE);
         }
 
         private Builder addGenerator(
                 final TargetSelector selector,
                 final Generator<?> generator,
-                final ApiMethodSelector apiMethodSelector) {
+                final ApiMethod apiMethod) {
 
             generatorMap = CollectionUtils.newLinkedHashMapIfNull(generatorMap);
-            return addSelector(generatorMap, selector, generator, apiMethodSelector);
+            return addSelector(generatorMap, selector, generator, apiMethod);
         }
 
         public Builder withSet(final TargetSelector selector, final Object value) {
-            return addGenerator(selector, GeneratorDecorator.decorate(() -> value), ApiMethodSelector.SET);
+            return addGenerator(selector, GeneratorDecorator.decorate(() -> value), ApiMethod.SET);
         }
 
         public Builder withSupplier(final TargetSelector selector, final Supplier<?> supplier) {
             ApiValidator.validateSupplierNotNull(supplier);
-            return addGenerator(selector, GeneratorDecorator.decorate(supplier), ApiMethodSelector.SUPPLY);
+            return addGenerator(selector, GeneratorDecorator.decorate(supplier), ApiMethod.SUPPLY);
         }
 
         public <V> Builder withGeneratorSpec(final TargetSelector selector, final GeneratorSpecProvider<V> spec) {
             ApiValidator.validateGenerateSecondArgument(spec);
             generatorSpecMap = CollectionUtils.newLinkedHashMapIfNull(generatorSpecMap);
-            return addSelector(generatorSpecMap, selector, spec, ApiMethodSelector.GENERATE);
+            return addSelector(generatorSpecMap, selector, spec, ApiMethod.GENERATE);
         }
 
         public Builder withOnCompleteCallback(final TargetSelector selector, final OnCompleteCallback<?> callback) {
             onCompleteMap = CollectionUtils.newLinkedHashMapIfNull(onCompleteMap);
-            return addSelector(onCompleteMap, selector, callback, ApiMethodSelector.ON_COMPLETE);
+            return addSelector(onCompleteMap, selector, callback, ApiMethod.ON_COMPLETE);
         }
 
         public Builder filter(final TargetSelector selector, final Predicate<?> predicate) {
             ApiValidator.notNull(predicate, "predicate must not be null");
-            return addFilterPredicate(selector, predicate, ApiMethodSelector.FILTER);
+            return addFilterPredicate(selector, predicate, ApiMethod.FILTER);
         }
 
         public Builder withUnique(final TargetSelector selector) {
@@ -415,16 +415,16 @@ public final class ModelContext {
                 }
             };
             // withUnique() is implemented using filter()
-            return addFilterPredicate(selector, predicate, ApiMethodSelector.WITH_UNIQUE);
+            return addFilterPredicate(selector, predicate, ApiMethod.WITH_UNIQUE);
         }
 
         private Builder addFilterPredicate(
                 final TargetSelector selector,
                 final Predicate<?> predicate,
-                final ApiMethodSelector apiMethodSelector) {
+                final ApiMethod apiMethod) {
 
             filterMap = CollectionUtils.newLinkedHashMapIfNull(filterMap);
-            return addSelector(filterMap, selector, predicate, apiMethodSelector);
+            return addSelector(filterMap, selector, predicate, apiMethod);
         }
 
         public Builder applyFeed(final TargetSelector selector, final Feed feed) {
@@ -448,18 +448,18 @@ public final class ModelContext {
                 final Function<GeneratorContext, Feed> feedFn) {
 
             feedMap = CollectionUtils.newLinkedHashMapIfNull(feedMap);
-            return addSelector(feedMap, selector, feedFn, ApiMethodSelector.APPLY_FEED);
+            return addSelector(feedMap, selector, feedFn, ApiMethod.APPLY_FEED);
         }
 
         public Builder withIgnored(final TargetSelector selector) {
             ignoreSet = CollectionUtils.newLinkedHashSetIfNull(ignoreSet);
-            ignoreSet.addAll(selectorProcessor.process(selector, ApiMethodSelector.IGNORE));
+            ignoreSet.addAll(selectorProcessor.process(selector, ApiMethod.IGNORE));
             return this;
         }
 
         public Builder withNullable(final TargetSelector selector) {
             withNullableSet = CollectionUtils.newLinkedHashSetIfNull(withNullableSet);
-            withNullableSet.addAll(selectorProcessor.process(selector, ApiMethodSelector.WITH_NULLABLE));
+            withNullableSet.addAll(selectorProcessor.process(selector, ApiMethod.WITH_NULLABLE));
             return this;
         }
 
@@ -488,10 +488,10 @@ public final class ModelContext {
             for (InternalAssignment a : assignments) {
 
                 final List<TargetSelector> origin = selectorProcessor.process(
-                        a.getOrigin(), ApiMethodSelector.ASSIGN_ORIGIN);
+                        a.getOrigin(), ApiMethod.ASSIGN_ORIGIN);
 
                 final List<TargetSelector> destinations = selectorProcessor.process(
-                        a.getDestination(), ApiMethodSelector.ASSIGN_DESTINATION);
+                        a.getDestination(), ApiMethod.ASSIGN_DESTINATION);
 
                 Verify.isTrue(origin.size() == 1, "Origin has multiple selectors");
 
@@ -536,7 +536,7 @@ public final class ModelContext {
 
         public Builder withContainerSize(final TargetSelector selector, final Size size) {
             containerSizeMap = CollectionUtils.newLinkedHashMapIfNull(containerSizeMap);
-            return addSelector(containerSizeMap, selector, (InternalSize) size, ApiMethodSelector.SIZE);
+            return addSelector(containerSizeMap, selector, (InternalSize) size, ApiMethod.SIZE);
         }
 
         public Builder setBlank(final TargetSelector selector) {
@@ -544,7 +544,7 @@ public final class ModelContext {
                 setBlankTargets(); // special case for root selector (no scopes)
             } else {
                 final List<TargetSelector> processedSelectors = selectorProcessor.process(
-                        selector, ApiMethodSelector.NONE);
+                        selector, ApiMethod.NONE);
 
                 for (TargetSelector processedSelector : processedSelectors) {
                     final InternalSelector target = (InternalSelector) processedSelector;
@@ -616,7 +616,7 @@ public final class ModelContext {
             setModelMap = CollectionUtils.newLinkedHashMapIfNull(setModelMap);
             final ModelContext otherCtx = ((InternalModel<?>) model).getModelContext();
             final List<TargetSelector> processedSelectors = selectorProcessor.process(
-                    actualModelSelector, ApiMethodSelector.SET_MODEL);
+                    actualModelSelector, ApiMethod.SET_MODEL);
 
             for (TargetSelector modelTarget : processedSelectors) {
                 setModelMap.put(modelTarget, otherCtx);

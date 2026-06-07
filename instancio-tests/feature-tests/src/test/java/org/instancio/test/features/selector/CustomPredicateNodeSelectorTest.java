@@ -17,7 +17,7 @@ package org.instancio.test.features.selector;
 
 import org.instancio.Instancio;
 import org.instancio.TargetSelector;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.junit.InstancioExtension;
@@ -67,7 +67,7 @@ class CustomPredicateNodeSelectorTest {
         private static final int PRIORITY = Integer.MAX_VALUE; // lowest priority
 
         AddressStringSelector(final Predicate<InternalNode> nodePredicate, final String apiInvocationDescription) {
-            super(ApiMethodSelector.NONE,
+            super(ApiMethod.NONE,
                     PRIORITY,
                     nodePredicate,
                     Collections.emptyList(),

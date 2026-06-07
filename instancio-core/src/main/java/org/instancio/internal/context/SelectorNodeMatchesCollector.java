@@ -16,7 +16,7 @@
 package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.InternalSelector;
 
@@ -58,46 +58,46 @@ final class SelectorNodeMatchesCollector {
         this.subtypeSelectorMap = selectorMaps.getSubtypeSelectorMap().getSelectorMap();
     }
 
-    Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> getNodeMatches(final InternalNode rootNode) {
-        Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> map = new EnumMap<>(ApiMethodSelector.class);
+    Map<ApiMethod, Map<TargetSelector, Set<InternalNode>>> getNodeMatches(final InternalNode rootNode) {
+        Map<ApiMethod, Map<TargetSelector, Set<InternalNode>>> map = new EnumMap<>(ApiMethod.class);
         Queue<InternalNode> queue = new ArrayDeque<>();
         queue.offer(rootNode);
 
         while (!queue.isEmpty()) {
             final InternalNode node = queue.poll();
-            collectNodes(map, ApiMethodSelector.APPLY_FEED, node, feedSelectorMap);
-            collectNodes(map, ApiMethodSelector.ASSIGN_DESTINATION, node, assignDestinationToAssignmentsMap);
-            collectNodes(map, ApiMethodSelector.ASSIGN_ORIGIN, node, assignOriginToDestinationSelectorsMap);
-            collectNodes(map, ApiMethodSelector.FILTER, node, filterSelectorMap);
-            collectNodes(map, ApiMethodSelector.GENERATE, node, generatorSelectorMap);
-            collectNodes(map, ApiMethodSelector.IGNORE, node, ignoredSelectorMap);
-            collectNodes(map, ApiMethodSelector.ON_COMPLETE, node, onCompleteCallbackSelectorMap);
-            collectNodes(map, ApiMethodSelector.SET_MODEL, node, setModelSelectorMap);
-            collectNodes(map, ApiMethodSelector.SET, node, generatorSelectorMap);
-            collectNodes(map, ApiMethodSelector.SIZE, node, containerSizeSelectorMap);
-            collectNodes(map, ApiMethodSelector.SUBTYPE, node, subtypeSelectorMap);
-            collectNodes(map, ApiMethodSelector.SUPPLY, node, generatorSelectorMap);
-            collectNodes(map, ApiMethodSelector.WITH_NULLABLE, node, nullableSelectorMap);
-            collectNodes(map, ApiMethodSelector.WITH_UNIQUE, node, filterSelectorMap);
+            collectNodes(map, ApiMethod.APPLY_FEED, node, feedSelectorMap);
+            collectNodes(map, ApiMethod.ASSIGN_DESTINATION, node, assignDestinationToAssignmentsMap);
+            collectNodes(map, ApiMethod.ASSIGN_ORIGIN, node, assignOriginToDestinationSelectorsMap);
+            collectNodes(map, ApiMethod.FILTER, node, filterSelectorMap);
+            collectNodes(map, ApiMethod.GENERATE, node, generatorSelectorMap);
+            collectNodes(map, ApiMethod.IGNORE, node, ignoredSelectorMap);
+            collectNodes(map, ApiMethod.ON_COMPLETE, node, onCompleteCallbackSelectorMap);
+            collectNodes(map, ApiMethod.SET_MODEL, node, setModelSelectorMap);
+            collectNodes(map, ApiMethod.SET, node, generatorSelectorMap);
+            collectNodes(map, ApiMethod.SIZE, node, containerSizeSelectorMap);
+            collectNodes(map, ApiMethod.SUBTYPE, node, subtypeSelectorMap);
+            collectNodes(map, ApiMethod.SUPPLY, node, generatorSelectorMap);
+            collectNodes(map, ApiMethod.WITH_NULLABLE, node, nullableSelectorMap);
+            collectNodes(map, ApiMethod.WITH_UNIQUE, node, filterSelectorMap);
             queue.addAll(node.getChildren());
         }
         return map;
     }
 
     private static void collectNodes(
-            final Map<ApiMethodSelector, Map<TargetSelector, Set<InternalNode>>> resultsMap,
-            final ApiMethodSelector apiMethodSelector,
+            final Map<ApiMethod, Map<TargetSelector, Set<InternalNode>>> resultsMap,
+            final ApiMethod apiMethod,
             final InternalNode node,
             final SelectorMap<?> selectorMap) {
 
         Map<TargetSelector, Set<InternalNode>> selectorNodeMap = resultsMap
-                .computeIfAbsent(apiMethodSelector, k -> new LinkedHashMap<>());
+                .computeIfAbsent(apiMethod, k -> new LinkedHashMap<>());
 
         final Set<TargetSelector> selectors = selectorMap.getSelectors(node);
 
         for (TargetSelector selector : selectors) {
             final InternalSelector internalSelector = (InternalSelector) selector;
-            if (internalSelector.getApiMethodSelector() == apiMethodSelector) {
+            if (internalSelector.getApiMethodSelector() == apiMethod) {
                 Set<InternalNode> nodes = selectorNodeMap.computeIfAbsent(selector, k -> new LinkedHashSet<>());
                 nodes.add(node);
             }

@@ -19,7 +19,7 @@ import org.instancio.Scope;
 import org.instancio.Select;
 import org.instancio.Selector;
 import org.instancio.TargetSelector;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 import org.instancio.internal.RootType;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
@@ -46,7 +46,7 @@ class SelectorProcessorTest {
             PERSON_CLASS, Collections.emptyList(), new SetterSelectorHolder());
 
     private TargetSelector processOne(final TargetSelector selector) {
-        final List<TargetSelector> results = processor.process(selector, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(selector, ApiMethod.NONE);
         assertThat(results).hasSize(1);
         return results.get(0);
     }
@@ -110,7 +110,7 @@ class SelectorProcessorTest {
                 Select.all(String.class),
                 Select.all(Integer.class).within(Select.scope(Foo.class)));
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertThat(results).hasSize(2);
 
@@ -246,7 +246,7 @@ class SelectorProcessorTest {
     void allBytes() {
         final TargetSelector input = Select.allBytes();
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertPrimitiveWrapperPair(results, byte.class, Byte.class);
     }
@@ -255,7 +255,7 @@ class SelectorProcessorTest {
     void allFloats() {
         final TargetSelector input = Select.allFloats();
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertPrimitiveWrapperPair(results, float.class, Float.class);
     }
@@ -264,7 +264,7 @@ class SelectorProcessorTest {
     void allShorts() {
         final TargetSelector input = Select.allShorts();
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertPrimitiveWrapperPair(results, short.class, Short.class);
     }
@@ -273,7 +273,7 @@ class SelectorProcessorTest {
     void allInts() {
         final TargetSelector input = Select.allInts();
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertPrimitiveWrapperPair(results, int.class, Integer.class);
     }
@@ -282,7 +282,7 @@ class SelectorProcessorTest {
     void allLongs() {
         final TargetSelector input = Select.allLongs();
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertPrimitiveWrapperPair(results, long.class, Long.class);
     }
@@ -291,7 +291,7 @@ class SelectorProcessorTest {
     void allDoubles() {
         final TargetSelector input = Select.allDoubles();
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertPrimitiveWrapperPair(results, double.class, Double.class);
     }
@@ -300,7 +300,7 @@ class SelectorProcessorTest {
     void allBooleans() {
         final TargetSelector input = Select.allBooleans();
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertPrimitiveWrapperPair(results, boolean.class, Boolean.class);
     }
@@ -309,7 +309,7 @@ class SelectorProcessorTest {
     void allChars() {
         final TargetSelector input = Select.allChars();
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertPrimitiveWrapperPair(results, char.class, Character.class);
     }
@@ -320,7 +320,7 @@ class SelectorProcessorTest {
                 .within(Select.scope(Foo.class),
                         Select.scope(Bar.class, "barValue"));
 
-        final List<TargetSelector> results = processor.process(input, ApiMethodSelector.NONE);
+        final List<TargetSelector> results = processor.process(input, ApiMethod.NONE);
 
         assertThat(results).hasSize(1).allSatisfy(selector -> {
             assertSelector(selector).hasScopeSize(2);

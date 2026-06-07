@@ -19,7 +19,7 @@ import org.assertj.core.api.ThrowableAssert;
 import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 
 import java.util.Collection;
 import java.util.List;
@@ -68,37 +68,37 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
 
     public UnusedSelectorsAssert ignoreSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
-                actual.getUnusedSelectorMap().get(ApiMethodSelector.IGNORE));
+                actual.getUnusedSelectorMap().get(ApiMethod.IGNORE));
     }
 
     public UnusedSelectorsAssert withNullableSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
-                actual.getUnusedSelectorMap().get(ApiMethodSelector.WITH_NULLABLE));
+                actual.getUnusedSelectorMap().get(ApiMethod.WITH_NULLABLE));
     }
 
     public UnusedSelectorsAssert generateSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
-                actual.getUnusedSelectorMap().get(ApiMethodSelector.GENERATE));
+                actual.getUnusedSelectorMap().get(ApiMethod.GENERATE));
     }
 
     public UnusedSelectorsAssert setSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
-                actual.getUnusedSelectorMap().get(ApiMethodSelector.SET));
+                actual.getUnusedSelectorMap().get(ApiMethod.SET));
     }
 
     public UnusedSelectorsAssert supplySelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
-                actual.getUnusedSelectorMap().get(ApiMethodSelector.SUPPLY));
+                actual.getUnusedSelectorMap().get(ApiMethod.SUPPLY));
     }
 
     public UnusedSelectorsAssert onCompleteSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
-                actual.getUnusedSelectorMap().get(ApiMethodSelector.ON_COMPLETE));
+                actual.getUnusedSelectorMap().get(ApiMethod.ON_COMPLETE));
     }
 
     public UnusedSelectorsAssert subtypeSelector(final TargetSelector selector, final String stackTraceLine) {
         return assertUnusedSelectorAt(selector.toString(), stackTraceLine,
-                actual.getUnusedSelectorMap().get(ApiMethodSelector.SUBTYPE));
+                actual.getUnusedSelectorMap().get(ApiMethod.SUBTYPE));
     }
 
     //
@@ -106,31 +106,31 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
     //
 
     public UnusedSelectorsAssert ignoreSelector(final TargetSelector selector) {
-        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.IGNORE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethod.IGNORE));
     }
 
     public UnusedSelectorsAssert withNullableSelector(final TargetSelector selector) {
-        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.WITH_NULLABLE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethod.WITH_NULLABLE));
     }
 
     public UnusedSelectorsAssert generateSelector(final TargetSelector selector) {
-        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.GENERATE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethod.GENERATE));
     }
 
     public UnusedSelectorsAssert setSelector(final TargetSelector selector) {
-        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.SET));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethod.SET));
     }
 
     public UnusedSelectorsAssert supplySelector(final TargetSelector selector) {
-        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.SUPPLY));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethod.SUPPLY));
     }
 
     public UnusedSelectorsAssert onCompleteSelector(final TargetSelector selector) {
-        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.ON_COMPLETE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethod.ON_COMPLETE));
     }
 
     public UnusedSelectorsAssert subtypeSelector(final TargetSelector selector) {
-        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethodSelector.SUBTYPE));
+        return assertUnused(selector.toString(), actual.getUnusedSelectorMap().get(ApiMethod.SUBTYPE));
     }
 
     private UnusedSelectorsAssert assertUnusedSelectorAt(

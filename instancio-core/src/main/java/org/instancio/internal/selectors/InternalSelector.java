@@ -22,7 +22,7 @@ import org.instancio.ScopeableSelector;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
 import org.instancio.documentation.InternalApi;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 import org.instancio.internal.Flattener;
 import org.jspecify.annotations.Nullable;
 
@@ -32,7 +32,7 @@ import java.util.List;
 public interface InternalSelector extends Flattener<TargetSelector>, ScopeableSelector, UnusedSelectorDescription {
 
     @Nullable
-    ApiMethodSelector getApiMethodSelector();
+    ApiMethod getApiMethodSelector();
 
     List<Scope> getScopes();
 

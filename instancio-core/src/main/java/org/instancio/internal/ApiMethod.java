@@ -15,7 +15,7 @@
  */
 package org.instancio.internal;
 
-public enum ApiMethodSelector {
+public enum ApiMethod {
     APPLY_FEED("applyFeed()"),
     ASSIGN_DESTINATION("assign() destination"),
     ASSIGN_ORIGIN("assign() origin"),
@@ -38,7 +38,7 @@ public enum ApiMethodSelector {
 
     private final String description;
 
-    ApiMethodSelector(String description) {
+    ApiMethod(String description) {
         this.description = description;
     }
 

@@ -21,7 +21,7 @@ import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.Select;
 import org.instancio.TargetSelector;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
@@ -49,7 +49,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
             .apiInvocationDescription("root()")
             .build();
 
-    private final @Nullable ApiMethodSelector apiMethodSelector;
+    private final @Nullable ApiMethod apiMethod;
     private final List<Scope> scopes;
     private final Throwable stackTraceHolder;
     private final boolean isLenient;
@@ -63,7 +63,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
 
     @SuppressWarnings("PMD.ExcessiveParameterList")
     protected PredicateSelectorImpl(
-            @Nullable final ApiMethodSelector apiMethodSelector,
+            @Nullable final ApiMethod apiMethod,
             final int priority,
             final Predicate<InternalNode> nodePredicate,
             final List<Scope> scopes,
@@ -74,7 +74,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
             @Nullable final Target target,
             final Throwable stackTraceHolder) {
 
-        this.apiMethodSelector = apiMethodSelector;
+        this.apiMethod = apiMethod;
         this.scopes = Collections.unmodifiableList(scopes);
         this.stackTraceHolder = stackTraceHolder;
         this.isLenient = isLenient;
@@ -88,7 +88,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
 
     private PredicateSelectorImpl(final Builder builder) {
         this(
-                builder.apiMethodSelector,
+                builder.apiMethod,
                 builder.priority,
                 builder.nodePredicate,
                 builder.scopes,
@@ -108,8 +108,8 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
 
     @Nullable
     @Override
-    public ApiMethodSelector getApiMethodSelector() {
-        return apiMethodSelector;
+    public ApiMethod getApiMethodSelector() {
+        return apiMethod;
     }
 
     @Override
@@ -231,7 +231,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
                 && Objects.equals(apiInvocationDescription, that.apiInvocationDescription)
                 && Objects.equals(selectorDepth, that.selectorDepth)
                 && Objects.equals(target, that.target)
-                && Objects.equals(apiMethodSelector, that.apiMethodSelector)
+                && Objects.equals(apiMethod, that.apiMethod)
                 && Objects.equals(isLenient, that.isLenient)
                 && Objects.equals(scopes, that.scopes)
                 && Objects.equals(isHiddenFromVerboseOutput, that.isHiddenFromVerboseOutput);
@@ -240,7 +240,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
     @Override
     public final int hashCode() {
         return Objects.hash(priority, apiInvocationDescription, selectorDepth, target,
-                apiMethodSelector, isLenient, scopes, isHiddenFromVerboseOutput);
+                apiMethod, isLenient, scopes, isHiddenFromVerboseOutput);
     }
 
     /**
@@ -276,7 +276,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
 
     public Builder toBuilder() {
         Builder builder = new Builder();
-        builder.apiMethodSelector = getApiMethodSelector();
+        builder.apiMethod = getApiMethodSelector();
         builder.priority = priority;
         builder.nodePredicate = nodePredicate;
         builder.scopes = getScopes();
@@ -294,7 +294,7 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
     }
 
     public static final class Builder {
-        private @Nullable ApiMethodSelector apiMethodSelector;
+        private @Nullable ApiMethod apiMethod;
         private int priority;
         private Predicate<InternalNode> nodePredicate = any -> true; // init for 'and' chaining
         private List<Scope> scopes = new ArrayList<>(0);
@@ -308,8 +308,8 @@ public class PredicateSelectorImpl implements InternalSelector, PredicateSelecto
         private Builder() {
         }
 
-        public Builder apiMethodSelector(@Nullable final ApiMethodSelector apiMethodSelector) {
-            this.apiMethodSelector = apiMethodSelector;
+        public Builder apiMethodSelector(@Nullable final ApiMethod apiMethod) {
+            this.apiMethod = apiMethod;
             return this;
         }
 

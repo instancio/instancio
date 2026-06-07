@@ -17,7 +17,7 @@ package org.instancio.internal.context;
 
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnusedSelectorException;
-import org.instancio.internal.ApiMethodSelector;
+import org.instancio.internal.ApiMethod;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
@@ -54,7 +54,7 @@ final class UnusedSelectorReporter {
             return;
         }
 
-        final Map<ApiMethodSelector, List<TargetSelector>> unused = unusedSelectors.stream()
+        final Map<ApiMethod, List<TargetSelector>> unused = unusedSelectors.stream()
                 .collect(Collectors.groupingBy((TargetSelector s) -> {
                     final InternalSelector selector = (InternalSelector) s;
                     return selector.getApiMethodSelector();
@@ -65,9 +65,9 @@ final class UnusedSelectorReporter {
                 .append("Found unused selectors referenced in the following methods:")
                 .append(NL);
 
-        for (ApiMethodSelector apiMethodSelector : ApiMethodSelector.values()) {
-            if (apiMethodSelector != ApiMethodSelector.NONE) {
-                append(unused, sb, apiMethodSelector);
+        for (ApiMethod apiMethod : ApiMethod.values()) {
+            if (apiMethod != ApiMethod.NONE) {
+                append(unused, sb, apiMethod);
             }
         }
 
@@ -123,9 +123,9 @@ final class UnusedSelectorReporter {
     }
 
     private static void append(
-            final Map<ApiMethodSelector, List<TargetSelector>> map,
+            final Map<ApiMethod, List<TargetSelector>> map,
             final StringBuilder sb,
-            final ApiMethodSelector apiMethod) {
+            final ApiMethod apiMethod) {
 
         final List<TargetSelector> selectors = map.get(apiMethod);
         if (selectors != null) {
