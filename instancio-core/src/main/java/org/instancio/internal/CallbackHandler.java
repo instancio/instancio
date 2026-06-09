@@ -28,14 +28,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 class CallbackHandler implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(CallbackHandler.class);
 
     private final ModelContext context;
-    private final IdentityHashMap<InternalNode, List<Object>> resultsForCallbacks = new IdentityHashMap<>();
+    private final IdentityHashMap<InternalNode, List<Object>> callbackResultsByNode = new IdentityHashMap<>();
 
     private CallbackHandler(final ModelContext context) {
         this.context = context;
@@ -60,13 +62,20 @@ class CallbackHandler implements GenerationListener {
 
         final Object instance = result.getValue();
         if (!getCallbacks(node).isEmpty()) {
-            resultsForCallbacks.computeIfAbsent(node, res -> new ArrayList<>()).add(instance);
+            callbackResultsByNode.computeIfAbsent(node, res -> new ArrayList<>()).add(instance);
         }
     }
 
     void invokeCallbacks() {
-        LOG.trace("Preparing to call {} callback(s)", resultsForCallbacks.size());
-        resultsForCallbacks.forEach((node, results) -> {
+        if (callbackResultsByNode.isEmpty()) {
+            return;
+        }
+
+        LOG.trace("Preparing to call {} callback(s)", callbackResultsByNode.size());
+
+        for (final Map.Entry<InternalNode, List<Object>> entry : sortCallbackResultsByDepthDescending()) {
+            final InternalNode node = entry.getKey();
+            final List<Object> results = entry.getValue();
             final List<OnCompleteCallback<?>> callbacks = getCallbacks(node);
 
             for (OnCompleteCallback<?> callback : callbacks) {
@@ -75,7 +84,19 @@ class CallbackHandler implements GenerationListener {
                     invokeCallback(callback, result, node);
                 }
             }
-        });
+        }
+    }
+
+    // Invoke callbacks bottom-up. Since a descendant always has a greater depth than its ancestor,
+    // sorting nodes by depth descending guarantees that descendants are processed first.
+    private List<Map.Entry<InternalNode, List<Object>>> sortCallbackResultsByDepthDescending() {
+        final List<Map.Entry<InternalNode, List<Object>>> entries =
+                new ArrayList<>(callbackResultsByNode.entrySet());
+
+        entries.sort(Comparator.comparingInt((Map.Entry<InternalNode, List<Object>> entry) ->
+                entry.getKey().getDepth()).reversed());
+
+        return entries;
     }
 
     private List<OnCompleteCallback<?>> getCallbacks(final InternalNode node) {
