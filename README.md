@@ -123,7 +123,7 @@ List<Person> person = Instancio.ofList(Person.class)
     .create();
 ```
 
-8. Inject arguments into fields and parameters with JUnit 5 ([video tutorial](https://www.youtube.com/watch?v=H8jT43SQis0)):
+8. Inject arguments into fields and parameters with JUnit ([video tutorial](https://www.youtube.com/watch?v=H8jT43SQis0)):
 
 ```java
 @ExtendWith(InstancioExtension.class)
@@ -145,16 +145,15 @@ class ExampleTest {
 }
 ```
 
-9. Run parameterized tests against many samples of generated inputs:
+9. Run tests against many samples of generated inputs:
 
 ```java
 @ExtendWith(InstancioExtension.class)
 class ExampleTest {
 
-    @InstancioSource(samples = 1000)
-    @ParameterizedTest
+    @RepeatedTest(100)
     void example(UUID randomUuid, Foo randomFoo, @Given(BarProvider.class) Bar customBar) {
-        // runs the test method 1000 times against generated inputs
+        // runs the test method 100 times against generated inputs
     }
 }
 ```
@@ -166,7 +165,7 @@ class ExampleTest {
 - Data generation based on JPA and Bean Validation annotations (Hibernate, jakarta).
 - Flexible configuration options and SPIs.
 - Support for defining custom generators.
-- `InstancioExtension` for Junit 5 `@ExtendWith`.
+- `InstancioExtension` for Junit `@ExtendWith`.
 - Object population via fields and setters.
 
 ## Getting Started
@@ -181,7 +180,7 @@ class ExampleTest {
 
 # Maven Coordinates
 
-If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
+If you have JUnit on the classpath, use the `instancio-junit` dependency.
 
 ```xml
 <dependency>
@@ -192,7 +191,7 @@ If you have JUnit 5 on the classpath, use the `instancio-junit` dependency.
 </dependency>
 ```
 
-To use Instancio with JUnit 4, TestNG, or standalone, use `instancio-core`:
+To use Instancio standalone, with TestNG, or other test frameworks, use `instancio-core`:
 
 ```xml
 <dependency>
