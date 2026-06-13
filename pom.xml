@@ -67,7 +67,7 @@
         <version.kotlin>2.3.21</version.kotlin>
         <version.protobuf-java>4.35.1</version.protobuf-java>
         <version.slf4j>2.0.18</version.slf4j>
-        <version.errorprone>2.49.0</version.errorprone>
+        <version.errorprone>2.50.0</version.errorprone>
         <version.nullaway>0.13.6</version.nullaway>
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.10.0</version.central-publishing-maven-plugin>
