@@ -3997,6 +3997,7 @@ The table below summarises these categories and their corresponding log levels:
 | `TRACE` | **`org.instancio.log.seed`**{ title="Logs the effective seed value and its source." }                                                                        |
 | `TRACE` | **`org.instancio.log.settings`**{ title="Logs the current Settings configuration." }                                                                         |
 | `WARN`  | **`org.instancio.log.suppressed.error`**{ title="Logs exceptions that were suppressed instead of thrown, typically when Keys.FAIL_ON_ERROR is disabled." }   |
+| `WARN`  | **`org.instancio.log.test.failure.seed`**{ title="Logs the effective seed value and its source on test failure." }   |
 
 
 In addition to logging, the builder API provides the `verbose()` method that outputs
@@ -4666,7 +4667,8 @@ since the value is already known.
 
 ### Test Failure Reporting
 
-When a test method fails, Instancio adds a message containing the seed value to the failed test's output.
+When a test method fails, Instancio adds an entry to the JUnit context containing the seed value.
+(See also [Debugging](#debugging) for logging options.)
 Using the following failing test as an example:
 
 ``` java linenums="1" title="Test failure example"
@@ -4682,7 +4684,7 @@ void verifyShippingAddress() {
 }
 ```
 
-The failed test output will include the following message:
+The JUnit context will include the following message:
 
 ```
 Test method 'verifyShippingAddress' failed with seed: 8532 (seed source: random seed)
@@ -4887,4 +4889,3 @@ Generators
 </pre>
 
 !!! info "The `io().file()` and `nio().path()` generators can save files on the filesystem."
-
