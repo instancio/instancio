@@ -94,7 +94,14 @@ public final class Log {
          * @see Keys#FAIL_ON_ERROR
          * @since 6.0.0
          */
-        SUPPRESSED_ERROR(Level.WARN, "org.instancio.log.suppressed.error");
+        SUPPRESSED_ERROR(Level.WARN, "org.instancio.log.suppressed.error"),
+
+        /**
+         * Logs the effective seed value and its source on test failure.
+         *
+         * @since 6.0.0
+         */
+        TEST_FAILURE_SEED(Level.WARN, "org.instancio.log.test.failure.seed");
 
         private final Level level;
         private final String name;

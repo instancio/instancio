@@ -26,6 +26,7 @@ import org.instancio.junit.internal.ObjectCreator;
 import org.instancio.junit.internal.ReflectionUtils;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
+import org.instancio.support.Log;
 import org.instancio.support.ThreadLocalRandom;
 import org.instancio.support.ThreadLocalSettings;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -232,6 +233,7 @@ public class InstancioExtension implements
                     testMethod.getName(), seed, random.getSource().getDescription());
 
             context.publishReportEntry("Instancio", seedMsg);
+            Log.msg(Log.Category.TEST_FAILURE_SEED, seedMsg);
         }
     }
 
