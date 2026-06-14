@@ -16,8 +16,8 @@
 package org.instancio.testsupport.asserts;
 
 import org.assertj.core.api.AbstractAssert;
-import org.instancio.PredicateSelector;
 import org.instancio.Scope;
+import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
@@ -110,7 +110,7 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     }
 
     public SelectorAssert isPredicateSelector() {
-        assertThat(actual).isInstanceOf(PredicateSelector.class);
+        assertThat(actual).isInstanceOf(Selector.class);
         return this;
     }
 

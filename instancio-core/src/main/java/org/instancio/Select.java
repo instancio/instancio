@@ -67,7 +67,6 @@ import java.util.function.Predicate;
  *
  * @see Selector
  * @see SelectorGroup
- * @see PredicateSelector
  * @see TargetSelector
  * @see GroupableSelector
  * @since 1.2.0
@@ -143,7 +142,7 @@ public final class Select {
      * @see #types(Predicate)
      * @since 1.6.0
      */
-    public static PredicateSelector fields(final Predicate<Field> predicate) {
+    public static Selector fields(final Predicate<Field> predicate) {
         ApiValidator.notNull(predicate, "Field predicate must not be null");
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.FIELDS)
@@ -161,7 +160,7 @@ public final class Select {
      * @see #fields(Predicate)
      * @since 1.6.0
      */
-    public static PredicateSelector types(final Predicate<Class<?>> predicate) {
+    public static Selector types(final Predicate<Class<?>> predicate) {
         ApiValidator.notNull(predicate, "Type predicate must not be null");
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.TYPES)
@@ -184,7 +183,7 @@ public final class Select {
      * @return a selector for the given class
      * @since 1.2.0
      */
-    public static PredicateSelector all(final Class<?> type) {
+    public static Selector all(final Class<?> type) {
         ApiValidator.notNull(type, "Class must not be null");
         return PredicateSelectorImpl
                 .builder()
@@ -232,7 +231,7 @@ public final class Select {
      * @see #fields(Predicate)
      * @since 1.2.0
      */
-    public static PredicateSelector field(final Class<?> declaringClass, final String fieldName) {
+    public static Selector field(final Class<?> declaringClass, final String fieldName) {
         ApiValidator.notNull(declaringClass, "declaring class must not be null");
         ApiValidator.notNull(fieldName, "field name must not be null");
 
@@ -263,7 +262,7 @@ public final class Select {
      * @see #fields(Predicate)
      * @since 1.2.0
      */
-    public static PredicateSelector field(final String fieldName) {
+    public static Selector field(final String fieldName) {
         ApiValidator.notNull(fieldName, "field name must not be null");
         return PredicateSelectorImpl.builder()
                 .target(new TargetFieldName(null, fieldName))
@@ -320,7 +319,7 @@ public final class Select {
      * @see #field(Class, String)
      * @since 2.3.0
      */
-    public static <T, R> PredicateSelector field(final GetMethodSelector<T, R> methodReference) {
+    public static <T, R> Selector field(final GetMethodSelector<T, R> methodReference) {
         ApiValidator.notNull(methodReference, "getter method reference must not be null");
 
         return PredicateSelectorImpl.builder()
@@ -352,7 +351,7 @@ public final class Select {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static PredicateSelector setter(final String methodName) {
+    public static Selector setter(final String methodName) {
         final String description = "setter(\"%s\")".formatted(methodName);
 
         return setterInternal(description, null, methodName, null);
@@ -376,7 +375,7 @@ public final class Select {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static PredicateSelector setter(final Class<?> declaringClass, final String methodName) {
+    public static Selector setter(final Class<?> declaringClass, final String methodName) {
         final String description = "setter(%s, \"%s\")".formatted(
                 declaringClass.getSimpleName(),
                 methodName);
@@ -399,7 +398,7 @@ public final class Select {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static PredicateSelector setter(final Class<?> declaringClass, final String methodName, final Class<?> parameterType) {
+    public static Selector setter(final Class<?> declaringClass, final String methodName, final Class<?> parameterType) {
         ApiValidator.notNull(parameterType, "parameterType must not be null");
         final String description = "setter(%s, \"%s(%s)\")".formatted(
                 declaringClass.getSimpleName(),
@@ -409,7 +408,7 @@ public final class Select {
         return setterInternal(description, declaringClass, methodName, parameterType);
     }
 
-    private static PredicateSelector setterInternal(
+    private static Selector setterInternal(
             final String description,
             @Nullable final Class<?> declaringClass,
             final String methodName,
@@ -442,7 +441,7 @@ public final class Select {
      * @since 4.0.0
      */
     @ExperimentalApi
-    public static <T, U> PredicateSelector setter(final SetMethodSelector<T, U> methodReference) {
+    public static <T, U> Selector setter(final SetMethodSelector<T, U> methodReference) {
         ApiValidator.notNull(methodReference, "setter method reference must not be null");
 
         return PredicateSelectorImpl.builder()
@@ -468,7 +467,7 @@ public final class Select {
      * @return selector for all Strings
      * @since 1.2.0
      */
-    public static PredicateSelector allStrings() {
+    public static Selector allStrings() {
         return all(String.class);
     }
 
@@ -478,7 +477,7 @@ public final class Select {
      * @return selector for all bytes
      * @since 1.2.0
      */
-    public static PredicateSelector allBytes() {
+    public static Selector allBytes() {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.ALL)
                 .typePredicate(t -> t == byte.class || t == Byte.class)
@@ -492,7 +491,7 @@ public final class Select {
      * @return selector for all floats
      * @since 1.2.0
      */
-    public static PredicateSelector allFloats() {
+    public static Selector allFloats() {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.ALL)
                 .typePredicate(t -> t == float.class || t == Float.class)
@@ -506,7 +505,7 @@ public final class Select {
      * @return selector for all shorts
      * @since 1.2.0
      */
-    public static PredicateSelector allShorts() {
+    public static Selector allShorts() {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.ALL)
                 .typePredicate(t -> t == short.class || t == Short.class)
@@ -520,7 +519,7 @@ public final class Select {
      * @return selector for all integers
      * @since 1.2.0
      */
-    public static PredicateSelector allInts() {
+    public static Selector allInts() {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.ALL)
                 .typePredicate(t -> t == int.class || t == Integer.class)
@@ -534,7 +533,7 @@ public final class Select {
      * @return selector for all longs
      * @since 1.2.0
      */
-    public static PredicateSelector allLongs() {
+    public static Selector allLongs() {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.ALL)
                 .typePredicate(t -> t == long.class || t == Long.class)
@@ -548,7 +547,7 @@ public final class Select {
      * @return selector for all doubles
      * @since 1.2.0
      */
-    public static PredicateSelector allDoubles() {
+    public static Selector allDoubles() {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.ALL)
                 .typePredicate(t -> t == double.class || t == Double.class)
@@ -562,7 +561,7 @@ public final class Select {
      * @return selector for all booleans
      * @since 1.2.0
      */
-    public static PredicateSelector allBooleans() {
+    public static Selector allBooleans() {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.ALL)
                 .typePredicate(t -> t == boolean.class || t == Boolean.class)
@@ -576,7 +575,7 @@ public final class Select {
      * @return selector for all characters
      * @since 1.2.0
      */
-    public static PredicateSelector allChars() {
+    public static Selector allChars() {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.ALL)
                 .typePredicate(t -> t == char.class || t == Character.class)
@@ -658,7 +657,7 @@ public final class Select {
      * @since 4.2.0
      */
     @ExperimentalApi
-    public static Scope scope(final PredicateSelector selector) {
+    public static Scope scope(final Selector selector) {
         return new PredicateScopeImpl(selector);
     }
 

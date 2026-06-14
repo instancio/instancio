@@ -679,8 +679,7 @@ Additional examples are provided below.
 Scopes can be created using:
 
 - `Select.scope()` static methods in the {{Select}} class
-- `Selector.toScope()` method provided by regular selectors
-- `PredicateSelector.toScope()` method provided by predicate selectors
+- `Selector.toScope()` method provided by selectors
 
 The first approach requires specifying the target class and, for field-level scopes, the name of the field:
 
@@ -688,7 +687,7 @@ The first approach requires specifying the target class and, for field-level sco
 Select.scope(Class<?> targetClass)
 Select.scope(Class<?> targetClass, String field)
 Select.scope(GetMethodSelector<T, R> methodReference)
-Select.scope(PredicateSelector selector)
+Select.scope(Selector selector)
 ```
 
 ``` java title="Examples"

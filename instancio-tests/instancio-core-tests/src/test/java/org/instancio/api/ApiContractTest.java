@@ -30,7 +30,6 @@ import org.instancio.InstancioCartesianProductApi;
 import org.instancio.InstancioCollectionsApi;
 import org.instancio.InstancioObjectApi;
 import org.instancio.LenientSelector;
-import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.Select;
@@ -148,13 +147,6 @@ class ApiContractTest {
     @DisplayName("Methods supported by Selector")
     void selectorSupportedMethods() {
         assertThatClass(Selector.class)
-                .hasOnlyMethodsNamed("atDepth", "lenient", "within", "toScope");
-    }
-
-    @Test
-    @DisplayName("Methods supported by PredicateSelector")
-    void predicateSelectorSupportedMethods() {
-        assertThatClass(PredicateSelector.class)
                 .hasOnlyMethodsNamed("atDepth", "lenient", "within", "toScope");
     }
 
@@ -313,13 +305,13 @@ class ApiContractTest {
 
             @Test
             void predicateSelector() {
-                final PredicateSelector p1 = Select.fields(f -> true);
-                final PredicateSelector p2 = Select.types(f -> true);
+                final Selector p1 = Select.fields(f -> true);
+                final Selector p2 = Select.types(f -> true);
             }
 
             @Test
             void predicateSelectorAtDepth() {
-                final PredicateSelector p = Select.fields(f -> true);
+                final Selector p = Select.fields(f -> true);
 
                 // before 4.2.0
                 final GroupableSelector gs1 = p.atDepth(1);
@@ -332,7 +324,7 @@ class ApiContractTest {
 
             @Test
             void predicateSelectorToScope() {
-                final PredicateSelector p = Select.fields(f -> true);
+                final Selector p = Select.fields(f -> true);
 
                 final Scope scope = p.toScope();
             }

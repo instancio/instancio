@@ -15,6 +15,8 @@
  */
 package org.instancio;
 
+import java.util.function.Predicate;
+
 /**
  * Represents a selector for matching field and class.
  *
@@ -22,7 +24,10 @@ package org.instancio;
  * @see TargetSelector
  * @since 1.2.0
  */
-public interface Selector extends DepthSelector, ScopeableSelector {
+public interface Selector extends
+        DepthSelector,
+        DepthPredicateSelector,
+        ScopeableSelector {
 
     /**
      * {@inheritDoc}
@@ -31,6 +36,14 @@ public interface Selector extends DepthSelector, ScopeableSelector {
      */
     @Override
     ScopeableSelector atDepth(int depth);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.14.0
+     */
+    @Override
+    ScopeableSelector atDepth(Predicate<Integer> predicate);
 
     /**
      * {@inheritDoc}
