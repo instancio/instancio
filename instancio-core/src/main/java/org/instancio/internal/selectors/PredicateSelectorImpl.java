@@ -16,10 +16,10 @@
 package org.instancio.internal.selectors;
 
 import org.instancio.GroupableSelector;
-import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.Select;
+import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethod;
 import org.instancio.internal.nodes.InternalNode;
@@ -38,7 +38,7 @@ import java.util.function.Predicate;
 
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
-public class PredicateSelectorImpl implements InternalSelector, PredicateSelector {
+public class PredicateSelectorImpl implements InternalSelector, Selector {
 
     private static final String DEFAULT_SELECTOR_DESCRIPTION = "<selector>";
     private static final Predicate<@Nullable Field> NON_NULL_FIELD = Objects::nonNull;

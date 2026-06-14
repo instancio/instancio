@@ -35,7 +35,7 @@ import java.util.function.Predicate;
  * <p>will match String fields annotated {@code @Foo} <b>and</b> {@code @Foo}.</p>
  *
  * @see Select
- * @see PredicateSelector
+ * @see Selector
  * @see TargetSelector
  * @since 1.6.0
  */

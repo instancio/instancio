@@ -15,8 +15,8 @@
  */
 package org.instancio.internal.selectors;
 
-import org.instancio.PredicateSelector;
 import org.instancio.Scope;
+import org.instancio.Selector;
 import org.instancio.internal.nodes.InternalNode;
 import org.jspecify.annotations.Nullable;
 
@@ -24,12 +24,12 @@ import java.util.function.Predicate;
 
 public final class PredicateScopeImpl implements Scope {
 
-    private final PredicateSelector predicateSelector;
+    private final Selector predicateSelector;
     private final Predicate<InternalNode> nodePredicate;
     private final @Nullable String apiInvocationDescription;
 
     public PredicateScopeImpl(
-            final PredicateSelector predicateSelector,
+            final Selector predicateSelector,
             final @Nullable String apiInvocationDescription) {
 
         this.predicateSelector = predicateSelector;
@@ -37,7 +37,7 @@ public final class PredicateScopeImpl implements Scope {
         this.apiInvocationDescription = apiInvocationDescription;
     }
 
-    public PredicateScopeImpl(final PredicateSelector predicateSelector) {
+    public PredicateScopeImpl(final Selector predicateSelector) {
         this(predicateSelector, null);
     }
 
@@ -50,7 +50,7 @@ public final class PredicateScopeImpl implements Scope {
         return apiInvocationDescription;
     }
 
-    public PredicateSelector getPredicateSelector() {
+    public Selector getPredicateSelector() {
         return predicateSelector;
     }
 

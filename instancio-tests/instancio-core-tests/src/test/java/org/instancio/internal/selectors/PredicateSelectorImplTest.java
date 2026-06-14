@@ -17,7 +17,6 @@ package org.instancio.internal.selectors;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.instancio.GroupableSelector;
-import org.instancio.PredicateSelector;
 import org.instancio.Scope;
 import org.instancio.ScopeableSelector;
 import org.instancio.Select;
@@ -205,8 +204,8 @@ class PredicateSelectorImplTest {
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("depth must not be negative: -1");
 
-        final PredicateSelector fieldsSelector = Select.fields(f -> true);
-        final PredicateSelector typesSelector = types(t -> true);
+        final Selector fieldsSelector = Select.fields(f -> true);
+        final Selector typesSelector = types(t -> true);
 
         assertThatThrownBy(() -> fieldsSelector.atDepth(-1))
                 .isExactlyInstanceOf(InstancioApiException.class)

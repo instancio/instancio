@@ -22,7 +22,6 @@ import kotlin.reflect.jvm.javaField
 import org.instancio.FieldSelectorBuilder
 import org.instancio.GetMethodSelector
 import org.instancio.GroupableSelector
-import org.instancio.PredicateSelector
 import org.instancio.Scope
 import org.instancio.Select
 import org.instancio.Selector
@@ -329,7 +328,7 @@ object KSelect {
      * @since 6.0.0
      */
     @ExperimentalApi
-    fun fields(predicate: Predicate<Field>): PredicateSelector {
+    fun fields(predicate: Predicate<Field>): Selector {
         return Select.fields(predicate)
     }
 
@@ -341,7 +340,7 @@ object KSelect {
      * @since 6.0.0
      */
     @ExperimentalApi
-    fun types(predicate: Predicate<Class<*>>): PredicateSelector {
+    fun types(predicate: Predicate<Class<*>>): Selector {
         return Select.types(predicate)
     }
 
@@ -353,7 +352,7 @@ object KSelect {
      * @since 6.0.0
      */
     @ExperimentalApi
-    fun fields(predicate: (Field) -> Boolean): PredicateSelector {
+    fun fields(predicate: (Field) -> Boolean): Selector {
         return Select.fields(Predicate(predicate))
     }
 
@@ -365,7 +364,7 @@ object KSelect {
      * @since 6.0.0
      */
     @ExperimentalApi
-    fun types(predicate: (Class<*>) -> Boolean): PredicateSelector {
+    fun types(predicate: (Class<*>) -> Boolean): Selector {
         return Select.types(Predicate(predicate))
     }
 
@@ -521,7 +520,7 @@ object KSelect {
      * @since 6.0.0
      */
     @ExperimentalApi
-    fun scope(selector: PredicateSelector): Scope {
+    fun scope(selector: Selector): Scope {
         return Select.scope(selector)
     }
 

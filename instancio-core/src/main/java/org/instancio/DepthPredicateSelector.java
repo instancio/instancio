@@ -24,7 +24,7 @@ import java.util.function.Predicate;
  * target using a predicate.
  *
  * @see DepthSelector
- * @see PredicateSelector
+ * @see Selector
  * @since 2.14.0
  */
 public interface DepthPredicateSelector {

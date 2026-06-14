@@ -35,7 +35,7 @@ import java.util.function.Predicate;
  * {@code @Entity} <b>and</b> {@code @Table}.</p>
  *
  * @see Select
- * @see PredicateSelector
+ * @see Selector
  * @see TargetSelector
  * @since 1.6.0
  */

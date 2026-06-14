@@ -17,7 +17,7 @@ package org.instancio.test.features.size;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
-import org.instancio.PredicateSelector;
+import org.instancio.Selector;
 import org.instancio.Size;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.exception.UnusedSelectorException;
@@ -225,7 +225,7 @@ class SizeTest {
         @Test
         void negativeIntThrowsAtCallTime() {
             final InstancioApi<Person> api = Instancio.of(Person.class);
-            final PredicateSelector selector = field(Address::getPhoneNumbers);
+            final Selector selector = field(Address::getPhoneNumbers);
 
             assertThatThrownBy(() -> api.size(selector, -1))
                     .isExactlyInstanceOf(InstancioApiException.class)
