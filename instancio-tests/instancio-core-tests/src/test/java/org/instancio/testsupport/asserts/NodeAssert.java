@@ -175,6 +175,12 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
         return this;
     }
 
+    public NodeAssert isIgnored() {
+        isNotNull();
+        assertThat(actual.isIgnored()).isTrue();
+        return this;
+    }
+
     public NodeAssert isCyclic() {
         isNotNull();
         assertThat(actual.isCyclic()).isTrue();

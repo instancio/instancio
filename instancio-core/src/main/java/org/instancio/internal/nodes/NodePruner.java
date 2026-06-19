@@ -51,7 +51,7 @@ final class NodePruner {
         final Decision decision = getDecision(node);
         return switch (decision) {
             case KEEP -> node;
-            case IGNORE -> node.toBuilder().nodeKind(NodeKind.IGNORED).build();
+            case IGNORE -> node.toBuilder().ignored().build();
             case PRUNE -> null;
         };
     }

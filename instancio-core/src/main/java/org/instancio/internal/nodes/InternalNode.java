@@ -44,6 +44,7 @@ public final class InternalNode implements Node {
     private final @Nullable Method setter;
     private final @Nullable InternalNode parent;
     private final NodeKind nodeKind;
+    private final boolean ignored;
     private final boolean cyclic;
     private final NodeTypeMap nodeTypeMap;
     private List<InternalNode> children;
@@ -58,6 +59,7 @@ public final class InternalNode implements Node {
         setter = builder.setter;
         parent = builder.parent;
         nodeKind = requireNonNull(builder.nodeKind);
+        ignored = builder.ignored;
         cyclic = builder.cyclic;
         nodeTypeMap = requireNonNull(builder.nodeTypeMap);
         children = CollectionUtils.asUnmodifiableList(builder.children);
@@ -73,7 +75,7 @@ public final class InternalNode implements Node {
     }
 
     public boolean isIgnored() {
-        return nodeKind == NodeKind.IGNORED;
+        return ignored;
     }
 
     public boolean isCyclic() {
@@ -251,7 +253,7 @@ public final class InternalNode implements Node {
         sb.append(", depth=").append(depth)
                 .append(", type=").append(Format.withoutPackage(type));
 
-        if (nodeKind == NodeKind.IGNORED) {
+        if (ignored) {
             sb.append(", IGNORED");
         }
 
@@ -259,7 +261,7 @@ public final class InternalNode implements Node {
     }
 
     public String toDisplayString() {
-        if (nodeKind == NodeKind.IGNORED) {
+        if (ignored) {
             return "ignored";
         }
 
@@ -299,6 +301,7 @@ public final class InternalNode implements Node {
         builder.parent = parent;
         builder.children = children;
         builder.nodeKind = nodeKind;
+        builder.ignored = ignored;
         builder.cyclic = cyclic;
         builder.nodeTypeMap = nodeTypeMap;
         return builder;
@@ -326,6 +329,7 @@ public final class InternalNode implements Node {
         private @Nullable InternalNode parent;
         private @Nullable List<InternalNode> children;
         private @Nullable NodeKind nodeKind;
+        private boolean ignored;
         private boolean cyclic;
         private @Nullable NodeTypeMap nodeTypeMap;
         private Map<Type, Type> additionalTypeMap = Collections.emptyMap();
@@ -377,6 +381,11 @@ public final class InternalNode implements Node {
 
         public Builder nodeKind(final NodeKind nodeKind) {
             this.nodeKind = nodeKind;
+            return this;
+        }
+
+        public Builder ignored() {
+            this.ignored = true;
             return this;
         }
 

@@ -42,7 +42,6 @@ import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.RecordUtils;
 import org.instancio.internal.util.ReflectionUtils;
-import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.support.Log;
 import org.jspecify.annotations.NullUnmarked;
@@ -215,10 +214,6 @@ class InstancioEngine {
             case ARRAY -> generateArray(node);
             case RECORD -> generateRecord(node);
             case CONTAINER -> generateContainer(node);
-            default -> {
-                Verify.state(node.getChildren().isEmpty(), "Node should have no children");
-                yield generateValue(node).applyBuildFunctionIfPresent();
-            }
         };
     }
 
