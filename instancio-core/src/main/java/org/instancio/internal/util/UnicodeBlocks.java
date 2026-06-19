@@ -27,7 +27,6 @@ import java.util.Map;
  * Utility class for querying the code point range
  * for a given {@link UnicodeBlock}.
  */
-@SuppressWarnings("PMD.FieldDeclarationsShouldBeAtStartOfClass")
 public final class UnicodeBlocks {
     private static final Logger LOG = LoggerFactory.getLogger(UnicodeBlocks.class);
 
