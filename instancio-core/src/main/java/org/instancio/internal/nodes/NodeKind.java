@@ -21,14 +21,6 @@ package org.instancio.internal.nodes;
 public enum NodeKind {
 
     /**
-     * Represents a node marked with the {@code ignore()} method.
-     * An ignored node has no children.
-     *
-     * @since 2.10.0
-     */
-    IGNORED,
-
-    /**
      * Represents POJO classes.
      *
      * @since 3.0.0

@@ -16,7 +16,6 @@
 package org.instancio.nodes;
 
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.spi.InternalExtension;
 import org.instancio.spi.CoreTestsInternalSpi.IgnoredAndPrunedFieldPojo;
 import org.instancio.testsupport.templates.NodeTestTemplate;
@@ -35,7 +34,7 @@ class IgnoredAndExcludedFieldPojoNodeTest extends NodeTestTemplate<IgnoredAndPru
     @Override
     protected void verify(InternalNode rootNode) {
         assertNode(NodeUtils.getChildNode(rootNode, IgnoredAndPrunedFieldPojo.IGNORED_FIELD_NAME))
-                .isOfKind(NodeKind.IGNORED)
+                .isIgnored()
                 .hasTargetClass(String.class)
                 .hasNoChildren();
 
