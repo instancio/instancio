@@ -32,8 +32,8 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -57,7 +57,7 @@ class ApplyFeedSeedTest {
     private static final Settings settings = Settings.create()
             .set(Keys.FEED_DATA_ACCESS, FeedDataAccess.RANDOM);
 
-    private static final Set<StringHolder> results = new HashSet<>();
+    private static final Set<StringHolder> results = ConcurrentHashMap.newKeySet();
 
     @Order(1)
     @Seed(SEED)

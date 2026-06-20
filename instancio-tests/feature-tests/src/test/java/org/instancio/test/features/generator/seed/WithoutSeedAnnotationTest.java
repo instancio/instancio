@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class WithoutSeedAnnotationTest {
 
-    private static final Set<Object> results = new HashSet<>();
+    private static final Set<Object> results = ConcurrentHashMap.newKeySet();
     private static final int REPEATED_TEST_NUM_INVOCATIONS = 5;
 
     @WithSettings

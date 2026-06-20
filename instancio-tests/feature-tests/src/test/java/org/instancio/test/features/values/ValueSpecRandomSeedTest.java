@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ValueSpecRandomSeedTest {
 
     private static final int SAMPLE_SIZE = 10;
-    private static final Set<String> results = new HashSet<>();
+    private static final Set<String> results = ConcurrentHashMap.newKeySet();
 
     @Order(1)
     @RepeatedTest(SAMPLE_SIZE)

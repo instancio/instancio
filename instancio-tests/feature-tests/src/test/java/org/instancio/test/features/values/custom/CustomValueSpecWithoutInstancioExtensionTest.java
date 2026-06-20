@@ -27,8 +27,8 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 // Do not use InstancioExtension for this test!
 class CustomValueSpecWithoutInstancioExtensionTest {
 
-    private static final Set<String> generatedValues = new HashSet<>();
+    private static final Set<String> generatedValues = ConcurrentHashMap.newKeySet();
 
     private final CustomSpec spec = new CustomSpec();
 
