@@ -70,7 +70,7 @@
                                            MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN,
                                            QUESTION, RCURLY, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN"/>
             <property name="allowEmptyConstructors" value="false"/>
-            <property name="allowEmptyMethods" value="false"/>
+            <property name="allowEmptyMethods" value="true"/>
             <property name="allowEmptyTypes" value="true"/>
         </module>
     </module>
