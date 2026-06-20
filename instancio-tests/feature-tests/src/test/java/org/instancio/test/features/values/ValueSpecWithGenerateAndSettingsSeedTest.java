@@ -24,8 +24,8 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
@@ -35,7 +35,7 @@ import static org.instancio.Select.allStrings;
 class ValueSpecWithGenerateAndSettingsSeedTest {
 
     private static final long SEED = -1;
-    private static final Set<String> results = new HashSet<>();
+    private static final Set<String> results = ConcurrentHashMap.newKeySet();
 
     @RepeatedTest(10)
     void withGenerate() {

@@ -25,8 +25,8 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ValueSpecWithSeedAnnotationTest {
 
     private static final long SEED = -1;
-    private static final Set<String> results = new HashSet<>();
+    private static final Set<String> results = ConcurrentHashMap.newKeySet();
 
     @Seed(SEED)
     @RepeatedTest(10)

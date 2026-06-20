@@ -28,8 +28,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class CustomValueSpecWithInstancioExtensionTest {
 
-    private static final Set<String> generatedValues = new HashSet<>();
+    private static final Set<String> generatedValues = ConcurrentHashMap.newKeySet();
 
     /**
      * Since this test uses the {@link InstancioExtension},

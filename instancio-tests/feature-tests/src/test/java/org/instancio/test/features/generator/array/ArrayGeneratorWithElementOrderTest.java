@@ -25,9 +25,9 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,8 +40,8 @@ import static org.instancio.Select.all;
 class ArrayGeneratorWithElementOrderTest {
     private static final Long[] EXPECTED_LONGS = {1L, 2L, 3L};
 
-    private static final Set<List<Long>> PRIMITIVE_SEQUENCES = new LinkedHashSet<>();
-    private static final Set<List<Long>> WRAPPER_SEQUENCES = new LinkedHashSet<>();
+    private static final Set<List<Long>> PRIMITIVE_SEQUENCES = ConcurrentHashMap.newKeySet();
+    private static final Set<List<Long>> WRAPPER_SEQUENCES = ConcurrentHashMap.newKeySet();
 
     @Seed(-12345)
     @RepeatedTest(5)
