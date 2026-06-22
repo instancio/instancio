@@ -16,7 +16,6 @@
 package org.instancio.internal.context;
 
 import org.instancio.Assignment;
-import org.instancio.FilterPredicate;
 import org.instancio.GeneratorSpecProvider;
 import org.instancio.Model;
 import org.instancio.OnCompleteCallback;
@@ -71,7 +70,6 @@ import org.jspecify.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -210,8 +208,20 @@ public final class ModelContext {
     }
 
     public boolean isAccepted(final InternalNode node, @Nullable final Object value) {
-        Predicate<Object> predicate = selectorMaps.getFilterSelectorMap().getPredicate(node);
-        if (predicate == null) {
+        return isAccepted(node, value, /* includeUniqueFilters = */ true);
+    }
+
+    public boolean isAcceptedAssignedValue(final InternalNode node, @Nullable final Object value) {
+        return isAccepted(node, value, /* includeUniqueFilters = */ false);
+    }
+
+    private boolean isAccepted(
+            final InternalNode node,
+            @Nullable final Object value,
+            final boolean includeUniqueFilters) {
+
+        final Predicate<Object> predicate = selectorMaps.getFilterSelectorMap().getPredicate(node);
+        if (predicate == null || (!includeUniqueFilters && predicate instanceof UniqueFilterPredicate)) {
             return true;
         }
         try {
@@ -406,16 +416,8 @@ public final class ModelContext {
         }
 
         public Builder withUnique(final TargetSelector selector) {
-            final FilterPredicate<Object> predicate = new FilterPredicate<>() {
-                final Set<Object> generatedValues = new HashSet<>();
-
-                @Override
-                public boolean test(final Object obj) {
-                    return generatedValues.add(obj);
-                }
-            };
             // withUnique() is implemented using filter()
-            return addFilterPredicate(selector, predicate, ApiMethod.WITH_UNIQUE);
+            return addFilterPredicate(selector, new UniqueFilterPredicate(), ApiMethod.WITH_UNIQUE);
         }
 
         private Builder addFilterPredicate(

@@ -172,7 +172,7 @@ class InstancioEngine {
 
         int retryCount = 0;
 
-        while (!context.isAccepted(node, generatorResult.getValue())) {
+        while (!isResultAccepted(node, generatorResult)) {
             if (++retryCount > maxGenerationAttempts) {
 
                 if (context.getSettings().get(Keys.FAIL_ON_MAX_GENERATION_ATTEMPTS_REACHED)) {
@@ -199,6 +199,12 @@ class InstancioEngine {
         LOG.trace("<< {} : {}", node, generatorResult);
 
         return generatorResult;
+    }
+
+    private boolean isResultAccepted(final InternalNode node, final GeneratorResult result) {
+        return result.isFromAssignment()
+                ? context.isAcceptedAssignedValue(node, result.getValue())
+                : context.isAccepted(node, result.getValue());
     }
 
     private GeneratorResult doCreateObject(final InternalNode node, final boolean isNullable) {
