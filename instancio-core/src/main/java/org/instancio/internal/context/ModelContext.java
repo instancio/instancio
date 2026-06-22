@@ -44,6 +44,7 @@ import org.instancio.internal.generator.misc.ObjectFillingGenerator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.BlankSelectors;
 import org.instancio.internal.selectors.InternalSelector;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.SelectorProcessor;
 import org.instancio.internal.selectors.SetterSelectorHolder;
 import org.instancio.internal.settings.InternalSettings;
@@ -488,25 +489,40 @@ public final class ModelContext {
             final List<InternalAssignment> assignments = ((Flattener<InternalAssignment>) assignment).flatten();
 
             for (InternalAssignment a : assignments) {
+                processSingleAssignment(a);
+            }
+        }
 
-                final List<TargetSelector> origin = selectorProcessor.process(
-                        a.getOrigin(), ApiMethod.ASSIGN_ORIGIN);
+        private void processSingleAssignment(final InternalAssignment a) {
+            Verify.notNull(assignmentMap, "assignmentMap not initialised");
 
-                final List<TargetSelector> destinations = selectorProcessor.process(
-                        a.getDestination(), ApiMethod.ASSIGN_DESTINATION);
+            final List<TargetSelector> origins = selectorProcessor.process(
+                    a.getOrigin(), ApiMethod.ASSIGN_ORIGIN);
 
-                Verify.isTrue(origin.size() == 1, "Origin has multiple selectors");
+            Verify.isTrue(origins.size() == 1, "Origin has multiple selectors");
 
-                for (TargetSelector destination : destinations) {
-                    final Assignment processedAssignment = a.toBuilder()
-                            .origin(origin.get(0))
-                            .destination(destination)
-                            .build();
+            // Propagate destination leniency to the origin: if the user marked the assignment
+            // as optional via lenient() on the destination, the origin should also be lenient
+            // so it is not reported as an unused selector when the assignment never fires.
+            final boolean destinationIsLenient = a.getDestination() instanceof InternalSelector destSelector
+                    && destSelector.isLenient();
 
-                    this.assignmentMap
-                            .computeIfAbsent(destination, k -> new ArrayList<>())
-                            .add(processedAssignment);
-                }
+            final TargetSelector origin = destinationIsLenient
+                    ? ((PredicateSelectorImpl) origins.get(0)).toBuilder().lenient().build()
+                    : origins.get(0);
+
+            final List<TargetSelector> destinations = selectorProcessor.process(
+                    a.getDestination(), ApiMethod.ASSIGN_DESTINATION);
+
+            for (TargetSelector destination : destinations) {
+                final Assignment processedAssignment = a.toBuilder()
+                        .origin(origin)
+                        .destination(destination)
+                        .build();
+
+                this.assignmentMap
+                        .computeIfAbsent(destination, k -> new ArrayList<>())
+                        .add(processedAssignment);
             }
         }
 
