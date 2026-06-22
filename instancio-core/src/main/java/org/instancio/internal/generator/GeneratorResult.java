@@ -24,10 +24,10 @@ import static java.util.Objects.requireNonNull;
 
 public final class GeneratorResult {
     private static final Hints EMPTY_HINTS = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
-    private static final GeneratorResult NULL_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.NULL);
-    private static final GeneratorResult UNRESOLVED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.UNRESOLVED);
-    private static final GeneratorResult IGNORED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.IGNORED);
-    private static final GeneratorResult DELAYED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.DELAYED);
+    private static final GeneratorResult NULL_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.NULL, false);
+    private static final GeneratorResult UNRESOLVED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.UNRESOLVED, false);
+    private static final GeneratorResult IGNORED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.IGNORED, false);
+    private static final GeneratorResult DELAYED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.DELAYED, false);
 
     private enum Type {
         NULL, UNRESOLVED, IGNORED, DELAYED, RESOLVED
@@ -36,15 +36,29 @@ public final class GeneratorResult {
     private final @Nullable Object value;
     private final Hints hints;
     private final Type type;
+    private final boolean fromAssignment;
 
-    private GeneratorResult(@Nullable final Object value, final Hints hints, final Type type) {
+    private GeneratorResult(
+            @Nullable final Object value,
+            final Hints hints,
+            final Type type,
+            final boolean fromAssignment) {
         this.value = value;
         this.hints = requireNonNull(hints, "null hints");
         this.type = type;
+        this.fromAssignment = fromAssignment;
     }
 
     public static GeneratorResult resolved(@Nullable final Object value, final Hints hints) {
-        return new GeneratorResult(value, hints, Type.RESOLVED);
+        return new GeneratorResult(value, hints, Type.RESOLVED, false);
+    }
+
+    public static GeneratorResult assignedResult(@Nullable final Object value) {
+        return new GeneratorResult(value, EMPTY_HINTS, Type.RESOLVED, true);
+    }
+
+    public boolean isFromAssignment() {
+        return fromAssignment;
     }
 
     @Nullable

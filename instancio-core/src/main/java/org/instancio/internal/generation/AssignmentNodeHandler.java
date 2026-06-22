@@ -23,7 +23,6 @@ import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
-import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
 import org.jspecify.annotations.Nullable;
@@ -108,9 +107,8 @@ class AssignmentNodeHandler implements NodeHandler {
                     }
 
                     // Since the same object instance is assigned to different fields,
-                    // set this result to DO_NOT_MODIFY. The result will be populated
-                    // based on the original hint
-                    return GeneratorResult.resolved(destinationResult, Constants.DO_NOT_MODIFY_HINT);
+                    // mark as fromAssignment so that filters (e.g. withUnique) are skipped.
+                    return GeneratorResult.assignedResult(destinationResult);
                 } else {
                     return userSuppliedGeneratorProcessor.getGeneratorResult(node, assignmentGenerator);
                 }

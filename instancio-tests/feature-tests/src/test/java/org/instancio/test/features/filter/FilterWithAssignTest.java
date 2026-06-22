@@ -17,6 +17,8 @@ package org.instancio.test.features.filter;
 
 import org.instancio.Assign;
 import org.instancio.Instancio;
+import org.instancio.InstancioApi;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.misc.StringFields;
 import org.instancio.test.support.pojo.person.Address;
@@ -30,6 +32,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
 
 @FeatureTag({Feature.FILTER, Feature.ASSIGN})
@@ -64,5 +68,47 @@ class FilterWithAssignTest {
                 .create();
 
         assertThat(result.getOne()).isEqualTo(result.getTwo()).isEqualTo("bar");
+    }
+
+    /**
+     * A destination populated via {@code valueOf().to()} mirrors the origin and cannot
+     * be regenerated independently. A {@code filter()} that rejects the copied value
+     * can therefore never be satisfied and should result in an error rather than
+     * being silently ignored.
+     */
+    @Test
+    void unsatisfiableFilterOnCopiedDestination() {
+        final InstancioApi<StringFields> api = Instancio.of(StringFields.class)
+                .filter(field(StringFields::getTwo), (String two) -> false)
+                .assign(Assign.valueOf(StringFields::getOne).to(StringFields::getTwo));
+
+        assertThatThrownBy(api::create)
+                .isInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("failed generating a value for node");
+    }
+
+    @Test
+    void satisfiableFilterOnCopiedDestination() {
+        final StringFields result = Instancio.of(StringFields.class)
+                .set(field(StringFields::getOne), "foo")
+                .filter(field(StringFields::getTwo), "foo"::equals)
+                .assign(Assign.valueOf(StringFields::getOne).to(StringFields::getTwo))
+                .create();
+
+        assertThat(result.getTwo()).isEqualTo("foo");
+    }
+
+    /**
+     * {@code withUnique()} must not reject values copied via assignments:
+     * such copies are duplicates by design.
+     */
+    @Test
+    void withUniqueDoesNotApplyToCopiedDestination() {
+        final StringFields result = Instancio.of(StringFields.class)
+                .withUnique(allStrings())
+                .assign(Assign.valueOf(StringFields::getOne).to(StringFields::getTwo))
+                .create();
+
+        assertThat(result.getTwo()).isEqualTo(result.getOne());
     }
 }
