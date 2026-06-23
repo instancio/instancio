@@ -200,7 +200,7 @@ public final class ModelContext {
         return selectorMaps;
     }
 
-    public boolean isIgnored(final InternalNode node) {
+    public boolean matchesIgnoreSelector(final InternalNode node) {
         return selectorMaps.getIgnoreSelectorMap().isTrue(node);
     }
 

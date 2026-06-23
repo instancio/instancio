@@ -52,7 +52,7 @@ final class NodeFilter implements NodePopulationFilter {
             final AfterGenerate afterGenerate,
             @Nullable final Object owner) {
 
-        if (node.isIgnored() || afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
+        if (node.isStaticallyIgnored() || afterGenerate == AfterGenerate.DO_NOT_MODIFY) {
             return NodeFilterResult.SKIP;
         }
 

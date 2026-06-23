@@ -111,7 +111,7 @@ public class GeneratorFacade {
     private GeneratorResult getGeneratorResult(final InternalNode node) {
         GeneratorResult result = GeneratorResult.unresolvedResult();
 
-        if (node.isIgnored()) {
+        if (node.isStaticallyIgnored()) {
             result = GeneratorResult.ignoredResult();
         } else if (shouldReturnNullForNullable(node)) {
             result = nullSubstitutorFacade.substituteNull(node);

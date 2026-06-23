@@ -74,7 +74,7 @@ public final class InternalNode implements Node {
         return this.nodeKind == nodeKind;
     }
 
-    public boolean isIgnored() {
+    public boolean isStaticallyIgnored() {
         return ignored;
     }
 
