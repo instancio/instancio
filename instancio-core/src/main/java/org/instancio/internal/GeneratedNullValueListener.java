@@ -58,7 +58,7 @@ final class GeneratedNullValueListener implements GenerationListener {
             final InternalNode current = queue.poll();
 
             if (result.isIgnored()) {
-                context.isIgnored(current);
+                context.matchesIgnoreSelector(current);
             } else {
                 /*
                  A null result was generated for this node.
@@ -68,7 +68,7 @@ final class GeneratedNullValueListener implements GenerationListener {
                  Therefore, manually traverse all descendants and mark them as
                  "used" to prevent a false positive error.
                 */
-                context.isIgnored(current);
+                context.matchesIgnoreSelector(current);
                 context.isNullable(current);
                 context.getGenerator(current);
                 context.getCallbacks(current);

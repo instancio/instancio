@@ -109,7 +109,7 @@ public final class Format {
                         .append('(').append(withoutPackage(paramType)).append(')');
             }
         }
-        if (node.isIgnored()) {
+        if (node.isStaticallyIgnored()) {
             sb.append(" [IGNORED]");
         }
         if (node.isCyclic()) {

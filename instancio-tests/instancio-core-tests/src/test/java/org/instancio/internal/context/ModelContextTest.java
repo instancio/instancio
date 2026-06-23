@@ -112,8 +112,8 @@ class ModelContextTest {
                 .withIgnored(toFieldSelector(ADDRESS_FIELD))
                 .build();
 
-        assertThat(ctx.isIgnored(mockNode(Person.class, NAME_FIELD))).isTrue();
-        assertThat(ctx.isIgnored(mockNode(Person.class, ADDRESS_FIELD))).isTrue();
+        assertThat(ctx.matchesIgnoreSelector(mockNode(Person.class, NAME_FIELD))).isTrue();
+        assertThat(ctx.matchesIgnoreSelector(mockNode(Person.class, ADDRESS_FIELD))).isTrue();
     }
 
     @Test
@@ -122,8 +122,8 @@ class ModelContextTest {
                 .withIgnored(Select.all(all(Address.class), all(Pet.class)))
                 .build();
 
-        assertThat(ctx.isIgnored(mockNode(Address.class))).isTrue();
-        assertThat(ctx.isIgnored(mockNode(Pet.class))).isTrue();
+        assertThat(ctx.matchesIgnoreSelector(mockNode(Address.class))).isTrue();
+        assertThat(ctx.matchesIgnoreSelector(mockNode(Pet.class))).isTrue();
     }
 
     @Test
@@ -236,7 +236,7 @@ class ModelContextTest {
         assertThatThrownBy(() -> ctx.reportUnusedSelectorWarnings(null)).isInstanceOf(UnusedSelectorException.class);
 
         ctx.getGenerator(mockNode(Person.class, NAME_FIELD));
-        ctx.isIgnored(mockNode(Person.class, ADDRESS_FIELD));
+        ctx.matchesIgnoreSelector(mockNode(Person.class, ADDRESS_FIELD));
         ctx.reportUnusedSelectorWarnings(null); // no error
 
         final ModelContext newCtx = ctx.toBuilder().build();
@@ -305,8 +305,8 @@ class ModelContextTest {
         assertThat(actual.getGenerator(mockNode(String.class))).get().isInstanceOf(GeneratorDecorator.class);
         assertThat(actual.getGenerator(mockNode(Person.class, ADDRESS_CITY_FIELD))).get().isInstanceOf(GeneratorDecorator.class);
         assertThat(actual.getGenerator(mockNode(Person.class, PETS_FIELD))).get().isInstanceOf(GeneratorDecorator.class);
-        assertThat(actual.isIgnored(mockNode(Person.class, NAME_FIELD))).isTrue();
-        assertThat(actual.isIgnored(mockNode(ignoredClass))).isTrue();
+        assertThat(actual.matchesIgnoreSelector(mockNode(Person.class, NAME_FIELD))).isTrue();
+        assertThat(actual.matchesIgnoreSelector(mockNode(ignoredClass))).isTrue();
         assertThat(actual.isNullable(mockNode(nullableClass))).isTrue();
         assertThat(actual.isNullable(mockNode(Person.class, ADDRESS_FIELD))).isTrue();
         assertThat(actual.getMaxDepth()).isEqualTo(maxDepth);

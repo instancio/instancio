@@ -50,7 +50,7 @@ final class DefaultFeedSpecHandler implements InternalFeedSpecHandler {
 
     @Override
     public void applyFeedSpecs(final InternalNode node) {
-        if (node.isIgnored() || (!node.is(NodeKind.POJO) && !node.is(NodeKind.RECORD))) {
+        if (node.isStaticallyIgnored() || (!node.is(NodeKind.POJO) && !node.is(NodeKind.RECORD))) {
             return;
         }
         final Feed feed = feedSelectorMap.getValue(node).orElse(null);

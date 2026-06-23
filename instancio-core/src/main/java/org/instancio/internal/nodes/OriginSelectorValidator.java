@@ -63,7 +63,7 @@ class OriginSelectorValidator {
     }
 
     void checkNode(final InternalNode node) {
-        if (node.isIgnored()) {
+        if (node.isStaticallyIgnored()) {
             return;
         }
 

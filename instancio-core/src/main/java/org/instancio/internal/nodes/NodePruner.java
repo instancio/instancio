@@ -60,7 +60,7 @@ final class NodePruner {
         if (isExcludedViaSettingsIgnorePattern(node.getField())) {
             return Decision.PRUNE;
         }
-        if (modelContext.isIgnored(node)) {
+        if (modelContext.matchesIgnoreSelector(node)) {
             return Decision.IGNORE;
         }
 

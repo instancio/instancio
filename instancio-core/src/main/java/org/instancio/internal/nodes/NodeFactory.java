@@ -97,7 +97,7 @@ public final class NodeFactory {
      * @return child nodes (without children), or an empty list if none.
      */
     private List<InternalNode> createChildren(final InternalNode node) {
-        if (node.isIgnored()) {
+        if (node.isStaticallyIgnored()) {
             return List.of();
         }
 

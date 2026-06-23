@@ -305,7 +305,7 @@ class InstancioEngine {
             populateChildren(valueNodeChildren, GeneratorResult.resolved(entry.getValue(), hints));
         }
 
-        if (keyNode.isIgnored() || valueNode.isIgnored()) {
+        if (keyNode.isStaticallyIgnored() || valueNode.isStaticallyIgnored()) {
             return generatorResult;
         }
 
@@ -465,7 +465,7 @@ class InstancioEngine {
             while (elementValue == null
                     && !hint.nullableElements()
                     && !elementResult.hasEmitNullHint()
-                    && !context.isIgnored(elementNode)
+                    && !context.matchesIgnoreSelector(elementNode)
                     && failedAdditions < maxGenerationAttempts) {
 
                 failedAdditions++;
@@ -509,7 +509,7 @@ class InstancioEngine {
             populateChildren(elementNodeChildren, GeneratorResult.resolved(element, hints));
         }
 
-        if (elementNode.isIgnored()) {
+        if (elementNode.isStaticallyIgnored()) {
             return generatorResult;
         }
 
@@ -674,7 +674,7 @@ class InstancioEngine {
         final Assigner assigner = assignerResolver.resolve(generatorResult);
 
         for (final InternalNode child : children) {
-            if (child.isIgnored()) {
+            if (child.isStaticallyIgnored()) {
                 continue;
             }
 

@@ -177,7 +177,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
 
     public NodeAssert isIgnored() {
         isNotNull();
-        assertThat(actual.isIgnored()).isTrue();
+        assertThat(actual.isStaticallyIgnored()).isTrue();
         return this;
     }
 
