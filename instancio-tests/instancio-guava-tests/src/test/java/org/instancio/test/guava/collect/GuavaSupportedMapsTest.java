@@ -24,6 +24,9 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.internal.util.Constants;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.Keys;
+import org.instancio.settings.Settings;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,6 +41,11 @@ import static org.instancio.Select.root;
 
 @ExtendWith(InstancioExtension.class)
 class GuavaSupportedMapsTest {
+
+    @WithSettings
+    private static final Settings settings = Settings.create()
+            // reduce chance of collisions since BiMap requires both, key and value to be unique
+            .set(Keys.STRING_MIN_LENGTH, 32);
 
     private static Stream<Arguments> args() {
         return Stream.of(
