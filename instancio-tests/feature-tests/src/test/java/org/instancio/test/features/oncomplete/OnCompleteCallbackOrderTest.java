@@ -16,9 +16,9 @@
 package org.instancio.test.features.oncomplete;
 
 import lombok.Data;
-import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.test.support.Api;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
@@ -26,9 +26,7 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
@@ -52,17 +50,14 @@ class OnCompleteCallbackOrderTest {
     void callbacksAreInvokedBottomUp_regardlessOfApiInvocationOrder() {
         final List<String> order = new ArrayList<>();
 
-        final List<Consumer<InstancioApi<?>>> apiCalls = List.of(
+        final InstancioApi<Root0> api = Api.shuffleApiOrder(Root0.class,
                 a -> a.onComplete(all(Root0.class), o -> order.add("root0")),
                 a -> a.onComplete(all(Depth1.class), o -> order.add("root0.depth1")),
                 a -> a.onComplete(all(Depth2.class), o -> order.add("root0.depth1.depth2")),
                 a -> a.onComplete(all(Depth3.class), o -> order.add("root0.depth1.depth2.depth3")),
-                a -> a.onComplete(field(Depth3::getLeaf4), o -> order.add("root0.depth1.depth2.depth3.leaf4")));
+                a -> a.onComplete(field(Depth3::getLeaf4), o -> order.add("root0.depth1.depth2.depth3.leaf4"))
+        );
 
-        final Collection<Consumer<InstancioApi<?>>> shuffledApiCalls = Instancio.gen().shuffle(apiCalls).get();
-
-        final InstancioApi<Root0> api = Instancio.of(Root0.class);
-        shuffledApiCalls.forEach(consumer -> consumer.accept(api));
         api.create();
 
         assertThat(order).containsExactly(
