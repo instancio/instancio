@@ -83,6 +83,13 @@ public interface ArrayGeneratorSpec<T extends @Nullable Object>
 
     /**
      * Adds given elements to the generated array at random positions.
+     * Note that the elements are added after the array has been generated.
+     * <p>
+     * Example:
+     * <pre>{@code
+     *  // will generate an array of length 5
+     *  generate(field("someArray"), gen -> gen.array().length(3).with(element1, element2))
+     * }</pre>
      *
      * @param elements to add
      * @return spec builder
