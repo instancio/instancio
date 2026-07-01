@@ -230,6 +230,7 @@ public final class InternalNode implements Node {
         return result;
     }
 
+    @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(50)
