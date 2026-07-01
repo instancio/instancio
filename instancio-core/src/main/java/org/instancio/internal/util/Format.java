@@ -82,6 +82,7 @@ public final class Format {
      * <2:Address: List<Phone> phoneNumbers>
      * }</pre>
      */
+    @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
     public static String formatAsTreeNode(final InternalNode node) {
         final StringBuilder sb = new StringBuilder(SB_SMALL);
         sb.append('<').append(node.getDepth()).append(':');
