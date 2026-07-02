@@ -34,6 +34,7 @@ import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.SupplierAdapter;
 import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.ElementFrameStack;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
@@ -59,6 +60,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allStrings;
+import static org.instancio.Select.elementOf;
 import static org.instancio.Select.field;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -96,6 +98,30 @@ class ModelContextTest {
 
         assertThat(ctx.isNullable(mockNode(Address.class))).isTrue();
         assertThat(ctx.isNullable(mockNode(UUID.class))).isTrue();
+    }
+
+    @Test
+    void elementFrameStackIsNoopWhenNoElementOfSelectors() {
+        final ModelContext ctx = ModelContext.builder(Person.class)
+                .withSet(field("name"), "foo")
+                .build();
+
+        assertThat(ctx.hasElementOfSelectors()).isFalse();
+        assertThat(ctx.getElementFrameStack())
+                .as("engine should get the NOOP stack to avoid per-element Frame allocation")
+                .isSameAs(ElementFrameStack.NOOP);
+    }
+
+    @Test
+    void elementFrameStackIsRealWhenElementOfSelectorPresent() {
+        final ModelContext ctx = ModelContext.builder(Person.class)
+                .withSet(elementOf(field(Person.class, "pets")).at(0), null)
+                .build();
+
+        assertThat(ctx.hasElementOfSelectors()).isTrue();
+        assertThat(ctx.getElementFrameStack())
+                .as("a real (frame-tracking) stack is required when elementOf selectors are present")
+                .isNotSameAs(ElementFrameStack.NOOP);
     }
 
     @Test

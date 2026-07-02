@@ -26,6 +26,7 @@ public final class PredicateScopeImpl implements Scope {
 
     private final Selector predicateSelector;
     private final Predicate<InternalNode> nodePredicate;
+    private final @Nullable ElementOfDescriptor elementOfDescriptor;
     private final @Nullable String apiInvocationDescription;
 
     public PredicateScopeImpl(
@@ -34,6 +35,7 @@ public final class PredicateScopeImpl implements Scope {
 
         this.predicateSelector = predicateSelector;
         this.nodePredicate = ((PredicateSelectorImpl) predicateSelector).getNodePredicate();
+        this.elementOfDescriptor = ((PredicateSelectorImpl) predicateSelector).getElementOfDescriptor();
         this.apiInvocationDescription = apiInvocationDescription;
     }
 
@@ -43,6 +45,11 @@ public final class PredicateScopeImpl implements Scope {
 
     public Predicate<InternalNode> getNodePredicate() {
         return nodePredicate;
+    }
+
+    @Nullable
+    public ElementOfDescriptor getElementOfDescriptor() {
+        return elementOfDescriptor;
     }
 
     @Nullable

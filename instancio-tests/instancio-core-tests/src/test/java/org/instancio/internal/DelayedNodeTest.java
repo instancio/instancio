@@ -28,13 +28,13 @@ class DelayedNodeTest {
     @Test
     void verifyToString() {
         final DelayedNode delayedNode = new DelayedNode(Fixtures.node(String.class),
-                GeneratorResult.resolved("foo", Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS)));
+                GeneratorResult.resolved("foo", Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS)), null);
 
         assertThat(delayedNode).hasToString(
                 "DelayedNode[Node[String, depth=0, type=String]," +
                         " Result[foo, Hints[afterGenerate=APPLY_SELECTORS, hints={}]]]");
 
-        assertThat(new DelayedNode(null, null))
+        assertThat(new DelayedNode(null, null, null))
                 .hasToString("DelayedNode[null, null]");
     }
 }

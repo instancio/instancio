@@ -84,6 +84,26 @@ public interface BaseApi<T extends @Nullable Object> {
      * // will produce: PersonRecord[name=null, age=0]
      * }</pre>
      *
+     * <h4>Usage with {@code elementOf()} selectors</h4>
+     *
+     * <p>{@code elementOf()} selectors are supported for targets
+     * <em>within</em> collection or array elements, for example:
+     *
+     * <pre>{@code
+     * Person person = Instancio.of(Person.class)
+     *     .ignore(elementOf(Person::getAddresses).first().field(Address::getCity))
+     *     .create();
+     * }</pre>
+     *
+     * <p>Ignoring whole elements is <b>not</b> supported: a collection slot has
+     * no default value to leave in place. A selector that matches an element
+     * itself, such as {@code elementOf(Person::getAddresses).first()}, never
+     * matches any target and is reported as an unused selector in strict mode.
+     *
+     * <p>Unlike other API methods, {@code ignore()} also never widens the
+     * collection: an index beyond the generated size never matches and is
+     * likewise reported as an unused selector.
+     *
      * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference
      * @since 4.0.0
@@ -486,10 +506,10 @@ public interface BaseApi<T extends @Nullable Object> {
      * <p>Using assignments has a few limitations to be aware of.
      *
      * <ul>
-     *   <li>The origin selector must match a single target.
-     *       It must not be a {@link SelectorGroup} created via
-     *       {@link Select#all(GroupableSelector...)} or primitive/wrapper
-     *       selector, such as {@link Select#allInts()}</li>
+     *   <li>The origin selector must match a single target. It must not be a
+     *       {@link SelectorGroup} created via {@link Select#all(GroupableSelector...)}.
+     *       If it otherwise matches more than one target, an error is raised
+     *       on a best-effort basis.</li>
      *   <li>An assignment where the origin selector's target is within
      *       a collection element must have a destination selector
      *       within the same collection element.</li>
@@ -562,6 +582,17 @@ public interface BaseApi<T extends @Nullable Object> {
      *       be mapped to the {@code Person} object, even though
      *       these are generated and not present in the data file.</li>
      * </ul>
+     *
+     * <p>A feed can also be applied to elements of a specific collection
+     * or array using an {@link Select#elementOf(TargetSelector) elementOf()}
+     * selector, including a subset of elements via an index spec:
+     *
+     * <pre>{@code
+     * // Apply the feed only to the first two contacts of the team
+     * Team team = Instancio.of(Team.class)
+     *     .applyFeed(elementOf(Team::getContacts).range(0, 1), personFeed)
+     *     .create();
+     * }</pre>
      *
      * @param selector for fields and/or classes this method should be applied to
      * @param feed     the feed to apply to the selector

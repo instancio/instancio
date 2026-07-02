@@ -23,6 +23,8 @@ import org.instancio.documentation.Contract;
 import org.instancio.generator.Generator;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.ElementOfSelectorImpl;
+import org.instancio.internal.selectors.SelectorGroupImpl;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
@@ -43,7 +45,7 @@ import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParameter
 import static org.instancio.internal.ApiValidatorMessageHelper.withTypeParametersNumberOfParameters;
 import static org.instancio.internal.util.ErrorMessageUtils.createSetterSelectorWithFieldAssignmentErrorMessage;
 
-@SuppressWarnings("PMD.GodClass")
+@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.GodClass"})
 public final class ApiValidator {
 
     // Note: include nested generic class in the example as it's used as a validation message for this use case
@@ -326,6 +328,29 @@ public final class ApiValidator {
             UnusedSelectorDescription desc = (UnusedSelectorDescription) setMethodSelector;
 
             throw Fail.withUsageError(createSetterSelectorWithFieldAssignmentErrorMessage(desc.getDescription()));
+        }
+    }
+
+    public static void rejectElementOfForApiMethod(
+            final TargetSelector selector,
+            final ApiMethod apiMethod) {
+
+        boolean isElementOf = false;
+
+        if (selector instanceof ElementOfSelectorImpl) {
+            isElementOf = true;
+        } else if (selector instanceof SelectorGroupImpl group) {
+            for (TargetSelector s : group.flatten()) {
+                if (s instanceof ElementOfSelectorImpl) {
+                    isElementOf = true;
+                    break;
+                }
+            }
+        }
+
+        if (isElementOf) {
+            throw Fail.withUsageError(
+                    apiMethod.getDescription() + " does not support elementOf() selectors");
         }
     }
 

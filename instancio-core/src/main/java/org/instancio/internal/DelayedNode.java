@@ -17,14 +17,22 @@ package org.instancio.internal;
 
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.ElementFrameStack.Frame;
+import org.jspecify.annotations.Nullable;
 
 public final class DelayedNode {
     private final InternalNode node;
     private final GeneratorResult parentResult;
+    private final @Nullable Frame capturedFrame;
 
-    DelayedNode(final InternalNode node, final GeneratorResult parentResult) {
+    DelayedNode(
+            final InternalNode node,
+            final GeneratorResult parentResult,
+            @Nullable final Frame capturedFrame) {
+
         this.node = node;
         this.parentResult = parentResult;
+        this.capturedFrame = capturedFrame;
     }
 
     public InternalNode getNode() {
@@ -33,6 +41,11 @@ public final class DelayedNode {
 
     GeneratorResult getParentResult() {
         return parentResult;
+    }
+
+    @Nullable
+    Frame getCapturedFrame() {
+        return capturedFrame;
     }
 
     @Override

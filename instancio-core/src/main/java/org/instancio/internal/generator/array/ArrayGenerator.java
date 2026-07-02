@@ -41,6 +41,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     protected int minSize;
     protected int maxSize;
     private boolean nullableElements;
+    private @Nullable Integer explicitMaxSize;
     private @Nullable Class<?> arrayType;
     private @Nullable List<Object> withElements;
 
@@ -66,6 +67,9 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     public ArrayGenerator<T> minSize(int size) {
         this.minSize = ApiValidator.validateSize(size);
         this.maxSize = NumberUtils.calculateNewMaxSize(maxSize, minSize);
+        if (explicitMaxSize != null) {
+            explicitMaxSize = maxSize;
+        }
         return this;
     }
 
@@ -73,6 +77,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     public ArrayGenerator<T> maxSize(int size) {
         this.maxSize = ApiValidator.validateSize(size);
         this.minSize = NumberUtils.calculateNewMinSize(minSize, maxSize);
+        this.explicitMaxSize = size;
         return this;
     }
 
@@ -80,6 +85,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
     public ArrayGenerator<T> size(int size) {
         this.maxSize = ApiValidator.validateSize(size);
         this.minSize = size;
+        this.explicitMaxSize = size;
         return this;
     }
 
@@ -142,6 +148,7 @@ public class ArrayGenerator<T> extends AbstractGenerator<T> implements ArrayGene
                         .build())
                 .with(InternalGeneratorHint.builder()
                         .targetClass(arrayType)
+                        .explicitMaxSize(explicitMaxSize)
                         .build())
                 .build();
     }

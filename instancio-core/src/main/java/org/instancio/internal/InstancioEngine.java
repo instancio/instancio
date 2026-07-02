@@ -15,6 +15,8 @@
  */
 package org.instancio.internal;
 
+import org.instancio.TargetSelector;
+import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.AfterGenerate;
 import org.instancio.generator.Hints;
 import org.instancio.generator.hints.ArrayHint;
@@ -33,8 +35,10 @@ import org.instancio.internal.generator.ContainerBuildFunction;
 import org.instancio.internal.generator.ContainerCreateFunction;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalContainerHint;
+import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
+import org.instancio.internal.selectors.ElementFrameStack;
 import org.instancio.internal.util.ArrayUtils;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ErrorMessageUtils;
@@ -52,6 +56,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
@@ -61,6 +66,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
+import static org.instancio.internal.util.Format.nodePathToRootBlock;
 import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 
 /**
@@ -89,6 +95,7 @@ class InstancioEngine {
     private final NodeFilter nodeFilter;
     private final AssignerResolver assignerResolver;
     private final AssignmentObjectStore assignmentObjectStore;
+    private final ElementFrameStack elementFrameStack;
     private final NullSubstitutorFacade nullSubstitutorFacade;
     private final DelayedNodeQueue delayedNodeQueue = new DelayedNodeQueue();
     private final int maxGenerationAttempts;
@@ -100,6 +107,7 @@ class InstancioEngine {
         callbackHandler = CallbackHandler.create(context);
         containerFactoriesHandler = new ContainerFactoriesHandler(context.getInternalExtensions());
         assignmentObjectStore = AssignmentObjectStore.create(context);
+        elementFrameStack = context.getElementFrameStack();
         nullSubstitutorFacade = new NullSubstitutorFacade(context);
         generatorFacade = new GeneratorFacade(context, nullSubstitutorFacade, assignmentObjectStore);
         defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
@@ -144,7 +152,18 @@ class InstancioEngine {
         int i = delayedNodeQueue.size();
         while (i >= 0 && !delayedNodeQueue.isEmpty()) {
             final DelayedNode entry = delayedNodeQueue.removeFirst();
-            final GeneratorResult result = createObject(entry.getNode());
+            final ElementFrameStack.Frame capturedFrame = entry.getCapturedFrame();
+            if (capturedFrame != null) {
+                elementFrameStack.push(capturedFrame);
+            }
+            final GeneratorResult result;
+            try {
+                result = createObject(entry.getNode());
+            } finally {
+                if (capturedFrame != null) {
+                    elementFrameStack.pop();
+                }
+            }
 
             if (result.isDelayed()) {
                 i--;
@@ -305,7 +324,7 @@ class InstancioEngine {
             populateChildren(valueNodeChildren, GeneratorResult.resolved(entry.getValue(), hints));
         }
 
-        if (keyNode.isStaticallyIgnored() || valueNode.isStaticallyIgnored()) {
+        if (context.isEffectivelyIgnored(keyNode) || context.isEffectivelyIgnored(valueNode)) {
             return generatorResult;
         }
 
@@ -340,7 +359,7 @@ class InstancioEngine {
 
             // Note: map key does not support emit() null
             if ((mapKey != null || nullableKey)
-                    && (mapValue != null || nullableValue || mapValueResult.hasEmitNullHint())) {
+                    && (mapValue != null || nullableValue || mapValueResult.isIntentionalNull())) {
                 if (!map.containsKey(mapKey)) {
                     ApiValidator.validateValueIsAssignableToElementNode(
                             "error adding key to map", mapKey, node, keyNode);
@@ -377,7 +396,9 @@ class InstancioEngine {
     }
 
     @SuppressWarnings({
+            "PMD.AvoidDeeplyNestedIfStmts",
             "PMD.CognitiveComplexity",
+            "PMD.NcssCount",
             "PMD.NPathComplexity",
             "PMD.AvoidReassigningLoopVariables"})
     private GeneratorResult generateArray(final InternalNode node) {
@@ -388,22 +409,41 @@ class InstancioEngine {
             return generatorResult;
         }
 
-        Object arrayObj = generatorResult.getValue();
-        if (sizeOverride != null) {
-            final int overrideLength = context.getRandom().intRange(sizeOverride.min(), sizeOverride.max());
-            arrayObj = Array.newInstance(arrayObj.getClass().getComponentType(), overrideLength);
-        }
         final Hints hints = generatorResult.getHints();
         final ArrayHint hint = defaultIfNull(hints.get(ArrayHint.class), ArrayHint.empty());
 
         final List<?> withElements = hint.withElements();
-        final int arrayLength = Array.getLength(arrayObj);
 
-        if (sizeOverride != null && withElements.size() > arrayLength) {
+        // Marked "used" so an empty or all-null array doesn't report these selectors as unused
+        context.markElementOfAssignmentSelectorsUsedForContainer(node);
+
+        // withElements occupy leading slots, so elementOf() index region starts after them.
+        // Widen array if an index selector points past the region (max excludes them too)
+        final int withCount = withElements.size();
+        final Integer explicitMax = explicitMaxSize(hints, sizeOverride);
+
+        if (sizeOverride != null && explicitMax != null && withCount > explicitMax) {
             throw Fail.withUsageError(
                     "array generator specifies more 'with()' elements (%s) than the size() override allows (%s)"
-                            .formatted(withElements.size(), arrayLength));
+                            .formatted(withCount, explicitMax));
         }
+
+        Object arrayObj = generatorResult.getValue();
+        if (sizeOverride != null) {
+            final int effectiveMin = Math.max(sizeOverride.min(), withCount);
+            final int overrideLength = context.getRandom().intRange(effectiveMin, sizeOverride.max());
+            arrayObj = Array.newInstance(arrayObj.getClass().getComponentType(), overrideLength);
+        }
+
+        final int currentRegion = Array.getLength(arrayObj) - withCount;
+        final Integer explicitRegionMax = explicitMax == null ? null : explicitMax - withCount;
+        final int requiredRegion = requiredRegionSize(node, currentRegion, explicitRegionMax);
+
+        if (requiredRegion > currentRegion) {
+            arrayObj = ArrayUtils.widenArray(arrayObj, withCount + requiredRegion);
+        }
+
+        final int arrayLength = Array.getLength(arrayObj);
 
         final InternalNode elementNode = node.getOnlyChild();
         int lastIndex = 0;
@@ -414,8 +454,7 @@ class InstancioEngine {
 
             // Populate objects created by user within the generator
             if (elementValue != null) {
-                final List<InternalNode> elementNodeChildren = node.getOnlyChild().getChildren();
-                populateChildren(elementNodeChildren, GeneratorResult.resolved(elementValue, hints));
+                populateChildren(elementNode.getChildren(), GeneratorResult.resolved(elementValue, hints));
             }
 
             // Current element may have been set by a custom generator.
@@ -436,6 +475,8 @@ class InstancioEngine {
         // terminate the loop once we reach the threshold to avoid an infinite loop.
         int failedAdditions = 0;
 
+        List<Integer> delayedElementIndices = null;
+
         for (int i = lastIndex; i < arrayLength; i++) {
 
             // Current value at index may have been set by a custom generator
@@ -443,19 +484,26 @@ class InstancioEngine {
 
             // Populate objects created by user within the generator
             if (currentValue != null) {
-                final List<InternalNode> elementNodeChildren = node.getOnlyChild().getChildren();
-                populateChildren(elementNodeChildren, GeneratorResult.resolved(currentValue, hints));
+                populateChildren(elementNode.getChildren(), GeneratorResult.resolved(currentValue, hints));
             }
 
             if (nodeFilter.filter(elementNode, action, currentValue) == NodeFilterResult.SKIP) {
                 continue;
             }
 
-            assignmentObjectStore.enterScope();
-            final GeneratorResult elementResult = createObject(elementNode, hint.nullableElements());
-            assignmentObjectStore.exitScope();
+            // Index/size are relative to the generated region (after the leading withElements)
+            final GeneratorResult elementResult = createElementInFrame(
+                    node, elementNode, i - lastIndex, arrayLength - lastIndex, hint.nullableElements());
 
             if (elementResult.isDelayed()) {
+                if (!isPrimitiveArray) {
+                    // Origin not yet generated since its index is higher
+                    if (delayedElementIndices == null) {
+                        delayedElementIndices = new ArrayList<>();
+                    }
+                    delayedElementIndices.add(i);
+                    continue;
+                }
                 return GeneratorResult.delayedResult();
             }
 
@@ -464,8 +512,7 @@ class InstancioEngine {
             // If elements are not nullable, keep generating until a non-null
             while (elementValue == null
                     && !hint.nullableElements()
-                    && !elementResult.hasEmitNullHint()
-                    && !context.matchesIgnoreSelector(elementNode)
+                    && !elementResult.isIntentionalNull()
                     && failedAdditions < maxGenerationAttempts) {
 
                 failedAdditions++;
@@ -481,13 +528,38 @@ class InstancioEngine {
             }
         }
 
+        if (delayedElementIndices != null) {
+            final Object array = arrayObj;
+            final boolean resolved = retryDelayedElements(
+                    delayedElementIndices, node, elementNode,
+                    lastIndex, arrayLength - lastIndex, hint.nullableElements(),
+                    (index, value) -> {
+                        // can't assign null values to primitive arrays
+                        if (value != null) {
+                            ApiValidator.validateValueIsAssignableToElementNode(
+                                    "array element type mismatch", value, node, elementNode);
+                            Array.set(array, index, value);
+                        }
+                    });
+            if (!resolved) {
+                return GeneratorResult.delayedResult();
+            }
+        }
+
         if (hint.shuffle()) {
             ArrayUtils.shuffle(arrayObj, context.getRandom());
         }
+
+        assignmentObjectStore.clearCrossElementValuesFor(node);
         return GeneratorResult.resolved(arrayObj, hints);
     }
 
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
+    @SuppressWarnings({
+            "PMD.AvoidDeeplyNestedIfStmts",
+            "PMD.CognitiveComplexity",
+            "PMD.NcssCount",
+            "PMD.NPathComplexity"
+    })
     private GeneratorResult generateCollection(final InternalNode node) {
         final GeneratorResult generatorResult = generateValue(node);
         final InternalSize sizeOverride = context.getContainerSize(node);
@@ -503,6 +575,21 @@ class InstancioEngine {
         final InternalNode elementNode = node.getOnlyChild();
         final Hints hints = generatorResult.getHints();
 
+        // Marked "used" so an empty or all-null List doesn't report these selectors as unused
+        if (collection instanceof List) {
+            context.markElementOfAssignmentSelectorsUsedForContainer(node);
+        } else {
+            // Fail fast since Sets have no element ordering, so cross-element assignment can't work
+            final TargetSelector unsupported =
+                    context.findFirstElementOfAssignmentSelectorForContainer(node);
+
+            if (unsupported != null) {
+                throw Fail.withUsageError(
+                        ErrorMessageUtils.elementOfAssignmentNotSupportedOnNonIndexedCollection(
+                                unsupported, node));
+            }
+        }
+
         // Populated objects that were created/added in the generator itself
         for (Object element : collection) {
             final List<InternalNode> elementNodeChildren = elementNode.getChildren();
@@ -517,27 +604,44 @@ class InstancioEngine {
         final boolean nullableElements = hint.nullableElements();
         final boolean requireUnique = hint.unique();
 
-        final int targetSize = sizeOverride != null
+        // withElements are appended afterwards, outside the elementOf() index space: they are
+        // fixed values elementOf() must not overwrite (and frames resolve last()/range() against
+        // the generated region only)
+        final int elementsToGenerate = sizeOverride != null
                 ? context.getRandom().intRange(sizeOverride.min(), sizeOverride.max())
                 : hint.generateElements();
 
+        final int targetSize = elementsToGenerateForElementOf(node,
+                elementsToGenerate, collection.size(), hints, sizeOverride);
+
         final Set<Object> generated = new HashSet<>(targetSize);
 
+        final int generatedSize = collection.size() + targetSize;
         int remaining = targetSize;
         int failedAdditions = 0;
 
+        List<Integer> delayedElementIndices = null;
+
         while (remaining > 0) {
-            assignmentObjectStore.enterScope();
-            final GeneratorResult elementResult = createObject(elementNode, nullableElements);
-            assignmentObjectStore.exitScope();
+            final int currentIndex = collection.size();
+            final GeneratorResult elementResult = createElementInFrame(
+                    node, elementNode, currentIndex, generatedSize, nullableElements);
 
             if (elementResult.isDelayed()) {
+                if (collection instanceof List) {
+                    // Origin not yet generated (its index is higher); add a null placeholder, retry below
+                    collection.add(null);
+                    if (delayedElementIndices == null) delayedElementIndices = new ArrayList<>();
+                    delayedElementIndices.add(currentIndex);
+                    remaining--;
+                    continue;
+                }
                 return GeneratorResult.delayedResult();
             }
 
             final Object elementValue = elementResult.getValue();
 
-            if (elementValue != null || nullableElements || elementResult.hasEmitNullHint()) {
+            if (elementValue != null || nullableElements || elementResult.isIntentionalNull()) {
 
                 boolean canAdd = !requireUnique || !generated.contains(elementValue);
 
@@ -574,6 +678,16 @@ class InstancioEngine {
             }
         }
 
+        if (delayedElementIndices != null) {
+            final List<Object> list = (List<Object>) collection;
+            final boolean resolved = retryDelayedElements(
+                    delayedElementIndices, node, elementNode,
+                    0, generatedSize, nullableElements, list::set);
+            if (!resolved) {
+                return GeneratorResult.delayedResult();
+            }
+        }
+
         if (!hint.withElements().isEmpty()) {
             collection.addAll(hint.withElements());
         }
@@ -581,7 +695,106 @@ class InstancioEngine {
             CollectionUtils.shuffle(collection, context.getRandom());
         }
 
+        assignmentObjectStore.clearCrossElementValuesFor(node);
         return containerFactoriesHandler.substituteResult(node, generatorResult);
+    }
+
+    private int elementsToGenerateForElementOf(
+            final InternalNode node,
+            final int elementsToGenerate,
+            final int collectionSize,
+            final Hints hints,
+            final @Nullable InternalSize sizeOverride) {
+
+        final Integer explicitMax = explicitMaxSize(hints, sizeOverride);
+        final int currentRegion = collectionSize + elementsToGenerate;
+        final Integer explicitRegionMax = explicitMax == null ? null : explicitMax + collectionSize;
+        final int requiredRegion = requiredRegionSize(node, currentRegion, explicitRegionMax);
+        return requiredRegion - collectionSize;
+    }
+
+    private int requiredRegionSize(
+            final InternalNode node,
+            final int currentRegionSize,
+            final @Nullable Integer explicitRegionMax) {
+
+        final int requiredMin = context.getElementOfMinRequiredSize(node);
+        if (requiredMin == 0 || requiredMin <= currentRegionSize) {
+            return currentRegionSize;
+        }
+        if (explicitRegionMax != null && requiredMin > explicitRegionMax) {
+            throw elementOfSizeExceedsExplicitSize(node, requiredMin, explicitRegionMax);
+        }
+        return requiredMin;
+    }
+
+    @Nullable
+    private static Integer explicitMaxSize(final Hints hints, final @Nullable InternalSize sizeOverride) {
+        if (sizeOverride != null) {
+            return sizeOverride.max();
+        }
+        final InternalGeneratorHint hint = hints.get(InternalGeneratorHint.class);
+        return hint == null ? null : hint.explicitMaxSize();
+    }
+
+    @FunctionalInterface
+    private interface DelayedElementSetter {
+        void set(int index, @Nullable Object value);
+    }
+
+    private boolean retryDelayedElements(
+            final List<Integer> delayedIndices,
+            final InternalNode containerNode,
+            final InternalNode elementNode,
+            final int regionOffset,
+            final int regionSize,
+            final boolean nullableElements,
+            final DelayedElementSetter setter) {
+
+        for (int delayedIndex : delayedIndices) {
+            final GeneratorResult retryResult = createElementInFrame(
+                    containerNode, elementNode, delayedIndex - regionOffset, regionSize, nullableElements);
+
+            if (retryResult.isDelayed()) {
+                return false;
+            }
+            setter.set(delayedIndex, retryResult.getValue());
+        }
+        return true;
+    }
+
+    private GeneratorResult createElementInFrame(
+            final InternalNode containerNode,
+            final InternalNode elementNode,
+            final int index,
+            final int containerSize,
+            final boolean nullableElements) {
+
+        elementFrameStack.push(containerNode, index, containerSize);
+        assignmentObjectStore.enterScope();
+        try {
+            return createObject(elementNode, nullableElements);
+        } finally {
+            assignmentObjectStore.exitScope();
+            elementFrameStack.pop();
+        }
+    }
+
+    private InstancioApiException elementOfSizeExceedsExplicitSize(
+            final InternalNode node, final int requiredMin, final int actualSize) {
+
+        return Fail.withUsageError(
+                """
+                        elementOf() selector at index %s requires at least %s elements, but an explicit size of %s was set.
+                        
+                        %s
+                        
+                        To resolve this error:
+                        
+                         -> use a smaller index in the elementOf() selector
+                         -> increase the size\
+                        """,
+                requiredMin - 1, requiredMin, actualSize, nodePathToRootBlock(node));
     }
 
     private GeneratorResult generateRecord(final InternalNode node) {
@@ -611,6 +824,13 @@ class InstancioEngine {
 
         for (int i = 0; i < args.length; i++) {
             final InternalNode child = children.get(i);
+
+            // Ignored record component is left at its default value (as in the path below)
+            if (context.isEffectivelyIgnored(child)) {
+                args[i] = ObjectUtils.defaultValue(ctorArgs[i]);
+                continue;
+            }
+
             final GeneratorResult result = createObject(child);
 
             if (result.isDelayed()) {
@@ -674,7 +894,7 @@ class InstancioEngine {
         final Assigner assigner = assignerResolver.resolve(generatorResult);
 
         for (final InternalNode child : children) {
-            if (child.isStaticallyIgnored()) {
+            if (context.isEffectivelyIgnored(child)) {
                 continue;
             }
 
@@ -684,7 +904,8 @@ class InstancioEngine {
                 final GeneratorResult result = createObject(child);
 
                 if (result.isDelayed()) {
-                    delayedNodeQueue.addLast(new DelayedNode(child, generatorResult));
+                    delayedNodeQueue.addLast(new DelayedNode(child, generatorResult,
+                            elementFrameStack.peek()));
                 } else {
                     assignValue(parentObject, child, result, assigner);
                 }

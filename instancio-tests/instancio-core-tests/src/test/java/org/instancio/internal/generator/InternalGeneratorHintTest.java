@@ -27,16 +27,18 @@ class InternalGeneratorHintTest {
     void verifyToString() {
         assertThat(InternalGeneratorHint.builder().build())
                 .hasToString("GeneratorHint[targetClass=null, " +
-                        "nullableResult=false, emptyResult=false, emitNull=false, excludeFromCallbacks=false]");
+                        "nullableResult=false, emptyResult=false, emitNull=false, " +
+                        "explicitMaxSize=null, excludeFromCallbacks=false]");
 
         assertThat(InternalGeneratorHint.builder()
                 .targetClass(Map.class)
                 .nullableResult(true)
                 .emptyResult(true)
                 .emitNull(true)
+                .explicitMaxSize(10)
                 .excludeFromCallbacks(true)
                 .build())
                 .hasToString("GeneratorHint[targetClass=java.util.Map, " +
-                        "nullableResult=true, emptyResult=true, emitNull=true, excludeFromCallbacks=true]");
+                        "nullableResult=true, emptyResult=true, emitNull=true, explicitMaxSize=10, excludeFromCallbacks=true]");
     }
 }

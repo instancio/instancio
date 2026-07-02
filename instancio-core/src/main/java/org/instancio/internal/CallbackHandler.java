@@ -29,15 +29,22 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 
 class CallbackHandler implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(CallbackHandler.class);
 
+    private record CallbackEntry(
+            InternalNode node,
+            Object instance,
+            List<OnCompleteCallback<?>> callbacks) {}
+
+    private static final Comparator<CallbackEntry> CALLBACK_ENTRY_COMPARATOR = Comparator
+            .comparingInt((CallbackEntry entry) -> entry.node.getDepth())
+            .reversed();
+
     private final ModelContext context;
-    private final IdentityHashMap<InternalNode, List<Object>> callbackResultsByNode = new IdentityHashMap<>();
+    private final List<CallbackEntry> callbackEntries = new ArrayList<>();
 
     private CallbackHandler(final ModelContext context) {
         this.context = context;
@@ -51,8 +58,8 @@ class CallbackHandler implements GenerationListener {
 
     @Override
     public void objectCreated(final InternalNode node, final GeneratorResult result) {
-        // callbacks are not invoked on null values
-        if (result.getValue() == null) {
+        final Object value = result.getValue();
+        if (value == null) { // callbacks are not invoked on null values
             return;
         }
         final InternalGeneratorHint hint = result.getHints().get(InternalGeneratorHint.class);
@@ -60,47 +67,30 @@ class CallbackHandler implements GenerationListener {
             return;
         }
 
-        final Object instance = result.getValue();
-        if (!getCallbacks(node).isEmpty()) {
-            callbackResultsByNode.computeIfAbsent(node, res -> new ArrayList<>()).add(instance);
+        // Resolve callbacks now, not at invocation time: elementOf() selectors match
+        // against the element frame active while the object is being created.
+        final List<OnCompleteCallback<?>> callbacks = context.getCallbacks(node);
+        if (!callbacks.isEmpty()) {
+            callbackEntries.add(new CallbackEntry(node, value, callbacks));
         }
     }
 
     void invokeCallbacks() {
-        if (callbackResultsByNode.isEmpty()) {
+        if (callbackEntries.isEmpty()) {
             return;
         }
 
-        LOG.trace("Preparing to call {} callback(s)", callbackResultsByNode.size());
+        LOG.trace("Preparing to invoke callbacks for {} object(s)", callbackEntries.size());
 
-        for (final Map.Entry<InternalNode, List<Object>> entry : sortCallbackResultsByDepthDescending()) {
-            final InternalNode node = entry.getKey();
-            final List<Object> results = entry.getValue();
-            final List<OnCompleteCallback<?>> callbacks = getCallbacks(node);
+        // Invoke callbacks bottom-up: a descendant always has greater depth than its ancestor,
+        // so a stable sort by depth descending processes descendants first.
+        callbackEntries.sort(CALLBACK_ENTRY_COMPARATOR);
 
-            for (OnCompleteCallback<?> callback : callbacks) {
-                LOG.trace("{} results for callbacks generated for: {}", results.size(), node);
-                for (Object result : results) {
-                    invokeCallback(callback, result, node);
-                }
+        for (CallbackEntry entry : callbackEntries) {
+            for (OnCompleteCallback<?> callback : entry.callbacks) {
+                invokeCallback(callback, entry.instance, entry.node);
             }
         }
-    }
-
-    // Invoke callbacks bottom-up. Since a descendant always has a greater depth than its ancestor,
-    // sorting nodes by depth descending guarantees that descendants are processed first.
-    private List<Map.Entry<InternalNode, List<Object>>> sortCallbackResultsByDepthDescending() {
-        final List<Map.Entry<InternalNode, List<Object>>> entries =
-                new ArrayList<>(callbackResultsByNode.entrySet());
-
-        entries.sort(Comparator.comparingInt((Map.Entry<InternalNode, List<Object>> entry) ->
-                entry.getKey().getDepth()).reversed());
-
-        return entries;
-    }
-
-    private List<OnCompleteCallback<?>> getCallbacks(final InternalNode node) {
-        return context.getCallbacks(node);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

@@ -24,6 +24,8 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.InternalSize;
 import org.instancio.internal.assignment.InternalAssignment;
+import org.instancio.internal.selectors.ElementFrameStack;
+import org.instancio.internal.selectors.ElementOfDescriptor;
 import org.instancio.internal.util.TypeUtils;
 
 import java.util.ArrayList;
@@ -37,20 +39,36 @@ public final class SelectorMaps {
     private final GeneratorContext generatorContext;
     private final AssignmentSelectorMap assignmentSelectorMap;
     private final GeneratorSelectorMap generatorSelectorMap;
-    private final BooleanSelectorMap ignoreSelectorMap = new BooleanSelectorMap();
-    private final BooleanSelectorMap withNullableSelectorMap = new BooleanSelectorMap();
-    private final ModelContextSelectorMap setModelSelectorMap = new ModelContextSelectorMap();
-    private final FeedSelectorMap feedSelectorMap = new FeedSelectorMap();
-    private final OnCompleteCallbackSelectorMap onCompleteSelectorMap = new OnCompleteCallbackSelectorMap();
-    private final PredicateSelectorMap filterSelectorMap = new PredicateSelectorMap();
-    private final SubtypeSelectorMap subtypeSelectorMap = new SubtypeSelectorMap();
-    private final ContainerSizeSelectorMap containerSizeSelectorMap = new ContainerSizeSelectorMap();
+    private final BooleanSelectorMap ignoreSelectorMap;
+    private final BooleanSelectorMap withNullableSelectorMap;
+    private final ModelContextSelectorMap setModelSelectorMap;
+    private final PredicateSelectorMap filterSelectorMap;
+    private final ContainerSizeSelectorMap containerSizeSelectorMap;
+    private final FeedSelectorMap feedSelectorMap;
+    private final OnCompleteCallbackSelectorMap onCompleteSelectorMap;
+    private final SubtypeSelectorMap subtypeSelectorMap;
+    private final ElementOfState elementOfState;
+    private final ElementFrameStack elementFrameStack;
 
-    SelectorMaps(final ModelContextSource contextSource, final GeneratorContext generatorContext) {
+    SelectorMaps(
+            final ModelContextSource contextSource,
+            final GeneratorContext generatorContext) {
+
+        this.elementOfState = new ElementOfState();
         this.generatorContext = generatorContext;
-        this.assignmentSelectorMap = new AssignmentSelectorMap(generatorContext);
-        this.generatorSelectorMap = new GeneratorSelectorMap(generatorContext);
+        this.assignmentSelectorMap = new AssignmentSelectorMap(generatorContext, elementOfState);
+        this.generatorSelectorMap = new GeneratorSelectorMap(generatorContext, elementOfState);
+        this.ignoreSelectorMap = new BooleanSelectorMap(elementOfState, ElementOfState.SelectorMapRole.IGNORE);
+        this.withNullableSelectorMap = new BooleanSelectorMap(elementOfState, ElementOfState.SelectorMapRole.STANDARD);
+        this.setModelSelectorMap = new ModelContextSelectorMap(elementOfState);
+        this.filterSelectorMap = new PredicateSelectorMap(elementOfState);
+        this.containerSizeSelectorMap = new ContainerSizeSelectorMap(elementOfState);
+        this.onCompleteSelectorMap = new OnCompleteCallbackSelectorMap(elementOfState);
+        this.feedSelectorMap = new FeedSelectorMap(elementOfState);
+        this.subtypeSelectorMap = new SubtypeSelectorMap();
         initSelectorMaps(contextSource);
+
+        this.elementFrameStack = elementOfState.getElementFrameStack();
     }
 
     void initSelectorMaps(final ModelContextSource contextSource) {
@@ -130,8 +148,13 @@ public final class SelectorMaps {
 
             for (Assignment assignment : assignments) {
                 final InternalAssignment a = (InternalAssignment) assignment;
-                final TargetSelector updatedOrigin = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, a.getOrigin());
-                final TargetSelector updatedDestination = setModelSelectorHelper.applyModelSelectorScopes(modelTarget, a.getDestination());
+
+                final TargetSelector updatedOrigin = setModelSelectorHelper
+                        .applyModelSelectorScopes(modelTarget, a.getOrigin(), true);
+
+                final TargetSelector updatedDestination = setModelSelectorHelper
+                        .applyModelSelectorScopes(modelTarget, a.getDestination());
+
                 final InternalAssignment updatedAssignment = a.toBuilder()
                         .origin(updatedOrigin)
                         .destination(updatedDestination)
@@ -160,6 +183,22 @@ public final class SelectorMaps {
 
             copyToThisContext(resolvedSelector, entry.getValue()); // recurse
         }
+    }
+
+    ElementFrameStack getElementFrameStack() {
+        return elementFrameStack;
+    }
+
+    List<ElementOfDescriptor> getElementOfMinSizeDescriptors() {
+        return elementOfState.getMinSizeDescriptors();
+    }
+
+    boolean hasElementOfSelectors() {
+        return elementOfState.hasElementOfSelectors();
+    }
+
+    boolean hasFrameDependentIgnores() {
+        return elementOfState.hasFrameDependentIgnores();
     }
 
     AssignmentSelectorMap getAssignmentSelectorMap() {

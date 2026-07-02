@@ -20,7 +20,13 @@ import org.instancio.feed.Feed;
 
 class FeedSelectorMap {
 
-    private final SelectorMap<Feed> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<Feed> selectorMap;
+
+    FeedSelectorMap(final ElementOfState elementOfState) {
+        // Feeds are resolved at node-tree build time, before any element frames exist,
+        // so elementOf() entries are matched statically against the node tree.
+        this.selectorMap = SelectorMapImpl.frameIndependent(elementOfState);
+    }
 
     void put(final TargetSelector selector, final Feed value) {
         selectorMap.put(selector, value);

@@ -18,6 +18,7 @@ package org.instancio;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.ApiValidator;
+import org.instancio.internal.selectors.ElementOfSelectorImpl;
 import org.instancio.internal.selectors.FieldSelectorBuilderImpl;
 import org.instancio.internal.selectors.PredicateScopeImpl;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
@@ -460,6 +461,101 @@ public final class Select {
         return PredicateSelectorImpl.createRootSelector();
     }
 
+    /**
+     * Creates a selector for targeting elements within the collection or array
+     * returned by the given getter.
+     *
+     * <p>On its own, the returned {@link ElementOfSelector} targets every
+     * element. It can be narrowed to specific positions (e.g.
+     * {@link ElementOfSelector#at(int) at}, {@link ElementOfSelector#first() first})
+     * and to a component within each element (via
+     * {@link IndexedElementSelector#field(GetMethodSelector) field}). See
+     * {@link ElementOfSelector} for the full set of narrowing operations and
+     * their effect on collection size.
+     *
+     * <p>Example:
+     * <pre>{@code
+     * Person person = Instancio.of(Person.class)
+     *     .set(elementOf(Person::getAddresses).at(1).field(Address::getCity), "Barcelona")
+     *     .set(elementOf(Person::getAddresses).last(), expectedAddress)
+     *     .create();
+     * }</pre>
+     *
+     * @param methodReference getter method reference for the collection or array field
+     * @param <T>             the type declaring the method
+     * @param <R>             the return type of the method (a collection or array)
+     * @return an element selector for the resolved collection or array
+     * @see #elementOf(TargetSelector)
+     * @see ElementOfSelector
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    public static <T, R> ElementOfSelector elementOf(final GetMethodSelector<T, R> methodReference) {
+        ApiValidator.notNull(methodReference, "getter method reference must not be null");
+        return new ElementOfSelectorImpl(methodReference);
+    }
+
+    /**
+     * Overload of {@link #elementOf(GetMethodSelector)} that accepts any
+     * {@link TargetSelector} resolving to a collection or array, rather than
+     * only a getter method reference.
+     *
+     * <p>This enables forms such as:
+     * <pre>{@code
+     * elementOf(field(Person.class, "addresses"))
+     * elementOf(field(Person::getAddresses))
+     * elementOf(all(List.class))
+     * elementOf(setter(Person::setAddresses))
+     * elementOf(types().of(List.class))
+     * }</pre>
+     *
+     * <p>Selector groups created via {@link #all(GroupableSelector...)} are not
+     * supported; pass a single selector.
+     *
+     * <p>{@code elementOf()} can target all elements if no index is specified,
+     * for example: {@code elementOf(Customer::getOrders)}, or alternatively
+     * it can target elements at specific indices:
+     *
+     * <pre>{@code
+     * elementOf(Customer::getOrders).at(int index)
+     * elementOf(Customer::getOrders).at(int... indices)
+     * elementOf(Customer::getOrders).first() // same as: at(0)
+     * elementOf(Customer::getOrders).last()  // same as: at(size - 1)
+     * elementOf(Customer::getOrders).range(int startInclusive, int endInclusive)
+     * elementOf(Customer::getOrders).except(int... indices) // select all except given indices
+     * }</pre>
+     *
+     * <p>The following example creates a customer with 5 orders, where the
+     * first order is a custom instance, while the remaining 4 have status
+     * {@code DELIVERED}:
+     *
+     * <pre>{@code
+     * Order customOrder = ...;
+     * Customer customer = Instancio.of(Customer.class)
+     *     .size(elementOf(Customer::getOrders), 5)
+     *     .set(elementOf(Customer::getOrders).first(), customOrder)
+     *     .set(elementOf(Customer::getOrders).except(0).field(Order::getStatus), "DELIVERED")
+     *     .create();
+     * }</pre>
+     *
+     * <p>See {@link ElementOfSelector} for the available narrowing operations.
+     *
+     * @param selector a target selector resolving to a collection or array
+     * @return an element selector for the resolved collection or array
+     * @throws InstancioApiException if the given selector is a selector group
+     * @see #elementOf(GetMethodSelector)
+     * @see ElementOfSelector
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    public static ElementOfSelector elementOf(final TargetSelector selector) {
+        ApiValidator.notNull(selector, "selector must not be null");
+        if (selector instanceof SelectorGroup) {
+            throw new InstancioApiException(
+                    "elementOf() does not support selector groups; pass a single selector");
+        }
+        return new ElementOfSelectorImpl(selector);
+    }
 
     /**
      * Shorthand for {@code all(String.class)}.

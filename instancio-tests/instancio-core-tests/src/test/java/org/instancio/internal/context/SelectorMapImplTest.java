@@ -22,6 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethod;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeFactory;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.SelectorProcessor;
 import org.instancio.internal.selectors.SetterSelectorHolder;
 import org.instancio.internal.util.ReflectionUtils;
@@ -63,13 +64,13 @@ class SelectorMapImplTest {
     private final InternalNode richPersonListOfPhonesPhoneNumberFieldNode = getNodeWithField(
             getNodeWithField(rootNode, RichPerson.class, "address1"), Phone.class, "number");
 
-    private final SelectorMap<String> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<String> selectorMap = SelectorMapImpl.withoutElementOfSupport();
 
     private final SelectorProcessor processor = new SelectorProcessor(
             Person.class, Collections.emptyList(), new SetterSelectorHolder());
 
     private TargetSelector put(final TargetSelector selector, final String value) {
-        final List<TargetSelector> processed = processor.process(selector, ApiMethod.NONE);
+        final List<PredicateSelectorImpl> processed = processor.process(selector, ApiMethod.NONE);
         assertThat(processed).hasSize(1);
         final TargetSelector processedSelector = processed.get(0);
         selectorMap.put(processedSelector, value);

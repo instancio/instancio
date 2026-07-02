@@ -18,6 +18,7 @@ package org.instancio.api;
 import org.instancio.Assign;
 import org.instancio.Assignment;
 import org.instancio.DepthPredicateSelector;
+import org.instancio.ElementOfSelector;
 import org.instancio.FieldSelectorBuilder;
 import org.instancio.GivenOrigin;
 import org.instancio.GivenOriginDestination;
@@ -25,6 +26,7 @@ import org.instancio.GivenOriginDestinationAction;
 import org.instancio.GivenOriginPredicate;
 import org.instancio.GivenOriginPredicateAction;
 import org.instancio.GroupableSelector;
+import org.instancio.IndexedElementSelector;
 import org.instancio.Instancio;
 import org.instancio.InstancioCartesianProductApi;
 import org.instancio.InstancioCollectionsApi;
@@ -45,6 +47,7 @@ import org.instancio.generator.specs.OneOfArraySpec;
 import org.instancio.generator.specs.OneOfCollectionSpec;
 import org.instancio.internal.util.Sonar;
 import org.instancio.test.support.pojo.basic.StringHolder;
+import org.instancio.test.support.pojo.collections.lists.ListString;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -109,6 +112,17 @@ class ApiContractTest {
     @DisplayName("Root selector should not expose any methods")
     void targetSelectorShouldNotExposeAnyMethods() {
         assertThatClass(TargetSelector.class).hasNoMethods();
+    }
+
+    /**
+     * Prevents {@link ElementOfSelector} and {@link IndexedElementSelector} from
+     * being passed into {@link Select#scope(Selector)}, which is not supported.
+     */
+    @Test
+    @DisplayName("ElementOfSelector should not be interchangeable with Selector")
+    void elementOfSelectorsAreNotInterchangeableWithSelector() {
+        assertThatClass(ElementOfSelector.class).isNotAssignableFromOrTo(Selector.class);
+        assertThatClass(IndexedElementSelector.class).isNotAssignableFromOrTo(Selector.class);
     }
 
     /**
@@ -380,6 +394,20 @@ class ApiContractTest {
                 final ScopeableSelector ss = Select.fields().atDepth(1);
 
                 final Scope scope = ss.toScope();
+            }
+
+            @Test
+            void elementOf() {
+                final ElementOfSelector eos1 = Select.elementOf(Select.all(StringHolder.class));
+                final ElementOfSelector eos2 = Select.elementOf(ListString::getList);
+                final TargetSelector eos3 = Select.elementOf(ListString::getList).lenient();
+            }
+
+            @Test
+            void elementOfIndex() {
+                final IndexedElementSelector ies1 = Select.elementOf(Select.all(StringHolder.class)).first();
+                final IndexedElementSelector ies2 = Select.elementOf(ListString::getList).last();
+                final TargetSelector ies3 = Select.elementOf(ListString::getList).last().lenient();
             }
         }
 

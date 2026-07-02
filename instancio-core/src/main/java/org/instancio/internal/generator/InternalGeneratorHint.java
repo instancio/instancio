@@ -41,6 +41,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
     private final boolean nullableResult;
     private final boolean emptyResult;
     private final boolean emitNull;
+    private final @Nullable Integer explicitMaxSize;
 
     private InternalGeneratorHint(final Builder builder) {
         targetClass = builder.targetClass;
@@ -48,6 +49,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
         nullableResult = builder.nullableResult;
         emptyResult = builder.emptyResult;
         emitNull = builder.emitNull;
+        explicitMaxSize = builder.explicitMaxSize;
     }
 
     /**
@@ -110,6 +112,19 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
         return emitNull;
     }
 
+    /**
+     * The maximum container size explicitly specified via the generator spec
+     * ({@code size()} or {@code maxSize()}), or {@code null} if the size was
+     * not explicitly capped. {@code minSize()} alone does not set a cap.
+     *
+     * @return explicit maximum size
+     * @since 6.0.0
+     */
+    @Nullable
+    public Integer explicitMaxSize() {
+        return explicitMaxSize;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", "GeneratorHint[", "]")
@@ -117,6 +132,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
                 .add("nullableResult=" + nullableResult)
                 .add("emptyResult=" + emptyResult)
                 .add("emitNull=" + emitNull)
+                .add("explicitMaxSize=" + explicitMaxSize)
                 .add("excludeFromCallbacks=" + excludeFromCallbacks)
                 .toString();
     }
@@ -131,6 +147,7 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
         private boolean nullableResult;
         private boolean emptyResult;
         private boolean emitNull;
+        private @Nullable Integer explicitMaxSize;
 
         private Builder() {
         }
@@ -157,6 +174,11 @@ public final class InternalGeneratorHint implements Hint<InternalGeneratorHint> 
 
         public Builder emitNull(final boolean emitNull) {
             this.emitNull = emitNull;
+            return this;
+        }
+
+        public Builder explicitMaxSize(final @Nullable Integer explicitMaxSize) {
+            this.explicitMaxSize = explicitMaxSize;
             return this;
         }
 

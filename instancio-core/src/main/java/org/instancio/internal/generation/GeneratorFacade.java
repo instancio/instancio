@@ -40,6 +40,7 @@ public class GeneratorFacade {
     private final ModelContext context;
     private final AssignmentNodeHandler assignmentNodeHandler;
     private final NodeHandler userSuppliedGeneratorHandler;
+    private final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor;
     private final GeneratedPojoStore generatedPojoStore;
     private final List<NodeHandler> nodeHandlers = new ArrayList<>();
     private final NullSubstitutorFacade nullSubstitutorFacade;
@@ -60,13 +61,14 @@ public class GeneratorFacade {
         final SpiGeneratorResolver spiGeneratorResolver = new SpiGeneratorResolver(
                 context, generatorContext, generatorResolver);
 
-        final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
+        userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
                 context, generatorResolver, spiGeneratorResolver);
 
         assignmentNodeHandler = AssignmentNodeHandler.create(context, assignmentObjectStore, userSuppliedGeneratorProcessor);
         userSuppliedGeneratorHandler = UserSuppliedGeneratorHandler.create(context, userSuppliedGeneratorProcessor);
 
         // handlers in order of precedence, starting from highest
+        addHandler(ElementOfGeneratorNodeHandler.create(context, userSuppliedGeneratorProcessor));
         addHandler(assignmentNodeHandler);
         addHandler(userSuppliedGeneratorHandler);
         addHandler(new SpiGeneratorNodeHandler(context, spiGeneratorResolver));

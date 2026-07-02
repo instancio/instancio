@@ -20,6 +20,8 @@ import org.instancio.documentation.VisibleForTesting;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.ElementOfDescriptor;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.util.Sonar;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -37,12 +39,18 @@ import java.util.Map;
  */
 public class AssignmentObjectStore implements GenerationListener {
     private static final Logger LOG = LoggerFactory.getLogger(AssignmentObjectStore.class);
-    private static final GeneratorResult EMPTY_RESULT = GeneratorResult.unresolvedResult();
+    private static final GeneratorResult UNRESOLVED_RESULT = GeneratorResult.unresolvedResult();
 
     // A map containing "scope" objects as keys, and a Map of destination
     // selectors to generated objects as values.
-    private final IdentityHashMap<Object, Map<TargetSelector, GeneratorResult>> objectStore = new IdentityHashMap<>();
+    private final Map<Object, Map<TargetSelector, GeneratorResult>> objectStore = new IdentityHashMap<>();
     private final Deque<Object> scopes = new ArrayDeque<>();
+
+    // Persistent store for elementOf-priority destinations. Survives element scope
+    // exits so a value generated outside an element scope can be consumed within it
+    // (e.g. an origin in one container feeding a destination in a sibling/nested one)
+    private final Map<TargetSelector, GeneratorResult> crossElementStore = new IdentityHashMap<>();
+
     private final ModelContext context;
 
     private boolean hasNewValues;
@@ -74,16 +82,50 @@ public class AssignmentObjectStore implements GenerationListener {
         objectStore.remove(scope);
     }
 
+    /**
+     * Clears cross-element values whose destination targets {@code containerNode},
+     * called once a container instance has finished its elements. They have
+     * already been consumed within this instance, so dropping them stops the next
+     * instance of the <i>same</i> container from reusing a stale value instead of
+     * waiting for its own origin. Values for a <i>different</i> (sibling or nested)
+     * container don't match and are retained for when that container is generated.
+     */
+    public void clearCrossElementValuesFor(final InternalNode containerNode) {
+        if (crossElementStore.isEmpty()) {
+            return;
+        }
+        final Iterator<TargetSelector> it = crossElementStore.keySet().iterator();
+        while (it.hasNext()) {
+            final ElementOfDescriptor eod =
+                    ((PredicateSelectorImpl) it.next()).getElementOfDescriptor();
+
+            if (eod != null && eod.matchesContainer(containerNode)) {
+                it.remove();
+            }
+        }
+    }
+
     @Override
     public void objectCreated(final InternalNode node, final GeneratorResult result) {
         for (TargetSelector destination : context.getAssignmentDestinationSelectors(node)) {
-            putValue(destination, result);
-            LOG.trace("Added {} for {}", result, destination);
+            if (destination instanceof PredicateSelectorImpl ps && ps.isElementOfPriority()) {
+                crossElementStore.put(destination, result);
+                hasNewValues = true;
+                LOG.trace("Added (cross-element) {} for {}", result, destination);
+            } else {
+                putValue(destination, result);
+                LOG.trace("Added {} for {}", result, destination);
+            }
         }
     }
 
     @Nullable
     public GeneratorResult getValue(final TargetSelector destination) {
+        final GeneratorResult crossResult = crossElementStore.get(destination);
+        if (crossResult != null) {
+            return crossResult;
+        }
+
         final Iterator<Object> iter = scopes.descendingIterator();
 
         while (iter.hasNext()) {
@@ -120,8 +162,9 @@ public class AssignmentObjectStore implements GenerationListener {
         @Override public boolean hasNewValues() { return false; }
         @Override public void enterScope() { /* no-op */ }
         @Override public void exitScope() { /* no-op */ }
+        @Override public void clearCrossElementValuesFor(InternalNode containerNode) { /* no-op */ }
         @Override public void objectCreated(InternalNode node, GeneratorResult result) { /* no-op */ }
-        @Override public GeneratorResult getValue(TargetSelector destination) { return EMPTY_RESULT; }
+        @Override public GeneratorResult getValue(TargetSelector destination) { return UNRESOLVED_RESULT; }
     }
     //@formatter:on
 }

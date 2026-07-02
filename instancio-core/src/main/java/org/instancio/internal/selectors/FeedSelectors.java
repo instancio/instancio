@@ -21,13 +21,16 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Constants;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
 @InternalApi
 public final class FeedSelectors {
+
+    // These selectors are internal (lenient and hidden), so their stack trace is never
+    // reported; share one holder instead of allocating a Throwable per feed property.
+    private static final Throwable STACK_TRACE_HOLDER = new Throwable();
 
     private static final class FeedSelector extends PredicateSelectorImpl {
         private FeedSelector(final Predicate<InternalNode> predicate, final String description) {
@@ -40,7 +43,7 @@ public final class FeedSelectors {
                     /* isHiddenFromVerboseOutput = */ true,
                     description,
                     /* target */ null,
-                    new Throwable());
+                    STACK_TRACE_HOLDER);
         }
 
         @Override
@@ -52,14 +55,49 @@ public final class FeedSelectors {
     }
 
     public static InternalSelector forProperty(final InternalNode fieldNode) {
-        final String fieldName = requireNonNull(fieldNode.getField()).getName();
-        final String description = String.format("forProperty(\"%s\")", fieldName);
+        return new FeedSelector(
+                propertyPredicate(fieldNode),
+                propertyDescription(fieldNode));
+    }
 
-        return new FeedSelector(candidate ->
-                candidate.getField() != null
-                && Objects.equals(fieldName, candidate.getField().getName())
-                && Objects.equals(fieldNode.getParent(), candidate.getParent()),
-                description);
+    public static InternalSelector forElementProperty(
+            final PredicateSelectorImpl feedSelector,
+            final InternalNode fieldNode) {
+
+        final ElementOfDescriptor feedDescriptor =
+                requireNonNull(feedSelector.getElementOfDescriptor());
+
+        final ElementOfDescriptor rebakedDescriptor = feedDescriptor.rebakedCopy(
+                feedDescriptor.containerPredicate(),
+                propertyPredicate(fieldNode));
+
+        final String apiInvocationDescription = String.format("%s via %s",
+                propertyDescription(fieldNode),
+                feedSelector.getApiInvocationDescription());
+
+        return PredicateSelectorImpl.builder()
+                .apiMethod(ApiMethod.NONE)
+                .priority(Constants.SelectorPriority.FEED)
+                .elementOfDescriptor(rebakedDescriptor)
+                .scopes(feedSelector.getScopes())
+                .lenient()
+                .hiddenFromVerboseOutput()
+                .apiInvocationDescription(apiInvocationDescription)
+                .stackTraceHolder(STACK_TRACE_HOLDER)
+                .build();
+    }
+
+    private static Predicate<InternalNode> propertyPredicate(final InternalNode fieldNode) {
+        final String fieldName = requireNonNull(fieldNode.getField()).getName();
+        final InternalNode parent = fieldNode.getParent();
+
+        return candidate -> candidate.getField() != null
+                && fieldName.equals(candidate.getField().getName())
+                && candidate.getParent() == parent; //NOPMD - reference equality is intended
+    }
+
+    private static String propertyDescription(final InternalNode fieldNode) {
+        return String.format("forProperty(\"%s\")", requireNonNull(fieldNode.getField()).getName());
     }
 
     private FeedSelectors() {

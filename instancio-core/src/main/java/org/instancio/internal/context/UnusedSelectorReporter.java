@@ -20,6 +20,7 @@ import org.instancio.exception.UnusedSelectorException;
 import org.instancio.internal.ApiMethod;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.InternalSelector;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.UnusedSelectorDescription;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
@@ -49,7 +50,8 @@ final class UnusedSelectorReporter {
             throw Fail.withUsageError(formatMisappliedSizeError(misapplied));
         }
 
-        final List<TargetSelector> unusedSelectors = collector.getUnusedSelectors();
+        final List<TargetSelector> unusedSelectors = List.copyOf(collector.getUnusedSelectors());
+
         if (unusedSelectors.isEmpty()) {
             return;
         }
@@ -69,6 +71,19 @@ final class UnusedSelectorReporter {
             if (apiMethod != ApiMethod.NONE) {
                 append(unused, sb, apiMethod);
             }
+        }
+
+        final boolean hasUnusedElementOfAssignment = unusedSelectors.stream()
+                .map(PredicateSelectorImpl.class::cast)
+                .anyMatch(ps -> ps.isElementOfPriority()
+                        && (ps.getApiMethod() == ApiMethod.ASSIGN_ORIGIN
+                        || ps.getApiMethod() == ApiMethod.ASSIGN_DESTINATION));
+
+        if (hasUnusedElementOfAssignment) {
+            sb.append(NL)
+                    .append(" -> elementOf() selector did not match any field within the element subtree.").append(NL)
+                    .append("    Verify the .field(...)/.target(...) selector resolves to a field").append(NL)
+                    .append("    declared on the element type or its descendants.").append(NL);
         }
 
         sb.append(NL)

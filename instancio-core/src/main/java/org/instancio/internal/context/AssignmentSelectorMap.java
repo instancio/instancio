@@ -24,7 +24,10 @@ import org.instancio.internal.assignment.GeneratorHolder;
 import org.instancio.internal.assignment.InternalAssignment;
 import org.instancio.internal.generators.BuiltInGenerators;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.ElementOfDescriptor;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.util.CollectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,13 +39,16 @@ final class AssignmentSelectorMap {
 
     private final GeneratorContext generatorContext;
     private final GeneratorInitialiser generatorInitialiser;
-    private final SelectorMap<List<InternalAssignment>> destinationToAssignmentsMap = new SelectorMapImpl<>();
-    private final SelectorMap<List<TargetSelector>> originToDestinationSelectorsMap = new SelectorMapImpl<>();
-    private final BooleanSelectorMap originSelectors = new BooleanSelectorMap();
+    private final SelectorMap<List<InternalAssignment>> destinationToAssignmentsMap;
+    private final SelectorMap<List<TargetSelector>> originToDestinationSelectorsMap;
+    private final BooleanSelectorMap originSelectors;
 
-    AssignmentSelectorMap(final GeneratorContext generatorContext) {
+    AssignmentSelectorMap(final GeneratorContext generatorContext, final ElementOfState elementOfState) {
         this.generatorContext = generatorContext;
         this.generatorInitialiser = new GeneratorInitialiser(generatorContext);
+        this.destinationToAssignmentsMap = SelectorMapImpl.create(elementOfState);
+        this.originToDestinationSelectorsMap = SelectorMapImpl.create(elementOfState);
+        this.originSelectors = new BooleanSelectorMap(elementOfState, ElementOfState.SelectorMapRole.STANDARD);
     }
 
     void putAll(final Map<TargetSelector, List<Assignment>> targetSelectors) {
@@ -172,5 +178,57 @@ final class AssignmentSelectorMap {
     List<TargetSelector> getDestinationSelectors(final InternalNode node) {
         List<List<TargetSelector>> values = originToDestinationSelectorsMap.getValues(node);
         return CollectionUtils.flatMap(values);
+    }
+
+    /**
+     * Marks every elementOf assignment selector (origin and destination) whose container predicate
+     * matches {@code containerNode} as "used", so a container that exists but is empty or has null
+     * elements doesn't cause its selectors to be reported as unused.
+     */
+    void markSelectorsUsedForContainer(final InternalNode containerNode) {
+        markMatchingSelectorsUsed(destinationToAssignmentsMap, containerNode);
+        markMatchingSelectorsUsed(originToDestinationSelectorsMap, containerNode);
+    }
+
+    private static <V> void markMatchingSelectorsUsed(
+            final SelectorMap<V> map, final InternalNode containerNode) {
+
+        for (SelectorMap.SelectorEntry<V> entry : map) {
+            final PredicateSelectorImpl ps = (PredicateSelectorImpl) entry.selector();
+            final ElementOfDescriptor eod = ps.getElementOfDescriptor();
+            if (eod != null && eod.matchesContainer(containerNode)) {
+                map.markSelectorUsed(entry.selector());
+            }
+        }
+    }
+
+    /**
+     * Returns the first elementOf assignment selector (origin or destination) whose container
+     * predicate matches {@code containerNode}, or {@code null} if none. Used to fail fast when an
+     * elementOf cross-element assignment targets a non-indexed collection (e.g. Set): such usage
+     * can never work, so it is reported regardless of {@code lenient()}.
+     */
+    @Nullable
+    TargetSelector findElementOfSelectorForContainer(final InternalNode containerNode) {
+        final TargetSelector fromDestination =
+                findMatchingElementOfSelector(destinationToAssignmentsMap, containerNode);
+
+        return fromDestination != null
+                ? fromDestination
+                : findMatchingElementOfSelector(originToDestinationSelectorsMap, containerNode);
+    }
+
+    @Nullable
+    private static <V> TargetSelector findMatchingElementOfSelector(
+            final SelectorMap<V> map, final InternalNode containerNode) {
+
+        for (SelectorMap.SelectorEntry<V> entry : map) {
+            final PredicateSelectorImpl selector = (PredicateSelectorImpl) entry.selector();
+            final ElementOfDescriptor eod = selector.getElementOfDescriptor();
+            if (eod != null && eod.matchesContainer(containerNode)) {
+                return selector;
+            }
+        }
+        return null;
     }
 }

@@ -24,7 +24,7 @@ import java.util.Optional;
 
 public final class SubtypeSelectorMap {
 
-    private final SelectorMap<Type> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<Type> selectorMap = SelectorMapImpl.withoutElementOfSupport();
 
     void putAll(final Map<TargetSelector, ? extends Type> subtypes) {
         for (Map.Entry<TargetSelector, ? extends Type> entry : subtypes.entrySet()) {

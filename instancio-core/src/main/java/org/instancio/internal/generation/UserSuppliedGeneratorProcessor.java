@@ -19,12 +19,14 @@ import org.instancio.generator.Generator;
 import org.instancio.generator.Hints;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.DelegatingGeneratorProcessor;
 import org.instancio.internal.generator.GeneratorResolver;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalGeneratorHint;
 import org.instancio.internal.generator.SpiGeneratorResolver;
 import org.instancio.internal.generator.misc.EmitGenerator;
+import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Sonar;
 
@@ -73,7 +75,22 @@ public final class UserSuppliedGeneratorProcessor {
         }
 
         final Object value = generator.generate(context.getRandom());
+
+        if (value == null) {
+            return isNullableGenerator(generator)
+                    ? GeneratorResult.resolved(null, hints)
+                    : GeneratorResult.explicitNull(hints);
+        }
         return GeneratorResult.resolved(value, hints);
+    }
+
+    private static boolean isNullableGenerator(final Generator<?> generator) {
+        Generator<?> current = generator;
+        while (current instanceof GeneratorDecorator<?> decorator) {
+            current = decorator.getDelegate();
+        }
+        return current instanceof AbstractGenerator<?> abstractGenerator
+                && abstractGenerator.isNullable();
     }
 
     @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
