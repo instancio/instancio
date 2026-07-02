@@ -215,6 +215,93 @@ public final class ErrorMessageUtils {
                 """.formatted(selectorLocation);
     }
 
+    public static String elementOfInnerSelectorOutsideElementSubtree(
+            final Object selector,
+            final Class<?> holderClass,
+            @Nullable final Class<?> elementType) {
+
+        // The element type may be unresolvable (e.g. a type-variable element type),
+        // in which case the element type name falls back to "?".
+        final String elementTypeName = elementType == null ? "?" : elementType.getSimpleName();
+
+        return """
+                elementOf() selector did not match any field within the element subtree
+                
+                 -> Selector ...............: %s
+                 -> Field declared in ......: %s (the container's holder class)
+                 -> Container element type .: %s
+                
+                The inner selector resolves to a field declared in the container's holder
+                class rather than in the element type. Such a field lies outside the element
+                subtree and can therefore never be matched.
+                
+                To resolve this error:
+                
+                 -> Ensure the inner .field(...) or .target(...) selector resolves to a
+                    field declared in the element type '%s' (or one of its subtypes)\
+                """.formatted(selector, holderClass.getSimpleName(), elementTypeName, elementTypeName);
+    }
+
+    public static String elementOfAssignmentNotSupportedOnNonIndexedCollection(
+            final Object selector,
+            final InternalNode containerNode) {
+
+        final String containerType = containerNode.getTargetClass().getSimpleName();
+
+        return """
+                elementOf() in assign() requires an ordered, index-addressable container (a List or array),
+                but the target is of type %s:
+
+                %s
+
+
+                assign() identifies elements by position - first(), last(), at(index) - and copies a value
+                between them. %s provides no positional element access, so neither the source nor the
+                destination element can be resolved.
+
+                Offending selector:
+
+                 -> %s
+
+                To resolve this error:
+
+                 -> Use set() or generate() instead of assign() to populate elements directly, e.g.
+
+                    set(elementOf(Example::getItems).field(Item::getValue), "value")
+                    generate(elementOf(Example::getItems), gen -> gen.ints().range(1, 10))\
+                """.formatted(containerType, nodePathToRootBlock(containerNode), containerType, selector);
+    }
+
+    public static String elementOfOriginRequiresElementOfDestination(
+            final Object origin,
+            final Object destination) {
+
+        return """
+                elementOf() origin requires an elementOf() destination
+
+                An elementOf() origin reads a value from a specific element, so the value can
+                only be copied into another element. The destination must therefore also be an
+                elementOf() selector, but here it is not:
+
+                 -> Origin ........: %s
+                 -> Destination ...: %s
+
+                To resolve this error:
+
+                 -> Make the destination an elementOf() selector so the value can be copied
+                    from one element to another, e.g.
+
+                    assign(valueOf(elementOf(Example::getItems).at(0).field(Item::getValue))
+                        .to(elementOf(Example::getItems).at(1).field(Item::getValue)))
+
+                Note: the reverse direction is supported. A regular origin can be assigned to
+                an elementOf() destination, copying a single value into each matched element, e.g.
+
+                    assign(valueOf(field(Example::getValue))
+                        .to(elementOf(Example::getItems).field(Item::getValue)))\
+                """.formatted(origin, destination);
+    }
+
     public static String getTypeMismatchErrorMessage(final Object value, final InternalNode node) {
         return getTypeMismatchErrorMessage(value, node, null);
     }
@@ -464,7 +551,7 @@ public final class ErrorMessageUtils {
         final OnSetFieldError onSetFieldError = settings.get(Keys.ON_SET_FIELD_ERROR);
         final String fieldName = formatField(field);
         final String argType = Optional.ofNullable(value)
-                .map(it ->  withoutPackage(it.getClass()))
+                .map(it -> withoutPackage(it.getClass()))
                 .orElse(null);
 
         final String argValue = StringUtils.quoteStringValue(value);
@@ -591,7 +678,7 @@ public final class ErrorMessageUtils {
         final Class<?>[] paramTypes = method.getParameterTypes();
         final Class<?> specifiedGeneratorType = paramTypes.length < 2 ? null : paramTypes[1];
         final boolean isValidSpec = specifiedGeneratorType != null
-                                    && resolvedGenerator.getClass().isAssignableFrom(specifiedGeneratorType);
+                && resolvedGenerator.getClass().isAssignableFrom(specifiedGeneratorType);
 
         final String resolvedGeneratorName = withoutPackage(resolvedGenerator.getClass());
         final String specifiedGeneratorName = specifiedGeneratorType == null ? null : withoutPackage(specifiedGeneratorType);

@@ -26,7 +26,11 @@ import java.util.function.Predicate;
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 class PredicateSelectorMap {
 
-    private final SelectorMap<Predicate<?>> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<Predicate<?>> selectorMap;
+
+    PredicateSelectorMap(final ElementOfState elementOfState) {
+        this.selectorMap = SelectorMapImpl.create(elementOfState);
+    }
 
     void putAll(final Map<TargetSelector, Predicate<?>> predicates) {
         for (Map.Entry<TargetSelector, Predicate<?>> entry : predicates.entrySet()) {

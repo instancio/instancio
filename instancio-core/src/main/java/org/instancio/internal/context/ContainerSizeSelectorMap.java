@@ -24,7 +24,11 @@ import java.util.Optional;
 
 final class ContainerSizeSelectorMap {
 
-    private final SelectorMap<InternalSize> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<InternalSize> selectorMap;
+
+    ContainerSizeSelectorMap(final ElementOfState elementOfState) {
+        this.selectorMap = SelectorMapImpl.create(elementOfState);
+    }
 
     void put(final TargetSelector selector, final InternalSize size) {
         selectorMap.put(selector, size);

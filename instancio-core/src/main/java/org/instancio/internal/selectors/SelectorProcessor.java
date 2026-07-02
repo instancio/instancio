@@ -20,12 +20,19 @@ import org.instancio.Scope;
 import org.instancio.SetMethodSelector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethod;
+import org.instancio.internal.ApiValidator;
 import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Resolves, expands, and flattens the heterogeneous raw API selector types
+ * (groups, elementOf, getter/setter references, builders) into a uniform
+ * list of {@link PredicateSelectorImpl} in canonical internal form. This is
+ * the single entry point for normalizing a selector before the engine uses it.
+ */
 public final class SelectorProcessor {
 
     private final SetterSelectorHolder setMethodSelectorHolder;
@@ -54,11 +61,14 @@ public final class SelectorProcessor {
      * @param selector to process
      * @return a processed selector
      */
-    public List<TargetSelector> process(
+    public List<PredicateSelectorImpl> process(
             final TargetSelector selector,
             final ApiMethod apiMethod) {
 
-        if (selector instanceof PredicateSelectorImpl ps) {
+        if (selector instanceof ElementOfSelectorImpl eos) {
+            return processElementOfSelector(eos, apiMethod);
+
+        } else if (selector instanceof PredicateSelectorImpl ps) {
             final PredicateSelectorImpl processed = processPredicateSelectorTargetAndScope(ps, apiMethod);
             return List.of(processed);
 
@@ -78,10 +88,29 @@ public final class SelectorProcessor {
                     .build(), apiMethod);
 
         } else {
-            // only remaining option is SelectorBuilder
+            // only remaining option is SelectorBuilder; recurse so the resulting
             final SelectorBuilder builder = (SelectorBuilder) selector;
-            return List.of(builder.apiMethod(apiMethod).build());
+            return process(builder.apiMethod(apiMethod).build(), apiMethod);
         }
+    }
+
+    private List<PredicateSelectorImpl> processElementOfSelector(
+            final ElementOfSelectorImpl eos,
+            final ApiMethod apiMethod) {
+
+        final List<PredicateSelectorImpl> processedContainerSelectors =
+                process(eos.getContainerSelector(), ApiMethod.NONE);
+
+        ApiValidator.isTrue(processedContainerSelectors.size() == 1,
+                "elementOf() does not support container selectors that expand into multiple targets: %s", eos);
+
+        final TargetSelector innerSelector = eos.getInnerSelector();
+
+        final List<PredicateSelectorImpl> innerSelectors = innerSelector == null
+                ? List.of()
+                : process(innerSelector, ApiMethod.NONE);
+
+        return ElementOfSelectorBaker.bake(eos, apiMethod, processedContainerSelectors.get(0), innerSelectors);
     }
 
     private PredicateSelectorImpl processPredicateSelectorTargetAndScope(
@@ -123,12 +152,12 @@ public final class SelectorProcessor {
         return results;
     }
 
-    private List<TargetSelector> processGroup(
+    private List<PredicateSelectorImpl> processGroup(
             final SelectorGroupImpl selectorGroup,
             final ApiMethod apiMethod) {
 
         final List<TargetSelector> flattened = selectorGroup.flatten();
-        final List<TargetSelector> results = new ArrayList<>(flattened.size());
+        final List<PredicateSelectorImpl> results = new ArrayList<>(flattened.size());
 
         for (TargetSelector selector : flattened) {
             results.addAll(process(selector, apiMethod));

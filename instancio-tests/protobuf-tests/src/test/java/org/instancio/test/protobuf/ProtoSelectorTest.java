@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.all;
 import static org.instancio.Select.allInts;
+import static org.instancio.Select.elementOf;
 import static org.instancio.Select.field;
 import static org.instancio.Select.fields;
 import static org.instancio.Select.scope;
@@ -125,6 +126,17 @@ class ProtoSelectorTest {
         assertThat(result.getCountryCode())
                 .isEqualTo(result.getNumber())
                 .isEqualTo(value);
+    }
+
+    @Test
+    void elementOfSelector() {
+        final Proto.Phone expected = Proto.Phone.getDefaultInstance();
+        final Proto.Person result = Instancio.of(Proto.Person.class)
+                .set(elementOf(Proto.Address::getPhoneNumbersList).first(), expected)
+                .create();
+
+        assertThat(result.getAddress().getPhoneNumbersList()).first().isSameAs(expected);
+        assertThat(result.getAddress().getPhoneNumbersList()).last().isNotSameAs(expected);
     }
 
     /**

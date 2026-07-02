@@ -18,7 +18,10 @@ package org.instancio.internal.util;
 import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.support.DefaultRandom;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 
@@ -29,6 +32,35 @@ import static org.instancio.Select.all;
 class ArrayUtilsTest {
 
     private static final Random RANDOM = new DefaultRandom();
+
+    @Nested
+    class WidenArray {
+        private static final String[] ORIGINAL = {null, "foo", null};
+
+        @Test
+        void objectArray() {
+            final String[] result = (String[]) ArrayUtils.widenArray(ORIGINAL, ORIGINAL.length + 1);
+
+            assertThat(result).containsExactly(null, "foo", null, null);
+        }
+
+        @Test
+        void primitiveArray() {
+            final int[] original = {0, 123, 0};
+            final int[] result = (int[]) ArrayUtils.widenArray(original, original.length + 1);
+
+            assertThat(result).containsExactly(0, 123, 0, 0);
+        }
+
+        @ValueSource(ints = {0, 1, 2, 3})
+        @ParameterizedTest
+        void newLengthLessThanOrEqualOriginalLength(final int newLength) {
+            assertThatThrownBy(() -> ArrayUtils.widenArray(ORIGINAL, newLength))
+                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("newLength (%s) must be greater than length (%s)",
+                            newLength, ORIGINAL.length);
+        }
+    }
 
     @Test
     void shuffleNonArray() {

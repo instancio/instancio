@@ -69,6 +69,7 @@ public final class Constants {
     public static final Hints DO_NOT_MODIFY_HINT = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
 
     public static final class SelectorPriority {
+        public static final int ELEMENT_OF = -5;
         public static final int FIELD = 10;
         public static final int SETTER = 20;
         public static final int FIELDS = 30;

@@ -72,10 +72,30 @@ class OriginSelectorValidator {
         for (TargetSelector selector : originSelectors) {
             final InternalNode prevSeen = seen.put(selector, node);
 
-            if (prevSeen != null) {
+            if (prevSeen != null && !areScopedByParentType(prevSeen, node)) {
                 // TODO add selector location using UnusedSelectorDescription?
                 throw Fail.withUnresolvedAssignment(AssignmentErrorUtil.getAmbiguousErrorMessage(selector, prevSeen, node));
             }
         }
+    }
+
+    private static boolean areScopedByParentType(final InternalNode node1, final InternalNode node2) {
+        final InternalNode parent1 = node1.getParent();
+        final InternalNode parent2 = node2.getParent();
+        return parent1 != null && parent2 != null
+                && parent1.getRawType() == parent2.getRawType()
+                && (isWithinCollectionElement(node1) || isWithinCollectionElement(node2));
+    }
+
+    private static boolean isWithinCollectionElement(final InternalNode node) {
+        InternalNode current = node.getParent();
+        while (current != null) {
+            final InternalNode parent = current.getParent();
+            if (parent != null && parent.isContainer()) {
+                return true;
+            }
+            current = parent;
+        }
+        return false;
     }
 }

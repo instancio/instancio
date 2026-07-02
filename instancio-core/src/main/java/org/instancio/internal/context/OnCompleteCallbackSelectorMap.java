@@ -26,7 +26,11 @@ import java.util.Map;
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 class OnCompleteCallbackSelectorMap {
 
-    private final SelectorMap<OnCompleteCallback<?>> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<OnCompleteCallback<?>> selectorMap;
+
+    OnCompleteCallbackSelectorMap(final ElementOfState elementOfState) {
+        this.selectorMap = SelectorMapImpl.create(elementOfState);
+    }
 
     void putAll(final Map<TargetSelector, OnCompleteCallback<?>> callbacks) {
         for (Map.Entry<TargetSelector, OnCompleteCallback<?>> entry : callbacks.entrySet()) {

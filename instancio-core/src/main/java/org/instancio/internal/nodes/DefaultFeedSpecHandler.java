@@ -23,11 +23,14 @@ import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.context.SelectorMap;
 import org.instancio.internal.feed.InternalFeedSpecResolver;
 import org.instancio.internal.selectors.FeedSelectors;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.settings.Keys;
 import org.instancio.settings.OnFeedPropertyUnmatched;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 final class DefaultFeedSpecHandler implements InternalFeedSpecHandler {
@@ -53,18 +56,42 @@ final class DefaultFeedSpecHandler implements InternalFeedSpecHandler {
         if (node.isStaticallyIgnored() || (!node.is(NodeKind.POJO) && !node.is(NodeKind.RECORD))) {
             return;
         }
-        final Feed feed = feedSelectorMap.getValue(node).orElse(null);
-        if (feed == null) {
-            return;
-        }
 
-        final InternalFeedSpecResolver specsResolver = new InternalFeedSpecResolver(feed);
+        final List<SelectorMap.Match<Feed>> feeds = selectFeedsToApply(node);
+        for (int i = feeds.size() - 1; i >= 0; i--) {
+            applyFeed(node, feeds.get(i));
+        }
+    }
+
+    /**
+     * Returns the feeds to apply to the given node, in precedence order:
+     * all matching {@code elementOf()} feeds followed by the first matching regular feed
+     * ({@code getMatches} returns elementOf entries first - they have a higher priority).
+     */
+    private List<SelectorMap.Match<Feed>> selectFeedsToApply(final InternalNode node) {
+        final List<SelectorMap.Match<Feed>> matches = feedSelectorMap.getMatches(node);
+        final List<SelectorMap.Match<Feed>> results = new ArrayList<>(matches.size());
+        boolean regularFeedIncluded = false;
+
+        for (SelectorMap.Match<Feed> match : matches) {
+            if (match.selector().matchesViaElementFrame()) {
+                results.add(match);
+            } else if (!regularFeedIncluded) {
+                regularFeedIncluded = true;
+                results.add(match);
+            }
+        }
+        return results;
+    }
+
+    private void applyFeed(final InternalNode node, final SelectorMap.Match<Feed> match) {
+        final InternalFeedSpecResolver specsResolver = new InternalFeedSpecResolver(match.value());
 
         for (InternalNode child : node.getChildren()) {
             final FeedSpec<?> spec = specsResolver.getSpec(child);
 
             if (spec != null) {
-                final TargetSelector selector = FeedSelectors.forProperty(child);
+                final TargetSelector selector = propertySelector(match.selector(), child);
                 modelContext.putGenerator(selector, (Generator<?>) spec);
             }
         }
@@ -80,5 +107,13 @@ final class DefaultFeedSpecHandler implements InternalFeedSpecHandler {
             throw Fail.withUsageError(ErrorMessageUtils.unmappedFeedProperties(
                     unmappedProperties, modelContext.getSettings()));
         }
+    }
+
+    private static TargetSelector propertySelector(
+            final PredicateSelectorImpl feedSelector, final InternalNode child) {
+
+        return feedSelector.matchesViaElementFrame()
+                ? FeedSelectors.forElementProperty(feedSelector, child)
+                : FeedSelectors.forProperty(child);
     }
 }

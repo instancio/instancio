@@ -17,7 +17,20 @@ package org.instancio.internal.util;
 
 import org.instancio.Random;
 
+import java.lang.reflect.Array;
+
 public final class ArrayUtils {
+
+    public static Object widenArray(final Object array, final int newLength) {
+        final int length = Array.getLength(array);
+        Verify.isTrue(newLength > length,
+                "newLength (%s) must be greater than length (%s)", newLength, length);
+
+        final Class<?> componentType = array.getClass().getComponentType();
+        final Object newArray = Array.newInstance(componentType, newLength);
+        System.arraycopy(array, 0, newArray, 0, length);
+        return newArray;
+    }
 
     public static void shuffle(final Object arr, final Random random) {
         if (arr instanceof Object[] array) {

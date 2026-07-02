@@ -374,6 +374,7 @@ These types are:
 - [predicate selectors](#predicate-selectors)
 - [convenience selectors](#convenience-selectors)
 - [setter selectors](#setter-selectors)
+- [element selectors](#element-selectors)
 
 
 !!! info "All selectors can be created using static methods from the {{Select}} class."
@@ -564,12 +565,113 @@ Select.setter(SetMethodSelector<T, U> methodReference)
 Select.setter(Person::setName)
 ```
 
+#### Element selectors
+
+!!! info "Experimental API `@since 6.0.0`"
+
+Element selectors allow targeting specific elements of a collection or array.
+The entry point is the `Select.elementOf(TargetSelector)` method, which targets a collection or array.
+It supports the following usage patterns for targeting elements:
+
+``` java linenums="1"
+Select.elementOf(TargetSelector containerSelector)
+Select.elementOf(TargetSelector containerSelector).at(int index)
+Select.elementOf(TargetSelector containerSelector).at(int... indices)
+Select.elementOf(TargetSelector containerSelector).first()
+Select.elementOf(TargetSelector containerSelector).last()
+Select.elementOf(TargetSelector containerSelector).range(int startInclusive, int endInclusive)
+Select.elementOf(TargetSelector containerSelector).except(int... indices)
+```
+!!! attention ""
+    <lnum>1</lnum> Selects all elements.<br/>
+    <lnum>2</lnum> Selects element at given index.<br/>
+    <lnum>3</lnum> Selects elements at given indices.<br/>
+    <lnum>4</lnum> Selects first element - syntactic sugar for `at(0)`.<br/>
+    <lnum>5</lnum> Selects last element - syntactic sugar for `at(size - 1)`.<br/>
+    <lnum>6</lnum> Selects elements in the given range.<br/>
+    <lnum>7</lnum> Selects all elements except given indices.<br/>
+
+All of the above methods can be followed up with `field()` or `target()` to target specific
+fields or types within selected elements:
+
+``` java linenums="1"
+Select.elementOf(TargetSelector containerSelector).field(GetMethodSelector<T, R> methodReference)
+Select.elementOf(TargetSelector containerSelector).first().field(GetMethodSelector<T, R> methodReference)
+Select.elementOf(TargetSelector containerSelector).at(1, 3, 7).target(TargetSelector selector)
+```
+!!! attention ""
+    <lnum>1</lnum> Selects given field across all elements.<br/>
+    <lnum>2</lnum> Selects given field of the first element only.<br/>
+    <lnum>3</lnum> Selects given target of elements with indices 1, 3, and 7.<br/>
+
+To illustrate with examples we will assume the following classes:
+
+```java
+enum OrderStatus { CREATED, SUBMITTED, SHIPPED, DELIVERED }
+record Order(OrderStatus status) {}
+record Customer(List<Order> orders) {}
+```
+
+To set a whole element at a specific index:
+
+```java title="Example" linenums="1"
+Customer customer = Instancio.of(Customer.class)
+    .set(elementOf(Customer::orders).at(3), new Order(OrderStatus.SHIPPED))
+    .create();
+```
+
+The next example creates a customer with `SHIPPED` orders at indices 3 and 5, and `DELIVERED`
+order at index 8. All other orders, if any, will have the `CREATED` status. Since `elementOf` selectors
+have higher precedence, they will override `all(OrderStatus.class)` regardless of declaration order.
+
+```java title="Example" linenums="1" hl_lines="4"
+Customer customer = Instancio.of(Customer.class)
+    .set(elementOf(Customer::orders).at(3, 5).field(Order::status), OrderStatus.SHIPPED)
+    .set(elementOf(Customer::orders).at(8).field(Order::status), OrderStatus.DELIVERED)
+    .set(all(OrderStatus.class), OrderStatus.CREATED)
+    .create();
+```
+
+By default, Instancio generates collections of random size between
+`Keys.COLLECTION_MIN_SIZE` and `Keys.COLLECTION_MAX_SIZE` (the default values are 2 and 6, respectively).
+When `elementOf(list).at(index)` references an index beyond the generated collection size,
+Instancio will automatically widen the collection so that the index is in range
+(at least `index + 1` elements). Therefore the previous example will produce a list of orders of size 9.
+
+Automatic widening is overridden if a custom collection size is specified via a selector.
+For example, the following usage will result in an error:
+
+```java title="Example" linenums="1" hl_lines="2 3"
+Customer customer = Instancio.of(Customer.class)
+    .size(field(Customer::orders), 5)
+    .set(elementOf(Customer::orders).at(8).field(Order::status), OrderStatus.DELIVERED)
+    .create();
+```
+!!! attention ""
+    <lnum>2</lnum> explicit collection size of `5` takes priority over the `elementOf` index.<br/>
+    <lnum>3</lnum> Specifying index `8` will produce an error.<br/>
+
+Unlike the other index methods, `except()` does **not** widen the collection.
+It selects all existing elements other than those at the given indices, and any excluded
+index beyond the collection size is silently ignored:
+
+```java title="Example" linenums="1"
+Customer customer = Instancio.of(Customer.class)
+    .set(elementOf(Customer::orders).except(0).field(Order::status), OrderStatus.SHIPPED)
+    .create();
+```
+!!! attention ""
+    Sets every order except the first to `SHIPPED`. The first order keeps its randomly
+    generated status (which may also happen to be `SHIPPED`), and the collection
+    remains at its randomly generated size.<br/>
+
 ### Selector Precedence
 
 Selector precedence rules apply when multiple selectors match a field or class:
 
 - Regular selectors have higher precedence than predicate selectors.
 - Field selectors have higher precedence than type selectors.
+- Element selectors have higher precedence than regular and predicate selectors.
 
 Consider the following example:
 
@@ -2922,6 +3024,20 @@ with random values (such as the `id` field in the previous example).
 - If a data property does not map to any field in the target class, an exception will be thrown.
   To ignore unmatched properties, set the `Keys.ON_FEED_PROPERTY_UNMATCHED`
   setting to `OnFeedPropertyUnmatched.IGNORE`.
+
+A feed can also be applied to elements of a specific collection or array using an
+[element selector](#element-selectors), including a subset of elements
+via an index spec:
+
+```java linenums="1"
+Customer customer = Instancio.of(Customer.class)
+    .applyFeed(elementOf(Customer::orders).range(0, 1), feed -> feed.ofResource("orders.csv"))
+    .create();
+```
+
+!!! attention ""
+    <lnum>2</lnum> Applies the feed only to the first two orders;
+    the remaining elements are populated with random values.<br/>
 
 ## Custom Feeds
 

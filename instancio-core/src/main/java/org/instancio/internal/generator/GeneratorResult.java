@@ -24,10 +24,10 @@ import static java.util.Objects.requireNonNull;
 
 public final class GeneratorResult {
     private static final Hints EMPTY_HINTS = Hints.afterGenerate(AfterGenerate.DO_NOT_MODIFY);
-    private static final GeneratorResult NULL_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.NULL, false);
-    private static final GeneratorResult UNRESOLVED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.UNRESOLVED, false);
-    private static final GeneratorResult IGNORED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.IGNORED, false);
-    private static final GeneratorResult DELAYED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.DELAYED, false);
+    private static final GeneratorResult NULL_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.NULL, false, false);
+    private static final GeneratorResult UNRESOLVED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.UNRESOLVED, false, false);
+    private static final GeneratorResult IGNORED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.IGNORED, false, false);
+    private static final GeneratorResult DELAYED_RESULT = new GeneratorResult(null, EMPTY_HINTS, Type.DELAYED, false, false);
 
     private enum Type {
         NULL, UNRESOLVED, IGNORED, DELAYED, RESOLVED
@@ -36,29 +36,41 @@ public final class GeneratorResult {
     private final @Nullable Object value;
     private final Hints hints;
     private final Type type;
+    // TODO refactor/simplify flags
     private final boolean fromAssignment;
+    private final boolean explicitNull;  // explicit null by the user
 
     private GeneratorResult(
             @Nullable final Object value,
             final Hints hints,
             final Type type,
-            final boolean fromAssignment) {
+            final boolean fromAssignment,
+            final boolean explicitNull) {
         this.value = value;
         this.hints = requireNonNull(hints, "null hints");
         this.type = type;
         this.fromAssignment = fromAssignment;
+        this.explicitNull = explicitNull;
     }
 
     public static GeneratorResult resolved(@Nullable final Object value, final Hints hints) {
-        return new GeneratorResult(value, hints, Type.RESOLVED, false);
+        return new GeneratorResult(value, hints, Type.RESOLVED, false, false);
     }
 
     public static GeneratorResult assignedResult(@Nullable final Object value) {
-        return new GeneratorResult(value, EMPTY_HINTS, Type.RESOLVED, true);
+        return new GeneratorResult(value, EMPTY_HINTS, Type.RESOLVED, true, false);
     }
 
     public boolean isFromAssignment() {
         return fromAssignment;
+    }
+
+    /**
+     * Returns {@code true} if this is an {@link #explicitNull(Hints) explicit null},
+     * a deterministic {@code null} from the user as opposed to a random one.
+     */
+    public boolean isExplicitNull() {
+        return explicitNull;
     }
 
     @Nullable
@@ -79,6 +91,18 @@ public final class GeneratorResult {
      */
     public static GeneratorResult nullResult() {
         return NULL_RESULT;
+    }
+
+    /**
+     * A deterministic {@code null} that the user requested explicitly,
+     * e.g. via {@code set(selector, null)} or {@code supply(selector, () -> null)},
+     * as opposed to a random null produced by {@code nullable()} or {@code withNullable()}.
+     *
+     * @param hints the generator hints (preserved, as for a resolved result)
+     * @return explicit null result
+     */
+    public static GeneratorResult explicitNull(final Hints hints) {
+        return new GeneratorResult(null, hints, Type.RESOLVED, false, true);
     }
 
     /**
@@ -128,9 +152,13 @@ public final class GeneratorResult {
 
     // Note: another option is to introduce a dedicated EmitGeneratorHint,
     // however for a single boolean flag it doesn't seem to be worth it
-    public boolean hasEmitNullHint() {
+    private boolean hasEmitNullHint() {
         final InternalGeneratorHint hint = hints.get(InternalGeneratorHint.class);
         return hint != null && hint.emitNull();
+    }
+
+    public boolean isIntentionalNull() {
+        return value == null && (explicitNull || fromAssignment || hasEmitNullHint());
     }
 
     public boolean isResolved() {

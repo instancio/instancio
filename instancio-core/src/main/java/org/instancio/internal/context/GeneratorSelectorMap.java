@@ -32,12 +32,13 @@ import java.util.Optional;
 class GeneratorSelectorMap {
 
     private final GeneratorInitialiser generatorInitialiser;
-    private final SelectorMap<Generator<?>> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<Generator<?>> selectorMap;
     private final Generators generators;
 
-    GeneratorSelectorMap(final GeneratorContext generatorContext) {
+    GeneratorSelectorMap(final GeneratorContext generatorContext, final ElementOfState elementOfState) {
         this.generators = new BuiltInGenerators(generatorContext);
         this.generatorInitialiser = new GeneratorInitialiser(generatorContext);
+        this.selectorMap = SelectorMapImpl.create(elementOfState);
     }
 
     void putGenerator(final TargetSelector targetSelector, final Generator<?> generator) {
@@ -75,5 +76,9 @@ class GeneratorSelectorMap {
 
     Optional<Generator<?>> getGenerator(final InternalNode node) {
         return selectorMap.getValue(node);
+    }
+
+    Optional<Generator<?>> getActiveElementOfGenerator(final InternalNode node) {
+        return selectorMap.getActiveElementOfValue(node);
     }
 }

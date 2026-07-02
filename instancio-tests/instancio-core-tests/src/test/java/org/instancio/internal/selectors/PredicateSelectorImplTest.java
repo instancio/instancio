@@ -78,7 +78,7 @@ class PredicateSelectorImplTest {
         @Test
         void verifyEqualsAndHashCode() {
             EqualsVerifier.forClass(PredicateSelectorImpl.class)
-                    .withIgnoredFields("stackTraceHolder", "nodePredicate")
+                    .withIgnoredFields("stackTraceHolder", "nodePredicate", "elementOfDescriptor")
                     .verify();
         }
 

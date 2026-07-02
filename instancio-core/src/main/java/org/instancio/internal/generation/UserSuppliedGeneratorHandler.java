@@ -50,11 +50,14 @@ final class UserSuppliedGeneratorHandler implements NodeHandler {
     public GeneratorResult getResult(final InternalNode node) {
         final Optional<Generator<?>> generatorOpt = modelContext.getGenerator(node);
 
-        //noinspection OptionalIsPresent
         if (generatorOpt.isEmpty()) {
             return GeneratorResult.unresolvedResult();
         }
 
-        return userSuppliedGeneratorProcessor.getGeneratorResult(node, generatorOpt.get());
+        final GeneratorResult result = userSuppliedGeneratorProcessor.getGeneratorResult(node, generatorOpt.get());
+
+        return result.isExplicitNull()
+                ? GeneratorResult.resolved(null, result.getHints())
+                : result;
     }
 }

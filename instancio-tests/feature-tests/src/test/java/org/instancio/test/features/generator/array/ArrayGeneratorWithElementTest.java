@@ -17,6 +17,7 @@ package org.instancio.test.features.generator.array;
 
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
+import org.instancio.Size;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayLong;
@@ -78,6 +79,18 @@ class ArrayGeneratorWithElementTest {
     void withNullOrEmpty() {
         assertValidation((Object[]) null);
         assertValidation();
+    }
+
+    @Test
+    void withElementsAlwaysFitWhenRangeSizeMinIsLessThanWithCount() {
+        final ArrayLong result = Instancio.of(ArrayLong.class)
+                .generate(all(Long[].class), gen -> gen.array().with(1L, 2L))
+                .size(all(Long[].class), Size.range(0, 5))
+                .create();
+
+        assertThat(result.getWrapper())
+                .hasSizeGreaterThanOrEqualTo(2)
+                .contains(1L, 2L);
     }
 
     @SuppressWarnings("NullAway")

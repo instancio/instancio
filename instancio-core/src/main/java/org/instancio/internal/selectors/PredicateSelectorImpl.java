@@ -23,6 +23,7 @@ import org.instancio.Selector;
 import org.instancio.TargetSelector;
 import org.instancio.internal.ApiMethod;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.Verify;
 import org.jspecify.annotations.Nullable;
@@ -43,6 +44,8 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
     private static final String DEFAULT_SELECTOR_DESCRIPTION = "<selector>";
     private static final Predicate<@Nullable Field> NON_NULL_FIELD = Objects::nonNull;
     private static final Predicate<@Nullable Class<?>> NON_NULL_TYPE = Objects::nonNull;
+    // Default value for elementOf selectors since they don't use node predicates
+    private static final Predicate<InternalNode> ELEMENT_OF_NODE_PREDICATE = node -> false;
     private static final PredicateSelectorImpl ROOT_SELECTOR = builder()
             .depth(0)
             .target(TargetRoot.INSTANCE)
@@ -60,6 +63,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
     private final String apiInvocationDescription;
     // target can be null for lambda-style predicates, e.g. `types(t -> t == Foo.class)`
     private final @Nullable Target target;
+    private final @Nullable ElementOfDescriptor elementOfDescriptor;
 
     @SuppressWarnings("PMD.ExcessiveParameterList")
     protected PredicateSelectorImpl(
@@ -84,20 +88,21 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         this.selectorDepth = selectorDepth;
         this.apiInvocationDescription = apiInvocationDescription;
         this.target = target;
+        this.elementOfDescriptor = null; // elementOf selectors are built via the Builder
     }
 
     private PredicateSelectorImpl(final Builder builder) {
-        this(
-                builder.apiMethod,
-                builder.priority,
-                builder.nodePredicate,
-                builder.scopes,
-                builder.selectorDepth,
-                builder.isLenient,
-                builder.isHiddenFromVerboseOutput,
-                defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION),
-                builder.target,
-                defaultIfNull(builder.stackTraceHolder, Throwable::new));
+        this.apiMethod = builder.apiMethod;
+        this.priority = builder.priority;
+        this.nodePredicate = builder.nodePredicate;
+        this.scopes = Collections.unmodifiableList(builder.scopes);
+        this.selectorDepth = builder.selectorDepth;
+        this.isLenient = builder.isLenient;
+        this.isHiddenFromVerboseOutput = builder.isHiddenFromVerboseOutput;
+        this.apiInvocationDescription = defaultIfNull(builder.apiInvocationDescription, DEFAULT_SELECTOR_DESCRIPTION);
+        this.target = builder.target;
+        this.stackTraceHolder = defaultIfNull(builder.stackTraceHolder, Throwable::new);
+        this.elementOfDescriptor = builder.elementOfDescriptor;
     }
 
     // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
@@ -157,7 +162,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         return priority;
     }
 
-    protected final String getApiInvocationDescription() {
+    public final String getApiInvocationDescription() {
         return apiInvocationDescription;
     }
 
@@ -168,6 +173,23 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
 
     public Predicate<InternalNode> getNodePredicate() {
         return nodePredicate;
+    }
+
+    /**
+     * Returns the {@code elementOf} spec backing this selector, or {@code null}
+     * if this is not an {@code elementOf} selector.
+     */
+    @Nullable
+    public ElementOfDescriptor getElementOfDescriptor() {
+        return elementOfDescriptor;
+    }
+
+    public final boolean matchesViaElementFrame() {
+        return elementOfDescriptor != null;
+    }
+
+    public final boolean isElementOfPriority() {
+        return priority == Constants.SelectorPriority.ELEMENT_OF;
     }
 
     @Override
@@ -286,6 +308,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         builder.selectorDepth = selectorDepth;
         builder.isLenient = isLenient();
         builder.isHiddenFromVerboseOutput = isHiddenFromVerboseOutput();
+        builder.elementOfDescriptor = elementOfDescriptor;
         return builder;
     }
 
@@ -304,6 +327,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         private @Nullable String apiInvocationDescription;
         private @Nullable Target target;
         private @Nullable Throwable stackTraceHolder;
+        private @Nullable ElementOfDescriptor elementOfDescriptor;
 
         private Builder() {
         }
@@ -373,6 +397,11 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
             return this;
         }
 
+        public Builder hiddenFromVerboseOutput() {
+            this.isHiddenFromVerboseOutput = true;
+            return this;
+        }
+
         private Builder withDepth(final SelectorDepth selectorDepth) {
             // This check is solely for internal code because the
             // public API shouldn't allow atDepth() to be chained multiple times.
@@ -402,7 +431,17 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
             return this;
         }
 
+        public Builder elementOfDescriptor(final @Nullable ElementOfDescriptor elementOfDescriptor) {
+            this.elementOfDescriptor = elementOfDescriptor;
+            return this;
+        }
+
         public PredicateSelectorImpl build() {
+            // elementOf selectors are matched through their ElementOfDescriptor,
+            // so the node predicate won't be needed/used
+            if (elementOfDescriptor != null) {
+                nodePredicate = ELEMENT_OF_NODE_PREDICATE;
+            }
             return new PredicateSelectorImpl(this);
         }
     }

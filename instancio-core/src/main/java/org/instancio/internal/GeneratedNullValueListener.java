@@ -58,6 +58,7 @@ final class GeneratedNullValueListener implements GenerationListener {
             final InternalNode current = queue.poll();
 
             if (result.isIgnored()) {
+                // mark the matching ignore selector as "used" (return value intentionally discarded)
                 context.matchesIgnoreSelector(current);
             } else {
                 /*

@@ -24,6 +24,7 @@ import org.instancio.Scope;
 import org.instancio.Select;
 import org.instancio.Size;
 import org.instancio.TargetSelector;
+import org.instancio.documentation.VisibleForTesting;
 import org.instancio.feed.Feed;
 import org.instancio.feed.FeedProvider;
 import org.instancio.generator.Generator;
@@ -43,6 +44,9 @@ import org.instancio.internal.generator.misc.GeneratorDecorator;
 import org.instancio.internal.generator.misc.ObjectFillingGenerator;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.selectors.BlankSelectors;
+import org.instancio.internal.selectors.ElementFrameStack;
+import org.instancio.internal.selectors.ElementOfDescriptor;
+import org.instancio.internal.selectors.ElementOfSelectorImpl;
 import org.instancio.internal.selectors.InternalSelector;
 import org.instancio.internal.selectors.PredicateSelectorImpl;
 import org.instancio.internal.selectors.SelectorProcessor;
@@ -156,15 +160,10 @@ public final class ModelContext {
 
     public void reportWarnings(final InternalNode rootNode) {
         reportUnusedSelectorWarnings(rootNode);
-        reportEmitGeneratorWarnings();
+        new UnusedEmitItemsReporter(selectorMaps.getGeneratorSelectorMap().getSelectorMap()).report();
     }
 
-    private void reportEmitGeneratorWarnings() {
-        final SelectorMap<Generator<?>> selectorMap = selectorMaps.getGeneratorSelectorMap().getSelectorMap();
-        final UnusedEmitItemsReporter reporter = new UnusedEmitItemsReporter(selectorMap);
-        reporter.report();
-    }
-
+    @VisibleForTesting
     void reportUnusedSelectorWarnings(final InternalNode rootNode) {
         if (settings.get(Keys.MODE) == Mode.STRICT && !selectorMaps.allEmpty()) {
             new UnusedSelectorReporter(getMaxDepth(), selectorMaps).report(rootNode);
@@ -202,6 +201,11 @@ public final class ModelContext {
 
     public boolean matchesIgnoreSelector(final InternalNode node) {
         return selectorMaps.getIgnoreSelectorMap().isTrue(node);
+    }
+
+    public boolean isEffectivelyIgnored(final InternalNode node) {
+        return node.isStaticallyIgnored()
+                || (selectorMaps.hasFrameDependentIgnores() && matchesIgnoreSelector(node));
     }
 
     public boolean isNullable(final InternalNode node) {
@@ -242,6 +246,29 @@ public final class ModelContext {
         return selectorMaps.getContainerSizeSelectorMap().getSize(node).orElse(null);
     }
 
+    @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
+    public Optional<Generator<?>> getActiveElementOfGenerator(final InternalNode node) {
+        return selectorMaps.getGeneratorSelectorMap().getActiveElementOfGenerator(node);
+    }
+
+    public ElementFrameStack getElementFrameStack() {
+        return selectorMaps.getElementFrameStack();
+    }
+
+    public boolean hasElementOfSelectors() {
+        return selectorMaps.hasElementOfSelectors();
+    }
+
+    public int getElementOfMinRequiredSize(final InternalNode containerNode) {
+        int max = 0;
+        for (ElementOfDescriptor eod : selectorMaps.getElementOfMinSizeDescriptors()) {
+            if (eod.matchesContainer(containerNode)) {
+                max = Math.max(max, eod.requiredMinSize());
+            }
+        }
+        return max;
+    }
+
     public void putGenerator(TargetSelector selector, Generator<?> generator) {
         selectorMaps.getGeneratorSelectorMap().putGenerator(selector, generator);
     }
@@ -269,6 +296,22 @@ public final class ModelContext {
 
     public List<InternalAssignment> getAssignments(final InternalNode node) {
         return selectorMaps.getAssignmentSelectorMap().getAssignments(node);
+    }
+
+    public void markElementOfAssignmentSelectorsUsedForContainer(final InternalNode containerNode) {
+        // No-op in the common case so container generation doesn't pay for the map scans
+        if (selectorMaps.hasElementOfSelectors()) {
+            selectorMaps.getAssignmentSelectorMap().markSelectorsUsedForContainer(containerNode);
+        }
+    }
+
+    @Nullable
+    public TargetSelector findFirstElementOfAssignmentSelectorForContainer(final InternalNode containerNode) {
+        // No-op in the common case so container generation doesn't pay for the map scans
+        if (!selectorMaps.hasElementOfSelectors()) {
+            return null;
+        }
+        return selectorMaps.getAssignmentSelectorMap().findElementOfSelectorForContainer(containerNode);
     }
 
     public BooleanSelectorMap getAssignmentOriginSelectorMap() {
@@ -364,7 +407,7 @@ public final class ModelContext {
                 final V value,
                 final ApiMethod apiMethod) {
 
-            final List<TargetSelector> processed = selectorProcessor.process(selector, apiMethod);
+            final List<PredicateSelectorImpl> processed = selectorProcessor.process(selector, apiMethod);
             for (TargetSelector s : processed) {
                 map.put(s, value);
             }
@@ -373,6 +416,9 @@ public final class ModelContext {
 
         public Builder withSubtype(final TargetSelector selector, final Class<?> subtype) {
             ApiValidator.notNull(subtype, "subtype must not be null");
+            // Reject elementOf because subtypes are resolved at node-tree build time,
+            // when no element frame exists yet
+            ApiValidator.rejectElementOfForApiMethod(selector, ApiMethod.SUBTYPE);
             subtypeMap = CollectionUtils.newLinkedHashMapIfNull(subtypeMap);
             return addSelector(subtypeMap, selector, subtype, ApiMethod.SUBTYPE);
         }
@@ -496,7 +542,9 @@ public final class ModelContext {
         private void processSingleAssignment(final InternalAssignment a) {
             Verify.notNull(assignmentMap, "assignmentMap not initialised");
 
-            final List<TargetSelector> origins = selectorProcessor.process(
+            validateElementOfAssignment(a);
+
+            final List<PredicateSelectorImpl> origins = selectorProcessor.process(
                     a.getOrigin(), ApiMethod.ASSIGN_ORIGIN);
 
             Verify.isTrue(origins.size() == 1, "Origin has multiple selectors");
@@ -504,14 +552,15 @@ public final class ModelContext {
             // Propagate destination leniency to the origin: if the user marked the assignment
             // as optional via lenient() on the destination, the origin should also be lenient
             // so it is not reported as an unused selector when the assignment never fires.
-            final boolean destinationIsLenient = a.getDestination() instanceof InternalSelector destSelector
-                    && destSelector.isLenient();
+            final boolean destinationIsLenient =
+                    (a.getDestination() instanceof InternalSelector destSelector && destSelector.isLenient())
+                            || (a.getDestination() instanceof ElementOfSelectorImpl eos && eos.isLenient());
 
             final TargetSelector origin = destinationIsLenient
-                    ? ((PredicateSelectorImpl) origins.get(0)).toBuilder().lenient().build()
+                    ? origins.get(0).toBuilder().lenient().build()
                     : origins.get(0);
 
-            final List<TargetSelector> destinations = selectorProcessor.process(
+            final List<PredicateSelectorImpl> destinations = selectorProcessor.process(
                     a.getDestination(), ApiMethod.ASSIGN_DESTINATION);
 
             for (TargetSelector destination : destinations) {
@@ -523,6 +572,19 @@ public final class ModelContext {
                 this.assignmentMap
                         .computeIfAbsent(destination, k -> new ArrayList<>())
                         .add(processedAssignment);
+            }
+        }
+
+        private static void validateElementOfAssignment(final InternalAssignment a) {
+            final TargetSelector rawOrigin = a.getOrigin();
+            if (!(rawOrigin instanceof ElementOfSelectorImpl)) {
+                return;
+            }
+
+            final TargetSelector rawDest = a.getDestination();
+            if (!(rawDest instanceof ElementOfSelectorImpl)) {
+                throw Fail.withUsageError(
+                        ErrorMessageUtils.elementOfOriginRequiresElementOfDestination(rawOrigin, rawDest));
             }
         }
 
@@ -561,12 +623,11 @@ public final class ModelContext {
             if (selector instanceof InternalSelector internalSelector && internalSelector.isRootSelector()) {
                 setBlankTargets(); // special case for root selector (no scopes)
             } else {
-                final List<TargetSelector> processedSelectors = selectorProcessor.process(
+                final List<PredicateSelectorImpl> processedSelectors = selectorProcessor.process(
                         selector, ApiMethod.NONE);
 
-                for (TargetSelector processedSelector : processedSelectors) {
-                    final InternalSelector target = (InternalSelector) processedSelector;
-                    final Scope[] effectiveScopes = CollectionUtils.combine(target.getScopes(), target.toScope())
+                for (PredicateSelectorImpl s : processedSelectors) {
+                    final Scope[] effectiveScopes = CollectionUtils.combine(s.getScopes(), s.toScope())
                             .toArray(new Scope[0]);
 
                     setBlankTargets(effectiveScopes);
@@ -623,8 +684,9 @@ public final class ModelContext {
          * Other data, such as maxDepth, seed, and settings are <b>not</b> copied.
          */
         public Builder setModel(final TargetSelector modelSelector, final Model<?> model) {
-            final TargetSelector actualModelSelector;
+            final ModelContext otherCtx = ((InternalModel<?>) model).getModelContext();
 
+            final TargetSelector actualModelSelector;
             if (modelSelector instanceof InternalSelector internalSelector && internalSelector.isRootSelector()) {
                 actualModelSelector = Select.all(TypeUtils.getRawType(rootType)).atDepth(0);
             } else {
@@ -632,14 +694,7 @@ public final class ModelContext {
             }
 
             setModelMap = CollectionUtils.newLinkedHashMapIfNull(setModelMap);
-            final ModelContext otherCtx = ((InternalModel<?>) model).getModelContext();
-            final List<TargetSelector> processedSelectors = selectorProcessor.process(
-                    actualModelSelector, ApiMethod.SET_MODEL);
-
-            for (TargetSelector modelTarget : processedSelectors) {
-                setModelMap.put(modelTarget, otherCtx);
-            }
-            return this;
+            return addSelector(setModelMap, actualModelSelector, otherCtx, ApiMethod.SET_MODEL);
         }
 
         private ModelContextSource getModelContextSource() {

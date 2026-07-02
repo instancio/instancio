@@ -17,6 +17,7 @@ package org.instancio.internal.selectors;
 
 import org.codehaus.groovy.runtime.ConvertedClosure;
 import org.codehaus.groovy.runtime.MethodClosure;
+import org.instancio.GetMethodSelector;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
@@ -65,6 +66,11 @@ final class MethodRef {
 
             throw Fail.withUsageError("unable to resolve method name from selector", ex);
         }
+    }
+
+    static String describeGetter(final GetMethodSelector<?, ?> getter) {
+        final MethodRef mr = from(getter);
+        return mr.getTargetClass().getSimpleName() + "::" + mr.getMethodName();
     }
 
     Class<?> getTargetClass() {

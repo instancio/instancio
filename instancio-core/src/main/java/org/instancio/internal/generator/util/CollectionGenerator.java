@@ -48,6 +48,7 @@ public class CollectionGenerator<T extends @Nullable Object>
 
     protected int minSize;
     protected int maxSize;
+    private @Nullable Integer explicitMaxSize;
     private boolean nullableElements;
     private boolean unique;
     private @Nullable List<Object> withElements;
@@ -71,6 +72,7 @@ public class CollectionGenerator<T extends @Nullable Object>
     public CollectionGenerator<T> size(final int size) {
         this.minSize = ApiValidator.validateSize(size);
         this.maxSize = size;
+        this.explicitMaxSize = size;
         return this;
     }
 
@@ -78,6 +80,9 @@ public class CollectionGenerator<T extends @Nullable Object>
     public CollectionGenerator<T> minSize(final int size) {
         this.minSize = ApiValidator.validateSize(size);
         this.maxSize = NumberUtils.calculateNewMaxSize(maxSize, minSize);
+        if (explicitMaxSize != null) {
+            explicitMaxSize = maxSize;
+        }
         return this;
     }
 
@@ -85,6 +90,7 @@ public class CollectionGenerator<T extends @Nullable Object>
     public CollectionGenerator<T> maxSize(final int size) {
         this.maxSize = ApiValidator.validateSize(size);
         this.minSize = NumberUtils.calculateNewMinSize(minSize, maxSize);
+        this.explicitMaxSize = size;
         return this;
     }
 
@@ -163,6 +169,7 @@ public class CollectionGenerator<T extends @Nullable Object>
                 .with(InternalGeneratorHint.builder()
                         .targetClass(collectionType)
                         .nullableResult(isNullable())
+                        .explicitMaxSize(explicitMaxSize)
                         .build())
                 .build();
     }

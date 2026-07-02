@@ -17,6 +17,7 @@ package org.instancio.internal.nodes;
 
 import org.instancio.Node;
 import org.instancio.internal.RootType;
+import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.Format;
 import org.instancio.internal.util.ObjectUtils;
@@ -74,6 +75,15 @@ public final class InternalNode implements Node {
         return this.nodeKind == nodeKind;
     }
 
+    /**
+     * Whether this node was resolved as ignored at node-tree build time
+     * (static {@code ignore()} selectors and SPI {@code IGNORE} decisions).
+     * Statically ignored nodes have no children.
+     *
+     * <p>NOTE: this flag does not reflect frame-dependent {@code elementOf()}
+     * ignores, which are resolved dynamically at generation time via
+     * {@link ModelContext#isEffectivelyIgnored(InternalNode)}.
+     */
     public boolean isStaticallyIgnored() {
         return ignored;
     }
@@ -185,8 +195,8 @@ public final class InternalNode implements Node {
 
         while (ancestor != null) {
             if ((nodeKind == NodeKind.POJO || nodeKind == NodeKind.RECORD)
-                && Objects.equals(targetClass, ancestor.targetClass)
-                && Objects.equals(type, ancestor.type)) {
+                    && Objects.equals(targetClass, ancestor.targetClass)
+                    && Objects.equals(type, ancestor.type)) {
                 return true;
             }
 

@@ -18,6 +18,8 @@ package org.instancio.internal.context;
 import org.instancio.TargetSelector;
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.nodes.InternalNode;
+import org.instancio.internal.selectors.InternalSelector;
+import org.instancio.internal.selectors.PredicateSelectorImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +36,9 @@ import java.util.function.BiConsumer;
  * @param <V> value type
  */
 @InternalApi
-public interface SelectorMap<V> {
+public interface SelectorMap<V> extends Iterable<SelectorMap.SelectorEntry<V>> {
+
+    record SelectorEntry<V>(InternalSelector selector, V value) {}
 
     /**
      * Returns all selectors that match given {@code node}.
@@ -59,6 +63,21 @@ public interface SelectorMap<V> {
     Optional<V> getValue(InternalNode node);
 
     /**
+     * Returns all matches for the given node in precedence order (the first element
+     * is what {@link #getValue(InternalNode)} would return), each paired with the
+     * selector that produced it.
+     *
+     * @param node for which to look up the matches
+     * @return the matched selectors and their values
+     */
+    List<Match<V>> getMatches(InternalNode node);
+
+    /**
+     * A matched selector and the value it was registered with.
+     */
+    record Match<V>(PredicateSelectorImpl selector, V value) {}
+
+    /**
      * Returns all values for given node.
      *
      * @param node for which to look up the values
@@ -68,5 +87,9 @@ public interface SelectorMap<V> {
 
     List<V> getValues(TargetSelector selector);
 
+    Optional<V> getActiveElementOfValue(InternalNode node);
+
     boolean isEmpty();
+
+    void markSelectorUsed(TargetSelector selector);
 }

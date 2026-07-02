@@ -22,7 +22,14 @@ import java.util.Set;
 
 public class BooleanSelectorMap {
 
-    private final SelectorMap<Boolean> selectorMap = new SelectorMapImpl<>();
+    private final SelectorMap<Boolean> selectorMap;
+
+    BooleanSelectorMap(
+            final ElementOfState elementOfState,
+            final ElementOfState.SelectorMapRole selectorMapRole) {
+
+        this.selectorMap = SelectorMapImpl.withRole(elementOfState, selectorMapRole);
+    }
 
     public void putAll(final Set<TargetSelector> targetSelectors) {
         for (TargetSelector targetSelector : targetSelectors) {
