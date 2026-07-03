@@ -206,9 +206,9 @@ class GetMethodSelectorTest {
 
             assertThatThrownBy(() -> api.set(selector, "foo"))
                     .isExactlyInstanceOf(InstancioApiException.class)
-                    .hasMessageContaining(String.format(
-                            "Unable to resolve the field from method reference:%n" +
-                            "-> ItemInterface::getValue"));
+                    .hasMessageContainingAll(
+                            "Unable to resolve the field from method reference:",
+                            "-> ItemInterface::getValue");
         }
 
         @Test
