@@ -21,8 +21,8 @@ import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.Global;
-import org.instancio.support.ThreadLocalRandom;
-import org.instancio.support.ThreadLocalSettings;
+import org.instancio.support.InternalTestContext;
+import org.instancio.support.ThreadLocalTestContext;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
@@ -63,10 +63,9 @@ public class InstancioSourceArgumentsProvider
             final ParameterDeclarations parameters,
             final ExtensionContext context) {
 
-        final ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.getInstance();
-        final ThreadLocalSettings threadLocalSettings = ThreadLocalSettings.getInstance();
+        final ThreadLocalTestContext threadLocalTestContext = ThreadLocalTestContext.getInstance();
 
-        ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
+        ExtensionSupport.processAnnotations(context, threadLocalTestContext);
 
         // Ensure thread-local state set by processAnnotations() is cleared when the
         // parameterized test method's store is closed. Without this, using
@@ -75,13 +74,11 @@ public class InstancioSourceArgumentsProvider
         // afterEach cleanup would otherwise be the only cleanup path.
         context.getStore(INSTANCIO_NAMESPACE).put(
                 THREAD_LOCAL_CLEANUP,
-                (AutoCloseable) () -> {
-                    threadLocalRandom.remove();
-                    threadLocalSettings.remove();
-                });
+                (AutoCloseable) threadLocalTestContext::remove);
 
-        final Random random = requireNonNull(threadLocalRandom.get());
-        final Settings settings = threadLocalSettings.get();
+        final InternalTestContext internalTestContext = requireNonNull(threadLocalTestContext.get());
+        final Random random = internalTestContext.getRandom();
+        final Settings settings = internalTestContext.getSettings();
         final int samples = getNumberOfSamples(settings);
 
         final InstancioSourceState state = new InstancioSourceState(random.getSeed(), samples);

@@ -15,32 +15,32 @@
  */
 package org.instancio.support;
 
-import org.instancio.Random;
+import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ThreadLocalRandomTest {
+class ThreadLocalInternalTestContextTest {
 
     @Test
     @Order(1)
     void get() {
-        assertThat(ThreadLocalRandom.getInstance().get()).isNull();
+        assertThat(ThreadLocalTestContext.getInstance().get()).isNull();
     }
 
     @Test
     @Order(2)
     void set() {
-        final Random provider = new DefaultRandom();
-        ThreadLocalRandom.getInstance().set(provider);
-        assertThat(ThreadLocalRandom.getInstance().get()).isSameAs(provider);
+        final InternalTestContext internalTestContext = new InternalTestContext(new DefaultRandom(), Settings.create());
+        ThreadLocalTestContext.getInstance().set(internalTestContext);
+        assertThat(ThreadLocalTestContext.getInstance().get()).isSameAs(internalTestContext);
     }
 
     @Test
     @Order(3)
     void remove() {
-        ThreadLocalRandom.getInstance().remove();
-        assertThat(ThreadLocalRandom.getInstance().get()).isNull();
+        ThreadLocalTestContext.getInstance().remove();
+        assertThat(ThreadLocalTestContext.getInstance().get()).isNull();
     }
 }

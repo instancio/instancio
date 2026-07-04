@@ -51,7 +51,8 @@ public final class Global {
      * @return merged (possibly locked) settings
      */
     public static Settings resolveEffectiveSettings(@Nullable final Settings overrides) {
-        final Settings threadLocalSettings = ThreadLocalSettings.getInstance().get();
+        final InternalTestContext internalTestContext = ThreadLocalTestContext.getInstance().get();
+        final Settings threadLocalSettings = internalTestContext == null ? null : internalTestContext.getSettings();
         if (threadLocalSettings == null && overrides == null) {
             return PROPERTIES_FILE_SETTINGS; // locked instance
         }

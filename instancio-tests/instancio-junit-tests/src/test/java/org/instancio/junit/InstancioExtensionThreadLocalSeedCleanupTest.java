@@ -16,7 +16,7 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalTestContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ class InstancioExtensionThreadLocalSeedCleanupTest {
                 .testEvents()
                 .assertStatistics(stats -> stats.succeeded(1));
 
-        assertThat(ThreadLocalRandom.getInstance().get())
+        assertThat(ThreadLocalTestContext.getInstance().get())
                 .as("Expected thread local Random to be removed after the test is done")
                 .isNull();
     }
@@ -68,8 +68,8 @@ class InstancioExtensionThreadLocalSeedCleanupTest {
         @Test
         @DisplayName("Dummy test method to verify thread local is cleared in afterAll()")
         void dummy() {
-            final long seed1 = requireNonNull(ThreadLocalRandom.getInstance().get()).getSeed();
-            final long seed2 = requireNonNull(ThreadLocalRandom.getInstance().get()).getSeed();
+            final long seed1 = requireNonNull(ThreadLocalTestContext.getInstance().get()).getRandom().getSeed();
+            final long seed2 = requireNonNull(ThreadLocalTestContext.getInstance().get()).getRandom().getSeed();
             assertThat(seed1)
                     .as("Same seed should be used within the test method")
                     .isEqualTo(seed2);

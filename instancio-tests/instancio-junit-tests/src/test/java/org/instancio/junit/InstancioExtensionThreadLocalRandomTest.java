@@ -20,7 +20,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.Seeds;
-import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalTestContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -154,7 +154,7 @@ class InstancioExtensionThreadLocalRandomTest {
     }
 
     private static void assertSeed(long expectedSeed, Seeds.Source expectedSource) {
-        final DefaultRandom random = (DefaultRandom) requireNonNull(ThreadLocalRandom.getInstance().get());
+        final DefaultRandom random = requireNonNull(ThreadLocalTestContext.getInstance().get()).getRandom();
 
         try {
             assertThat(random.getSeed()).as("seed").isEqualTo(expectedSeed);
@@ -165,7 +165,7 @@ class InstancioExtensionThreadLocalRandomTest {
     }
 
     private static void assertRandomSeed() {
-        final DefaultRandom random = (DefaultRandom) requireNonNull(ThreadLocalRandom.getInstance().get());
+        final DefaultRandom random = requireNonNull(ThreadLocalTestContext.getInstance().get()).getRandom();
 
         try {
             assertThat(random.getSeed()).as("expected a positive random seed").isPositive();

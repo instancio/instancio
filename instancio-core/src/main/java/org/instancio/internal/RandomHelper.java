@@ -19,8 +19,9 @@ import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.Global;
+import org.instancio.support.InternalTestContext;
 import org.instancio.support.Seeds;
-import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalTestContext;
 import org.jspecify.annotations.Nullable;
 
 @InternalApi
@@ -59,9 +60,9 @@ public final class RandomHelper {
         }
 
         // If running under JUnit extension, use the Random instance supplied by the extension
-        final Random tlRandom = ThreadLocalRandom.getInstance().get();
-        if (tlRandom != null) {
-            return tlRandom;
+        final InternalTestContext internalTestContext = ThreadLocalTestContext.getInstance().get();
+        if (internalTestContext != null) {
+            return internalTestContext.getRandom();
         }
 
         if (configuredRandom != null) {

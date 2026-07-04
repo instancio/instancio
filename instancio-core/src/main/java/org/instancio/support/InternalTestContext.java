@@ -20,30 +20,22 @@ import org.instancio.settings.Settings;
 import org.jspecify.annotations.Nullable;
 
 @InternalApi
-public final class ThreadLocalSettings {
+public final class InternalTestContext {
 
-    private static final ThreadLocalSettings INSTANCE = new ThreadLocalSettings();
+    private final DefaultRandom random;
+    private final @Nullable Settings settings;
 
-    private static final ThreadLocal<@Nullable Settings> SETTINGS = new InheritableThreadLocal<>();
+    public InternalTestContext(final DefaultRandom random, @Nullable final Settings settings) {
+        this.random = random;
+        this.settings = settings;
+    }
 
-    private ThreadLocalSettings() {
-        // non-instantiable
+    public DefaultRandom getRandom() {
+        return random;
     }
 
     @Nullable
-    public Settings get() {
-        return SETTINGS.get();
-    }
-
-    public void remove() {
-        SETTINGS.remove();
-    }
-
-    public void set(final Settings provider) {
-        SETTINGS.set(provider);
-    }
-
-    public static ThreadLocalSettings getInstance() {
-        return INSTANCE;
+    public Settings getSettings() {
+        return settings;
     }
 }
