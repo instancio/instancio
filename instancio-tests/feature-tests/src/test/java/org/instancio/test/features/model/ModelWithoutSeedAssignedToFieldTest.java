@@ -77,20 +77,6 @@ class ModelWithoutSeedAssignedToFieldTest {
 
     @Test
     @Seed(SEED)
-    @Order(3)
-    void modelOverrideSeed() {
-        final long seedOverride = -123;
-        final Model<Phone> derivedModel = Instancio.of(model)
-                .withSeed(seedOverride)
-                .toModel();
-
-        final Result<Phone> result = Instancio.of(derivedModel).asResult();
-        assertThat(result.getSeed()).isEqualTo(seedOverride);
-        assertThat(result.get()).isNotNull().isNotEqualTo(referencePhone);
-    }
-
-    @Test
-    @Seed(SEED)
     @Order(4)
     void objectOverrideSeed() {
         final long seedOverride = -123;

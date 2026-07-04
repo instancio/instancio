@@ -308,7 +308,8 @@ class ModelContextTest {
         final Class<UUID> ignoredClass = UUID.class;
         final Class<Date> nullableClass = Date.class;
         final int maxDepth = 754534;
-        final long seed = 37635;
+        // use a negative seed because by default random seeds are positive
+        final long seed = -37635;
         final int integerMinValue = 26546;
 
         final ModelContext ctx = ModelContext.builder(Person.class)
@@ -336,7 +337,11 @@ class ModelContextTest {
         assertThat(actual.isNullable(mockNode(nullableClass))).isTrue();
         assertThat(actual.isNullable(mockNode(Person.class, ADDRESS_FIELD))).isTrue();
         assertThat(actual.getMaxDepth()).isEqualTo(maxDepth);
-        assertThat(actual.getRandom().getSeed()).isEqualTo(seed);
+
+        assertThat(ctx.getRandom().getSeed()).isEqualTo(seed);
+        assertThat(actual.getRandom().getSeed())
+                .as("Seed should not be copied to the new context")
+                .isNotEqualTo(seed);
 
         final Settings settings = actual.getSettings();
         assertThat(settings.get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
@@ -350,7 +355,8 @@ class ModelContextTest {
 
     @Test
     void useModelAsTypeArgument() {
-        final long seed = 37635;
+        // use a negative seed because by default random seeds are positive
+        final long seed = -37635;
         final int integerMinValue = 26546;
 
         final ModelContext elementModel = ModelContext.builder(Person.class)
@@ -374,7 +380,11 @@ class ModelContextTest {
                 .isEqualTo(elementModel.getContextSource().getSubtypeMap());
 
         assertThat(ctx.getSettings().get(Keys.INTEGER_MIN)).isEqualTo(integerMinValue);
-        assertThat(ctx.getRandom().getSeed()).isEqualTo(seed);
+
+        assertThat(elementModel.getRandom().getSeed()).isEqualTo(seed);
+        assertThat(ctx.getRandom().getSeed())
+                .as("Seed should not be copied from the element model")
+                .isNotEqualTo(seed);
     }
 
     private static TargetSelector toFieldSelector(final Field field) {

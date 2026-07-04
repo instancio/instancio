@@ -38,6 +38,9 @@ import static org.instancio.Select.field;
 
 /**
  * Verify that create(Model) and create(Class) generate same values given the same seed.
+ * <p>
+ * Note that a seed is not inherited from a model, therefore the seed
+ * must be specified on the builder chain that creates the object.
  */
 @FeatureTag({Feature.MODEL, Feature.WITH_SEED})
 @ExtendWith(InstancioExtension.class)
@@ -49,10 +52,11 @@ class CreateFromModelAndClassWithSeedTest {
     void integerHolder() {
         final Model<IntegerHolder> model = Instancio.of(IntegerHolder.class)
                 .generate(allInts(), gen -> gen.ints().min(Integer.MIN_VALUE))
-                .withSeed(SEED)
                 .toModel();
 
-        final Result<IntegerHolder> obj1 = Instancio.of(model).asResult();
+        final Result<IntegerHolder> obj1 = Instancio.of(model)
+                .withSeed(SEED)
+                .asResult();
 
         final Result<IntegerHolder> obj2 = Instancio.of(IntegerHolder.class)
                 .generate(allInts(), gen -> gen.ints().min(Integer.MIN_VALUE))
@@ -65,11 +69,11 @@ class CreateFromModelAndClassWithSeedTest {
 
     @Test
     void uuid() {
-        final Model<UUID> model = Instancio.of(UUID.class).withSeed(SEED).toModel();
+        final Model<UUID> model = Instancio.of(UUID.class).toModel();
         final UUID obj1 = Instancio.of(UUID.class).withSeed(SEED).create();
         final UUID obj2 = Instancio.of(UUID.class).withSeed(SEED).create();
-        final UUID obj3 = Instancio.create(model);
-        final UUID obj4 = Instancio.create(model);
+        final UUID obj3 = Instancio.of(model).withSeed(SEED).create();
+        final UUID obj4 = Instancio.of(model).withSeed(SEED).create();
 
         assertThat(obj1)
                 .isEqualTo(obj2)
@@ -81,7 +85,7 @@ class CreateFromModelAndClassWithSeedTest {
     void person() {
         final Model<Person> personModel = Instancio.of(Person.class)
                 .generate(allInts(), gen -> gen.ints().min(Integer.MIN_VALUE))
-                .withSeed(SEED).toModel();
+                .toModel();
 
         final Person obj1 = Instancio.of(Person.class)
                 .generate(allInts(), gen -> gen.ints().min(Integer.MIN_VALUE))
@@ -91,8 +95,8 @@ class CreateFromModelAndClassWithSeedTest {
                 .generate(allInts(), gen -> gen.ints().min(Integer.MIN_VALUE))
                 .withSeed(SEED).create();
 
-        final Person obj3 = Instancio.create(personModel);
-        final Person obj4 = Instancio.create(personModel);
+        final Person obj3 = Instancio.of(personModel).withSeed(SEED).create();
+        final Person obj4 = Instancio.of(personModel).withSeed(SEED).create();
 
         assertThat(obj1)
                 .isEqualTo(obj2)
@@ -116,12 +120,12 @@ class CreateFromModelAndClassWithSeedTest {
     }
 
     private SupportedNumericTypes generateUsingCreateClass() {
-        return buildParameters().create();
+        return buildParameters().withSeed(SEED).create();
     }
 
     private SupportedNumericTypes generateUsingModel() {
         final Model<SupportedNumericTypes> model = buildParameters().toModel();
-        return Instancio.create(model);
+        return Instancio.of(model).withSeed(SEED).create();
     }
 
     private InstancioApi<SupportedNumericTypes> buildParameters() {
@@ -130,7 +134,6 @@ class CreateFromModelAndClassWithSeedTest {
                 .ignore(allShorts())
                 .supply(field("primitiveDouble"), () -> 124.35d)
                 .generate(allInts(), gen -> gen.ints().min(Integer.MIN_VALUE).max(Integer.MAX_VALUE))
-                .generate(field("primitiveFloat"), gen -> gen.floats().min(Float.MIN_VALUE))
-                .withSeed(SEED);
+                .generate(field("primitiveFloat"), gen -> gen.floats().min(Float.MIN_VALUE));
     }
 }
