@@ -32,6 +32,7 @@ import org.instancio.feed.FeedProvider;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
+import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.settings.FillType;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
@@ -241,6 +242,9 @@ public class ApiImpl<T> implements InstancioApi<T>, InstancioObjectApi<T> {
 
     @Override
     public Model<T> toModel() {
+        ApiValidator.isFalse(modelContextBuilder.hasUserSuppliedSeed(),
+                ErrorMessageUtils::seedNotSupportedWithToModel);
+
         return createModel();
     }
 

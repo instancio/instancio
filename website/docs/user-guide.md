@@ -1949,7 +1949,9 @@ Person marge = Instancio.of(simpsonsModel)
 !!! attention ""
     <lnum>1</lnum> The `Model` class itself does not expose any public methods, and its instances are effectively immutable.
 
-!!! info "Objects created from a model inherit all the model's properties, including {{Settings}}, {{Mode}} and seed value."
+!!! info "Objects created from a model inherit all the model's properties, including {{Settings}} and {{Mode}}."
+
+!!! attention "A seed specified using the {{withSeed}} method is **not** inherited from a model. The seed applies only to the builder chain on which {{withSeed}} was called."
 
 A model can also be used as a template for creating other models.
 Using the previous example, we can define a new model with additional data:

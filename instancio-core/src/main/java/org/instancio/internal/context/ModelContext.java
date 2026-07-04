@@ -99,7 +99,6 @@ public final class ModelContext {
     private final ModelContextSource contextSource;
     private final RootType rootType;
     private final @Nullable Integer maxDepth;
-    private final @Nullable Long seed;
     private final boolean verbose;
     private final Settings settings;
     private final Random random;
@@ -110,7 +109,6 @@ public final class ModelContext {
         contextSource = builder.getModelContextSource();
         rootType = new RootType(builder.rootType, contextSource.getWithTypeParametersList());
         maxDepth = builder.maxDepth;
-        seed = builder.seed;
         verbose = builder.verbose;
         settings = createLockedSettings(builder);
         random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
@@ -326,10 +324,12 @@ public final class ModelContext {
         return contextSource;
     }
 
+    /**
+     * The seed is not inherited by models and is deliberately not copied.
+     */
     public Builder toBuilder() {
         final Builder builder = new Builder(rootType.getType());
         builder.maxDepth = this.maxDepth;
-        builder.seed = this.seed;
         builder.settings = this.settings;
         builder.withTypeParametersList = new ArrayList<>(rootType.getTypeParameters());
         builder.withNullableSet = new LinkedHashSet<>(this.contextSource.getWithNullableSet());
@@ -614,6 +614,10 @@ public final class ModelContext {
             return this;
         }
 
+        public boolean hasUserSuppliedSeed() {
+            return seed != null;
+        }
+
         public Builder withContainerSize(final TargetSelector selector, final Size size) {
             containerSizeMap = CollectionUtils.newLinkedHashMapIfNull(containerSizeMap);
             return addSelector(containerSizeMap, selector, (InternalSize) size, ApiMethod.SIZE);
@@ -653,8 +657,10 @@ public final class ModelContext {
             return this;
         }
 
+        /**
+         * Seed is not copied, see {@link #toBuilder()}
+         */
         public Builder useModelAsTypeArgument(final ModelContext otherContext) {
-            seed = otherContext.seed;
             withTypeParametersList = Collections.singletonList(otherContext.getRootType().getType());
 
             final ModelContextSource src = otherContext.contextSource;

@@ -17,7 +17,6 @@ package org.instancio.test.features.setmodel;
 
 import org.instancio.Instancio;
 import org.instancio.Model;
-import org.instancio.Result;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.settings.Keys;
 import org.instancio.test.support.pojo.person.Person;
@@ -72,23 +71,5 @@ class SetModelPropertiesThatShouldNotBeCopedTest {
                 .create();
 
         assertThatObject(result).isFullyPopulated();
-    }
-
-    @Test
-    void seedShouldNotBeCopiedFromModel() {
-        // use negative seeds to because by default random seeds are positive
-        final long seed1 = -123;
-        final long seed2 = -456;
-
-        final Model<Phone> model = Instancio.of(Phone.class)
-                .withSeed(seed1)
-                .withSetting(Keys.SEED, seed2)
-                .toModel();
-
-        final Result<Person> result = Instancio.of(Person.class)
-                .setModel(all(Phone.class), model)
-                .asResult();
-
-        assertThat(result.getSeed()).isNotIn(seed1, seed2);
     }
 }

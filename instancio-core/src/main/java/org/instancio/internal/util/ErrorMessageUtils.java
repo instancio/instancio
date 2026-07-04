@@ -215,6 +215,25 @@ public final class ErrorMessageUtils {
                 """.formatted(selectorLocation);
     }
 
+    public static String seedNotSupportedWithToModel() {
+        return """
+                withSeed() cannot be used when creating a Model via toModel()
+
+                A seed specified via withSeed() applies only to the builder chain it is
+                called on. It is an execution-time parameter and is not part of a Model.
+
+                To resolve this error, choose one of the following:
+
+                 -> Remove the withSeed() call
+
+                 -> If the seed should be part of the Model, specify it via Settings instead:
+
+                    Model<Example> model = Instancio.of(Example.class)
+                        .withSetting(Keys.SEED, 123L)
+                        .toModel();\
+                """;
+    }
+
     public static String elementOfInnerSelectorOutsideElementSubtree(
             final Object selector,
             final Class<?> holderClass,

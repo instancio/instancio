@@ -692,6 +692,12 @@ public interface BaseApi<T extends @Nullable Object> {
      *     .create();
      * }</pre>
      *
+     * <p>The seed applies only to the builder chain on which this method is
+     * called. It is an execution-time parameter and is <b>not</b> part of a
+     * {@link Model}. Therefore, calling {@code toModel()} on a builder that
+     * has a seed set via this method results in an error. To include a seed
+     * in a model, specify it via {@code withSetting(Keys.SEED, ...)} instead.
+     *
      * @param seed for the random number generator
      * @return API builder reference
      * @since 4.0.0

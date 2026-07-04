@@ -172,6 +172,11 @@ public interface InstancioApi<T extends @Nullable Object> extends
      *     .create();
      * }</pre>
      *
+     * <p>A seed is not part of a model. Calling this method on a builder that
+     * has a seed set via {@link #withSeed(long)} results in an error, since
+     * that seed applies only to the builder chain on which it was called. To
+     * include a seed in a model, specify it via {@code withSetting(Keys.SEED, ...)}.
+     *
      * <p>For more information, see:
      *
      * <ul>
