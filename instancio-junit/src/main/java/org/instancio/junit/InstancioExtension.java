@@ -15,7 +15,6 @@
  */
 package org.instancio.junit;
 
-import org.instancio.Random;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.Sonar;
 import org.instancio.junit.internal.ElementAnnotations;
@@ -26,9 +25,9 @@ import org.instancio.junit.internal.ObjectCreator;
 import org.instancio.junit.internal.ReflectionUtils;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
+import org.instancio.support.InternalTestContext;
 import org.instancio.support.Log;
-import org.instancio.support.ThreadLocalRandom;
-import org.instancio.support.ThreadLocalSettings;
+import org.instancio.support.ThreadLocalTestContext;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -118,23 +117,19 @@ public class InstancioExtension implements
 
     private static final String ELEMENT_ANNOTATIONS = "elementAnnotations";
 
-    private final ThreadLocalRandom threadLocalRandom;
-    private final ThreadLocalSettings threadLocalSettings;
+    private final ThreadLocalTestContext threadLocalTestContext;
 
     /**
      * Default constructor; required for JUnit extensions.
      */
     @SuppressWarnings("unused")
     public InstancioExtension() {
-        threadLocalRandom = ThreadLocalRandom.getInstance();
-        threadLocalSettings = ThreadLocalSettings.getInstance();
+        threadLocalTestContext = ThreadLocalTestContext.getInstance();
     }
 
     // Constructor used by unit test only
-    InstancioExtension(final ThreadLocalRandom threadLocalRandom,
-                       final ThreadLocalSettings threadLocalSettings) {
-        this.threadLocalRandom = threadLocalRandom;
-        this.threadLocalSettings = threadLocalSettings;
+    InstancioExtension(final ThreadLocalTestContext threadLocalTestContext) {
+        this.threadLocalTestContext = threadLocalTestContext;
     }
 
     @Override
@@ -148,7 +143,7 @@ public class InstancioExtension implements
 
     @Override
     public void beforeEach(final ExtensionContext context) throws IllegalAccessException {
-        ExtensionSupport.processAnnotations(context, threadLocalRandom, threadLocalSettings);
+        ExtensionSupport.processAnnotations(context, threadLocalTestContext);
 
         for (Object testInstance : context.getRequiredTestInstances().getAllInstances()) {
             populateTestInstanceFields(testInstance, context);
@@ -176,8 +171,8 @@ public class InstancioExtension implements
             }
 
             final ElementAnnotations elementAnnotations = new ElementAnnotations(annotations);
-            final Random random = requireNonNull(threadLocalRandom.get());
-            final Object fieldValue = new ObjectCreator(threadLocalSettings.get(), random)
+            final InternalTestContext internalTestContext = requireNonNull(threadLocalTestContext.get());
+            final Object fieldValue = new ObjectCreator(internalTestContext.getSettings(), internalTestContext.getRandom())
                     .createObject(field, field.getGenericType(), elementAnnotations);
 
             ReflectionUtils.setAccessible(field).set(testInstance, fieldValue);
@@ -195,8 +190,7 @@ public class InstancioExtension implements
 
     @Override
     public void afterEach(final ExtensionContext context) {
-        threadLocalRandom.remove();
-        threadLocalSettings.remove();
+        threadLocalTestContext.remove();
         context.getStore(INSTANCIO_NAMESPACE).remove(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
 
         final InstancioSourceState instancioSourceState = context.getStore(INSTANCIO_NAMESPACE)
@@ -212,8 +206,7 @@ public class InstancioExtension implements
         if (context.getExecutionException().isPresent()) {
             final Method testMethod = context.getRequiredTestMethod();
 
-            // Should be safe to cast since we don't expect any other implementations of Random.
-            final DefaultRandom random = (DefaultRandom) requireNonNull(threadLocalRandom.get());
+            final DefaultRandom random = requireNonNull(threadLocalTestContext.get()).getRandom();
 
             final InstancioSourceState instancioSourceState = context.getStore(INSTANCIO_NAMESPACE)
                     .get(INSTANCIO_SOURCE_STATE, InstancioSourceState.class);
@@ -281,8 +274,8 @@ public class InstancioExtension implements
 
         final Type targetType = parameter.getParameterizedType();
 
-        final Random random = requireNonNull(threadLocalRandom.get());
-        return new ObjectCreator(threadLocalSettings.get(), random)
+        final InternalTestContext internalTestContext = requireNonNull(threadLocalTestContext.get());
+        return new ObjectCreator(internalTestContext.getSettings(), internalTestContext.getRandom())
                 .createObject(parameter, targetType, requireNonNull(elementAnnotations));
     }
 

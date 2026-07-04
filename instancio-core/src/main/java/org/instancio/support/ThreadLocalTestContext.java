@@ -15,35 +15,34 @@
  */
 package org.instancio.support;
 
-import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
 import org.jspecify.annotations.Nullable;
 
 @InternalApi
-public final class ThreadLocalRandom {
+public final class ThreadLocalTestContext {
 
-    private static final ThreadLocalRandom INSTANCE = new ThreadLocalRandom();
+    private static final ThreadLocalTestContext INSTANCE = new ThreadLocalTestContext();
 
-    private static final ThreadLocal<@Nullable Random> RANDOM = new InheritableThreadLocal<>();
+    private static final ThreadLocal<@Nullable InternalTestContext> CONTEXT = new InheritableThreadLocal<>();
 
-    private ThreadLocalRandom() {
+    private ThreadLocalTestContext() {
         // non-instantiable
     }
 
     @Nullable
-    public Random get() {
-        return RANDOM.get();
+    public InternalTestContext get() {
+        return CONTEXT.get();
     }
 
     public void remove() {
-        RANDOM.remove();
+        CONTEXT.remove();
     }
 
-    public void set(final Random provider) {
-        RANDOM.set(provider);
+    public void set(final InternalTestContext internalTestContext) {
+        CONTEXT.set(internalTestContext);
     }
 
-    public static ThreadLocalRandom getInstance() {
+    public static ThreadLocalTestContext getInstance() {
         return INSTANCE;
     }
 }

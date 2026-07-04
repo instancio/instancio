@@ -22,9 +22,10 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.Global;
+import org.instancio.support.InternalTestContext;
 import org.instancio.support.Seeds;
-import org.instancio.support.ThreadLocalRandom;
-import org.instancio.support.ThreadLocalSettings;
+import org.instancio.support.ThreadLocalTestContext;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.lang.reflect.Field;
@@ -36,22 +37,16 @@ public final class ExtensionSupport {
 
     public static void processAnnotations(
             final ExtensionContext context,
-            final ThreadLocalRandom threadLocalRandom,
-            final ThreadLocalSettings threadLocalSettings) {
+            final ThreadLocalTestContext threadLocalTestContext) {
 
-        try {
-            processWithSettingsAnnotation(context, threadLocalSettings);
-            processSeedAnnotation(context, threadLocalRandom);
-        } catch (Exception ex) {
-            threadLocalRandom.remove();
-            threadLocalSettings.remove();
-            throw ex;
-        }
+        final Settings settings = processWithSettingsAnnotation(context);
+        final DefaultRandom random = processSeedAnnotation(context, settings);
+        threadLocalTestContext.set(new InternalTestContext(random, settings));
     }
 
-    private static void processSeedAnnotation(
+    private static DefaultRandom processSeedAnnotation(
             final ExtensionContext context,
-            final ThreadLocalRandom threadLocalRandom) {
+            @Nullable final Settings settings) {
 
         final Seed seedAnnotation = context.getTestMethod()
                 .map(m -> m.getAnnotation(Seed.class))
@@ -59,12 +54,11 @@ public final class ExtensionSupport {
 
         final long seed;
         final Seeds.Source source;
-        final Settings tlSettings = ThreadLocalSettings.getInstance().get();
-        final Long tlSeed = tlSettings == null ? null : tlSettings.get(Keys.SEED);
+        final Long settingsSeed = settings == null ? null : settings.get(Keys.SEED);
         final Random configuredRandom = Global.getConfiguredRandom();
 
-        if (tlSeed != null) {
-            seed = tlSeed;
+        if (settingsSeed != null) {
+            seed = settingsSeed;
             source = Seeds.Source.WITH_SETTINGS_ANNOTATION;
         } else if (seedAnnotation != null) {
             seed = seedAnnotation.value();
@@ -79,21 +73,20 @@ public final class ExtensionSupport {
 
         // each test method gets a new instance of random to avoid
         // the state of the random leaking across tests
-        threadLocalRandom.set(new DefaultRandom(seed, source));
+        return new DefaultRandom(seed, source);
     }
 
+    @Nullable
     @SuppressWarnings("java:S3011")
-    private static void processWithSettingsAnnotation(
-            final ExtensionContext context,
-            final ThreadLocalSettings threadLocalSettings) {
+    private static Settings processWithSettingsAnnotation(final ExtensionContext context) {
         final List<Class<?>> testClasses = new ArrayList<>(context.getEnclosingTestClasses());
         context.getTestClass().ifPresent(testClasses::add);
 
-        testClasses.stream()
+        return testClasses.stream()
                 .map(t -> findSettings(t, context))
                 .flatMap(Optional::stream)
                 .reduce(Settings::merge)
-                .ifPresentOrElse(threadLocalSettings::set, threadLocalSettings::remove);
+                .orElse(null);
     }
 
     private static Optional<Settings> findSettings(Class<?> testClass, ExtensionContext context) {

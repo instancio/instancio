@@ -16,8 +16,9 @@
 package org.instancio.junit.internal;
 
 import org.instancio.settings.Settings;
-import org.instancio.support.ThreadLocalRandom;
-import org.instancio.support.ThreadLocalSettings;
+import org.instancio.support.DefaultRandom;
+import org.instancio.support.InternalTestContext;
+import org.instancio.support.ThreadLocalTestContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 
@@ -38,22 +40,19 @@ class ExtensionSupportTest {
 
     @AfterEach
     void cleanup() {
-        ThreadLocalRandom.getInstance().remove();
-        ThreadLocalSettings.getInstance().remove();
+        ThreadLocalTestContext.getInstance().remove();
     }
 
     @Test
     void processAnnotations_shouldClearThreadLocalSettings_whenNoWithSettingsAnnotationPresent() {
-        ThreadLocalSettings.getInstance().set(Settings.create());
+        ThreadLocalTestContext.getInstance().set(
+                new InternalTestContext(new DefaultRandom(), Settings.create()));
 
         doReturn(Optional.of(NoSettingsTest.class)).when(context).getTestClass();
 
-        ExtensionSupport.processAnnotations(
-                context,
-                ThreadLocalRandom.getInstance(),
-                ThreadLocalSettings.getInstance());
+        ExtensionSupport.processAnnotations(context, ThreadLocalTestContext.getInstance());
 
-        assertThat(ThreadLocalSettings.getInstance().get()).isNull();
+        assertThat(requireNonNull(ThreadLocalTestContext.getInstance().get()).getSettings()).isNull();
     }
 
     /**

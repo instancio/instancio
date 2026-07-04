@@ -17,7 +17,7 @@ package org.instancio.junit;
 
 import org.instancio.Random;
 import org.instancio.internal.util.Sonar;
-import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalTestContext;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.RepeatedTest;
@@ -75,7 +75,7 @@ class EachMethodShouldGenerateItsOwnSeedTest {
     }
 
     private static long getThreadLocalSeed() {
-        final Random random = Objects.requireNonNull(ThreadLocalRandom.getInstance().get());
+        final Random random = Objects.requireNonNull(ThreadLocalTestContext.getInstance().get()).getRandom();
         return random.getSeed();
     }
 }

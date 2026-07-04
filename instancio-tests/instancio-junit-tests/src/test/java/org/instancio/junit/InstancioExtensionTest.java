@@ -16,16 +16,15 @@
 package org.instancio.junit;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.instancio.Random;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.internal.ElementAnnotations;
 import org.instancio.junit.internal.FieldAnnotationMap;
 import org.instancio.junit.internal.InstancioSourceState;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
+import org.instancio.support.InternalTestContext;
 import org.instancio.support.Seeds;
-import org.instancio.support.ThreadLocalRandom;
-import org.instancio.support.ThreadLocalSettings;
+import org.instancio.support.ThreadLocalTestContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,10 +62,7 @@ class InstancioExtensionTest {
     private static final Settings SETTINGS = Settings.defaults();
 
     @Mock
-    private ThreadLocalRandom threadLocalRandom;
-
-    @Mock
-    private ThreadLocalSettings threadLocalSettings;
+    private ThreadLocalTestContext threadLocalTestContext;
 
     @Mock
     private ExtensionContext context;
@@ -75,16 +71,13 @@ class InstancioExtensionTest {
     private TestInstances testInstances;
 
     @Captor
-    private ArgumentCaptor<Random> randomCaptor;
-
-    @Captor
-    private ArgumentCaptor<Settings> settingsCaptor;
+    private ArgumentCaptor<InternalTestContext> testContextCaptor;
 
     private InstancioExtension extension;
 
     @BeforeEach
     void setUp() {
-        extension = new InstancioExtension(threadLocalRandom, threadLocalSettings);
+        extension = new InstancioExtension(threadLocalTestContext);
     }
 
     @Test
@@ -116,8 +109,8 @@ class InstancioExtensionTest {
         // Method under test
         extension.beforeEach(context);
 
-        verify(threadLocalRandom).set(randomCaptor.capture());
-        final DefaultRandom random = (DefaultRandom) randomCaptor.getValue();
+        verify(threadLocalTestContext).set(testContextCaptor.capture());
+        final DefaultRandom random = testContextCaptor.getValue().getRandom();
         assertThat(random.getSeed()).isEqualTo(SEED_ANNOTATION_VALUE);
         assertThat(random.getSource()).isEqualTo(Seeds.Source.SEED_ANNOTATION);
     }
@@ -140,8 +133,8 @@ class InstancioExtensionTest {
         // Method under test
         extension.beforeEach(context);
 
-        verify(threadLocalSettings).set(settingsCaptor.capture());
-        assertThat(settingsCaptor.getValue()).isSameAs(SETTINGS);
+        verify(threadLocalTestContext).set(testContextCaptor.capture());
+        assertThat(testContextCaptor.getValue().getSettings()).isSameAs(SETTINGS);
     }
 
     @Test
@@ -151,13 +144,13 @@ class InstancioExtensionTest {
 
         final String expectedMsg = """
                 Error running test
-
+                
                 Cause:
                  -> Found more than one field annotated '@WithSettings'
-
+                
                     (1) private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings1
                     (2) private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings2
-
+                
                 Only one annotated Settings field is expected
                 """;
 
@@ -175,10 +168,10 @@ class InstancioExtensionTest {
 
         final String expectedMsg = """
                 Error running test
-
+                
                 Cause:
                  -> @WithSettings must be annotated on a Settings field.
-
+                
                 Found annotation on:
                  -> private final java.lang.String org.instancio.junit.InstancioExtensionTest$DummyWithSettingsOnWrongFieldTypeTest.settings
                 """;
@@ -197,10 +190,10 @@ class InstancioExtensionTest {
 
         final String expectedMsg = """
                 Error running test
-
+                
                 Cause:
                  -> @WithSettings must be annotated on a non-null field.
-
+                
                 """;
 
         assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
@@ -218,7 +211,7 @@ class InstancioExtensionTest {
 
         final String expectedMsg = """
                 Error running test
-
+                
                 Possible causes:
                  -> @WithSettings must be annotated on a non-null field.
                  -> If @WithSettings is used in a test class that contains a @ParameterizedTest,
@@ -243,8 +236,7 @@ class InstancioExtensionTest {
         doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
 
         extension.afterEach(context);
-        verify(threadLocalRandom).remove();
-        verify(threadLocalSettings).remove();
+        verify(threadLocalTestContext).remove();
         verify(store).remove("elementAnnotations", ElementAnnotations.class);
     }
 
@@ -258,7 +250,8 @@ class InstancioExtensionTest {
         doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
         when(context.getRequiredTestMethod()).thenReturn(method);
-        when(threadLocalRandom.get()).thenReturn(new DefaultRandom(seedFromRandom, Seeds.Source.SEED_ANNOTATION));
+        when(threadLocalTestContext.get()).thenReturn(new InternalTestContext(
+                new DefaultRandom(seedFromRandom, Seeds.Source.SEED_ANNOTATION), null));
 
         // Method under test
         extension.afterTestExecution(context);
@@ -281,7 +274,8 @@ class InstancioExtensionTest {
 
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
         when(context.getRequiredTestMethod()).thenReturn(method);
-        when(threadLocalRandom.get()).thenReturn(new DefaultRandom(seedFromRandom, Seeds.Source.SEED_ANNOTATION));
+        when(threadLocalTestContext.get()).thenReturn(new InternalTestContext(
+                new DefaultRandom(seedFromRandom, Seeds.Source.SEED_ANNOTATION), null));
 
         // Method under test
         extension.afterTestExecution(context);
@@ -299,8 +293,7 @@ class InstancioExtensionTest {
         extension.afterTestExecution(context);
 
         verifyNoMoreInteractions(context);
-        verifyNoInteractions(threadLocalRandom);
-        verifyNoInteractions(threadLocalSettings);
+        verifyNoInteractions(threadLocalTestContext);
     }
 
     @SuppressWarnings("unused")

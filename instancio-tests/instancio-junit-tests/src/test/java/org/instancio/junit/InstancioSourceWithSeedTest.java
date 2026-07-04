@@ -19,7 +19,7 @@ import org.instancio.Instancio;
 import org.instancio.Random;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
-import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.ThreadLocalTestContext;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.tags.NonDeterministicTag;
 import org.junit.jupiter.api.DisplayName;
@@ -76,7 +76,7 @@ class InstancioSourceWithSeedTest {
     }
 
     private static long getThreadLocalSeed() {
-        final Random random = requireNonNull(ThreadLocalRandom.getInstance().get());
+        final Random random = requireNonNull(ThreadLocalTestContext.getInstance().get()).getRandom();
         return random.getSeed();
     }
 }

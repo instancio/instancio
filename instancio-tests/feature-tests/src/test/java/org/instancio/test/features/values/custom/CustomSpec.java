@@ -19,10 +19,10 @@ import org.instancio.Random;
 import org.instancio.generator.ValueSpec;
 import org.instancio.internal.generator.AbstractGenerator;
 import org.instancio.internal.generator.InternalGeneratorContext;
-import org.instancio.internal.util.ObjectUtils;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
-import org.instancio.support.ThreadLocalRandom;
+import org.instancio.support.InternalTestContext;
+import org.instancio.support.ThreadLocalTestContext;
 import org.jspecify.annotations.Nullable;
 
 class CustomSpec extends AbstractGenerator<String> implements ValueSpec<String> {
@@ -33,12 +33,14 @@ class CustomSpec extends AbstractGenerator<String> implements ValueSpec<String> 
     private int length;
 
     CustomSpec() {
-        super(new InternalGeneratorContext(Settings.defaults(),
-                ObjectUtils.defaultIfNull(
-                        ThreadLocalRandom.getInstance().get(),
-                        DefaultRandom::new)));
+        super(new InternalGeneratorContext(Settings.defaults(), resolveRandom()));
 
         length = getContext().random().intRange(DEFAULT_MIN_LENGTH, DEFAULT_MAX_LENGTH);
+    }
+
+    private static Random resolveRandom() {
+        final InternalTestContext internalTestContext = ThreadLocalTestContext.getInstance().get();
+        return internalTestContext == null ? new DefaultRandom() : internalTestContext.getRandom();
     }
 
     @Nullable
