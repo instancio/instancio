@@ -17,10 +17,12 @@ package org.instancio.test.kotlin
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.instancio.GetMethodSelector
 import org.instancio.Instancio
 import org.instancio.Select
 import org.instancio.Select.all
 import org.instancio.Select.allStrings
+import org.instancio.Select.field
 import org.instancio.Select.root
 import org.instancio.Select.types
 import org.instancio.exception.InstancioApiException
@@ -88,6 +90,23 @@ internal class KSelectorsTest {
             .create();
 
         assertThat(result.number).isEqualTo("foo");
+    }
+
+    /**
+     * Coverage for the `startsWith("(L")` guard in `KotlinSupport`.
+     * Here the receiver is `IntArray`, so the value is `([I)Ljava/lang/Integer;`.
+     */
+    @Test
+    fun methodReferenceWithArrayReceiver() {
+        val getMethodSelector: GetMethodSelector<IntArray, Int> = GetMethodSelector { it.size }
+        val selector = field(getMethodSelector)
+
+        val api = Instancio.of(Phone::class.java)
+
+        assertThatThrownBy {
+            api.set(selector, 0)
+        }.isExactlyInstanceOf(InstancioApiException::class.java)
+            .hasMessageContaining("Unable to resolve the field from method reference")
     }
 
     @Test

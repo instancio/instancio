@@ -21,9 +21,12 @@ import org.instancio.GetMethodSelector;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
+import org.instancio.internal.util.StringUtils;
 import org.jspecify.annotations.Nullable;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandleInfo;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -51,13 +54,15 @@ final class MethodRef {
             final Method replaceMethod = methodRefClass.getDeclaredMethod("writeReplace");
             ReflectionUtils.setAccessible(replaceMethod);
             final SerializedLambda lambda = (SerializedLambda) replaceMethod.invoke(methodRef);
-            final String className = lambda.getImplClass().replace('/', '.');
             final ClassLoader classLoader = ObjectUtils.defaultIfNull(
                     methodRefClass.getClassLoader(), MethodRef.class.getClassLoader());
 
-            final Class<?> targetClass = Class.forName(className, true, classLoader);
-            final String implMethodName = lambda.getImplMethodName();
-            return new MethodRef(targetClass, implMethodName);
+            final Class<?> implClass = loadClass(lambda.getImplClass(), classLoader);
+
+            final MethodRef kotlinMethodRef = KotlinSupport.fromSyntheticAdapter(lambda, implClass, classLoader);
+            return kotlinMethodRef != null
+                    ? kotlinMethodRef
+                    : new MethodRef(implClass, lambda.getImplMethodName());
 
         } catch (NoSuchMethodException
                  | IllegalAccessException
@@ -66,6 +71,11 @@ final class MethodRef {
 
             throw Fail.withUsageError("unable to resolve method name from selector", ex);
         }
+    }
+
+    private static Class<?> loadClass(final String internalClassName, final ClassLoader classLoader)
+            throws ClassNotFoundException {
+        return Class.forName(internalClassName.replace('/', '.'), true, classLoader);
     }
 
     static String describeGetter(final GetMethodSelector<?, ?> getter) {
@@ -81,8 +91,70 @@ final class MethodRef {
         return methodName;
     }
 
+    /**
+     * Starting with Kotlin 2.4, a method reference SAM-converted to a serializable
+     * functional interface (such as {@link GetMethodSelector}) is compiled to a
+     * synthetic static adapter in the enclosing class, and the {@link SerializedLambda}
+     * points to that adapter instead of the referenced method. The adapter is named
+     * {@code <enclosingFunction>$<referencedMethod>}; for example, {@code Phone::getNumber}
+     * used inside a function {@code foo()} yields {@code "foo$getNumber"}.
+     *
+     * <p>The method name is therefore the segment after the last {@code '$'} (the prefix
+     * is the enclosing scope, which may itself contain {@code '$'}); the target class is
+     * recovered from the lambda's instantiated method type, whose sole parameter is the
+     * receiver.
+     */
+    private static final class KotlinSupport {
+
+        @Nullable
+        @SuppressWarnings("unchecked")
+        private static final Class<? extends Annotation> KOTLIN_METADATA =
+                (Class<? extends Annotation>) ReflectionUtils.loadClass("kotlin.Metadata");
+
+        @Nullable
+        static MethodRef fromSyntheticAdapter(
+                final SerializedLambda lambda,
+                final Class<?> implClass,
+                final ClassLoader classLoader) throws ClassNotFoundException {
+
+            if (KOTLIN_METADATA == null
+                    || lambda.getImplMethodKind() != MethodHandleInfo.REF_invokeStatic
+                    || !implClass.isAnnotationPresent(KOTLIN_METADATA)) {
+                return null;
+            }
+
+            final String methodName = StringUtils.getSubstringAfterLastChar(
+                    lambda.getImplMethodName(), '$');
+
+            if (methodName == null) {
+                return null;
+            }
+            final Class<?> targetClass = resolveTargetClass(lambda.getInstantiatedMethodType(), classLoader);
+            return targetClass == null ? null : new MethodRef(targetClass, methodName);
+        }
+
+        /**
+         * Extracts the target class from the instantiated method type,
+         * e.g. {@code "(Lorg/example/Phone;)Ljava/lang/String;"}.
+         */
+        @Nullable
+        private static Class<?> resolveTargetClass(
+                final String instantiatedMethodType,
+                final ClassLoader classLoader) throws ClassNotFoundException {
+
+            if (!instantiatedMethodType.startsWith("(L")) {
+                return null;
+            }
+            // A descriptor that starts with "(L" always contains the terminating ';'
+            // of the receiver type, so indexOf(';') is guaranteed to be >= 2.
+            final int endIdx = instantiatedMethodType.indexOf(';');
+            return loadClass(instantiatedMethodType.substring(2, endIdx), classLoader);
+        }
+    }
+
     private static final class GroovySupport {
-        private static final boolean IS_GROOVY_PRESENT = ReflectionUtils.loadClass("groovy.lang.Closure") != null;
+        private static final boolean IS_GROOVY_PRESENT =
+                ReflectionUtils.loadClass("groovy.lang.Closure") != null;
 
         static boolean isGroovyPresent() {
             return IS_GROOVY_PRESENT;

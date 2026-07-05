@@ -101,6 +101,20 @@ class StringUtilsTest {
     }
 
     @Test
+    void getSubstringAfterLastChar() {
+        assertThat(StringUtils.getSubstringAfterLastChar(null, '$')).isNull();
+        assertThat(StringUtils.getSubstringAfterLastChar("Foo$", '$')).isNull();
+        assertThat(StringUtils.getSubstringAfterLastChar("Foo#bar", '$')).isNull();
+        assertThat(StringUtils.getSubstringAfterLastChar("$", '$')).isNull();
+        assertThat(StringUtils.getSubstringAfterLastChar("", '$')).isNull();
+
+        assertThat(StringUtils.getSubstringAfterLastChar("Foo$bar$baz", '$')).isEqualTo("baz");
+        assertThat(StringUtils.getSubstringAfterLastChar("Foo$bar", '$')).isEqualTo("bar");
+        assertThat(StringUtils.getSubstringAfterLastChar("Foo$b", '$')).isEqualTo("b");
+        assertThat(StringUtils.getSubstringAfterLastChar("$b", '$')).isEqualTo("b");
+    }
+
+    @Test
     @SuppressWarnings("ConstantConditions")
     void startsWithAny() {
         assertThat(StringUtils.startsWithAny(null)).isFalse();
