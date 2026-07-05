@@ -114,6 +114,15 @@ public final class StringUtils {
         return value.toString();
     }
 
+    @Nullable
+    public static String getSubstringAfterLastChar(@Nullable final String s, final char ch) {
+        if (s == null) {
+            return null;
+        }
+        final int idx = s.lastIndexOf(ch);
+        return idx >= 0 && idx < s.length() - 1 ? s.substring(idx + 1) : null;
+    }
+
     /**
      * Extracts properties keys from a string template, e.g. given
      * the string {@code "${foo} and ${bar}"} returns {@code ["foo", "bar"]}.

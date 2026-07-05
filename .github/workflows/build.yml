@@ -4,7 +4,7 @@ on:
     branches:
       - main
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [ opened, synchronize, reopened, ready_for_review ]
 env:
   MAVEN_ARGS: "-B -ntp"
 jobs:
@@ -26,3 +26,36 @@ jobs:
 
       - name: 'Prepare Sonar analysis'
         uses: evaristegalois11/sonar-fork-analysis@9d67a15f17407c3bf39bb09c39a9d5d3794eeecd # v1.3.0
+
+  kotlin-compatibility:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    strategy:
+      fail-fast: false
+      matrix:
+        kotlin-version: [ '2.3.21', '2.4.0' ]
+    env:
+      KOTLIN_TEST_MODULES: >-
+        instancio-tests/kotlin-tests/kotlin-test-support,
+        instancio-tests/kotlin-tests/java-interop-kotlin-tests,
+        instancio-tests/kotlin-tests/instancio-kotlin-api-tests,
+        instancio-tests/jpms-tests/jpms-kotlin-tests
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: 'Set up JDK'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 26
+          cache: maven
+
+      - name: 'Install dependencies'
+        run: >-
+          mvn install -DskipTests -Dversion.kotlin=${{ matrix.kotlin-version }}
+          -pl "$KOTLIN_TEST_MODULES" -am
+
+      - name: 'Run Kotlin tests'
+        run: >-
+          mvn verify -Dversion.kotlin=${{ matrix.kotlin-version }}
+          -pl "$KOTLIN_TEST_MODULES"
