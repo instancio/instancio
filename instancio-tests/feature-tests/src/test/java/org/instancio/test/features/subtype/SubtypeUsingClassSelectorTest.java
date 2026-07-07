@@ -20,6 +20,7 @@ import org.instancio.InstancioApi;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.arrays.ArrayCharSequence;
+import org.instancio.test.support.pojo.basic.SupportedNumericTypes;
 import org.instancio.test.support.pojo.collections.lists.ListInteger;
 import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.AddressExtension;
@@ -54,6 +55,16 @@ class SubtypeUsingClassSelectorTest {
         assertThat(result.getList()).isExactlyInstanceOf(ArrayList.class)
                 .isNotEmpty()
                 .doesNotContainNull();
+    }
+
+    @Test
+    @DisplayName("Subtype mapping of a primitive type is ignored")
+    void subtypeMappingOfPrimitiveTypeIsIgnored() {
+        final SupportedNumericTypes result = Instancio.of(SupportedNumericTypes.class)
+                .subtype(all(int.class), Integer.class)
+                .create();
+
+        assertThat(result.getPrimitiveInt()).isNotZero();
     }
 
     @Test
