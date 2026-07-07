@@ -58,6 +58,19 @@ class GeneratorMismatchTest {
     }
 
     @Test
+    @DisplayName("Generator with a target class hint (enum) applied to a primitive type")
+    void enumOfAppliedToPrimitiveType() {
+        final InstancioApi<SupportedNumericTypes> api = Instancio.of(SupportedNumericTypes.class)
+                .generate(all(int.class), gen -> gen.enumOf(Gender.class));
+
+        assertThatThrownBy(api::create)
+                .isInstanceOf(InstancioApiException.class)
+                .hasMessageContainingAll(
+                        "Reason: the target type is incompatible with the generator",
+                        " -> Method 'enumOf()' cannot be used for type: int");
+    }
+
+    @Test
     void assertCollectionTypes() {
         assertMessageContains("collection()", Generators::collection);
         assertMessageContains("map()", Generators::map);

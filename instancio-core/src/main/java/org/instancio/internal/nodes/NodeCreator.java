@@ -216,7 +216,8 @@ class NodeCreator {
         }
 
         if (rawType != targetClass
-            && (!subtypeResult.isValidationEnabled() || (!targetClass.isEnum() && !rawType.isPrimitive()))) {
+                && (!subtypeResult.isValidationEnabled()
+                || (!rawType.isPrimitive() && (!targetClass.isEnum() || rawType.isAssignableFrom(targetClass))))) {
 
             if (subtypeResult.isValidationEnabled()) {
                 ApiValidator.validateSubtype(rawType, targetClass);
