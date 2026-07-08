@@ -18,7 +18,6 @@ package org.instancio.junit.given;
 import org.instancio.junit.Given;
 import org.instancio.junit.GivenProvider;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.InstancioSource;
 import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
@@ -26,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.params.ParameterizedTest;
 
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -51,12 +49,6 @@ class GivenSupplierTest {
         void param(@Given final Supplier<String> param) {
             assertThat(param.get()).is(RANDOM_STRING);
         }
-
-        @InstancioSource(samples = 5)
-        @ParameterizedTest
-        void paramWithInstancioSource(@Given final Supplier<String> param) {
-            assertThat(param.get()).is(RANDOM_STRING);
-        }
     }
 
     @Nested
@@ -78,13 +70,6 @@ class GivenSupplierTest {
 
         @RepeatedTest(Constants.SAMPLE_SIZE_D)
         void param(@Given(CustomProvider.class) final Supplier<String> param) {
-            assertThat(Stream.generate(param).limit(Constants.SAMPLE_SIZE_DD))
-                    .containsOnly("foo", "bar");
-        }
-
-        @InstancioSource(samples = 5)
-        @ParameterizedTest
-        void paramWithInstancioSource(@Given(CustomProvider.class) final Supplier<String> param) {
             assertThat(Stream.generate(param).limit(Constants.SAMPLE_SIZE_DD))
                     .containsOnly("foo", "bar");
         }

@@ -296,17 +296,6 @@ public final class Keys {
             "ignore.field.name.regexes", String.class, "");
 
     /**
-     * Specifies the number of samples for the {@code @InstancioSource}
-     * annotation from the {@code instancio-junit} module;
-     * default is 100; property name {@code instancio.source.samples}.
-     *
-     * @since 5.0.0
-     */
-    @ExperimentalApi
-    public static final SettingKey<Integer> INSTANCIO_SOURCE_SAMPLES = registerRequiredNonAdjustable(
-            "instancio.source.samples", Integer.class, 100);
-
-    /**
      * Specifies minimum value for integers;
      * default is 1; property name {@code integer.min}.
      */

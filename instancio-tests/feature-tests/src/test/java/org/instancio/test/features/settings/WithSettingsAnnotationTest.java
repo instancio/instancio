@@ -16,8 +16,8 @@
 package org.instancio.test.features.settings;
 
 import org.instancio.Instancio;
+import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.InstancioSource;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -60,9 +59,8 @@ class WithSettingsAnnotationTest {
         assertThat(Instancio.create(int.class)).isEqualTo(-1);
     }
 
-    @InstancioSource(samples = 5)
-    @ParameterizedTest
-    void withSettingsWithParameterizedTest(int value) {
+    @Test
+    void withSettingsWithGivenParameter(@Given final int value) {
         assertThat(value).isEqualTo(-1);
     }
 

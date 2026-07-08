@@ -20,7 +20,6 @@ import org.instancio.settings.Settings;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,16 +88,15 @@ class InstancioExtensionWithNestedSettingsTest {
     }
 
     @Nested
-    class InstancioSourceNestedTestClass {
+    class StaticSettingsNestedTestClass {
 
         @WithSettings
         private static final Settings settings = Settings.create()
                 .set(Keys.STRING_MIN_LENGTH, 15)
                 .set(Keys.STRING_MAX_LENGTH, 15);
 
-        @ParameterizedTest
-        @InstancioSource
-        void givenParamShouldUseSettingsField(final int intParam, final String stringParam) {
+        @Test
+        void givenParamShouldUseSettingsField(@Given final int intParam, @Given final String stringParam) {
             assertThat(intParam).isEqualTo(-1);
             assertThat(stringParam).hasSize(15);
         }

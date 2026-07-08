@@ -22,12 +22,10 @@ import org.instancio.generator.specs.CollectionGeneratorSpec;
 import org.instancio.junit.Given;
 import org.instancio.junit.GivenProvider;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Keys;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -56,12 +54,6 @@ class GivenWithProviderTest {
 
     @Test
     void verifyParameter(@CollectionSize(10) final List<String> listWithSize) {
-        assertThat(listWithSize).hasSize(10);
-    }
-
-    @InstancioSource(samples = 5)
-    @ParameterizedTest
-    void verifyParameterizedTest(@CollectionSize(10) final List<String> listWithSize) {
         assertThat(listWithSize).hasSize(10);
     }
 

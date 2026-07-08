@@ -20,7 +20,6 @@ import org.instancio.support.DefaultRandom;
 import org.instancio.support.Seeds;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
@@ -60,13 +59,6 @@ class GivenProviderTest {
     @Seed(SEED)
     @Test
     void paramFactory(@Given(ParameterValueProvider.class) List<String> param) {
-        assertThat(param).containsOnly(PARAM_VALUE);
-    }
-
-    @Seed(SEED)
-    @InstancioSource(samples = 5)
-    @ParameterizedTest
-    void instancioSource(@Given(ParameterValueProvider.class) List<String> param) {
         assertThat(param).containsOnly(PARAM_VALUE);
     }
 

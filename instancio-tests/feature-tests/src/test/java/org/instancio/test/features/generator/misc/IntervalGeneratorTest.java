@@ -20,13 +20,12 @@ import org.instancio.IntervalSupplier;
 import org.instancio.junit.Given;
 import org.instancio.junit.GivenProvider;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.InstancioSource;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,8 +40,7 @@ class IntervalGeneratorTest {
         }
     }
 
-    @InstancioSource
-    @ParameterizedTest
+    @RepeatedTest(Constants.SAMPLE_SIZE_D)
     void dateIntervals_callingStartFirst(
             @Given(BetweenZeroAnd10.class) final int startingValue,
             @Given(BetweenZeroAnd10.class) final int intervalLength,
@@ -64,8 +62,7 @@ class IntervalGeneratorTest {
         }
     }
 
-    @InstancioSource
-    @ParameterizedTest
+    @RepeatedTest(Constants.SAMPLE_SIZE_D)
     void dateIntervals_callingEndFirst(
             @Given(BetweenZeroAnd10.class) final int startingValue,
             @Given(BetweenZeroAnd10.class) final int intervalLength,

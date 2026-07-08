@@ -20,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 public final class Constants {
 
     public static final ExtensionContext.Namespace INSTANCIO_NAMESPACE = ExtensionContext.Namespace.create("org.instancio");
-    public static final String INSTANCIO_SOURCE_STATE = "instancio.source.state";
 
     private Constants() {
         // non-instantiable
