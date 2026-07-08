@@ -21,7 +21,6 @@ import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
-import org.instancio.internal.util.Verify;
 import org.instancio.settings.Keys;
 import org.instancio.support.Log;
 
@@ -30,7 +29,6 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -164,12 +162,7 @@ public final class NodeFactory {
 
     private List<InternalNode> createChildrenOfGenericArrayNode(final InternalNode node) {
         final GenericArrayType type = (GenericArrayType) node.getType();
-        Type gcType = type.getGenericComponentType();
-        if (gcType instanceof TypeVariable) {
-            gcType = typeHelper.resolveTypeVariable((TypeVariable<?>) gcType, node);
-        }
-
-        Verify.notNull(gcType, "generic component type is null");
+        final Type gcType = typeHelper.resolveGenericComponentType(type, node);
         return createContainerNodeChildren(node, gcType);
     }
 

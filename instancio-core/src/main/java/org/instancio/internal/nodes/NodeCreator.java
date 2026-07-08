@@ -268,12 +268,7 @@ class NodeCreator {
             @Nullable final Method setter,
             @Nullable final InternalNode parent) {
 
-        Type gcType = type.getGenericComponentType();
-        if (gcType instanceof TypeVariable) {
-            gcType = typeHelper.resolveTypeVariable((TypeVariable<?>) gcType, parent);
-        }
-
-        Verify.notNull(gcType, "generic component type is null");
+        final Type gcType = typeHelper.resolveGenericComponentType(type, parent);
         return createArrayNodeWithSubtypeMapping(type, gcType, member, setter, parent);
     }
 

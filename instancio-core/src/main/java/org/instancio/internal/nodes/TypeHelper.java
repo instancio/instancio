@@ -17,10 +17,12 @@ package org.instancio.internal.nodes;
 
 import org.instancio.internal.RootType;
 import org.instancio.internal.util.TypeUtils;
+import org.instancio.internal.util.Verify;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -48,7 +50,7 @@ class TypeHelper {
         Type mappedType = parent == null ? typeVar : parent.getTypeMap().getOrDefault(typeVar, typeVar);
         InternalNode ancestor = parent;
 
-        while ((mappedType == null || mappedType instanceof TypeVariable) && ancestor != null) {
+        while (mappedType instanceof TypeVariable && ancestor != null) {
             Type rootTypeMapping = rootType.getTypeMapping(mappedType);
             if (rootTypeMapping != null) {
                 return rootTypeMapping;
@@ -65,6 +67,18 @@ class TypeHelper {
         return mappedType == typeVar ? null : mappedType; // NOPMD
     }
 
+    Type resolveGenericComponentType(
+            final GenericArrayType type,
+            @Nullable final InternalNode contextNode) {
+
+        Type gcType = type.getGenericComponentType();
+        if (gcType instanceof TypeVariable) {
+            gcType = resolveTypeVariable((TypeVariable<?>) gcType, contextNode);
+        }
+        return Verify.notNull(gcType, "generic component type is null");
+
+    }
+
     Map<Type, Type> createSuperclassTypeMap(final Class<?> targetClass) {
         Map<Type, Type> resultTypeMap = new HashMap<>();
 
@@ -79,7 +93,7 @@ class TypeHelper {
     }
 
     private void traverseHierarchy(Class<?> clazz, Map<Type, Type> resultTypeMap) {
-        if (clazz == null || Object.class.equals(clazz)) {
+        if (clazz == Object.class) {
             return;
         }
 
