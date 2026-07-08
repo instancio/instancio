@@ -24,7 +24,6 @@ float.max=10000
 float.min=1
 float.nullable=false
 ignore.field.name.regexes=foo.*,bar.*
-instancio.source.samples=100
 integer.max=10000
 integer.min=1
 integer.nullable=false

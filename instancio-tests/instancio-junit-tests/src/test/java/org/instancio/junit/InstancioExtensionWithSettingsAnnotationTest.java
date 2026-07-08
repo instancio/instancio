@@ -16,16 +16,13 @@
 package org.instancio.junit;
 
 import org.instancio.Instancio;
-import org.instancio.internal.util.Sonar;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.support.ThreadLocalTestContext;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.platform.testkit.engine.EngineTestKit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,27 +70,6 @@ class InstancioExtensionWithSettingsAnnotationTest {
                     .create();
 
             assertThat(result).isEqualTo(minOverride);
-        }
-    }
-
-    @Nested
-    @ExtendWith(InstancioExtension.class)
-    class ParameterizedWithNonStaticSettingsFieldTest {
-
-        /**
-         * {@code ParameterizedTest} can only access a static instance of settings.
-         * If the settings instance is not static, an exception should be thrown.
-         */
-        @WithSettings
-        private final Settings nonStaticSettings = Settings.create();
-
-        @ParameterizedTest
-        @InstancioSource
-        @Disabled("Need to find a way to assert the thrown exception")
-        @SuppressWarnings(Sonar.ADD_ASSERTION)
-        void verify(final String any) {
-            // Expected: InstancioApiException before the test method gets a chance to run.
-            // notifying the user that the Settings field must be static
         }
     }
 }

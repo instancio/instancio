@@ -18,7 +18,6 @@ package org.instancio.test.properties;
 import org.instancio.Instancio;
 import org.instancio.Result;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.InstancioSource;
 import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -28,7 +27,6 @@ import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -85,23 +83,5 @@ class GlobalSeedWithInstancioExtensionWithSettingsTest {
         assertThat(s1.getSeed()).isEqualTo(seed);
         assertThat(s2.getSeed()).isEqualTo(SETTINGS_SEED);
         assertThat(s1.get()).isNotEqualTo(s2.get());
-    }
-
-    @ParameterizedTest
-    @InstancioSource
-    void parameterized(final String s1, final String s2) {
-        assertThat(s1)
-                .as("Distinct values should be generated")
-                .isNotEqualTo(s2);
-
-        final Result<String> s3 = Instancio.of(String.class).asResult();
-        final Result<String> s4 = Instancio.of(String.class).asResult();
-
-        assertThat(s3.getSeed()).isEqualTo(SETTINGS_SEED);
-        assertThat(s4.getSeed()).isEqualTo(SETTINGS_SEED);
-
-        assertThat(s3.get())
-                .as("Same value should be generated using given seed")
-                .isEqualTo(s4.get());
     }
 }

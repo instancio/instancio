@@ -17,7 +17,6 @@ package org.instancio.junit.given;
 
 import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.InstancioSource;
 import org.instancio.settings.Keys;
 import org.instancio.test.support.pojo.basic.StringHolder;
 import org.instancio.test.support.util.Constants;
@@ -30,7 +29,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.params.ParameterizedTest;
 
 import java.util.Set;
 
@@ -49,17 +47,6 @@ class GivenTest {
     void givenParams(
             @Given final int primitive,
             @Given final String value,
-            @Given final StringHolder pojo,
-            @Given final Set<StringHolder> pojoSet) {
-
-        assertResults(primitive, value, pojo, pojoSet);
-    }
-
-    @InstancioSource
-    @ParameterizedTest
-    void givenParamsWithInstancioSource(
-            final int primitive,
-            final String value,
             @Given final StringHolder pojo,
             @Given final Set<StringHolder> pojoSet) {
 

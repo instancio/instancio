@@ -19,7 +19,6 @@ import org.instancio.feed.Feed;
 import org.instancio.feed.FeedSpec;
 import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.InstancioSource;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.Keys;
@@ -64,12 +63,6 @@ class GivenFeedTest {
     @ValueSource(strings = "any")
     @ParameterizedTest
     void givenParamsWithValueSource(final String value, @Given final SampleFeed feed) {
-        assertValues(value, feedField, feed);
-    }
-
-    @InstancioSource(samples = 5)
-    @ParameterizedTest
-    void givenParamsWithInstancioSource(@Given final SampleFeed feed, final String value) {
         assertValues(value, feedField, feed);
     }
 

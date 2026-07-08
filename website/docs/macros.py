@@ -150,6 +150,5 @@ def define_env(env):
     # instancio-junit
     add_class_javadoc(javadoc_base_junit, "Given.html", is_annotation=True)
     add_class_javadoc(javadoc_base_junit, "InstancioExtension.html")
-    add_class_javadoc(javadoc_base_junit, "InstancioSource.html", is_annotation=True)
     add_class_javadoc(javadoc_base_junit, "Seed.html", is_annotation=True)
     add_class_javadoc(javadoc_base_junit, "WithSettings.html", is_annotation=True)

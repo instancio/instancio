@@ -2,7 +2,7 @@
 hide:
   - navigation
   - toc
-description: "Use Instancio with JUnit 5. Reproduce failures with @Seed, apply custom settings with @WithSettings, and generate data with @InstancioSource."
+description: "Use Instancio with JUnit 5. Reproduce failures with @Seed, apply custom settings with @WithSettings, and inject generated data with @Given."
 ---
 
 # Using Instancio with JUnit 5
@@ -12,7 +12,7 @@ This article is an introduction to using Instancio extension for JUnit 5. Here w
 - using `InstancioExtension` for reproducing failed tests
 - injecting settings into test classes
 - running tests with custom seed values
-- generating data for `@ParameterizedTest`
+- injecting generated data using `@Given`
 
 ## Pre-requisites
 
@@ -124,45 +124,38 @@ class PersonToPersonDTOTest {
 With the above settings in place, Instancio might generate `null` strings, empty collections, and negative integers. The settings will apply to test methods in this test class only. If you need to override settings globally, this can be done by placing instancio.properties file at the root of the classpath.
 
 
-## Instancio Arguments Source
+## Injecting Data with `@Given`
 
-Last but not least, you can use the `@InstancioSource` annotation with `@ParameterizedTest` methods. JUnit 5 provides `@ParameterizedTest` support via the [`junit-jupiter-params`](https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params/latest) dependency.
+Last but not least, you can use the `@Given` annotation to inject generated data directly into test method parameters and fields. Instancio populates each annotated element with a fully-populated instance of its declared type.
 
-
-Once you have the dependency on the classpath, you can declare a test method as follows:
-
-``` java linenums="1" title="Parameterized test with a single argument" hl_lines="4-5"
+``` java linenums="1" title="Injecting a method parameter with @Given" hl_lines="4-5"
 @ExtendWith(InstancioExtension.class)
 class PersonToPersonDTOTest {
 
-    @ParameterizedTest
-    @InstancioSource
-    void singleArgument(Person person) {
+    @Test
+    void singleArgument(@Given Person person) {
         // provides a fully-populated person as an argument
     }
 }
 ```
 
-Instancio will provide a populated instance of the class specified in the annotation. You can specify as many parameters as you need:
+You can inject as many parameters as you need, each with its own type:
 
 
-``` java linenums="1" title="Parameterized test with multiple arguments"
-@ParameterizedTest
-@InstancioSource
-void multipleArguments(String str, UUID uuid, Foo foo) {
+``` java linenums="1" title="Injecting multiple parameters with @Given"
+@Test
+void multipleArguments(@Given String str, @Given UUID uuid, @Given Foo foo) {
     // any number of arguments can be specified...
 }
 ```
 
-There are a couple of important limitations to using @InstancioSource to be aware of.
+The `@Given` annotation can also be placed on fields, and works with `@Test`, `@RepeatedTest`, and `@ParameterizedTest` methods alike.
 
-For example, you cannot customise the object as you would with the builder API. In other words, there is no way to specify something like this:
+If you need to customise the generated data, use a custom [`GivenProvider`](https://www.instancio.org/user-guide/#using-custom-givenprovider), or fall back to the builder API for cases like this:
 
 ``` java linenums="1"
 Person person = Instancio.of(Person.class)
     .set(field(Phone.class, "countryCode"), "+1")
     .set(all(LocalDateTime.class), LocalDateTime.now())
-    .create();
+    .create();
 ```
-
-However, in situations where these limitations do not apply, it offers a convenient way of providing data to a test method. From simple values such as Strings and numbers to complex data types.

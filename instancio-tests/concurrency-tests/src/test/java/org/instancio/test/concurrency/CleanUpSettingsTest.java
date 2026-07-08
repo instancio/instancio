@@ -3,7 +3,6 @@ package org.instancio.test.concurrency;
 import org.instancio.Instancio;
 import org.instancio.junit.Given;
 import org.instancio.junit.InstancioExtension;
-import org.instancio.junit.InstancioSource;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.params.ParameterizedTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,202 +26,63 @@ class CleanUpSettingsTest {
 
     @Order(1)
     @Nested
-    class InstancioSourceBefore {
+    class InstancioExtensionAfter {
 
         @Order(1)
         @Nested
-        class InstancioSourceAfter {
+        class BeforeWrapper {
 
-            @Order(1)
-            @Nested
-            class BeforeWrapper {
+            @WithSettings
+            private static final Settings settings = Settings.create()
+                    .set(Keys.STRING_MAX_LENGTH, 15)
+                    .set(Keys.STRING_MIN_LENGTH, 15);
 
-                @WithSettings
-                private static final Settings settings = Settings.create()
-                        .set(Keys.STRING_MAX_LENGTH, 15)
-                        .set(Keys.STRING_MIN_LENGTH, 15);
-
-                @ParameterizedTest
-                @InstancioSource(samples = 1)
-                void setSettingsInCurrentThread(String string) {
-                    assertThat(string).hasSize(15);
-                }
-            }
-
-            @Order(2)
-            @Nested
-            class AfterWrapper {
-
-                @ParameterizedTest
-                @InstancioSource(samples = 1)
-                void ignoreAlreadyPresentSettingsInCurrentThread(String string) {
-                    assertThat(string).hasSizeLessThanOrEqualTo(10);
-                }
-
+            @ExtendWith(InstancioExtension.class)
+            @Test
+            void setSettingsInCurrentThread(@Given String string) {
+                assertThat(string).hasSize(15);
             }
         }
 
         @Order(2)
         @Nested
-        class InstancioExtensionAfter {
+        class AfterWrapper {
 
-            @Order(1)
-            @Nested
-            class BeforeWrapper {
-
-                @WithSettings
-                private static final Settings settings = Settings.create()
-                        .set(Keys.STRING_MAX_LENGTH, 15)
-                        .set(Keys.STRING_MIN_LENGTH, 15);
-
-                @ParameterizedTest
-                @InstancioSource(samples = 1)
-                void setSettingsInCurrentThread(String string) {
-                    assertThat(string).hasSize(15);
-                }
-            }
-
-            @Order(2)
-            @Nested
-            class AfterWrapper {
-
-                @ExtendWith(InstancioExtension.class)
-                @Test
-                void ignoreAlreadyPresentSettingsInCurrentThread(@Given String string) {
-                    assertThat(string).hasSizeLessThanOrEqualTo(10);
-                }
-            }
-        }
-
-        @Order(3)
-        @Nested
-        class SimpleCreationAfter {
-
-            @Order(1)
-            @Nested
-            class BeforeWrapper {
-
-                @WithSettings
-                private static final Settings settings = Settings.create()
-                        .set(Keys.STRING_MAX_LENGTH, 15)
-                        .set(Keys.STRING_MIN_LENGTH, 15);
-
-                @ParameterizedTest
-                @InstancioSource(samples = 1)
-                void setSettingsInCurrentThread(String string) {
-                    assertThat(string).hasSize(15);
-                }
-            }
-
-            @Order(2)
-            @Nested
-            class AfterWrapper {
-
-                @Test
-                void ignoreAlreadyPresentSettingsInCurrentThread() {
-                    assertThat(Instancio.create(String.class)).hasSizeLessThanOrEqualTo(10);
-                }
+            @ExtendWith(InstancioExtension.class)
+            @Test
+            void ignoreAlreadyPresentSettingsInCurrentThread(@Given String string) {
+                assertThat(string).hasSizeLessThanOrEqualTo(10);
             }
         }
     }
 
     @Order(2)
     @Nested
-    class InstancioExtensionBefore {
+    class SimpleCreationAfter {
 
         @Order(1)
         @Nested
-        class InstancioSourceAfter {
+        class BeforeWrapper {
 
-            @Order(1)
-            @Nested
-            class BeforeWrapper {
+            @WithSettings
+            private static final Settings settings = Settings.create()
+                    .set(Keys.STRING_MAX_LENGTH, 15)
+                    .set(Keys.STRING_MIN_LENGTH, 15);
 
-                @WithSettings
-                private static final Settings settings = Settings.create()
-                        .set(Keys.STRING_MAX_LENGTH, 15)
-                        .set(Keys.STRING_MIN_LENGTH, 15);
-
-                @ExtendWith(InstancioExtension.class)
-                @Test
-                void setSettingsInCurrentThread(@Given String string) {
-                    assertThat(string).hasSize(15);
-                }
-            }
-
-            @Order(2)
-            @Nested
-            class AfterWrapper {
-
-                @ParameterizedTest
-                @InstancioSource(samples = 1)
-                void ignoreAlreadyPresentSettingsInCurrentThread(String string) {
-                    assertThat(string).hasSizeLessThanOrEqualTo(10);
-                }
-
+            @ExtendWith(InstancioExtension.class)
+            @Test
+            void setSettingsInCurrentThread(@Given String string) {
+                assertThat(string).hasSize(15);
             }
         }
 
         @Order(2)
         @Nested
-        class InstancioExtensionAfter {
+        class AfterWrapper {
 
-            @Order(1)
-            @Nested
-            class BeforeWrapper {
-
-                @WithSettings
-                private static final Settings settings = Settings.create()
-                        .set(Keys.STRING_MAX_LENGTH, 15)
-                        .set(Keys.STRING_MIN_LENGTH, 15);
-
-                @ExtendWith(InstancioExtension.class)
-                @Test
-                void setSettingsInCurrentThread(@Given String string) {
-                    assertThat(string).hasSize(15);
-                }
-            }
-
-            @Order(2)
-            @Nested
-            class AfterWrapper {
-
-                @ExtendWith(InstancioExtension.class)
-                @Test
-                void ignoreAlreadyPresentSettingsInCurrentThread(@Given String string) {
-                    assertThat(string).hasSizeLessThanOrEqualTo(10);
-                }
-            }
-        }
-
-        @Order(3)
-        @Nested
-        class SimpleCreationAfter {
-
-            @Order(1)
-            @Nested
-            class BeforeWrapper {
-
-                @WithSettings
-                private static final Settings settings = Settings.create()
-                        .set(Keys.STRING_MAX_LENGTH, 15)
-                        .set(Keys.STRING_MIN_LENGTH, 15);
-
-                @ExtendWith(InstancioExtension.class)
-                @Test
-                void setSettingsInCurrentThread(@Given String string) {
-                    assertThat(string).hasSize(15);
-                }
-            }
-
-            @Order(2)
-            @Nested
-            class AfterWrapper {
-
-                @Test
-                void ignoreAlreadyPresentSettingsInCurrentThread() {
-                    assertThat(Instancio.create(String.class)).hasSizeLessThanOrEqualTo(10);
-                }
+            @Test
+            void ignoreAlreadyPresentSettingsInCurrentThread() {
+                assertThat(Instancio.create(String.class)).hasSizeLessThanOrEqualTo(10);
             }
         }
     }

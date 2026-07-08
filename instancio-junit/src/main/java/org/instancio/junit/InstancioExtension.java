@@ -20,7 +20,6 @@ import org.instancio.internal.util.Sonar;
 import org.instancio.junit.internal.ElementAnnotations;
 import org.instancio.junit.internal.ExtensionSupport;
 import org.instancio.junit.internal.FieldAnnotationMap;
-import org.instancio.junit.internal.InstancioSourceState;
 import org.instancio.junit.internal.ObjectCreator;
 import org.instancio.junit.internal.ReflectionUtils;
 import org.instancio.settings.Settings;
@@ -49,7 +48,6 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static org.instancio.junit.internal.Constants.INSTANCIO_NAMESPACE;
-import static org.instancio.junit.internal.Constants.INSTANCIO_SOURCE_STATE;
 
 /**
  * The Instancio JUnit extension adds support for additional
@@ -58,8 +56,7 @@ import static org.instancio.junit.internal.Constants.INSTANCIO_SOURCE_STATE;
  * <ul>
  *   <li>reporting the seed value to allow reproducing failed tests</li>
  *   <li>injecting {@link Settings} using {@link WithSettings @WithSettings} annotation</li>
- *   <li>generating parameterized test arguments using {@link InstancioSource @InstancioSource}</li>
- *   <li>injecting fields and method parameters using {@link Given @Given}  aannotation</li>
+ *   <li>injecting fields and method parameters using {@link Given @Given} annotation</li>
  * </ul>
  *
  * <h2>Reproducing failed tests</h2>
@@ -192,13 +189,6 @@ public class InstancioExtension implements
     public void afterEach(final ExtensionContext context) {
         threadLocalTestContext.remove();
         context.getStore(INSTANCIO_NAMESPACE).remove(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
-
-        final InstancioSourceState instancioSourceState = context.getStore(INSTANCIO_NAMESPACE)
-                .get(INSTANCIO_SOURCE_STATE, InstancioSourceState.class);
-
-        if (instancioSourceState != null && instancioSourceState.allSamplesGenerated()) {
-            context.getStore(INSTANCIO_NAMESPACE).remove(INSTANCIO_SOURCE_STATE);
-        }
     }
 
     @Override
@@ -208,22 +198,11 @@ public class InstancioExtension implements
 
             final DefaultRandom random = requireNonNull(threadLocalTestContext.get()).getRandom();
 
-            final InstancioSourceState instancioSourceState = context.getStore(INSTANCIO_NAMESPACE)
-                    .get(INSTANCIO_SOURCE_STATE, InstancioSourceState.class);
-
-            // When using @InstancioSource, all failed samples will report the same seed value.
-            // This allows reproducing the entire dataset for all samples using the @Seed annotation.
-            //
-            // For @Test, @RepeatedTest, and @ParameterizedTest without @InstancioSource,
-            // each failed sample reports its own seed. Adding the @Seed annotation to a
-            // @ParameterizedTest (without @InstancioSource) ensures the same random data is
-            // generated for each run.
-            final long seed = instancioSourceState != null
-                    ? instancioSourceState.getInitialSeed()
-                    : random.getSeed();
-
+            // For @Test, @RepeatedTest, and @ParameterizedTest, each failed sample
+            // reports its own seed. Adding the @Seed annotation to a @ParameterizedTest
+            // ensures the same random data is generated for each run.
             final String seedMsg = String.format("Test method '%s' failed with seed: %d (seed source: %s)%n",
-                    testMethod.getName(), seed, random.getSource().getDescription());
+                    testMethod.getName(), random.getSeed(), random.getSource().getDescription());
 
             context.publishReportEntry("Instancio", seedMsg);
             Log.msg(Log.Category.TEST_FAILURE_SEED, seedMsg);
@@ -248,12 +227,7 @@ public class InstancioExtension implements
         final Parameter parameter = parameterContext.getParameter();
         final List<Annotation> annotations = ReflectionUtils.collectionAnnotations(parameter);
 
-        final boolean supportsParameter = containsAnnotation(annotations, Given.class) &&
-                // Exclude InstancioSource methods (which can generate arguments) to avoid the
-                // "Discovered multiple competing ParameterResolvers for parameter" error
-                extensionContext.getTestMethod()
-                        .map(m -> m.getDeclaredAnnotation(InstancioSource.class))
-                        .isEmpty();
+        final boolean supportsParameter = containsAnnotation(annotations, Given.class);
 
         if (supportsParameter) {
             extensionContext.getStore(INSTANCIO_NAMESPACE)
