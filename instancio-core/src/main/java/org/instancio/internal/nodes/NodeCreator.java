@@ -191,7 +191,7 @@ class NodeCreator {
 
         final Class<?> rawType = TypeUtils.getRawType(type);
 
-        InternalNode node = builderTemplate(type, rawType, member)
+        final InternalNode node = builderTemplate(type, rawType, member)
                 .parent(parent)
                 .nodeKind(getNodeKind(rawType))
                 .member(setter)
@@ -203,17 +203,6 @@ class NodeCreator {
         final Class<?> targetClass = targetType == type //NOPMD
                 ? rawType
                 : TypeUtils.getRawType(targetType);
-
-        // Handle the case where: Child<T> extends Parent<T>
-        // If the child node inherits a TypeVariable field declaration from
-        // the parent, we need to map Parent.T -> Child.T to resolve the type variable
-        final Map<Type, Type> genericSuperclassTypeMap = typeHelper.createSuperclassTypeMap(targetClass);
-
-        if (!genericSuperclassTypeMap.isEmpty()) {
-            node = node.toBuilder()
-                    .additionalTypeMap(genericSuperclassTypeMap)
-                    .build();
-        }
 
         if (rawType != targetClass
                 && (!subtypeResult.isValidationEnabled()
@@ -238,7 +227,15 @@ class NodeCreator {
                     .additionalTypeMap(typeHelper.createBridgeTypeMap(rawType, targetClass))
                     .build();
         }
-        return node;
+
+        // Handle the case where: Child<T> extends Parent<T>
+        // If the child node inherits a TypeVariable field declaration from
+        // the parent, we need to map Parent.T -> Child.T to resolve the type variable
+        final Map<Type, Type> genericSuperclassTypeMap = typeHelper.createSuperclassTypeMap(targetClass);
+
+        return genericSuperclassTypeMap.isEmpty()
+                ? node
+                : node.toBuilder().additionalTypeMap(genericSuperclassTypeMap).build();
     }
 
     private InternalNode fromClass(
