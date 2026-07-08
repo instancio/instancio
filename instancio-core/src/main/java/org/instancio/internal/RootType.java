@@ -82,33 +82,6 @@ public final class RootType {
             typeMap.put(typeVariable, actualType);
         }
 
-        populateTypeMapFromGenericSuperclass(rootClass, typeMap);
         return typeMap;
-    }
-
-    private static void populateTypeMapFromGenericSuperclass(
-            final Class<?> rootClass,
-            final Map<Type, Type> typeMap) {
-
-        final Type gsClass = rootClass.getGenericSuperclass();
-        if (gsClass instanceof ParameterizedType genericSuperclass) {
-            final Class<?> rawType = TypeUtils.getRawType(genericSuperclass.getRawType());
-            final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
-            final Type[] actualTypeArguments = genericSuperclass.getActualTypeArguments();
-
-            for (int i = 0; i < typeParameters.length; i++) {
-                if (actualTypeArguments[i] instanceof TypeVariable) {
-                    continue; // leave resolving the type to NodeFactory
-                }
-                final TypeVariable<?> typeVariable = typeParameters[i];
-                final Class<?> actualType = TypeUtils.getRawType(actualTypeArguments[i]);
-                LOG.trace("Mapping type variable '{}' to '{}'", typeVariable, actualType);
-                typeMap.put(typeVariable, actualType);
-            }
-        }
-
-        if (gsClass != null) {
-            populateTypeMapFromGenericSuperclass(TypeUtils.getRawType(gsClass), typeMap);
-        }
     }
 }

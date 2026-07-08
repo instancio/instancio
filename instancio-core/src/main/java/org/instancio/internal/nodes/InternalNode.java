@@ -314,7 +314,8 @@ public final class InternalNode implements Node {
         builder.nodeKind = nodeKind;
         builder.ignored = ignored;
         builder.cyclic = cyclic;
-        builder.nodeTypeMap = nodeTypeMap;
+        // Note: nodeTypeMap is intentionally not copied here. build() always
+        // reconstructs it from 'type' and 'additionalTypeMap'.
         return builder;
     }
 
