@@ -171,6 +171,7 @@
                                         -XepOpt:NullAway:JSpecifyMode=true
                                         -XepOpt:NullAway:TreatGeneratedAsUnannotated=true
                                         -Xep:AnnotateFormatMethod:OFF
+                                        -Xep:BadImport:OFF
                                         -Xep:BooleanLiteral:OFF
                                         -Xep:CharacterGetNumericValue:OFF
                                         -Xep:DefaultCharset:OFF
@@ -184,6 +185,7 @@
                                         -Xep:NullArgumentForNonNullParameter:OFF
                                         -Xep:StaticAssignmentOfThrowable:OFF
                                         -Xep:StringSplitter:OFF
+                                        -Xep:UnnecessaryLambda:OFF
                                         -Xep:UnusedMethod:OFF
                                         -Xep:UnusedVariable:OFF
                                     </arg>
