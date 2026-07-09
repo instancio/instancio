@@ -253,10 +253,10 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
                 && Objects.equals(apiInvocationDescription, that.apiInvocationDescription)
                 && Objects.equals(selectorDepth, that.selectorDepth)
                 && Objects.equals(target, that.target)
-                && Objects.equals(apiMethod, that.apiMethod)
-                && Objects.equals(isLenient, that.isLenient)
+                && apiMethod == that.apiMethod
+                && isLenient == that.isLenient
                 && Objects.equals(scopes, that.scopes)
-                && Objects.equals(isHiddenFromVerboseOutput, that.isHiddenFromVerboseOutput);
+                && isHiddenFromVerboseOutput == that.isHiddenFromVerboseOutput;
     }
 
     @Override
