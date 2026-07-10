@@ -68,9 +68,9 @@ final class SetModelValidatingListener implements GenerationListener {
 
             throw Fail.withUsageError(
                     "Model<%s> specified in setModel() method is incompatible with the selector target"
-                            + "%n"
-                            + "%n -> Model type ............: %s"
-                            + "%n -> Selector target type ..: %s",
+                            + "\n"
+                            + "\n -> Model type ............: %s"
+                            + "\n -> Selector target type ..: %s",
                     modelTypeName, modelTypeName, Format.withoutPackage(node.getType()));
         }
     }

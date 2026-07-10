@@ -61,6 +61,6 @@ class FailTest {
     }
 
     private static String getExpectedMessage(final String msg) {
-        return String.format("%n%s%n%n -> %s%n", SUBMIT_BUG_REPORT_MSG, msg);
+        return String.format("\n%s\n\n -> %s\n", SUBMIT_BUG_REPORT_MSG, msg);
     }
 }

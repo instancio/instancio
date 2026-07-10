@@ -42,9 +42,9 @@ class ServiceProviderInstantiationStrategy implements InstantiationStrategy {
             if (result != null) {
                 if (!klass.isAssignableFrom(result.getClass())) {
                     throw new InstancioSpiException(String.format(
-                            "%s instantiated an object of invalid type:%n" +
-                                    " -> %s%n" +
-                                    "Expected an instance of:%n" +
+                            "%s instantiated an object of invalid type:\n" +
+                                    " -> %s\n" +
+                                    "Expected an instance of:\n" +
                                     " -> %s",
                             entry.getInstancioProviderClass(), result.getClass(), klass));
                 }

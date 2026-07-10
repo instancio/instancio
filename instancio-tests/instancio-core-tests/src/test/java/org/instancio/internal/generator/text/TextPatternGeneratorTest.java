@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate<String, TextPatternGenerator> {
-    private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("""
+    private static final String ALLOWED_HASHTAGS_MESSAGE = """
             Allowed hashtags:
             \t#a - alphanumeric character [a-z, A-Z, 0-9]
             \t#c - lower case character [a-z]
@@ -35,7 +35,8 @@ class TextPatternGeneratorTest extends AbstractGeneratorTestTemplate<String, Tex
             \t#d - digit [0-9]
             \t#h - lower case hexadecimal character [a-f, 0-9]
             \t#H - upper case hexadecimal character [A-F, 0-9]
-            \t## - hash symbol escape%n""");
+            \t## - hash symbol escape
+            """;
 
     private final GeneratorContext context = getGeneratorContext();
 

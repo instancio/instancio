@@ -83,10 +83,10 @@ public class URLGenerator extends AbstractURIGenerator<URL> implements URLSpec {
         try {
             return new URL(protocol, host, portNumber, file);
         } catch (MalformedURLException ex) {
-            final String params = String.format("%n  protocol: %s"
-                            + "%n  host: %s"
-                            + "%n  port: %s"
-                            + "%n  file: %s",
+            final String params = String.format("\n  protocol: %s"
+                            + "\n  host: %s"
+                            + "\n  port: %s"
+                            + "\n  file: %s",
                     singleQuote(protocol),
                     singleQuote(host),
                     portNumber,

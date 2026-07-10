@@ -109,7 +109,7 @@ class TypeResolverFromSpiTest {
         assertThatThrownBy(() -> Instancio.create(BaseClassSubClassInheritance.SubClass.class))
                 .isExactlyInstanceOf(InstancioSpiException.class)
                 .hasMessage(String.format("""
-                                %n%s provided an invalid subtype:
+                                \n%s provided an invalid subtype:
                                  -> class org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance$BaseClass
                                 is not a subtype of:
                                  -> class org.instancio.test.support.pojo.inheritance.BaseClassSubClassInheritance$SubClass""",

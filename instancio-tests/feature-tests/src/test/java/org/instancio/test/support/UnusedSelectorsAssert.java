@@ -56,7 +56,7 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
                 .sum();
 
         assertThat(actualCount)
-                .as("Expected %s selectors, but found %s. Actual message:%n%s",
+                .as("Expected %s selectors, but found %s. Actual message:\n%s",
                         expectedCount, actualCount, actual)
                 .isEqualTo(expectedCount);
         return this;
@@ -160,7 +160,7 @@ public class UnusedSelectorsAssert extends ThrowableAssert<UnusedSelectorExcepti
 
     private String getActualStackTraceLine(final String expected) {
         final String message = extractUnusedSelectorsFromExceptionMessage(actual.getMessage());
-        final String[] actualLines = message.split(System.lineSeparator());
+        final String[] actualLines = message.split("\n");
         String actualStackTraceLine = null;
         for (int i = 0; i < actualLines.length; i++) {
             if (actualLines[i].contains(expected)) {

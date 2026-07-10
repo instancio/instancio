@@ -201,7 +201,7 @@ public class InstancioExtension implements
             // For @Test, @RepeatedTest, and @ParameterizedTest, each failed sample
             // reports its own seed. Adding the @Seed annotation to a @ParameterizedTest
             // ensures the same random data is generated for each run.
-            final String seedMsg = String.format("Test method '%s' failed with seed: %d (seed source: %s)%n",
+            final String seedMsg = String.format("Test method '%s' failed with seed: %d (seed source: %s)\n",
                     testMethod.getName(), random.getSeed(), random.getSource().getDescription());
 
             context.publishReportEntry("Instancio", seedMsg);

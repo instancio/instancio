@@ -213,9 +213,9 @@ public final class InternalSettings implements Settings {
 
     @Override
     public String toString() {
-        return String.format("Settings[%nisLockedForModifications: %s" +
-                             "%nsettingsMap:%s" +
-                             "%nSettings subtypeMap:%s",
+        return String.format("Settings[\nisLockedForModifications: %s" +
+                             "\nsettingsMap:%s" +
+                             "\nSettings subtypeMap:%s",
                 isLockedForModifications,
                 mapToString(new TreeMap<>(settingsMap)),
                 mapToString(subtypeMap));

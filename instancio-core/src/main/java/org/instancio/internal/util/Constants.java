@@ -24,7 +24,14 @@ import java.time.ZoneOffset;
 
 public final class Constants {
 
-    public static final String NL = System.lineSeparator();
+    /**
+     * Line separator used when building messages, reports, and {@code toString()} output.
+     *
+     * <p>Intentionally a literal {@code "\n"} rather than {@link System#lineSeparator()} so that
+     * such output is deterministic across platforms. This keeps it consistent with Java text blocks
+     * (which always use {@code "\n"}), including those used in tests that assert on these messages.
+     */
+    public static final String NL = "\n";
 
     /**
      * Percentage by which to adjust a min/max range if min is set higher than max, or vice versa.

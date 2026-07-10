@@ -65,18 +65,18 @@ public final class ApiValidator {
 
     public static void validateRootClass(@Nullable final Type type) {
         notNull(type, "class must not be null"
-                      + "%n -> Please provide a valid class%n%n"
+                      + "\n -> Please provide a valid class\n\n"
                       + CREATE_CLASS_HELP);
     }
 
     public static Type validateTypeToken(final TypeTokenSupplier<?> typeTokenSupplier) {
         notNull(typeTokenSupplier, "type token must not be null"
-                + "%n -> Please provide a valid type token%n%n"
+                + "\n -> Please provide a valid type token\n\n"
                 + CREATE_TYPE_TOKEN_HELP);
 
         final Type type = typeTokenSupplier.get();
         notNull(type, "type token must not return a null Type"
-                + "%n -> Please provide a valid Type%n%n"
+                + "\n -> Please provide a valid Type\n\n"
                 + CREATE_TYPE_TOKEN_HELP);
 
         return type;
@@ -136,7 +136,7 @@ public final class ApiValidator {
     public static void validateSubtype(final Class<?> from, final Class<?> to) {
         isTrue(from.isAssignableFrom(to), () -> String.format("" +
                 "invalid subtype mapping" +
-                "%n -> class '%s' is not a subtype of '%s'", to.getTypeName(), from.getTypeName()));
+                "\n -> class '%s' is not a subtype of '%s'", to.getTypeName(), from.getTypeName()));
     }
 
     public static void validateKeyValue(final SettingKey<?> key, @Nullable final Object value) {
@@ -173,8 +173,8 @@ public final class ApiValidator {
 
     private static String generateMismatchErrorMessageTemplate(final Node node, final String apiMethodName) {
         return "the target type is incompatible with the generator"
-                + "%n -> Method '" + apiMethodName + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()
-                + (node.getField() == null ? "" : "%n -> Field: " + node.getField());
+                + "\n -> Method '" + apiMethodName + "' cannot be used for type: " + node.getTargetClass().getCanonicalName()
+                + (node.getField() == null ? "" : "\n -> Field: " + node.getField());
     }
 
     public static void validateGenerateSecondArgument(@Nullable final Object arg) {

@@ -139,7 +139,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
 
     @Override
     public final String getDescription() {
-        return String.format("%s%n    at %s", this, Format.firstNonInstancioStackTraceLine(getStackTraceHolder()));
+        return String.format("%s\n    at %s", this, Format.firstNonInstancioStackTraceLine(getStackTraceHolder()));
     }
 
     public final Throwable getStackTraceHolder() {
