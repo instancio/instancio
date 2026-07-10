@@ -74,9 +74,9 @@ public final class ErrorHandler {
     private void logSuppressed(final Throwable t) {
         if (context.isVerbose()) {
             final String errorMsg = String.format("" +
-                            "Exception occurred while generating the root object of type %s.%n" +
-                            "Printing stacktrace because verbose() mode is enabled.%n" +
-                            "To propagate internal errors, set Keys.FAIL_ON_ERROR setting to true.%n",
+                            "Exception occurred while generating the root object of type %s.\n" +
+                            "Printing stacktrace because verbose() mode is enabled.\n" +
+                            "To propagate internal errors, set Keys.FAIL_ON_ERROR setting to true.\n",
                     Format.withoutPackage(context.getRootType().getType()));
 
             System.err.println(errorMsg);

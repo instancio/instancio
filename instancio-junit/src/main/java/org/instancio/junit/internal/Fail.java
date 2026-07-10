@@ -83,6 +83,6 @@ final class Fail {
     }
 
     private static InstancioApiException apiException(final String msg) {
-        return new InstancioApiException(String.format("Error running test%n%n%s%n", msg));
+        return new InstancioApiException(String.format("Error running test\n\n%s\n", msg));
     }
 }

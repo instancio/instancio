@@ -114,13 +114,13 @@ class URIGeneratorTest {
 
         assertThatThrownBy(api::create)
                 .isExactlyInstanceOf(InstancioApiException.class)
-                .hasMessageContaining(String.format("error generating a URI using parameters: %n" +
-                        "  scheme: 'foo!'%n" +
-                        "  userInfo: null%n" +
-                        "  host: 'example.com'%n" +
-                        "  port: 123%n" +
-                        "  path: null%n" +
-                        "  query: null%n" +
+                .hasMessageContaining(String.format("error generating a URI using parameters: \n" +
+                        "  scheme: 'foo!'\n" +
+                        "  userInfo: null\n" +
+                        "  host: 'example.com'\n" +
+                        "  port: 123\n" +
+                        "  path: null\n" +
+                        "  query: null\n" +
                         "  fragment: null"));
     }
 

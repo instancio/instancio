@@ -108,13 +108,13 @@ public class URIGenerator extends AbstractURIGenerator<URI> implements URISpec {
         try {
             return new URI(scheme, userInfo, host, port, path, query, fragment);
         } catch (URISyntaxException ex) {
-            final String params = String.format("%n  scheme: %s"
-                            + "%n  userInfo: %s"
-                            + "%n  host: %s"
-                            + "%n  port: %s"
-                            + "%n  path: %s"
-                            + "%n  query: %s"
-                            + "%n  fragment: %s",
+            final String params = String.format("\n  scheme: %s"
+                            + "\n  userInfo: %s"
+                            + "\n  host: %s"
+                            + "\n  port: %s"
+                            + "\n  path: %s"
+                            + "\n  query: %s"
+                            + "\n  fragment: %s",
                     singleQuote(scheme), singleQuote(userInfo), singleQuote(host),
                     port, singleQuote(path), singleQuote(query), singleQuote(fragment));
 

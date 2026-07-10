@@ -66,9 +66,9 @@ class TypeInstantiatorTest {
         assertThatThrownBy(() -> Instancio.create(BooleanHolder.class))
                 .isExactlyInstanceOf(InstancioSpiException.class)
                 .hasMessage(String.format(
-                        "%s instantiated an object of invalid type:%n" +
-                                " -> class org.instancio.test.support.pojo.basic.CharacterHolder%n" +
-                                "Expected an instance of:%n" +
+                        "%s instantiated an object of invalid type:\n" +
+                                " -> class org.instancio.test.support.pojo.basic.CharacterHolder\n" +
+                                "Expected an instance of:\n" +
                                 " -> class org.instancio.test.support.pojo.basic.BooleanHolder",
                         CustomTypeProvider.class));
     }

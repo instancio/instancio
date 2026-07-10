@@ -62,8 +62,8 @@ public final class SelectorGroupImpl implements SelectorGroup, Flattener<TargetS
         if (selectors.isEmpty()) {
             return "all()";
         }
-        return String.format("all(%n%s%n)", selectors.stream()
+        return String.format("all(\n%s\n)", selectors.stream()
                 .map(it -> "\t" + it)
-                .collect(joining("," + System.lineSeparator())));
+                .collect(joining(",\n")));
     }
 }

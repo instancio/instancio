@@ -101,25 +101,25 @@ class CallbackHandler implements GenerationListener {
             callback.onComplete(result);
         } catch (ClassCastException ex) {
             final String errorMsg = String.format(
-                    "onComplete() callback error.%n%n" +
-                            "Node matched by the callback's selector:%n" +
-                            " -> %s%n%n" +
-                            "ClassCastException was thrown by the callback.%n" +
-                            "This usually happens because the type declared by the callback%n" +
-                            "does not match the actual type of the target object.%n%n" +
-                            "Example:%n" +
-                            "onComplete(all(Foo.class), (Bar wrongType) -> {%n" +
-                            "               ^^^^^^^^^    ^^^^^^^^^^^^^%n" +
-                            "})%n%n" +
-                            "Caused by:%n%s", node, ex.getMessage());
+                    "onComplete() callback error.\n\n" +
+                            "Node matched by the callback's selector:\n" +
+                            " -> %s\n\n" +
+                            "ClassCastException was thrown by the callback.\n" +
+                            "This usually happens because the type declared by the callback\n" +
+                            "does not match the actual type of the target object.\n\n" +
+                            "Example:\n" +
+                            "onComplete(all(Foo.class), (Bar wrongType) -> {\n" +
+                            "               ^^^^^^^^^    ^^^^^^^^^^^^^\n" +
+                            "})\n\n" +
+                            "Caused by:\n%s", node, ex.getMessage());
 
             throw Fail.withUsageError(errorMsg, ex);
         } catch (Exception ex) {
             final String errorMsg = String.format(
-                    "onComplete() callback error.%n%n" +
-                            "Node matched by the callback's selector:%n" +
-                            " -> %s%n%n" +
-                            "Caused by:%n%s", node, ex.getMessage());
+                    "onComplete() callback error.\n\n" +
+                            "Node matched by the callback's selector:\n" +
+                            " -> %s\n\n" +
+                            "Caused by:\n%s", node, ex.getMessage());
 
             throw Fail.withUsageError(errorMsg, ex);
         }

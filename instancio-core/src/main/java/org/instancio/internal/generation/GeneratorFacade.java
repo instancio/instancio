@@ -93,9 +93,9 @@ public class GeneratorFacade {
             throw ex;
         } catch (Exception ex) {
             final String msg = String.format("exception thrown by a custom Generator or Supplier" +
-                            "%n%n" +
+                            "\n\n" +
                             " -> Could not generate value for: %s (depth=%s)" +
-                            "%n%n" +
+                            "\n\n" +
                             "%s",
 
                     node.toDisplayString(), node.getDepth(), Format.nodePathToRoot(node, "    "));

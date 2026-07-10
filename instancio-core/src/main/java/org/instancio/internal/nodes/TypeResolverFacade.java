@@ -48,8 +48,8 @@ class TypeResolverFacade {
                 // The `validateSubtype` flag is carried forward to skip that validation.
                 if (validateSubtype && !originalTargetClass.isAssignableFrom(TypeUtils.getRawType(resolvedType))) {
                     throw new InstancioSpiException(String.format(
-                            "%n%s provided an invalid subtype:%n" +
-                            " -> %s%nis not a subtype of:%n -> %s",
+                            "\n%s provided an invalid subtype:\n" +
+                            " -> %s\nis not a subtype of:\n -> %s",
                             entry.getInstancioProviderClass(), resolvedType, originalTargetClass));
                 }
 

@@ -168,8 +168,8 @@ public final class ReflectionUtils {
             final String objectType = target == null ? null : target.getClass().getTypeName();
             final String msg = String.format(
                     "Error getting field value." +
-                    "%n -> Field ........: %s" +
-                    "%n -> Declared by ..: %s", field, objectType);
+                    "\n -> Field ........: %s" +
+                    "\n -> Declared by ..: %s", field, objectType);
             ExceptionUtils.logException(msg, ex);
             return null;
         }

@@ -25,14 +25,14 @@ import org.instancio.internal.util.Fail;
 public class TextPatternGenerator extends AbstractGenerator<String>
         implements TextPatternSpec {
 
-    private static final String ALLOWED_HASHTAGS_MESSAGE = String.format("%nAllowed hashtags:"
-            + "%n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
-            + "%n\t#c - lower case character [a-z]"
-            + "%n\t#C - upper case character [A-Z]"
-            + "%n\t#d - digit [0-9]"
-            + "%n\t#h - lower case hexadecimal character [a-f, 0-9]"
-            + "%n\t#H - upper case hexadecimal character [A-F, 0-9]"
-            + "%n\t## - hash symbol escape%n");
+    private static final String ALLOWED_HASHTAGS_MESSAGE = "\nAllowed hashtags:"
+            + "\n\t#a - alphanumeric character [a-z, A-Z, 0-9]"
+            + "\n\t#c - lower case character [a-z]"
+            + "\n\t#C - upper case character [A-Z]"
+            + "\n\t#d - digit [0-9]"
+            + "\n\t#h - lower case hexadecimal character [a-f, 0-9]"
+            + "\n\t#H - upper case hexadecimal character [A-F, 0-9]"
+            + "\n\t## - hash symbol escape\n";
 
     private static final char ALNUM_CHAR = 'a';
     private static final char LCASE_CHAR = 'c';

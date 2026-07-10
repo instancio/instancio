@@ -69,9 +69,9 @@ class PublicApiMethodsTest {
 
         if (pkg != null && pkg.getName().contains("internal")) {
             final String failureMsg = String.format("" +
-                            "Method%n%n" +
-                            " -> %s%n%n" +
-                            "should not reference class from internal package:%n%n" +
+                            "Method\n\n" +
+                            " -> %s\n\n" +
+                            "should not reference class from internal package:\n\n" +
                             " -> %s",
                     referencedBy, klass);
 

@@ -231,7 +231,7 @@ class GeneratorMismatchTest {
         assertThatThrownBy(api::create)
                 .isInstanceOf(InstancioApiException.class)
                 .hasMessageContainingAll("the target type is incompatible with the generator",
-                        String.format("%n -> Method '%s' cannot be used for type: %s%n",
+                        String.format("\n -> Method '%s' cannot be used for type: %s\n",
                                 expectedGeneratorMethod, selectedType.getCanonicalName()));
     }
 }

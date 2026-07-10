@@ -160,7 +160,7 @@ class PredicateSelectorImplTest {
                 .build();
 
         assertThat(selector.getDescription()).isEqualTo(
-                String.format("anUnusedSelectorMethodName()%n" +
+                String.format("anUnusedSelectorMethodName()\n" +
                         "    at org.example.ExpectedClass:2"));
     }
 
@@ -235,7 +235,7 @@ class PredicateSelectorImplTest {
                     .build();
 
             assertThat(result.getDescription())
-                    .startsWith(String.format("fields(Predicate<Field>)%n    at"));
+                    .startsWith(String.format("fields(Predicate<Field>)\n    at"));
         }
 
         @Test
@@ -245,7 +245,7 @@ class PredicateSelectorImplTest {
                     .build();
 
             assertThat(result.getDescription())
-                    .startsWith(String.format("types(Predicate<Class>)%n    at"));
+                    .startsWith(String.format("types(Predicate<Class>)\n    at"));
         }
 
         @Test
@@ -257,7 +257,7 @@ class PredicateSelectorImplTest {
                     .build();
 
             assertThat(result.getDescription())
-                    .startsWith(String.format("foo()%n    at"));
+                    .startsWith(String.format("foo()\n    at"));
         }
 
         @Test
@@ -269,14 +269,14 @@ class PredicateSelectorImplTest {
                     .build();
 
             assertThat(result.getDescription())
-                    .startsWith(String.format("foo()%n    at"));
+                    .startsWith(String.format("foo()\n    at"));
         }
 
         @Test
         void nullDescription() {
             final PredicateSelectorImpl result = PredicateSelectorImpl.builder().build();
 
-            assertThat(result.getDescription()).startsWith(String.format("<selector>%n    at"));
+            assertThat(result.getDescription()).startsWith(String.format("<selector>\n    at"));
         }
     }
 

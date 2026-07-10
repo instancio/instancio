@@ -33,7 +33,7 @@ class ExceptionUtilsTest {
         @Test
         void singleCauseWithNoMessage() {
             assertThat(ExceptionUtils.getCausedBy(new Throwable()))
-                    .isEqualTo(String.format("%n => caused by: Throwable"));
+                    .isEqualTo(String.format("\n => caused by: Throwable"));
         }
 
         @Test
@@ -43,9 +43,9 @@ class ExceptionUtilsTest {
                             new NullPointerException("root")));
 
             assertThat(ExceptionUtils.getCausedBy(ex))
-                    .isEqualTo(String.format("%n" +
-                                             " => caused by: InstancioException: \"top\"%n" +
-                                             " => caused by: RuntimeException: \"cause\"%n" +
+                    .isEqualTo(String.format("\n" +
+                                             " => caused by: InstancioException: \"top\"\n" +
+                                             " => caused by: RuntimeException: \"cause\"\n" +
                                              " => caused by: NullPointerException: \"root\""));
         }
 
@@ -56,9 +56,9 @@ class ExceptionUtilsTest {
                             new NullPointerException()));
 
             assertThat(ExceptionUtils.getCausedBy(ex))
-                    .isEqualTo(String.format("%n" +
-                                             " => caused by: InstancioException: \"top\"%n" +
-                                             " => caused by: RuntimeException: \"java.lang.NullPointerException\"%n" +
+                    .isEqualTo(String.format("\n" +
+                                             " => caused by: InstancioException: \"top\"\n" +
+                                             " => caused by: RuntimeException: \"java.lang.NullPointerException\"\n" +
                                              " => caused by: NullPointerException"));
         }
     }
