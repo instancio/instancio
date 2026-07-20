@@ -15,5 +15,22 @@
  */
 package org.instancio.test.support.pojo.record;
 
-public record StringsGhiRecord(String g, String h, String i) {
+import org.instancio.test.support.pojo.interfaces.StringsGhiInterface;
+
+public record StringsGhiRecord(String g, String h, String i) implements StringsGhiInterface {
+
+    @Override
+    public String getG() {
+        return g;
+    }
+
+    @Override
+    public String getH() {
+        return h;
+    }
+
+    @Override
+    public String getI() {
+        return i;
+    }
 }

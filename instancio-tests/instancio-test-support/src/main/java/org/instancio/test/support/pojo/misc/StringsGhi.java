@@ -18,12 +18,13 @@ package org.instancio.test.support.pojo.misc;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.instancio.test.support.pojo.interfaces.StringsGhiInterface;
 
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @SuppressWarnings("java:S1104")
-public class StringsGhi {
+public class StringsGhi implements StringsGhiInterface {
     public String g;
     public String h;
     public String i;

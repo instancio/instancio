@@ -13,30 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.pojo.record;
+package org.instancio.test.support.pojo.constructor;
 
-import org.instancio.test.support.pojo.interfaces.StringsAbcInterface;
-import org.instancio.test.support.pojo.interfaces.StringsDefInterface;
+import lombok.Getter;
+import org.instancio.test.support.pojo.interfaces.StringsGhiInterface;
 
-public record StringsAbcRecord(String a, String b, String c, StringsDefRecord def) implements StringsAbcInterface {
+/**
+ * This class must declare <b>only</b> the all-args constructor.
+ *
+ * @see StringsDefCtor
+ */
+@Getter
+@SuppressWarnings("ClassCanBeRecord")
+public class StringsGhiCtor implements StringsGhiInterface {
 
-    @Override
-    public String getA() {
-        return a;
-    }
+    private final String g;
+    private final String h;
+    private final String i;
 
-    @Override
-    public String getB() {
-        return b;
-    }
-
-    @Override
-    public String getC() {
-        return c;
-    }
-
-    @Override
-    public StringsDefInterface getDef() {
-        return def;
+    public StringsGhiCtor(final String g, final String h, final String i) {
+        this.g = g;
+        this.h = h;
+        this.i = i;
     }
 }

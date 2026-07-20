@@ -18,12 +18,13 @@ package org.instancio.test.support.pojo.misc;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.instancio.test.support.pojo.interfaces.StringsAbcInterface;
 
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @SuppressWarnings("java:S1104")
-public class StringsAbc {
+public class StringsAbc implements StringsAbcInterface {
     public String a;
     public String b;
     public String c;

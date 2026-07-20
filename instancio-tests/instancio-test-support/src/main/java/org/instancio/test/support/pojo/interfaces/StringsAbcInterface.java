@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.pojo.record;
+package org.instancio.test.support.pojo.interfaces;
 
-import org.instancio.test.support.pojo.interfaces.StringsAbcInterface;
-import org.instancio.test.support.pojo.interfaces.StringsDefInterface;
+public interface StringsAbcInterface {
 
-public record StringsAbcRecord(String a, String b, String c, StringsDefRecord def) implements StringsAbcInterface {
+    String getA();
 
-    @Override
-    public String getA() {
-        return a;
-    }
+    String getB();
 
-    @Override
-    public String getB() {
-        return b;
-    }
+    String getC();
 
-    @Override
-    public String getC() {
-        return c;
-    }
-
-    @Override
-    public StringsDefInterface getDef() {
-        return def;
-    }
+    StringsDefInterface getDef();
 }
