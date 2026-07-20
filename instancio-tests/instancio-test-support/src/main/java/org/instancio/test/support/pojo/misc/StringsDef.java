@@ -18,12 +18,13 @@ package org.instancio.test.support.pojo.misc;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.instancio.test.support.pojo.interfaces.StringsDefInterface;
 
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @SuppressWarnings("java:S1104")
-public class StringsDef {
+public class StringsDef implements StringsDefInterface {
     public String d;
     public String e;
     public String f;

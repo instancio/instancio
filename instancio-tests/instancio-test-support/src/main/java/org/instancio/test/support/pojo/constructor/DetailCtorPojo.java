@@ -13,30 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.support.pojo.record;
+package org.instancio.test.support.pojo.constructor;
 
-import org.instancio.test.support.pojo.interfaces.StringsAbcInterface;
-import org.instancio.test.support.pojo.interfaces.StringsDefInterface;
+public class DetailCtorPojo {
 
-public record StringsAbcRecord(String a, String b, String c, StringsDefRecord def) implements StringsAbcInterface {
+    private final Long id;
+    private Long mainPojoId;
+    private MainCtorPojo mainPojo;
 
-    @Override
-    public String getA() {
-        return a;
+    public DetailCtorPojo(final Long id) {
+        this.id = id;
     }
 
-    @Override
-    public String getB() {
-        return b;
+    public Long getId() {
+        return id;
     }
 
-    @Override
-    public String getC() {
-        return c;
+    public Long getMainPojoId() {
+        return mainPojoId;
     }
 
-    @Override
-    public StringsDefInterface getDef() {
-        return def;
+    public void setMainPojoId(final Long mainPojoId) {
+        this.mainPojoId = mainPojoId;
+    }
+
+    public MainCtorPojo getMainPojo() {
+        return mainPojo;
+    }
+
+    public void setMainPojo(final MainCtorPojo mainPojo) {
+        this.mainPojo = mainPojo;
     }
 }

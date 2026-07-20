@@ -15,5 +15,28 @@
  */
 package org.instancio.test.support.pojo.record;
 
-public record StringsDefRecord(String d, String e, String f, StringsGhiRecord ghi) {
+import org.instancio.test.support.pojo.interfaces.StringsDefInterface;
+import org.instancio.test.support.pojo.interfaces.StringsGhiInterface;
+
+public record StringsDefRecord(String d, String e, String f, StringsGhiRecord ghi) implements StringsDefInterface {
+
+    @Override
+    public String getD() {
+        return d;
+    }
+
+    @Override
+    public String getE() {
+        return e;
+    }
+
+    @Override
+    public String getF() {
+        return f;
+    }
+
+    @Override
+    public StringsGhiInterface getGhi() {
+        return ghi;
+    }
 }
