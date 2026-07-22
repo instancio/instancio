@@ -15,12 +15,9 @@
  */
 package org.instancio.internal.instantiation;
 
-import org.instancio.documentation.InternalApi;
-import org.jspecify.annotations.Nullable;
+public class InstanceCreationException extends RuntimeException {
 
-@InternalApi
-public interface InstantiationStrategy {
-
-    @Nullable
-    <T> T createInstance(Class<T> klass);
+    public InstanceCreationException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

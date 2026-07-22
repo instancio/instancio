@@ -29,22 +29,22 @@ import java.util.List;
 public class Instantiator {
     private static final Logger LOG = LoggerFactory.getLogger(Instantiator.class);
 
-    private final InstantiationStrategy[] strategies;
+    private final InstanceCreator[] instanceCreators;
 
     public Instantiator(final List<ProviderEntry<InstancioServiceProvider.TypeInstantiator>> providerEntries) {
-        strategies = new InstantiationStrategy[]{
-                new ServiceProviderInstantiationStrategy(providerEntries),
-                new NoArgumentConstructorInstantiationStrategy(),
-                UnsafeInstantiationStrategy.getInstance(),
-                ReflectionFactoryInstantiationStrategy.getInstance(),
-                new LeastArgumentsConstructorInstantiationStrategy()
+        instanceCreators = new InstanceCreator[]{
+                new ServiceProviderInstanceCreator(providerEntries),
+                new NoArgumentConstructorInstanceCreator(),
+                UnsafeInstanceCreator.getInstance(),
+                ReflectionFactoryInstanceCreator.getInstance(),
+                new LeastArgumentsConstructorInstanceCreator()
         };
     }
 
     @Nullable
     public <T> T instantiate(final Class<T> klass) {
-        for (InstantiationStrategy strategy : strategies) {
-            final T instance = createInstance(klass, strategy);
+        for (InstanceCreator creator : instanceCreators) {
+            final T instance = createInstance(klass, creator);
             if (instance != null) {
                 return instance;
             }
@@ -56,15 +56,15 @@ public class Instantiator {
 
     @Nullable
     @SuppressWarnings(Sonar.CATCH_EXCEPTION_INSTEAD_OF_THROWABLE)
-    private <T> T createInstance(final Class<T> klass, final InstantiationStrategy strategy) {
+    private <T> T createInstance(final Class<T> klass, final InstanceCreator creator) {
         try {
-            LOG.trace("{}: attempting to instantiate {}", strategy.getClass(), klass);
-            return strategy.createInstance(klass);
+            LOG.trace("{}: attempting to instantiate {}", creator.getClass(), klass);
+            return creator.createInstance(klass);
         } catch (InstancioApiException ex) {
             throw ex;
         } catch (Throwable ex) { // catches java.lang.InstantiationError
             ExceptionUtils.logException("{}: failed instantiating {}",
-                    ex, strategy.getClass().getSimpleName(), klass);
+                    ex, creator.getClass().getSimpleName(), klass);
         }
         return null;
     }

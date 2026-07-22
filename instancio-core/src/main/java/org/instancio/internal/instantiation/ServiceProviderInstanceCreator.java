@@ -16,7 +16,7 @@
 package org.instancio.internal.instantiation;
 
 import org.instancio.internal.spi.ProviderEntry;
-import org.instancio.spi.InstancioServiceProvider;
+import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioSpiException;
 import org.jspecify.annotations.Nullable;
 
@@ -25,28 +25,27 @@ import java.util.List;
 /**
  * Attempts to instantiate classes via the SPI.
  */
-class ServiceProviderInstantiationStrategy implements InstantiationStrategy {
+class ServiceProviderInstanceCreator implements InstanceCreator {
 
-    private final List<ProviderEntry<InstancioServiceProvider.TypeInstantiator>> providerEntries;
+    private final List<ProviderEntry<TypeInstantiator>> providerEntries;
 
-    ServiceProviderInstantiationStrategy(final List<ProviderEntry<InstancioServiceProvider.TypeInstantiator>> providerEntries) {
+    ServiceProviderInstanceCreator(final List<ProviderEntry<TypeInstantiator>> providerEntries) {
         this.providerEntries = providerEntries;
     }
 
     @Nullable
     @Override
     public <T> T createInstance(final Class<T> klass) {
-        for (ProviderEntry<InstancioServiceProvider.TypeInstantiator> entry : providerEntries) {
+        for (ProviderEntry<TypeInstantiator> entry : providerEntries) {
             final Object result = entry.getProvider().instantiate(klass);
 
             if (result != null) {
                 if (!klass.isAssignableFrom(result.getClass())) {
-                    throw new InstancioSpiException(String.format(
-                            "%s instantiated an object of invalid type:\n" +
-                                    " -> %s\n" +
-                                    "Expected an instance of:\n" +
-                                    " -> %s",
-                            entry.getInstancioProviderClass(), result.getClass(), klass));
+                    throw new InstancioSpiException("""
+                            %s instantiated an object of invalid type:
+                             -> %s
+                            Expected an instance of:
+                             -> %s""".formatted(entry.getInstancioProviderClass(), result.getClass(), klass));
                 }
                 return klass.cast(result);
             }

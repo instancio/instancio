@@ -24,12 +24,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Uses {@code sun.misc.Unsafe} to instantiate objects.
  */
-final class UnsafeInstantiationStrategy implements InstantiationStrategy {
-    private static final Logger LOG = LoggerFactory.getLogger(UnsafeInstantiationStrategy.class);
+final class UnsafeInstanceCreator implements InstanceCreator {
+    private static final Logger LOG = LoggerFactory.getLogger(UnsafeInstanceCreator.class);
 
     private final boolean isUnsafeAvailable;
 
-    private UnsafeInstantiationStrategy() {
+    private UnsafeInstanceCreator() {
         isUnsafeAvailable = ReflectionUtils.loadClass("sun.misc.Unsafe") != null;
 
         if (!isUnsafeAvailable) {
@@ -43,7 +43,7 @@ final class UnsafeInstantiationStrategy implements InstantiationStrategy {
         }
     }
 
-    static InstantiationStrategy getInstance() {
+    static InstanceCreator getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -61,6 +61,6 @@ final class UnsafeInstantiationStrategy implements InstantiationStrategy {
     }
 
     private static final class Holder {
-        private static final InstantiationStrategy INSTANCE = new UnsafeInstantiationStrategy();
+        private static final InstanceCreator INSTANCE = new UnsafeInstanceCreator();
     }
 }

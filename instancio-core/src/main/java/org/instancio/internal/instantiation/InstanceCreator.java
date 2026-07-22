@@ -15,9 +15,16 @@
  */
 package org.instancio.internal.instantiation;
 
-public class InstantiationStrategyException extends RuntimeException {
+import org.instancio.documentation.InternalApi;
+import org.jspecify.annotations.Nullable;
 
-    public InstantiationStrategyException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+/**
+ * A strategy for creating an instance of a class, without populating it.
+ * Implementations are tried in order by {@link Instantiator}.
+ */
+@InternalApi
+public interface InstanceCreator {
+
+    @Nullable
+    <T> T createInstance(Class<T> klass);
 }

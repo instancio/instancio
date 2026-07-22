@@ -19,11 +19,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LeastArgumentsConstructorInstantiationStrategyTest {
+class LeastArgumentsConstructorInstanceCreatorTest {
 
     private static final String EXPECTED_CONSTRUCTOR = "expected-constructor";
 
-    private final InstantiationStrategy strategy = new LeastArgumentsConstructorInstantiationStrategy();
+    private final InstanceCreator strategy = new LeastArgumentsConstructorInstanceCreator();
 
     @Test
     void instantiate() {

@@ -30,9 +30,9 @@ import java.util.TreeSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class NoArgumentConstructorInstantiationStrategyTest {
+class NoArgumentConstructorInstanceCreatorTest {
 
-    private final InstantiationStrategy strategy = new NoArgumentConstructorInstantiationStrategy();
+    private final InstanceCreator strategy = new NoArgumentConstructorInstanceCreator();
 
     @ValueSource(classes = {
             ArrayList.class,
@@ -58,7 +58,7 @@ class NoArgumentConstructorInstantiationStrategyTest {
     void createInstanceFails() {
         final Class<?> klass = WithDefaultConstructorThrowingError.class;
         assertThatThrownBy(() -> strategy.createInstance(klass))
-                .isInstanceOf(InstantiationStrategyException.class)
+                .isInstanceOf(InstanceCreationException.class)
                 .hasMessage("Error instantiating %s", klass);
     }
 }
