@@ -66,15 +66,8 @@ final class GeneratorSupport {
         }
 
         final Class<?> typeArg = TypeUtils.getGenericSuperclassTypeArgument(generator.getClass());
-        if (typeArg != null) {
-            if (type.isAssignableFrom(typeArg)) {
-                return true;
-            }
-            final Class<?> equivalent = PrimitiveWrapperBiLookup.getEquivalent(typeArg);
-            return equivalent != null && type.isAssignableFrom(equivalent);
-        }
-        // couldn't determine type arg ('this' is probably a lambda)
-        return false;
+        // a null typeArg couldn't be determined ('this' is probably a lambda)
+        return typeArg != null && PrimitiveWrapperBiLookup.isAssignableConsideringBoxing(type, typeArg);
     }
 
     @Nullable

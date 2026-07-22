@@ -52,6 +52,14 @@ public final class PrimitiveWrapperBiLookup {
         return CORE_TYPES.get(primitiveOrWrapper);
     }
 
+    public static boolean isAssignableConsideringBoxing(final Class<?> target, final Class<?> source) {
+        if (target.isAssignableFrom(source)) {
+            return true;
+        }
+        final Class<?> equivalent = getEquivalent(source);
+        return equivalent != null && target.isAssignableFrom(equivalent);
+    }
+
     private PrimitiveWrapperBiLookup() {
         // non-instantiable
     }
