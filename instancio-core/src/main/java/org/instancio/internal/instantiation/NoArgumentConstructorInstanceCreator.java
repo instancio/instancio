@@ -20,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 
-class NoArgumentConstructorInstantiationStrategy implements InstantiationStrategy {
+class NoArgumentConstructorInstanceCreator implements InstanceCreator {
 
     @Nullable
     @Override
@@ -34,7 +34,7 @@ class NoArgumentConstructorInstantiationStrategy implements InstantiationStrateg
             ReflectionUtils.setAccessible(ctor);
             return (T) ctor.newInstance();
         } catch (Exception ex) {
-            throw new InstantiationStrategyException("Error instantiating " + klass, ex);
+            throw new InstanceCreationException("Error instantiating " + klass, ex);
         }
     }
 

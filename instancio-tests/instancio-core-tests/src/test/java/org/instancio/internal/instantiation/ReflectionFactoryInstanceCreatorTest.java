@@ -26,13 +26,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ReflectionFactoryInstantiationStrategyTest {
+class ReflectionFactoryInstanceCreatorTest {
 
     private static final Class<?> CLASS_WITHOUT_DEFAULT_CTOR = IntegerHolderWithoutDefaultConstructor.class;
 
     @Spy
     @InjectMocks
-    private ReflectionFactoryInstantiationStrategy strategy;
+    private ReflectionFactoryInstanceCreator strategy;
 
     @Test
     void createInstanceSuccessful() {

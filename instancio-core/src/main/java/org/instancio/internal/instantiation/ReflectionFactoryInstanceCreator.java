@@ -24,12 +24,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Uses {@code sun.reflect.ReflectionFactory} to instantiate objects.
  */
-final class ReflectionFactoryInstantiationStrategy implements InstantiationStrategy {
-    private static final Logger LOG = LoggerFactory.getLogger(ReflectionFactoryInstantiationStrategy.class);
+final class ReflectionFactoryInstanceCreator implements InstanceCreator {
+    private static final Logger LOG = LoggerFactory.getLogger(ReflectionFactoryInstanceCreator.class);
 
     private final boolean isReflectionFactoryAvailable;
 
-    private ReflectionFactoryInstantiationStrategy() {
+    private ReflectionFactoryInstanceCreator() {
         isReflectionFactoryAvailable = ReflectionUtils.loadClass(
                 "sun.reflect.ReflectionFactory") != null;
 
@@ -38,7 +38,7 @@ final class ReflectionFactoryInstantiationStrategy implements InstantiationStrat
         }
     }
 
-    static InstantiationStrategy getInstance() {
+    static InstanceCreator getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -56,7 +56,7 @@ final class ReflectionFactoryInstantiationStrategy implements InstantiationStrat
     }
 
     private static final class Holder {
-        private static final InstantiationStrategy INSTANCE =
-                new ReflectionFactoryInstantiationStrategy();
+        private static final InstanceCreator INSTANCE =
+                new ReflectionFactoryInstanceCreator();
     }
 }

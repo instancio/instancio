@@ -26,13 +26,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UnsafeInstantiationStrategyTest {
+class UnsafeInstanceCreatorTest {
 
     private static final Class<?> CLASS_WITHOUT_DEFAULT_CTOR = IntegerHolderWithoutDefaultConstructor.class;
 
     @Spy
     @InjectMocks
-    private UnsafeInstantiationStrategy strategy;
+    private UnsafeInstanceCreator strategy;
 
     @Test
     void createInstanceSuccessful() {

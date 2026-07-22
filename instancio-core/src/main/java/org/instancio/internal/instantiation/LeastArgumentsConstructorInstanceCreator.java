@@ -30,7 +30,7 @@ import java.util.function.Predicate;
  * the least number of arguments.
  */
 @SuppressWarnings("UnnecessaryLambda")
-class LeastArgumentsConstructorInstantiationStrategy implements InstantiationStrategy {
+class LeastArgumentsConstructorInstanceCreator implements InstanceCreator {
 
     private static final Predicate<Constructor<?>> NON_ZERO_ARG = c -> c.getParameterCount() > 0;
     private static final Predicate<Constructor<?>> NOT_BUILDER = c ->
