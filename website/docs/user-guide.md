@@ -3297,8 +3297,8 @@ interface PersonFeed extends Feed {
     @WithStringMapper(StringByteArrayMapper.class)
     FeedSpec<byte[]> firstName();
 
-    class StringByteArrayMapper implements Function<String, ByteArray> {
-        public String process(String input) {
+    class StringByteArrayMapper implements Function<String, byte[]> {
+        public byte[] apply(String input) {
             return input.getBytes();
         }
     }
@@ -3891,7 +3891,7 @@ public class AnnotationProcessorImpl implements AnnotationProcessor {
 
     @AnnotationHandler
     void withKeys(MapWithKeys annotation, MapGeneratorSpec<String, ?> mapSpec) {
-        mapSpec.withKeys(annotation.values());
+        mapSpec.withKeys(annotation.value());
     }
 
     @AnnotationHandler
