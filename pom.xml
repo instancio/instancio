@@ -77,7 +77,7 @@
         <version.maven-compiler-plugin>3.15.0</version.maven-compiler-plugin>
         <version.maven-enforcer-plugin>3.6.3</version.maven-enforcer-plugin>
         <version.maven-gpg-plugin>3.2.8</version.maven-gpg-plugin>
-        <version.maven-jar-plugin>3.5.0</version.maven-jar-plugin>
+        <version.maven-jar-plugin>3.5.1</version.maven-jar-plugin>
         <version.maven-javadoc-plugin>3.12.0</version.maven-javadoc-plugin>
         <version.maven-pmd-plugin>3.28.0</version.maven-pmd-plugin>
         <version.pmd>7.26.0</version.pmd>
