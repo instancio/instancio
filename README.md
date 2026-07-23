@@ -242,7 +242,6 @@ A big thank you to the current project sponsors:
 
 and individual backers:
 
-- [@darthblonderss](https://github.com/darthblonderss)
 - [@mevlana14](https://github.com/mevlana14)
 
 Thanks to [JetBrains](https://jb.gg/OpenSource) for supporting this project with their open source licenses.
