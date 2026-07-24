@@ -15,26 +15,12 @@
  */
 package org.instancio.internal.util;
 
-import org.instancio.exception.InstancioException;
-import org.jspecify.annotations.Nullable;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.RecordComponent;
 
 public final class RecordUtils {
 
-    public static <T> T instantiate(final Class<T> recordClass, @Nullable final Object... args) {
-        try {
-            Verify.isTrue(recordClass.isRecord(), "Class '%s' is not a record!", recordClass.getName());
-            final Constructor<T> ctor = getCanonicalConstructor(recordClass);
-            ReflectionUtils.setAccessible(ctor);
-            return ctor.newInstance(args);
-        } catch (Exception ex) {
-            throw new InstancioException("Error instantiating a record: " + recordClass, ex);
-        }
-    }
-
-    public static Class<?>[] getComponentTypes(final Class<?> recordClass) {
+    private static Class<?>[] getComponentTypes(final Class<?> recordClass) {
         final RecordComponent[] components = recordClass.getRecordComponents();
         final Class<?>[] args = new Class<?>[components.length];
         for (int i = 0; i < args.length; i++) {
@@ -43,9 +29,15 @@ public final class RecordUtils {
         return args;
     }
 
-    private static <T> Constructor<T> getCanonicalConstructor(final Class<T> recordClass) throws NoSuchMethodException {
+    public static <T> Constructor<T> getCanonicalConstructor(final Class<T> recordClass) {
         final Class<?>[] componentTypes = getComponentTypes(recordClass);
-        return recordClass.getDeclaredConstructor(componentTypes);
+
+        try {
+            final Constructor<T> constructor = recordClass.getDeclaredConstructor(componentTypes);
+            return ReflectionUtils.setAccessible(constructor);
+        } catch (Exception ex) {
+            throw Fail.withInternalError(ex);
+        }
     }
 
     private RecordUtils() {

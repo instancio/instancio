@@ -24,7 +24,9 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.settings.AssignmentType;
 import org.instancio.settings.FeedDataAccess;
 import org.instancio.settings.FeedDataEndAction;
+import org.instancio.settings.InstantiationStrategy;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnConstructorError;
 import org.instancio.settings.OnFeedPropertyUnmatched;
 import org.instancio.settings.OnSetFieldError;
 import org.instancio.settings.OnSetMethodError;
@@ -35,6 +37,7 @@ import org.instancio.settings.Settings;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -88,6 +91,39 @@ public final class ErrorMessageUtils {
                 keyDesc(Keys.FAIL_ON_MAX_DEPTH_REACHED),
                 keyDesc(Keys.MAX_DEPTH),
                 keyDesc(Keys.FAIL_ON_MAX_DEPTH_REACHED)
+        );
+    }
+
+    public static String errorInvokingConstructor(final InternalNode node, final Constructor<?> constructor) {
+        // The strategy to suggest removing depends on which one selected the
+        // failing constructor: only NO_ARGS can produce a parameterless constructor
+        final String strategy = String.valueOf(constructor.getParameterCount() == 0
+                ? InstantiationStrategy.NO_ARGS
+                : InstantiationStrategy.ALL_ARGS);
+
+        return """
+                failed instantiating an object via constructor for node:
+
+                %s
+
+                 -> Constructor: %s
+
+                This error was thrown because the %s setting is set to %s
+
+                To resolve this error:
+
+                 -> ensure generated values satisfy the constructor's validation logic
+                 -> set %s to %s to fall back to instantiation without a constructor
+                 -> remove %s from %s to disable instantiation via this constructor\
+                """.formatted(
+                nodePathToRootBlock(node),
+                constructor,
+                keyDesc(Keys.ON_CONSTRUCTOR_ERROR),
+                OnConstructorError.FAIL,
+                keyDesc(Keys.ON_CONSTRUCTOR_ERROR),
+                OnConstructorError.FALLBACK,
+                strategy,
+                keyDesc(Keys.INSTANTIATION_STRATEGIES)
         );
     }
 

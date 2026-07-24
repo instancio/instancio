@@ -216,6 +216,12 @@ public final class ReflectionUtils {
         return Modifier.isInterface(modifiers) || Modifier.isAbstract(modifiers);
     }
 
+    @SuppressWarnings(Sonar.USE_INSTANCEOF)
+    public static boolean isBuilderConstructor(final Constructor<?> ctor) {
+        return ctor.getParameterCount() == 1
+                && "Builder".equals(ctor.getParameterTypes()[0].getSimpleName());
+    }
+
     public static boolean neitherNullNorPrimitiveWithDefaultValue(final Class<?> type, @Nullable final Object value) {
         return !Objects.equals(ObjectUtils.defaultValue(type), value);
     }

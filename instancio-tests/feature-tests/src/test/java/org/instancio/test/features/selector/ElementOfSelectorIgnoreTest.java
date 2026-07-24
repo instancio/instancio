@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.selector;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 import org.instancio.Model;
@@ -23,6 +24,7 @@ import org.instancio.exception.UnusedSelectorException;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnConstructorError;
 import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.misc.AbcArrayHolder;
 import org.instancio.test.support.pojo.misc.AbcListHolder;
@@ -31,6 +33,7 @@ import org.instancio.test.support.pojo.misc.StringsDef;
 import org.instancio.test.support.pojo.record.StringsAbcRecord;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -177,10 +180,66 @@ class ElementOfSelectorIgnoreTest {
     }
 
     /**
+     * A type that cannot be instantiated without failing the test. Used to
+     * assert that an ignored field is never generated in the first place.
+     */
+    private static class NotGeneratable {
+        NotGeneratable() {
+            // NOTE: the test must set ON_CONSTRUCTOR_ERROR to FAIL, otherwise
+            // the default fallback silently allocates the object instead.
+            // Throwing an Error is not sufficient: Constructor.newInstance()
+            // wraps it in an InvocationTargetException, which is an Exception.
+            throw new IllegalStateException("An ignored field should not be generated");
+        }
+    }
+
+    /**
+     * The only constructor takes generated values as arguments, therefore the
+     * element does not exist until its arguments have been generated.
+     */
+    @SuppressWarnings("unused")
+    private static class ElementWithConstructor {
+        private final String a;                 // constructor parameter
+        private @Nullable String b;             // assignment origin, not a parameter
+        private @Nullable NotGeneratable c;     // ignored, not a parameter
+
+        ElementWithConstructor(final String a) {
+            this.a = a;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private static class ElementWithConstructorHolder {
+        private @Nullable List<ElementWithConstructor> list;
+    }
+
+    /**
      * The container holding the elements may be an array or hold record elements.
      */
     @Nested
     class ContainerVariations {
+
+        /**
+         * The element is created via a value-passing constructor whose argument
+         * is delayed by an assignment. This makes the engine generate the
+         * element's non-parameter fields up front, before the constructor is
+         * invoked. An ignored field must be skipped on that path too.
+         */
+        @Test
+        void elementCreatedViaValuePassingConstructor() {
+            final ElementWithConstructorHolder result = Instancio.of(ElementWithConstructorHolder.class)
+                    .withSetting(Keys.ON_CONSTRUCTOR_ERROR, OnConstructorError.FAIL)
+                    .assign(Assign.valueOf(field(ElementWithConstructor.class, "b"))
+                            .to(field(ElementWithConstructor.class, "a")))
+                    .ignore(elementOf(field(ElementWithConstructorHolder.class, "list"))
+                            .target(field(ElementWithConstructor.class, "c")))
+                    .create();
+
+            assertThat(result.list).hasSize(SIZE).allSatisfy(element -> {
+                assertThat(element.c).isNull();
+                assertThat(element.a).isNotBlank().isEqualTo(element.b);
+            });
+        }
 
         @Test
         void arrayContainer() {

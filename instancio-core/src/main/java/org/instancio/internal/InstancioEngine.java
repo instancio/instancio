@@ -36,6 +36,8 @@ import org.instancio.internal.generator.ContainerCreateFunction;
 import org.instancio.internal.generator.GeneratorResult;
 import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.generator.InternalGeneratorHint;
+import org.instancio.internal.instantiation.Instantiator;
+import org.instancio.internal.nodes.ConstructorDescriptor;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.selectors.ElementFrameStack;
@@ -44,9 +46,9 @@ import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ErrorMessageUtils;
 import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.ObjectUtils;
-import org.instancio.internal.util.RecordUtils;
 import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.settings.Keys;
+import org.instancio.settings.OnConstructorError;
 import org.instancio.support.Log;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
@@ -58,8 +60,10 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +87,7 @@ import static org.instancio.internal.util.ObjectUtils.defaultIfNull;
 })
 class InstancioEngine {
     private static final Logger LOG = LoggerFactory.getLogger(InstancioEngine.class);
+    private static final Hints POPULATE_ALL_HINTS = Hints.afterGenerate(AfterGenerate.POPULATE_ALL);
 
     private final GeneratorFacade generatorFacade;
     private final ModelContext context;
@@ -91,7 +96,7 @@ class InstancioEngine {
     private final CallbackHandler callbackHandler;
     private final ContainerFactoriesHandler containerFactoriesHandler;
     private final GenerationListener[] listeners;
-    private final AfterGenerate defaultAfterGenerate;
+    private final Hints defaultAfterGenerateHints;
     private final NodeFilter nodeFilter;
     private final AssignerResolver assignerResolver;
     private final AssignmentObjectStore assignmentObjectStore;
@@ -99,6 +104,9 @@ class InstancioEngine {
     private final NullSubstitutorFacade nullSubstitutorFacade;
     private final DelayedNodeQueue delayedNodeQueue = new DelayedNodeQueue();
     private final int maxGenerationAttempts;
+    private final boolean overwriteExistingValues;
+    private final OnConstructorError onConstructorError;
+    private final Instantiator instantiator;
 
     InstancioEngine(InternalModel<?> model) {
         context = model.getModelContext();
@@ -109,9 +117,14 @@ class InstancioEngine {
         assignmentObjectStore = AssignmentObjectStore.create(context);
         elementFrameStack = context.getElementFrameStack();
         nullSubstitutorFacade = new NullSubstitutorFacade(context);
+        instantiator = new Instantiator(
+                context.getServiceProviders().getTypeInstantiators(),
+                context.getSettings().get(Keys.INSTANTIATION_STRATEGIES));
         generatorFacade = new GeneratorFacade(context, nullSubstitutorFacade, assignmentObjectStore);
-        defaultAfterGenerate = context.getSettings().get(Keys.AFTER_GENERATE_HINT);
+        defaultAfterGenerateHints = Hints.afterGenerate(context.getSettings().get(Keys.AFTER_GENERATE_HINT));
         maxGenerationAttempts = context.getSettings().get(Keys.MAX_GENERATION_ATTEMPTS);
+        overwriteExistingValues = context.getSettings().get(Keys.OVERWRITE_EXISTING_VALUES);
+        onConstructorError = context.getSettings().get(Keys.ON_CONSTRUCTOR_ERROR);
         nodeFilter = new NodeFilter(context);
         assignerResolver = AssignerResolver.create(context);
         listeners = new GenerationListener[]{
@@ -176,7 +189,7 @@ class InstancioEngine {
             }
         }
 
-        if (failOnUnprocessed && (delayedNodeQueue.hasRecordNodes() || !delayedNodeQueue.isEmpty())) {
+        if (failOnUnprocessed && (delayedNodeQueue.hasConstructorNodes() || !delayedNodeQueue.isEmpty())) {
             final String msg = AssignmentErrorUtil.getUnresolvedAssignmentErrorMessage(
                     generatorFacade.getUnresolvedAssignments(), delayedNodeQueue);
 
@@ -232,12 +245,11 @@ class InstancioEngine {
         }
 
         return switch (node.getNodeKind()) {
-            case JDK -> generateValue(node);
-            case POJO -> generatePojo(node);
+            case JDK -> generateLeafNode(node);
+            case POJO, RECORD -> generatePojoOrRecord(node);
             case COLLECTION -> generateCollection(node);
             case MAP -> generateMap(node);
             case ARRAY -> generateArray(node);
-            case RECORD -> generateRecord(node);
             case CONTAINER -> generateContainer(node);
         };
     }
@@ -246,14 +258,42 @@ class InstancioEngine {
         return createObject(node, false);
     }
 
-    private GeneratorResult generatePojo(final InternalNode node) {
-        final GeneratorResult nodeResult = generateValue(node);
+    private GeneratorResult generateLeafNode(final InternalNode node) {
+        final GeneratorResult result = generateValue(node);
+        return result.isUnresolved() ? instantiateTargetClassOf(node) : result;
+    }
 
-        if (!nodeResult.isDelayed()) {
-            populateChildren(node.getChildren(), nodeResult);
+    private GeneratorResult generatePojoOrRecord(final InternalNode node) {
+        final GeneratorResult generatorResult = generateValue(node);
+
+        if (!generatorResult.isUnresolved()) {
+            return storeAndPopulateAllChildren(node, generatorResult).applyBuildFunctionIfPresent();
+        }
+        if (node.isCyclic()) {
+            return generatorResult;
         }
 
-        return nodeResult.applyBuildFunctionIfPresent();
+        final ConstructorDescriptor descriptor = node.getConstructorDescriptor();
+        if (descriptor != null) {
+            return generateViaConstructor(node, descriptor);
+        }
+
+        return storeAndPopulateAllChildren(node, instantiateTargetClassOf(node));
+    }
+
+    /**
+     * Makes the object available to its own descendants as a back-reference
+     * target, then populates every child. Used whenever the object exists in
+     * full before any child is generated, which is the case for all but a
+     * value-passing constructor.
+     */
+    private GeneratorResult storeAndPopulateAllChildren(
+            final InternalNode node,
+            final GeneratorResult generatorResult) {
+
+        generatorFacade.storeGeneratedPojo(node, generatorResult);
+        populateChildren(node.getChildren(), generatorResult);
+        return generatorResult;
     }
 
     private void populateArray(final InternalNode node, final GeneratorResult result) {
@@ -797,94 +837,245 @@ class InstancioEngine {
                 requiredMin - 1, requiredMin, actualSize, nodePathToRootBlock(node));
     }
 
-    private GeneratorResult generateRecord(final InternalNode node) {
-        // Handle the case where user supplies a generator for creating a record,
-        final GeneratorResult customRecord = generateValue(node);
+    private GeneratorResult generateViaConstructor(
+            final InternalNode node,
+            final ConstructorDescriptor descriptor) {
 
-        if (!customRecord.isUnresolved()) {
-            populateChildren(node.getChildren(), customRecord);
-            return customRecord;
+        final Object spiInstance = instantiator.instantiateViaSpi(node.getTargetClass());
+        if (spiInstance != null) {
+            return storeAndPopulateAllChildren(
+                    node, GeneratorResult.resolved(spiInstance, POPULATE_ALL_HINTS));
         }
 
-        final List<InternalNode> children = node.getChildren();
-        final @Nullable Object[] args = new Object[children.size()];
-        final Class<?>[] ctorArgs = RecordUtils.getComponentTypes(node.getTargetClass());
+        final @Nullable Object[] args = new Object[descriptor.getConstructorParameterNodes().size()];
 
-        if (ctorArgs.length != args.length) {
-            LOG.debug("Record {} has {} constructor arguments, but the node has {} children. Returning a null result",
-                    node.getTargetClass(), ctorArgs.length, args.length);
+        final Deque<DelayedConstructorComponentNode> delayedArgQueue = generateConstructorArguments(descriptor, args);
 
-            return GeneratorResult.nullResult();
+        // Only non-parameter entries are written to this map, and none can be
+        // in the queue until preGenerateNonParameterChildren() has added them
+        final Map<InternalNode, GeneratorResult> preGenerated = new IdentityHashMap<>();
+
+        resolveDelayedComponents(delayedArgQueue, args, preGenerated);
+
+        if (!delayedArgQueue.isEmpty()
+                && !descriptor.getNonParameterChildren().isEmpty()
+                && overwriteExistingValues) {
+
+            preGenerateNonParameterChildren(descriptor.getNonParameterChildren(), delayedArgQueue, preGenerated);
+            resolveDelayedComponents(delayedArgQueue, args, preGenerated);
         }
 
-        // Record's constructor argument nodes can depend on each other.
-        // If a node depends on a subsequent node, add it to the queue,
-        // along with the index, and attempt to generate it again later.
-        final Deque<DelayedRecordComponentNode> recordComponentQueue = new ArrayDeque<>();
+        // Constructor arguments themselves can't be delayed because
+        // we need all of them at once to invoke the constructor.
+        // Therefore, if an argument is unavailable, the entire node is delayed.
+        if (!delayedArgQueue.isEmpty()) {
+            delayedNodeQueue.addConstructorNode(node);
+            return GeneratorResult.delayedResult();
+        }
+
+        delayedNodeQueue.removeConstructorNode(node);
+        ObjectUtils.replaceNullArgsOfPrimitiveParameters(args, descriptor.getParameterTypes());
+        final Object obj = invokeConstructor(node, descriptor, args);
+
+        if (obj == null) {
+            return generateViaInstantiator(node);
+        }
+
+        final Hints hints = node.is(NodeKind.RECORD) ? defaultAfterGenerateHints : POPULATE_ALL_HINTS;
+        final GeneratorResult generatorResult = GeneratorResult.resolved(obj, hints);
+
+        // A no-argument constructor produces a fully-formed object before any child
+        // is populated, so it can be referenced by its own descendants. With a
+        // value-passing constructor the object does not exist until its arguments
+        // have been generated, therefore back-references to it are not possible.
+        if (descriptor.getConstructorParameterNodes().isEmpty()) {
+            generatorFacade.storeGeneratedPojo(node, generatorResult);
+        }
+
+        populateChildren(descriptor.getNonParameterChildren(), generatorResult, preGenerated);
+
+        return generatorResult;
+    }
+
+    @SuppressWarnings("PMD.UseVarargs")
+    private Deque<DelayedConstructorComponentNode> generateConstructorArguments(
+            final ConstructorDescriptor descriptor,
+            final @Nullable Object[] args) {
+
+        final List<InternalNode> parameterNodes = descriptor.getConstructorParameterNodes();
+        final Deque<DelayedConstructorComponentNode> delayedArgQueue = new ArrayDeque<>();
 
         for (int i = 0; i < args.length; i++) {
-            final InternalNode child = children.get(i);
+            final InternalNode parameterNode = parameterNodes.get(i);
 
-            // Ignored record component is left at its default value (as in the path below)
-            if (context.isEffectivelyIgnored(child)) {
-                args[i] = ObjectUtils.defaultValue(ctorArgs[i]);
+            // An ignored parameter is left null; if it is primitive,
+            // the null is replaced with a default value before invocation
+            if (context.isEffectivelyIgnored(parameterNode)) {
+                continue;
+            }
+
+            final GeneratorResult result = createObject(parameterNode);
+
+            if (result.isDelayed()) {
+                LOG.trace("Delayed constructor arg: {}", parameterNode);
+                delayedArgQueue.add(new DelayedConstructorComponentNode(parameterNode, i));
+            } else {
+                args[i] = result.getValue();
+            }
+        }
+        return delayedArgQueue;
+    }
+
+    private void resolveDelayedComponents(
+            final Deque<DelayedConstructorComponentNode> delayedComponentQueue,
+            final @Nullable Object[] args,
+            final Map<InternalNode, GeneratorResult> preGenerated) {
+
+        int threshold = delayedComponentQueue.size();
+
+        while (!delayedComponentQueue.isEmpty()) {
+            final DelayedConstructorComponentNode entry = delayedComponentQueue.removeLast();
+            final GeneratorResult result = createObject(entry.node());
+
+            LOG.trace("Attempt to create delayed constructor component: {}", entry.node());
+
+            if (result.isDelayed()) {
+                threshold--;
+                delayedComponentQueue.addFirst(entry);
+
+            } else if (!result.isUnresolved()) {
+                if (entry.isNonParameterField()) {
+                    preGenerated.put(entry.node(), result);
+                } else {
+                    args[entry.argIndex()] = result.getValue();
+                }
+            }
+            if (threshold == 0) {
+                break;
+            }
+        }
+    }
+
+    private void preGenerateNonParameterChildren(
+            final List<InternalNode> nonParameterChildren,
+            final Deque<DelayedConstructorComponentNode> delayedComponentQueue,
+            final Map<InternalNode, GeneratorResult> preGenerated) {
+
+        for (InternalNode child : nonParameterChildren) {
+            // Caller guarantees overwriteExistingValues is true,
+            // so NodeFilter skips its existing-value check.
+            // The owner is never read and is null since it doesn't exist yet
+            final NodeFilterResult filterResult = nodeFilter.filter(
+                    child, AfterGenerate.POPULATE_ALL, /*owner=*/ null);
+
+            if (filterResult != NodeFilterResult.GENERATE || context.isEffectivelyIgnored(child)) {
                 continue;
             }
 
             final GeneratorResult result = createObject(child);
 
             if (result.isDelayed()) {
-                LOG.trace("Delayed record arg: {}", child);
-                recordComponentQueue.add(new DelayedRecordComponentNode(child, i));
-            } else {
-                args[i] = result.getValue() == null
-                        ? ObjectUtils.defaultValue(ctorArgs[i])
-                        : result.getValue();
-            }
-        }
-
-        int threshold = recordComponentQueue.size();
-
-        while (!recordComponentQueue.isEmpty()) {
-            final DelayedRecordComponentNode entry = recordComponentQueue.removeLast();
-            final GeneratorResult result = createObject(entry.getNode());
-
-            LOG.trace("Attempt to create delayed record component: {}", entry.getNode());
-
-            if (result.isDelayed()) {
-                threshold--;
-                recordComponentQueue.addFirst(entry);
-
+                LOG.trace("Delayed non-parameter field: {}", child);
+                delayedComponentQueue.add(DelayedConstructorComponentNode.forNonParameterField(child));
             } else if (!result.isUnresolved()) {
-                args[entry.getArgIndex()] = result.getValue();
-            }
-            if (threshold == 0) {
-                break;
+                preGenerated.put(child, result);
             }
         }
+    }
 
-        // Record components themselves can't be delayed because
-        // we need all of them at once to create a record.
-        // Therefore, if a component is unavailable, the entire record is delayed.
-        if (!recordComponentQueue.isEmpty()) {
-            delayedNodeQueue.addRecord(node);
-            return GeneratorResult.delayedResult();
+    @Nullable
+    @SuppressWarnings("PMD.UseVarargs")
+    private Object invokeConstructor(
+            final InternalNode node,
+            final ConstructorDescriptor descriptor,
+            final @Nullable Object[] args) {
+
+        try {
+            return descriptor.getConstructor().newInstance(args);
+        } catch (Exception ex) {
+            // Wrong type is being passed to a constructor parameter.
+            // Always propagate type mismatch errors as it's most likely a user error.
+            // Without this check, the error would either be reported as an internal
+            // error (for records) or silently swallowed by the constructor fallback.
+            failIfArgumentTypeMismatch(descriptor, args, ex);
+
+            if (node.is(NodeKind.RECORD)) {
+                throw Fail.withInternalError("Error instantiating: %s", node, ex);
+            }
+            if (onConstructorError == OnConstructorError.FAIL) {
+                throw Fail.withUsageError(ErrorMessageUtils.errorInvokingConstructor(
+                        node, descriptor.getConstructor()), ex);
+            }
+            Log.msg(Log.Category.CONSTRUCTOR_FALLBACK,
+                    "Error instantiating {} via constructor (configurable via '{}'). "
+                            + "Falling back to creating the object without a constructor.",
+                    node.getTargetClass(), Keys.ON_CONSTRUCTOR_ERROR.propertyKey());
+            return null;
         }
+    }
 
-        final Object obj = RecordUtils.instantiate(node.getTargetClass(), args);
-        final GeneratorResult generatorResult = GeneratorResult.resolved(
-                obj, Hints.afterGenerate(defaultAfterGenerate));
+    /**
+     * Throws a usage error if any of the {@code args} cannot be assigned
+     * to the corresponding constructor parameter. Does nothing if all the
+     * arguments are compatible, in which case the constructor must have
+     * failed for some other reason.
+     */
+    private static void failIfArgumentTypeMismatch(
+            final ConstructorDescriptor descriptor,
+            final @Nullable Object[] args,
+            final Exception ex) {
 
-        delayedNodeQueue.removeRecord(node);
+        final List<Class<?>> parameterTypes = descriptor.getParameterTypes();
+        final List<InternalNode> parameterNodes = descriptor.getConstructorParameterNodes();
+
+        for (int i = 0; i < args.length; i++) {
+            final Object arg = args[i];
+
+            if (arg != null && !PrimitiveWrapperBiLookup.isAssignableConsideringBoxing(
+                    parameterTypes.get(i), arg.getClass())) {
+
+                final String msg = ErrorMessageUtils.getTypeMismatchErrorMessage(arg, parameterNodes.get(i), ex);
+                throw Fail.withUsageError(msg, ex);
+            }
+        }
+    }
+
+    private GeneratorResult generateViaInstantiator(final InternalNode node) {
+        final GeneratorResult generatorResult = instantiateTargetClassOf(node);
+        populateChildren(node.getChildren(), generatorResult);
         return generatorResult;
+    }
+
+    private GeneratorResult instantiateTargetClassOf(final InternalNode node) {
+        if (node.is(NodeKind.RECORD) && !node.getChildren().isEmpty()) {
+            LOG.trace("{} has no resolved constructor - returning a null result", node);
+            return GeneratorResult.nullResult();
+        }
+
+        final Class<?> targetClass = node.getTargetClass();
+
+        if (ReflectionUtils.isArrayOrConcrete(targetClass)) {
+            final Object object = instantiator.instantiate(targetClass);
+            return GeneratorResult.resolved(object, POPULATE_ALL_HINTS);
+        }
+
+        return GeneratorResult.unresolvedResult();
+    }
+
+    private void populateChildren(
+            final List<InternalNode> children,
+            final GeneratorResult generatorResult) {
+
+        populateChildren(children, generatorResult, Collections.emptyMap());
     }
 
     @SuppressWarnings("PMD.CognitiveComplexity")
     private void populateChildren(
             final List<InternalNode> children,
-            final GeneratorResult generatorResult) {
+            final GeneratorResult generatorResult,
+            final Map<InternalNode, GeneratorResult> preGenerated) {
 
-        if (generatorResult.getValue() == null) {
+        if (generatorResult.getValue() == null || children.isEmpty()) {
             return;
         }
 
@@ -901,11 +1092,14 @@ class InstancioEngine {
             final NodeFilterResult filterResult = nodeFilter.filter(child, action, parentObject);
 
             if (filterResult == NodeFilterResult.GENERATE) {
-                final GeneratorResult result = createObject(child);
+                final GeneratorResult preGeneratedResult = preGenerated.get(child);
+
+                final GeneratorResult result = preGeneratedResult == null
+                        ? createObject(child)
+                        : preGeneratedResult;
 
                 if (result.isDelayed()) {
-                    delayedNodeQueue.addLast(new DelayedNode(child, generatorResult,
-                            elementFrameStack.peek()));
+                    delayedNodeQueue.addLast(new DelayedNode(child, generatorResult, elementFrameStack.peek()));
                 } else {
                     assignValue(parentObject, child, result, assigner);
                 }

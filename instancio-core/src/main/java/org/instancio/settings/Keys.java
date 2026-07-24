@@ -212,6 +212,35 @@ public final class Keys {
             "collection.nullable", Boolean.class, false);
 
     /**
+     * Specifies the ordered list of strategies used to instantiate objects;
+     * default is {@code NO_ARGS, ALL_ARGS, BYPASS_CONSTRUCTOR};
+     * property name {@code instantiation.strategies}.
+     *
+     * <p>Instancio applies the strategies in order, using the first one that
+     * succeeds in producing an instance. A strategy that is not listed is not
+     * used; for example, omitting {@link InstantiationStrategy#ALL_ARGS}
+     * disables instantiation via a value-passing constructor.
+     *
+     * <p>Fields assigned via constructor are not modified afterwards.
+     * Remaining fields are populated as usual, based on {@link #ASSIGNMENT_TYPE}.
+     *
+     * <p>This setting does not apply to records, which are
+     * always created via the canonical constructor.
+     *
+     * @see InstantiationStrategy
+     * @see InstantiationStrategies
+     * @see #ON_CONSTRUCTOR_ERROR
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<InstantiationStrategies> INSTANTIATION_STRATEGIES = registerRequiredNonAdjustable(
+            "instantiation.strategies", InstantiationStrategies.class,
+            InstantiationStrategies.of(
+                    InstantiationStrategy.NO_ARGS,
+                    InstantiationStrategy.ALL_ARGS,
+                    InstantiationStrategy.BYPASS_CONSTRUCTOR));
+
+    /**
      * Specifies minimum value for doubles;
      * default is 1; property name {@code double.min}.
      */
@@ -417,6 +446,22 @@ public final class Keys {
      * @since 1.3.3
      */
     public static final SettingKey<Mode> MODE = registerRequiredNonAdjustable("mode", Mode.class, Mode.STRICT);
+
+    /**
+     * Specifies what should happen if an error occurs
+     * instantiating an object via constructor;
+     * default is {@link OnConstructorError#FALLBACK}; property name {@code on.constructor.error}.
+     *
+     * <p>This setting does not apply to records, which can only
+     * be created via constructor.
+     *
+     * @see OnConstructorError
+     * @see #INSTANTIATION_STRATEGIES
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    public static final SettingKey<OnConstructorError> ON_CONSTRUCTOR_ERROR = registerRequiredNonAdjustable(
+            "on.constructor.error", OnConstructorError.class, OnConstructorError.FALLBACK);
 
     /**
      * Specifies what should happen if a feed property is unmatched when using the {@code applyFeed()} method;

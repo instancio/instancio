@@ -15,6 +15,9 @@
  */
 package org.instancio.internal.util;
 
+import org.instancio.internal.settings.InternalInstantiationStrategies;
+import org.instancio.settings.InstantiationStrategies;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -66,6 +69,7 @@ public final class StringConverters {
         map.put(YearMonth.class, YearMonth::parse);
         map.put(Year.class, Year::parse);
         map.put(UUID.class, UUID::fromString);
+        map.put(InstantiationStrategies.class, InternalInstantiationStrategies::parse);
         return map;
     }
 

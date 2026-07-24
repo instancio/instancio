@@ -111,6 +111,12 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
+            <artifactId>missing-parameter-names-tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
             <artifactId>instancio-junit-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

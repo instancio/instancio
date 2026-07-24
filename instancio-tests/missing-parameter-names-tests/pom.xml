@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.instancio</groupId>
+        <artifactId>instancio-tests</artifactId>
+        <version>6.0.0-RC5-SNAPSHOT</version>
+    </parent>
+    <artifactId>missing-parameter-names-tests</artifactId>
+    <packaging>jar</packaging>
+    <name>Instancio tests: Missing Constructor Parameter Names</name>
+
+    <!-- Verifies behaviour when constructor parameter names cannot be resolved.
+
+         The fixtures in src/main/java are compiled WITHOUT debug information, so
+         they carry no LocalVariableTable; '-parameters' is not enabled anywhere in
+         the build, so they carry no MethodParameters attribute either.
+
+         The tests in src/test/java are compiled normally (debug information on) so
+         that stack traces and assertion output remain usable.
+
+         NOTE: <debug> is used rather than <compilerArgs>, which the root pom's
+         errorprone profiles override via combine.self="override".
+    -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <debug>false</debug>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-test-support</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+        </dependency>
+    </dependencies>
+</project>

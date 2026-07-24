@@ -2343,6 +2343,134 @@ on.set.method.error=IGNORE
 
 See [Configuration](#configuration) for details.
 
+### Instantiation via Constructor
+
+By default, Instancio instantiates a class using its no-argument constructor
+when one is available. The object is then populated via fields or setters
+(based on `Keys.ASSIGNMENT_TYPE`), overwriting any values the constructor may
+have set (see [Initialised Fields](#initialised-fields)).
+
+If a class does **not** declare a no-argument constructor, Instancio looks for a
+constructor whose parameters can all be matched to fields. When such a constructor
+is used, generated values are passed as constructor arguments, and the fields
+assigned by the constructor are **not** re-assigned afterwards; the remaining
+fields are populated as usual.
+
+The order in which these approaches are tried is controlled by
+`Keys.INSTANTIATION_STRATEGIES`, described below.
+
+| `Keys` constant           | Value type                | Default                             | Description                                           |
+|---------------------------|---------------------------|-------------------------------------|-------------------------------------------------------|
+| `INSTANTIATION_STRATEGIES`| `InstantiationStrategies` | `NO_ARGS,ALL_ARGS,BYPASS_CONSTRUCTOR` | Ordered strategies used to instantiate objects      |
+| `ON_CONSTRUCTOR_ERROR`    | `OnConstructorError`      | `FALLBACK`                          | What should happen if the constructor throws an error |
+
+For example, given the following class:
+
+```java linenums="1"
+class Person {
+    private final String firstName; // final, and assigned via constructor
+    private String lastName;        // not final, but assigned via constructor
+    private Integer age;            // not assigned via constructor
+
+    Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    // getters and setters omitted
+}
+```
+
+`Instancio.create(Person.class)` will generate values for `firstName` and `lastName`
+and pass them to the constructor. Since both fields are assigned by the constructor,
+they will not be re-assigned via reflection, even though `lastName` is not `final`.
+The `age` field is not a constructor parameter, so it is populated as usual.
+
+Selectors targeting fields that map to constructor parameters are applied
+to the values passed to the constructor, so the API works the same way
+regardless of how a class is instantiated:
+
+```java linenums="1"
+Person person = Instancio.of(Person.class)
+    .set(field(Person::getFirstName), "Bonnie")
+    .create();
+```
+
+Constructor resolution works as follows:
+
+- Among the value-passing constructor candidates, the one with the most parameters is preferred
+  (note that by default a no-argument constructor, if present, is used before any value-passing constructor).
+- Each constructor parameter is matched to a field by name and compatible type:
+  the parameter type may also be a supertype of the field type
+  (for example, a `Collection` parameter that is defensively copied into a `Set` field),
+  or, for a primitive field, its wrapper type or a supertype thereof.
+  Parameter names are read from the class file's debug information
+  (emitted by default by Maven and Gradle builds), or via reflection
+  if the class was compiled with the `-parameters` option.
+  If parameter names are unavailable, no parameters can be matched.
+- A value-passing constructor is used only if **all** of its parameters
+  can be matched to fields (the `ALL_ARGS` strategy). Otherwise, the class is instantiated
+  without invoking a value-passing constructor and populated via fields or setters.
+  A constructor with an unmatched parameter is never invoked, since the value generated
+  for such a parameter could not be reached by a selector.
+
+!!! info "Records are matched by position, using the canonical constructor, and therefore do not depend on parameter names being available."
+
+Lombok-generated constructors are supported. Classes annotated with `@Value`,
+`@AllArgsConstructor`, `@RequiredArgsConstructor`, or `@Builder` are instantiated
+via constructor as described above, since Lombok-generated parameters take the names
+of the fields they are assigned to. (`@Builder` generates an all-args constructor,
+which is used directly; the generated builder itself is not invoked.)
+
+Note that `@Data` implies `@RequiredArgsConstructor`, which only includes `final`
+and `@NonNull` fields. For a typical `@Data` class, where no fields are `final`,
+this is a no-argument constructor, which has no parameters to match. Such classes
+are therefore populated via fields or setters, as before.
+
+`INSTANTIATION_STRATEGIES` is an ordered list of strategies. Instancio applies
+them in order, using the first that succeeds in producing an instance. A strategy
+that is not listed is not used. The available strategies are:
+
+- `ALL_ARGS` - instantiate via constructor, but only if **all** of the constructor's
+  parameters can be matched to fields; generated values are passed as arguments
+- `NO_ARGS` - instantiate via the no-argument constructor, regardless of its
+  visibility; the object is populated afterwards via fields or setters
+- `BYPASS_CONSTRUCTOR` - allocate an instance without invoking any constructor
+  (where the JVM permits it); the object is populated afterwards via fields or setters
+
+For example, the default `NO_ARGS,ALL_ARGS,BYPASS_CONSTRUCTOR` uses the no-argument
+constructor when available, then a fully-matched constructor, then falls back to
+allocating the object without a constructor. Listing `ALL_ARGS` before `NO_ARGS`
+reverses the first two, so that a class declaring both constructors is created via
+the fully-matched one. Omitting `ALL_ARGS` disables instantiation via a
+value-passing constructor entirely.
+
+The strategies can also be configured in `instancio.properties` as a comma-separated list:
+
+```properties
+instantiation.strategies=NO_ARGS,ALL_ARGS,BYPASS_CONSTRUCTOR
+```
+
+If a constructor that Instancio invokes throws an exception (for example, due to
+validation logic that rejects the generated arguments), the behaviour is determined
+by `ON_CONSTRUCTOR_ERROR`:
+
+- `FALLBACK` (default) - bypass the failed constructor, allocating the object
+  without invoking any constructor and populating it via fields or setters
+- `FAIL` - propagate the error by throwing an exception
+
+`FALLBACK` does **not** resume the strategy list at the next entry: no other
+constructor is attempted. Since allocating an object without a constructor is
+what `BYPASS_CONSTRUCTOR` does, `create()` returns `null` if that strategy is
+not listed. For example, with `ALL_ARGS,NO_ARGS`, a throwing all-args
+constructor yields `null` rather than falling back to the no-argument
+constructor; add `BYPASS_CONSTRUCTOR` to the list, or use `FAIL`, if that is
+not the behaviour you want.
+
+!!! info "Records"
+    Records are always created via the canonical constructor,
+    regardless of the `INSTANTIATION_STRATEGIES` setting.
+
 ### Unmatched Setters
 
 When `Keys.ASSIGNMENT_TYPE` is set to `METHOD`, Instancio parses fields *and* setters declared by a class.
@@ -4088,10 +4216,13 @@ interface TypeInstantiator {
 }
 ```
 
-By default, Instancio attempts to instantiate a class using the default constructor.
-If the default constructor is unavailable or fails (for example, the constructor throws an exception),
-Instancio will attempt to use a constructor with the least number of parameters and pass in default values.
-If the last option also fails, then it resorts to JDK-specific approaches, such as using `sun.misc.Unsafe`.
+By default, Instancio instantiates a class via constructor, passing in generated values
+(see [Instantiation via Constructor](#instantiation-via-constructor)).
+If a suitable constructor cannot be resolved, Instancio attempts to instantiate
+the class using the default constructor. If the default constructor is unavailable
+or fails (for example, the constructor throws an exception), it resorts to JDK-specific
+approaches, such as using `sun.misc.Unsafe`, and finally to invoking a constructor
+with the least number of parameters, passing in default values.
 There may be situations where all the listed options fail, which would result in `null` values
 being generated. Using `TypeInstantiator` allows plugging in custom instantiation logic.
 
@@ -4109,6 +4240,7 @@ The table below summarises these categories and their corresponding log levels:
 
 | Level   | Category                                                                                                                                                     |
 |---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `WARN`  | **`org.instancio.log.constructor.fallback`**{ title="Logs a message when instantiating an object via constructor fails and Instancio falls back to creating the object without invoking a constructor." } |
 | `WARN`  | **`org.instancio.log.max.depth.reached`**{ title="Logs a message when the maximum object graph depth limit is reached." }                                    |
 | `WARN`  | **`org.instancio.log.max.generation.attempts.reached`**{ title="Logs a message when the maximum number of generation attempts is reached." }                 |
 | `DEBUG` | **`org.instancio.log.properties`**{ title="Logs whether the instancio.properties file was found on the classpath or if default properties are being used." } |

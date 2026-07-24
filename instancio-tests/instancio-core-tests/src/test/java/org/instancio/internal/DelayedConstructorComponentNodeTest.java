@@ -15,22 +15,23 @@
  */
 package org.instancio.internal;
 
+import org.instancio.internal.nodes.InternalNode;
 import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DelayedRecordComponentNodeTest {
+class DelayedConstructorComponentNodeTest {
 
     @Test
     void verifyToString() {
-        final DelayedRecordComponentNode delayedNode = new DelayedRecordComponentNode(
-                Fixtures.node(String.class), 2);
+        final InternalNode node = Fixtures.node(String.class);
+        final DelayedConstructorComponentNode delayedNode = new DelayedConstructorComponentNode(node, 2);
 
         assertThat(delayedNode).hasToString(
-                "DelayedRecordComponentNode[Node[String, depth=0, type=String], 2]");
+                "DelayedComponentNode[Node[String, depth=0, type=String], 2]");
 
-        assertThat(new DelayedRecordComponentNode(null, 1))
-                .hasToString("DelayedRecordComponentNode[null, 1]");
+        assertThat(DelayedConstructorComponentNode.forNonParameterField(node))
+                .hasToString("DelayedComponentNode[Node[String, depth=0, type=String], -1]");
     }
 }

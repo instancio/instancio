@@ -21,6 +21,12 @@ import org.instancio.InstancioApi;
 import org.instancio.TargetSelector;
 import org.instancio.exception.UnresolvedAssignmentException;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.junit.WithSettings;
+import org.instancio.settings.InstantiationStrategies;
+import org.instancio.settings.InstantiationStrategy;
+import org.instancio.settings.Keys;
+import org.instancio.settings.OnConstructorError;
+import org.instancio.settings.Settings;
 import org.instancio.test.support.pojo.constructor.StringsAbcCtor;
 import org.instancio.test.support.pojo.interfaces.StringsAbcInterface;
 import org.instancio.test.support.pojo.misc.StringsAbc;
@@ -37,6 +43,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.FieldSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +54,7 @@ import static org.instancio.Select.fields;
 @SuppressWarnings("NullAway")
 @ParameterizedClass
 @FieldSource("POJO_TYPES")
-@FeatureTag(Feature.ASSIGN)
+@FeatureTag({Feature.ASSIGN, Feature.INSTANTIATION_STRATEGIES})
 @ExtendWith(InstancioExtension.class)
 class AssignAbcTest {
 
@@ -64,6 +71,17 @@ class AssignAbcTest {
     @Parameter(0)
     private Class<? extends StringsAbcInterface> rootClass;
 
+    /**
+     * Verifies assignments work with classes that have only default constructor,
+     * or only all-args constructor where delayed values are passed-in as ctor args.
+     *
+     * @see #POJO_TYPES
+     */
+    @WithSettings
+    private final Settings settings = Settings.create()
+            .set(Keys.INSTANTIATION_STRATEGIES, getInstantiationStrategies())
+            .set(Keys.ON_CONSTRUCTOR_ERROR, OnConstructorError.FAIL);
+
     private final TargetSelector A = getRandomSelectorForField("a");
     private final TargetSelector B = getRandomSelectorForField("b");
     private final TargetSelector C = getRandomSelectorForField("c");
@@ -75,6 +93,20 @@ class AssignAbcTest {
         };
 
         return Instancio.gen().oneOf(choices).get();
+    }
+
+    /**
+     * Get instantiation strategies in random order, since Instancio uses the strategies
+     * in the order they are specified.
+     *
+     * <p>Intentionally excludes `InstantiationStrategy.BYPASS_CONSTRUCTOR` (Unsafe/ReflectionFactory)
+     */
+    private InstantiationStrategies getInstantiationStrategies() {
+        final Collection<InstantiationStrategy> instantiationStrategies = Instancio.gen()
+                .shuffle(InstantiationStrategy.ALL_ARGS, InstantiationStrategy.NO_ARGS)
+                .get();
+
+        return InstantiationStrategies.of(instantiationStrategies.toArray(InstantiationStrategy[]::new));
     }
 
     @ValueSource(strings = {"a", "b", "c"})

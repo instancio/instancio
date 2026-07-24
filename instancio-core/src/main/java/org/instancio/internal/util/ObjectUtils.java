@@ -18,6 +18,7 @@ package org.instancio.internal.util;
 import org.instancio.documentation.Contract;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public final class ObjectUtils {
@@ -45,6 +46,18 @@ public final class ObjectUtils {
             if (type == short.class) return (T) DEFAULT_SHORT;
         }
         return null;
+    }
+
+    public static void replaceNullArgsOfPrimitiveParameters(
+            final @Nullable Object[] args,
+            final List<Class<?>> parameterTypes) {
+
+        for (int i = 0; i < args.length; i++) {
+            final Class<?> parameterType = parameterTypes.get(i);
+            if (args[i] == null && parameterType.isPrimitive()) {
+                args[i] = defaultValue(parameterType);
+            }
+        }
     }
 
     @Contract("!null, _ -> !null; _, !null -> !null")

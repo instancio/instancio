@@ -44,6 +44,7 @@
         <module>bean-validation-jakarta-tests</module>
         <module>packaging-tests</module>
         <module>instancio-core-tests</module>
+        <module>missing-parameter-names-tests</module>
         <module>instancio-junit-tests</module>
         <module>bean-validation-hibernate-tests</module>
         <module>spi-tests</module>

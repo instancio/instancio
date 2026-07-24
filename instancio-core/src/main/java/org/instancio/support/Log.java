@@ -54,6 +54,17 @@ public final class Log {
         MAX_DEPTH_REACHED(Level.WARN, "org.instancio.log.max.depth.reached"),
 
         /**
+         * Logs a message when instantiating an object via constructor
+         * fails and Instancio falls back to creating the object
+         * without invoking a constructor.
+         *
+         * @see Keys#INSTANTIATION_STRATEGIES
+         * @see Keys#ON_CONSTRUCTOR_ERROR
+         * @since 6.0.0
+         */
+        CONSTRUCTOR_FALLBACK(Level.WARN, "org.instancio.log.constructor.fallback"),
+
+        /**
          * Logs a message when the maximum number of generation attempts is reached.
          *
          * <p>This typically indicates that Instancio was unable to generate

@@ -49,6 +49,7 @@ public final class InternalNode implements Node {
     private final boolean cyclic;
     private final NodeTypeMap nodeTypeMap;
     private List<InternalNode> children;
+    private @Nullable ConstructorDescriptor constructorDescriptor;
     private final int depth;
     private int hash;
 
@@ -64,6 +65,7 @@ public final class InternalNode implements Node {
         cyclic = builder.cyclic;
         nodeTypeMap = requireNonNull(builder.nodeTypeMap);
         children = CollectionUtils.asUnmodifiableList(builder.children);
+        constructorDescriptor = builder.constructorDescriptor;
         depth = parent == null ? 0 : parent.depth + 1;
     }
 
@@ -185,6 +187,20 @@ public final class InternalNode implements Node {
 
     void setChildren(final List<InternalNode> children) {
         this.children = children;
+    }
+
+    /**
+     * Returns the descriptor of the constructor this node's value
+     * will be created with, or {@code null} if the node's value
+     * is not created via constructor.
+     */
+    @Nullable
+    public ConstructorDescriptor getConstructorDescriptor() {
+        return constructorDescriptor;
+    }
+
+    void setConstructorDescriptor(final ConstructorDescriptor constructorDescriptor) {
+        this.constructorDescriptor = constructorDescriptor;
     }
 
     /**
@@ -311,6 +327,7 @@ public final class InternalNode implements Node {
         builder.setter = setter;
         builder.parent = parent;
         builder.children = children;
+        builder.constructorDescriptor = constructorDescriptor;
         builder.nodeKind = nodeKind;
         builder.ignored = ignored;
         builder.cyclic = cyclic;
@@ -340,6 +357,7 @@ public final class InternalNode implements Node {
         private @Nullable Method setter;
         private @Nullable InternalNode parent;
         private @Nullable List<InternalNode> children;
+        private @Nullable ConstructorDescriptor constructorDescriptor;
         private @Nullable NodeKind nodeKind;
         private boolean ignored;
         private boolean cyclic;
