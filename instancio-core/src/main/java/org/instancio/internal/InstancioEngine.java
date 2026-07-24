@@ -422,10 +422,10 @@ class InstancioEngine {
         final int withCount = withElements.size();
         final Integer explicitMax = explicitMaxSize(hints, sizeOverride);
 
-        if (sizeOverride != null && explicitMax != null && withCount > explicitMax) {
+        if (sizeOverride != null && withCount > sizeOverride.max()) {
             throw Fail.withUsageError(
                     "array generator specifies more 'with()' elements (%s) than the size() override allows (%s)"
-                            .formatted(withCount, explicitMax));
+                            .formatted(withCount, sizeOverride.max()));
         }
 
         Object arrayObj = generatorResult.getValue();
