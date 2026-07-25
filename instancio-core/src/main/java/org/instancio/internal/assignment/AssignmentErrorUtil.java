@@ -16,7 +16,6 @@
 package org.instancio.internal.assignment;
 
 import org.instancio.TargetSelector;
-import org.instancio.internal.DelayedNode;
 import org.instancio.internal.DelayedNodeQueue;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.util.Format;
@@ -54,10 +53,7 @@ public final class AssignmentErrorUtil {
                 .append("As a result, the following targets could not be assigned a value:").append(NL)
                 .append(NL);
 
-        // Avoid duplicate report entries if the same InternalNode instance is delayed multiple times.
-        delayedNodeQueue.stream()
-                .map(DelayedNode::getNode)
-                .distinct()
+        delayedNodeQueue.unresolvedNodes()
                 .forEach(node -> sb.append(" -> ").append(node.toDisplayString())
                         .append(" (depth=").append(node.getDepth()).append(')')
                         .append(NL));

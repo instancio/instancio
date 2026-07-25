@@ -50,6 +50,7 @@ public final class NodeFactory {
     private final TypeHelper typeHelper;
     private final OriginSelectorValidator originSelectorValidator;
     private final InternalFeedSpecHandler feedSpecHandler;
+    private final ConstructorDescriptorResolver constructorDescriptorResolver;
 
     public NodeFactory(final ModelContext modelContext) {
         this.modelContext = modelContext;
@@ -58,6 +59,7 @@ public final class NodeFactory {
         this.originSelectorValidator = new OriginSelectorValidator(modelContext);
         this.memberCollector = new DeclaredAndInheritedMemberCollector(modelContext.getSettings());
         this.feedSpecHandler = DefaultFeedSpecHandler.create(modelContext);
+        this.constructorDescriptorResolver = new ConstructorDescriptorResolver(modelContext);
     }
 
     public InternalNode createRootNode(final Type type) {
@@ -77,6 +79,15 @@ public final class NodeFactory {
             originSelectorValidator.checkNode(node);
 
             final List<InternalNode> children = createChildren(node);
+
+            if (node.is(NodeKind.POJO) || node.is(NodeKind.RECORD)) {
+                final ConstructorDescriptor descriptor = constructorDescriptorResolver.resolve(node, children);
+
+                if (descriptor != null) {
+                    node.setConstructorDescriptor(descriptor);
+                }
+            }
+
             node.setChildren(children);
             nodeQueue.addAll(children);
             // must be done after children have been set since

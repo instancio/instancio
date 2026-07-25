@@ -15,6 +15,8 @@
  */
 package org.instancio.internal.instantiation;
 
+import org.instancio.settings.InstantiationStrategies;
+import org.instancio.settings.InstantiationStrategy;
 import org.instancio.test.support.pojo.basic.IntegerHolder;
 import org.instancio.test.support.pojo.basic.IntegerHolderWithPrivateDefaultConstructor;
 import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
@@ -31,7 +33,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class InstantiatorTest {
 
-    private final Instantiator instantiator = new Instantiator(Collections.emptyList());
+    private final Instantiator instantiator = new Instantiator(Collections.emptyList(),
+            InstantiationStrategies.of(
+                    InstantiationStrategy.NO_ARGS,
+                    InstantiationStrategy.ALL_ARGS,
+                    InstantiationStrategy.BYPASS_CONSTRUCTOR));
 
     @ValueSource(classes = {
             TreeSet.class,

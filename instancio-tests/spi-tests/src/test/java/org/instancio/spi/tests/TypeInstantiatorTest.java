@@ -18,6 +18,8 @@ package org.instancio.spi.tests;
 import org.example.spi.CustomTypeProvider;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.InstantiationStrategies;
+import org.instancio.settings.InstantiationStrategy;
 import org.instancio.settings.Keys;
 import org.instancio.spi.InstancioSpiException;
 import org.instancio.test.support.pojo.basic.BooleanHolder;
@@ -50,6 +52,16 @@ class TypeInstantiatorTest {
 
         assertThat(result.getPrimitive()).isNotEqualTo(CustomTypeProvider.LONG_HOLDER_INITIAL_VALUE);
         assertThat(result.getWrapper()).isNotEqualTo(CustomTypeProvider.LONG_HOLDER_INITIAL_VALUE);
+    }
+
+    @Test
+    void shouldUseSpiInstanceWhenConstructorIsBypassed() {
+        final LongHolder result = Instancio.of(LongHolder.class)
+                .withSetting(Keys.INSTANTIATION_STRATEGIES,
+                        InstantiationStrategies.of(InstantiationStrategy.BYPASS_CONSTRUCTOR))
+                .create();
+
+        assertThat(result).isSameAs(CustomTypeProvider.LONG_HOLDER);
     }
 
     @Test

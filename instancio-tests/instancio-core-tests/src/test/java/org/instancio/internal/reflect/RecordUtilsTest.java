@@ -15,45 +15,39 @@
  */
 package org.instancio.internal.reflect;
 
-import org.instancio.exception.InstancioException;
 import org.instancio.internal.util.RecordUtils;
-import org.instancio.test.support.pojo.basic.IntegerHolderWithoutDefaultConstructor;
 import org.instancio.test.support.pojo.record.AddressRecord;
 import org.instancio.test.support.pojo.record.PersonRecord;
 import org.instancio.test.support.pojo.record.PhoneRecord;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class RecordUtilsTest {
 
     @Test
-    void instantiate() {
-        final PhoneRecord result = RecordUtils.instantiate(PhoneRecord.class, "foo", "bar");
+    void getCanonicalConstructor() {
+        final Constructor<PhoneRecord> ctor = RecordUtils.getCanonicalConstructor(PhoneRecord.class);
 
-        assertThat(result).isNotNull();
-        assertThat(result.countryCode()).isEqualTo("foo");
-        assertThat(result.number()).isEqualTo("bar");
+        assertThat(ctor.getParameterTypes()).containsExactly(String.class, String.class);
+        assertThat(ctor.canAccess(null)).isTrue();
     }
 
     @Test
-    void instantiateNonRecordClass() {
-        final Class<?> nonRecordClass = IntegerHolderWithoutDefaultConstructor.class;
-        assertThatThrownBy(() -> RecordUtils.instantiate(nonRecordClass, 123, 345))
-                .isInstanceOf(InstancioException.class)
-                .hasMessage("Error instantiating a record: %s", nonRecordClass)
-                .rootCause()
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Class '%s' is not a record!", nonRecordClass.getName());
-    }
+    void getCanonicalConstructorOfRecordWithMixedComponentTypes() {
+        final Constructor<PersonRecord> ctor = RecordUtils.getCanonicalConstructor(PersonRecord.class);
 
-    @Test
-    void getComponentTypes() {
-        assertThat(RecordUtils.getComponentTypes(PersonRecord.class))
+        assertThat(ctor.getParameterTypes())
                 .containsExactly(String.class, int.class, AddressRecord.class);
+    }
 
-        assertThat(RecordUtils.getComponentTypes(RecordWithoutArgs.class)).isEmpty();
+    @Test
+    void getCanonicalConstructorOfRecordWithoutComponents() {
+        final Constructor<RecordWithoutArgs> ctor = RecordUtils.getCanonicalConstructor(RecordWithoutArgs.class);
+
+        assertThat(ctor.getParameterTypes()).isEmpty();
     }
 
     private record RecordWithoutArgs() {}
