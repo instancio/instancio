@@ -40,10 +40,9 @@ public class GeneratorFacade {
     private final ModelContext context;
     private final AssignmentNodeHandler assignmentNodeHandler;
     private final NodeHandler userSuppliedGeneratorHandler;
-    private final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor;
     private final GeneratedPojoStore generatedPojoStore;
-    private final List<NodeHandler> nodeHandlers = new ArrayList<>();
     private final NullSubstitutorFacade nullSubstitutorFacade;
+    private final List<NodeHandler> nodeHandlers = new ArrayList<>();
 
     public GeneratorFacade(
             final ModelContext context,
@@ -61,8 +60,8 @@ public class GeneratorFacade {
         final SpiGeneratorResolver spiGeneratorResolver = new SpiGeneratorResolver(
                 context, generatorContext, generatorResolver);
 
-        userSuppliedGeneratorProcessor = new UserSuppliedGeneratorProcessor(
-                context, generatorResolver, spiGeneratorResolver);
+        final UserSuppliedGeneratorProcessor userSuppliedGeneratorProcessor =
+                new UserSuppliedGeneratorProcessor(context, generatorResolver, spiGeneratorResolver);
 
         assignmentNodeHandler = AssignmentNodeHandler.create(context, assignmentObjectStore, userSuppliedGeneratorProcessor);
         userSuppliedGeneratorHandler = UserSuppliedGeneratorHandler.create(context, userSuppliedGeneratorProcessor);
@@ -74,7 +73,6 @@ public class GeneratorFacade {
         addHandler(new SpiGeneratorNodeHandler(context, spiGeneratorResolver));
         addHandler(AnnotationNodeHandler.create(context, generatorResolver));
         addHandler(new UsingGeneratorResolverHandler(context, generatorResolver));
-        addHandler(new InstantiatingHandler(context));
     }
 
     private void addHandler(final NodeHandler handler) {
@@ -85,8 +83,7 @@ public class GeneratorFacade {
 
     public GeneratorResult generateNodeValue(final InternalNode node) {
         try {
-            GeneratorResult result = getGeneratorResult(node);
-            generatedPojoStore.putValue(node, result);
+            final GeneratorResult result = getGeneratorResult(node);
             LOG.trace("{} - {}", node, result);
             return result;
         } catch (InstancioTerminatingException ex) {
@@ -139,6 +136,10 @@ public class GeneratorFacade {
             }
         }
         return result;
+    }
+
+    public void storeGeneratedPojo(final InternalNode node, final GeneratorResult result) {
+        generatedPojoStore.putValue(node, result);
     }
 
     public Set<InternalAssignment> getUnresolvedAssignments() {

@@ -71,6 +71,10 @@ public enum Feature {
     GLOBAL_SEED,
     IGNORE,
     INHERITANCE,
+    /**
+     * Tests for the {@code INSTANTIATION_STRATEGIES} setting.
+     */
+    INSTANTIATION_STRATEGIES,
     JPA,
     LENIENT_SELECTOR,
     LOREM_IPSUM_GENERATOR,

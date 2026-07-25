@@ -17,25 +17,25 @@ package org.instancio.internal;
 
 import org.instancio.internal.nodes.InternalNode;
 
-final class DelayedRecordComponentNode {
-    private final InternalNode node;
-    private final int argIndex;
+/**
+ * A component of a constructor-created object whose generation was delayed:
+ * either a constructor argument (identified by {@code argIndex}), or
+ * a pre-generated non-parameter field (see {@link #forNonParameterField}).
+ */
+record DelayedConstructorComponentNode(InternalNode node, int argIndex) {
 
-    DelayedRecordComponentNode(final InternalNode node, final int argIndex) {
-        this.node = node;
-        this.argIndex = argIndex;
+    private static final int NON_PARAMETER = -1;
+
+    static DelayedConstructorComponentNode forNonParameterField(final InternalNode node) {
+        return new DelayedConstructorComponentNode(node, NON_PARAMETER);
     }
 
-    InternalNode getNode() {
-        return node;
-    }
-
-    int getArgIndex() {
-        return argIndex;
+    boolean isNonParameterField() {
+        return argIndex == NON_PARAMETER;
     }
 
     @Override
     public String toString() {
-        return String.format("DelayedRecordComponentNode[%s, %s]", node, argIndex);
+        return String.format("DelayedComponentNode[%s, %s]", node, argIndex);
     }
 }

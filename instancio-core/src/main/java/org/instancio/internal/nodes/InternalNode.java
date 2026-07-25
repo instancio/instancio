@@ -49,6 +49,7 @@ public final class InternalNode implements Node {
     private final boolean cyclic;
     private final NodeTypeMap nodeTypeMap;
     private List<InternalNode> children;
+    private @Nullable ConstructorDescriptor constructorDescriptor;
     private final int depth;
     private int hash;
 
@@ -64,6 +65,7 @@ public final class InternalNode implements Node {
         cyclic = builder.cyclic;
         nodeTypeMap = requireNonNull(builder.nodeTypeMap);
         children = CollectionUtils.asUnmodifiableList(builder.children);
+        constructorDescriptor = builder.constructorDescriptor;
         depth = parent == null ? 0 : parent.depth + 1;
     }
 
@@ -94,9 +96,9 @@ public final class InternalNode implements Node {
 
     public boolean isContainer() {
         return is(NodeKind.COLLECTION)
-               || is(NodeKind.MAP)
-               || is(NodeKind.ARRAY)
-               || is(NodeKind.CONTAINER);
+                || is(NodeKind.MAP)
+                || is(NodeKind.ARRAY)
+                || is(NodeKind.CONTAINER);
     }
 
     /**
@@ -187,6 +189,15 @@ public final class InternalNode implements Node {
         this.children = children;
     }
 
+    @Nullable
+    public ConstructorDescriptor getConstructorDescriptor() {
+        return constructorDescriptor;
+    }
+
+    void setConstructorDescriptor(final ConstructorDescriptor constructorDescriptor) {
+        this.constructorDescriptor = constructorDescriptor;
+    }
+
     /**
      * This method is used to determine if this is a cyclic node.
      */
@@ -217,10 +228,10 @@ public final class InternalNode implements Node {
         final InternalNode other = (InternalNode) o;
 
         return this.depth == other.depth
-               && this.targetClass.equals(other.targetClass)
-               && this.type.equals(other.type)
-               && Objects.equals(this.field, other.field)
-               && Objects.equals(this.setter, other.setter);
+                && this.targetClass.equals(other.targetClass)
+                && this.type.equals(other.type)
+                && Objects.equals(this.field, other.field)
+                && Objects.equals(this.setter, other.setter);
     }
 
     @Override
@@ -311,6 +322,7 @@ public final class InternalNode implements Node {
         builder.setter = setter;
         builder.parent = parent;
         builder.children = children;
+        builder.constructorDescriptor = constructorDescriptor;
         builder.nodeKind = nodeKind;
         builder.ignored = ignored;
         builder.cyclic = cyclic;
@@ -340,6 +352,7 @@ public final class InternalNode implements Node {
         private @Nullable Method setter;
         private @Nullable InternalNode parent;
         private @Nullable List<InternalNode> children;
+        private @Nullable ConstructorDescriptor constructorDescriptor;
         private @Nullable NodeKind nodeKind;
         private boolean ignored;
         private boolean cyclic;

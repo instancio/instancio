@@ -19,18 +19,21 @@ import org.instancio.internal.nodes.InternalNode;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public final class DelayedNodeQueue implements Iterable<DelayedNode> {
+public final class DelayedNodeQueue {
 
     private final Deque<DelayedNode> delayedNodes = new ArrayDeque<>();
 
-    // Ideally record nodes would go into delayedNodeQueue
-    // but that requires knowing the parent GeneratorResult
-    private final Set<InternalNode> delayedRecordNodes = new HashSet<>();
+    // Ideally constructor nodes would go into delayedNodeQueue
+    // but that requires knowing the parent GeneratorResult.
+    // Unlike a DelayedNode, a node that could not be constructed has no
+    // instantiated parent to be assigned into, so it cannot be resumed;
+    // it is regenerated in full by whichever caller retries it.
+    // Insertion order is preserved to keep error messages reproducible.
+    private final Set<InternalNode> delayedConstructorNodes = new LinkedHashSet<>();
 
     void addLast(final DelayedNode delayedNode) {
         delayedNodes.addLast(delayedNode);
@@ -40,12 +43,12 @@ public final class DelayedNodeQueue implements Iterable<DelayedNode> {
         return delayedNodes.removeFirst();
     }
 
-    void addRecord(final InternalNode node) {
-        delayedRecordNodes.add(node);
+    void addConstructorNode(final InternalNode node) {
+        delayedConstructorNodes.add(node);
     }
 
-    void removeRecord(final InternalNode node) {
-        delayedRecordNodes.remove(node);
+    void removeConstructorNode(final InternalNode node) {
+        delayedConstructorNodes.remove(node);
     }
 
     int size() {
@@ -56,16 +59,15 @@ public final class DelayedNodeQueue implements Iterable<DelayedNode> {
         return delayedNodes.isEmpty();
     }
 
-    boolean hasRecordNodes() {
-        return !delayedRecordNodes.isEmpty();
+    boolean hasConstructorNodes() {
+        return !delayedConstructorNodes.isEmpty();
     }
 
-    public Stream<DelayedNode> stream() {
-        return delayedNodes.stream();
-    }
-
-    @Override
-    public Iterator<DelayedNode> iterator() {
-        return delayedNodes.iterator();
+    // Only used for error reporting
+    public Stream<InternalNode> unresolvedNodes() {
+        return Stream.concat(
+                        delayedNodes.stream().map(DelayedNode::getNode),
+                        delayedConstructorNodes.stream())
+                .distinct();
     }
 }
