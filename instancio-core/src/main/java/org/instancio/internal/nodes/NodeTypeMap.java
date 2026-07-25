@@ -88,14 +88,6 @@ public final class NodeTypeMap {
             return map;
         }
 
-        if (type instanceof TypeVariable) {
-            final Type mappedType = rootType.getTypeMapping(type);
-            if (mappedType != null) {
-                map.put(type, mappedType);
-                return map;
-            }
-        }
-
         if (type instanceof ParameterizedType parameterizedType) {
             final Class<?> rawType = TypeUtils.getRawType(type);
             final Type[] typeArgs = parameterizedType.getActualTypeArguments();
@@ -133,6 +125,6 @@ public final class NodeTypeMap {
 
     @Override
     public int hashCode() {
-        return typeMap == null ? 0 : typeMap.hashCode();
+        return typeMap.hashCode();
     }
 }
