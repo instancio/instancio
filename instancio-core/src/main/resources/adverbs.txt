@@ -36,7 +36,6 @@ admittedly
 adorably
 adoringly
 adroitly
-adulterously
 advantageously
 adverbially
 adversely
@@ -75,7 +74,6 @@ ambitiously
 amiably
 amicably
 amorally
-amorously
 amply
 amusingly
 anachronistically
@@ -126,7 +124,6 @@ artificially
 artistically
 artlessly
 ascetically
-asexually
 ashamedly
 assertively
 assiduously
@@ -171,7 +168,6 @@ barely
 basely
 bashfully
 basically
-bawdily
 beastly
 beautifully
 becomingly
@@ -263,7 +259,6 @@ captiously
 captivatingly
 carefully
 carelessly
-carnally
 casually
 catalytically
 catastrophically
@@ -480,7 +475,6 @@ cytoplasmically
 daftly
 daily
 daintily
-damnably
 damply
 dandily
 dangerously
@@ -729,7 +723,6 @@ equally
 equitably
 equivocally
 erectly
-erotically
 erratically
 erroneously
 eruditely
@@ -1167,7 +1160,6 @@ inaudibly
 inauspiciously
 incautiously
 incessantly
-incestuously
 incidentally
 incisively
 incoherently
@@ -1386,7 +1378,6 @@ lamentably
 languidly
 languorously
 largely
-lasciviously
 lastingly
 lastly
 lately
@@ -1409,10 +1400,8 @@ leisurely
 lengthily
 leniently
 lethargically
-lewdly
 lexically
 liberally
-licentiously
 licitly
 lifelessly
 light-handedly
@@ -1456,8 +1445,6 @@ lugubriously
 lukewarmly
 luridly
 lusciously
-lustfully
-lustily
 luxuriantly
 luxuriously
 lyrically
@@ -1604,7 +1591,6 @@ mutually
 mysteriously
 mystically
 naively
-nakedly
 namely
 narrow-mindedly
 narrowly
@@ -1613,7 +1599,6 @@ nastily
 nationally
 nattily
 naturally
-naughtily
 nearly
 neatly
 nebulously
@@ -1664,7 +1649,6 @@ obligatorily
 obligingly
 obliquely
 obnoxiously
-obscenely
 obscurely
 obsequiously
 observably
@@ -1865,7 +1849,6 @@ ponderously
 poorly
 popishly
 popularly
-pornographically
 portentously
 positively
 possessively
@@ -1937,7 +1920,6 @@ profusely
 progressively
 prohibitively
 prominently
-promiscuously
 promisingly
 promptly
 properly
@@ -1961,7 +1943,6 @@ provocatively
 provokingly
 prudently
 prudishly
-pruriently
 pryingly
 psychically
 psychologically
@@ -2138,7 +2119,6 @@ sadly
 safely
 sagaciously
 sagely
-salaciously
 sanctimoniously
 sanely
 sapiently
@@ -2177,7 +2157,6 @@ secretively
 secretly
 securely
 sedately
-seductively
 sedulously
 seemingly
 selectively
@@ -2196,7 +2175,6 @@ sensationally
 senselessly
 sensibly
 sensitively
-sensually
 sensuously
 sententiously
 sentimentally
@@ -2210,7 +2188,6 @@ servilely
 seventhly
 severally
 severely
-sexually
 shabbily
 shaggily
 shakily
@@ -2281,7 +2258,6 @@ smashingly
 smilingly
 smoothly
 smugly
-smuttily
 snappishly
 sneakily
 sneakingly
@@ -2860,15 +2836,11 @@ volubly
 volumetrically
 voluminously
 voluntarily
-voluptuously
 voraciously
-voyeuristically
-vulgarly
 vulnerably
 wackily
 waggishly
 wanly
-wantonly
 warily
 warmly
 wastefully
