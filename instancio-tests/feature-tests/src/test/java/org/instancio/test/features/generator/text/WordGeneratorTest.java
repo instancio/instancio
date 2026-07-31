@@ -38,10 +38,10 @@ import static org.instancio.Select.allStrings;
 @ExtendWith(InstancioExtension.class)
 class WordGeneratorTest {
 
-    private static final int NUM_NOUNS = 5174;
-    private static final int NUM_VERBS = 1860;
-    private static final int NUM_ADJECTIVES = 1879;
-    private static final int NUM_ADVERBS = 2927;
+    private static final int NUM_NOUNS = 5152;
+    private static final int NUM_VERBS = 1844;
+    private static final int NUM_ADJECTIVES = 1852;
+    private static final int NUM_ADVERBS = 2898;
 
     @WithSettings
     private static final Settings settings = Settings.create()
