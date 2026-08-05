@@ -45,10 +45,10 @@ public class NipGenerator extends WeightsModCheckGenerator implements NipSpec {
     }
 
     @Override
-    protected String payload(final Random random) {
+    protected String payload(final Random random, final int length) {
         final int maxGenerationAttempts = getContext().settings().get(Keys.MAX_GENERATION_ATTEMPTS);
         for (int count = 0; count < maxGenerationAttempts; count++) {
-            final String payload = super.payload(random);
+            final String payload = super.payload(random, length);
             if (modulo(payload) < 10) {
                 return payload;
             }

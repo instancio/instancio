@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.generator.domain.id.pol;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.checksum.BaseModCheckGenerator;
 import org.instancio.internal.util.NumberUtils;
@@ -30,8 +31,8 @@ abstract class WeightsModCheckGenerator extends BaseModCheckGenerator {
     protected abstract List<Integer> weights();
 
     @Override
-    protected int payloadLength() {
-        return weights().size();
+    protected Layout layout(final Random random) {
+        return Layout.of(weights().size());
     }
 
     @Override

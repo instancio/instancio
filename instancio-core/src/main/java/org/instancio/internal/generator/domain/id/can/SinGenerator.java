@@ -78,8 +78,7 @@ public class SinGenerator extends LuhnGenerator implements SinSpec {
     }
 
     @Override
-    protected String payload(final Random random) {
-        final int length = payloadLength();
+    protected String payload(final Random random, final int length) {
         final char[] res = new char[length];
 
         res[0] = getFirstDigit(random);

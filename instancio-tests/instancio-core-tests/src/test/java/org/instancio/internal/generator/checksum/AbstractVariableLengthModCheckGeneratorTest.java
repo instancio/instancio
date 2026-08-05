@@ -24,6 +24,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.params.IntRangeSource;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -74,11 +79,74 @@ abstract class AbstractVariableLengthModCheckGeneratorTest<G extends VariableLen
         }
     }
 
+    /**
+     * Generating a value must not modify the generator's configuration,
+     * otherwise values produced by a reused instance would be constrained
+     * by whatever the first invocation happened to generate.
+     */
+    @RepeatedTest(Constants.SAMPLE_SIZE_D)
+    final void reusedGeneratorProducesIndependentValues() {
+        final int minLength = 10;
+        final int maxLength = 20;
+        final int sampleSize = 500;
+
+        final G reused = generator();
+        reused.length(minLength, maxLength);
+
+        final Set<Integer> lengths = new HashSet<>();
+        for (int i = 0; i < sampleSize; i++) {
+            lengths.add(reused.generate(random).length());
+        }
+
+        assertThat(lengths)
+                .as("a reused generator should produce the full range of lengths")
+                .containsExactlyInAnyOrderElementsOf(
+                        IntStream.rangeClosed(minLength, maxLength).boxed().collect(Collectors.toList()));
+    }
+
     @Test
     final void validationLength() {
         final G generator = generator();
+
         assertThatThrownBy(() -> generator.length(1))
                 .isExactlyInstanceOf(InstancioApiException.class)
                 .hasMessageContaining("number length must be greater than 1, but was: 1");
+
+        assertThatThrownBy(() -> generator.length(3, 2))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContaining("min must be less than or equal to max");
+    }
+
+    /**
+     * The payload the check digit is calculated from must contain at least
+     * one digit, which is not the case if {@code startIndex} lies at or beyond
+     * the end of the generated number.
+     */
+    @Test
+    final void validationStartIndexLeavesNoPayload() {
+        final G generator = generator();
+        generator.startIndex(5).length(3);
+
+        assertThatThrownBy(() -> generator.generate(random))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContainingAll(
+                        "startIndex and endIndex must satisfy condition:",
+                        "-> startIndex .......: 5",
+                        "-> endIndex .........: 2",
+                        "-> checkDigitIndex ..: 2");
+    }
+
+    @Test
+    final void validationStartIndexEqualToEndIndex() {
+        final G generator = generator();
+        generator.startIndex(3).endIndex(3).checkDigitIndex(3).length(10);
+
+        assertThatThrownBy(() -> generator.generate(random))
+                .isExactlyInstanceOf(InstancioApiException.class)
+                .hasMessageContainingAll(
+                        "startIndex and endIndex must satisfy condition:",
+                        "-> startIndex .......: 3",
+                        "-> endIndex .........: 3",
+                        "-> checkDigitIndex ..: 3");
     }
 }
