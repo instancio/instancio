@@ -26,21 +26,49 @@ public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
         super(context);
     }
 
-    protected abstract int payloadLength();
+    /**
+     * The shape of the number to be generated: the length of each segment
+     * and the position of the check digit within the assembled number.
+     *
+     * <p>A layout is computed once per generated value and passed down
+     * to the code that assembles the number. Generating a value therefore
+     * requires no generator state and modifies none, which makes generators
+     * safe to reuse for more than one value.
+     *
+     * @param prefixLength  number of random digits preceding the payload
+     * @param payloadLength number of digits the check digit is calculated from
+     * @param suffixLength  number of random digits following the payload
+     * @param checkPosition index at which the check digit is placed
+     */
+    public record Layout(int prefixLength, int payloadLength, int suffixLength, int checkPosition) {
+
+        /**
+         * Layout of a fixed-length number that consists of a payload
+         * followed by the check digit.
+         */
+        public static Layout of(final int payloadLength) {
+            return new Layout(0, payloadLength, 1, payloadLength);
+        }
+    }
+
+    /**
+     * Returns the layout of the value about to be generated.
+     */
+    protected abstract Layout layout(Random random);
 
     @Override
     protected String tryGenerateNonNull(final Random random) {
-        final String prefix = random.digits(prefixLength());
-        final String payload = payload(random);
+        final Layout layout = layout(random);
+        final String prefix = random.digits(layout.prefixLength());
+        final String payload = payload(random, layout.payloadLength());
         final char checkDigit = getCheckDigit(payload);
-        final String suffix = random.digits(suffixLength());
+        final String suffix = random.digits(layout.suffixLength());
         final StringBuilder result = new StringBuilder(prefix).append(payload).append(suffix);
-        result.setCharAt(checkPosition(), checkDigit);
+        result.setCharAt(layout.checkPosition(), checkDigit);
         return result.toString();
     }
 
-    protected String payload(final Random random) {
-        final int length = payloadLength();
+    protected String payload(final Random random, final int length) {
         final char[] res = new char[length];
 
         // Avoid generating numbers that start with zero to prevent the loss of
@@ -53,14 +81,20 @@ public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
     }
 
     protected char getCheckDigit(final String payload) {
-        int result = base() - modulo(payload);
-        if (result == 10) {
-            return treat10As();
-        } else if (result == 11) {
-            return treat11As();
-        } else {
-            return (char) (result + '0');
-        }
+        final int checkValue = base() - modulo(payload);
+        return checkValue < 10 ? (char) (checkValue + '0') : nonDigitCheckValue(checkValue);
+    }
+
+    /**
+     * Maps a check value that does not fit into a single digit.
+     *
+     * <p>Since {@link #modulo(String)} returns a value in {@code [0, base() - 1]},
+     * the check value is in {@code [1, base()]}. Therefore, the argument can only
+     * be {@code 10} for a base-10 generator, and {@code 10} or {@code 11}
+     * for a base-11 generator.
+     */
+    protected char nonDigitCheckValue(final int checkValue) {
+        return '0';
     }
 
     protected int modulo(final String payload) {
@@ -86,19 +120,6 @@ public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
         return position % 2 == 0 ? digit * even(position) : digit * odd(position);
     }
 
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected int prefixLength() {
-        return 0;
-    }
-
-    protected int suffixLength() {
-        return 1;
-    }
-
-    protected int checkPosition() {
-        return prefixLength() + payloadLength();
-    }
-
     protected int even(final int position) {
         return 2;
     }
@@ -117,14 +138,6 @@ public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
 
     protected int base() {
         return 10;
-    }
-
-    protected char treat10As() {
-        return '0';
-    }
-
-    protected char treat11As() {
-        return '0';
     }
 
     enum Direction {

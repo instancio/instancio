@@ -32,7 +32,6 @@ abstract class VariableLengthModCheckGenerator
     private int startIndex;
     private int endIndex = -1;
     private int checkDigitIndex = -1;
-    private int size;
 
     protected VariableLengthModCheckGenerator(final GeneratorContext context) {
         super(context);
@@ -76,54 +75,70 @@ abstract class VariableLengthModCheckGenerator
         return this;
     }
 
+    /**
+     * Resolves the configured indices against the size of the number
+     * about to be generated. The {@code -1} defaults mean "not specified",
+     * in which case the values are derived from the size.
+     */
     @Override
-    protected String tryGenerateNonNull(final Random random) {
-        size = random.intRange(minSize, maxSize);
-        endIndex = endIndex == -1 ? size - 1 : endIndex;
-        checkDigitIndex = checkDigitIndex == -1 ? endIndex : checkDigitIndex;
-        validateCheckDigit();
+    protected Layout layout(final Random random) {
+        final int generatedSize = random.intRange(minSize, maxSize);
 
-        endIndex = endIndex == checkDigitIndex ? endIndex - 1 : endIndex;
-        size = Math.max(checkDigitIndex + 1, Math.max(size, endIndex + 1));
+        final int resolvedEndIndex = endIndex == -1 ? generatedSize - 1 : endIndex;
+        final int resolvedCheckDigitIndex = checkDigitIndex == -1 ? resolvedEndIndex : checkDigitIndex;
 
-        return super.tryGenerateNonNull(random);
+        // The check digit overwrites the last payload digit if they overlap,
+        // therefore the payload must stop one digit short of the check digit
+        final int payloadEndIndex = resolvedEndIndex == resolvedCheckDigitIndex
+                ? resolvedEndIndex - 1
+                : resolvedEndIndex;
+
+        validateIndices(resolvedEndIndex, resolvedCheckDigitIndex, payloadEndIndex);
+
+        // The number must be long enough to hold the payload and the check digit
+        final int size = Math.max(resolvedCheckDigitIndex + 1,
+                Math.max(generatedSize, payloadEndIndex + 1));
+
+        return new Layout(
+                /* prefixLength  = */ startIndex,
+                /* payloadLength = */ payloadEndIndex - startIndex + 1,
+                /* suffixLength  = */ size - payloadEndIndex - 1,
+                /* checkPosition = */ resolvedCheckDigitIndex);
     }
 
-    private void validateCheckDigit() {
-        boolean isValidCheckDigit = checkDigitIndex >= 0 && (checkDigitIndex < startIndex || checkDigitIndex >= endIndex);
-        ApiValidator.isTrue(isValidCheckDigit, this::getCheckDigitErrorMessage);
+    private void validateIndices(
+            final int resolvedEndIndex,
+            final int resolvedCheckDigitIndex,
+            final int payloadEndIndex) {
+
+        final boolean isValidCheckDigitIndex = resolvedCheckDigitIndex < startIndex
+                || resolvedCheckDigitIndex >= resolvedEndIndex;
+
+        ApiValidator.isTrue(isValidCheckDigitIndex, () -> getErrorMessage(
+                "checkDigitIndex must satisfy condition:" + NL
+                        + "  ->  checkDigitIndex < startIndex || checkDigitIndex >= endIndex",
+                resolvedEndIndex, resolvedCheckDigitIndex));
+
+        // the check digit must be calculated from at least one digit
+        ApiValidator.isTrue(payloadEndIndex >= startIndex, () -> getErrorMessage(
+                "startIndex and endIndex must satisfy condition:" + NL
+                        + "  ->  startIndex < endIndex || (startIndex <= endIndex && checkDigitIndex != endIndex)",
+                resolvedEndIndex, resolvedCheckDigitIndex));
     }
 
     @SuppressWarnings({"StringBufferReplaceableByString", "UnnecessaryStringBuilder"})
-    private String getCheckDigitErrorMessage() {
+    private String getErrorMessage(
+            final String reason,
+            final int resolvedEndIndex,
+            final int resolvedCheckDigitIndex) {
+
         return new StringBuilder()
-                .append("checkDigitIndex must satisfy condition:").append(NL)
-                .append("  ->  checkDigitIndex >= 0 && (checkDigitIndex < startIndex || checkDigitIndex >= endIndex)").append(NL)
+                .append(reason).append(NL)
                 .append(NL)
                 .append("Actual values were:").append(NL)
                 .append("  -> startIndex .......: ").append(startIndex).append(NL)
-                .append("  -> endIndex .........: ").append(endIndex).append(NL)
-                .append("  -> checkDigitIndex ..: ").append(checkDigitIndex).append(NL)
+                .append("  -> endIndex .........: ").append(resolvedEndIndex).append(NL)
+                .append("  -> checkDigitIndex ..: ").append(resolvedCheckDigitIndex).append(NL)
                 .toString();
-    }
-
-    @Override
-    protected int prefixLength() {
-        return startIndex;
-    }
-
-    @Override
-    protected int payloadLength() {
-        return endIndex - startIndex + 1;
-    }
-
-    @Override
-    protected int checkPosition() {
-        return checkDigitIndex;
-    }
-
-    @Override
-    protected int suffixLength() {
-        return size - endIndex - 1;
     }
 }

@@ -15,11 +15,14 @@
  */
 package org.instancio.internal.generator.domain.id;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.IsbnSpec;
 import org.instancio.internal.generator.checksum.BaseModCheckGenerator;
 
 public class IsbnGenerator extends BaseModCheckGenerator implements IsbnSpec {
+
+    private static final int PAYLOAD_LENGTH = 12;
 
     public IsbnGenerator(final GeneratorContext context) {
         super(context);
@@ -37,8 +40,8 @@ public class IsbnGenerator extends BaseModCheckGenerator implements IsbnSpec {
     }
 
     @Override
-    protected int payloadLength() {
-        return 12;
+    protected Layout layout(final Random random) {
+        return Layout.of(PAYLOAD_LENGTH);
     }
 
     @Override

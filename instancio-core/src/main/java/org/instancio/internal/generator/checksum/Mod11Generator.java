@@ -132,13 +132,8 @@ public class Mod11Generator extends VariableLengthModCheckGenerator
     }
 
     @Override
-    protected char treat10As() {
-        return treatCheck10As;
-    }
-
-    @Override
-    protected char treat11As() {
-        return treatCheck11As;
+    protected char nonDigitCheckValue(final int checkValue) {
+        return checkValue == 10 ? treatCheck10As : treatCheck11As;
     }
 
     private int weight(final int position) {

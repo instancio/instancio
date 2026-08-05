@@ -43,7 +43,7 @@ class Mod11GeneratorCheckDigitIndexTest extends AbstractErrorMessageTestTemplate
                  -> at org.external.errorhandling.Mod11GeneratorCheckDigitIndexTest.methodUnderTest(Mod11GeneratorCheckDigitIndexTest.java:34)
 
                 Reason: checkDigitIndex must satisfy condition:
-                  ->  checkDigitIndex >= 0 && (checkDigitIndex < startIndex || checkDigitIndex >= endIndex)
+                  ->  checkDigitIndex < startIndex || checkDigitIndex >= endIndex
 
                 Actual values were:
                   -> startIndex .......: 3

@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.generator.domain.id;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.EanSpec;
 import org.instancio.internal.generator.checksum.BaseModCheckGenerator;
@@ -51,8 +52,8 @@ public class EanGenerator extends BaseModCheckGenerator implements EanSpec {
     }
 
     @Override
-    protected int payloadLength() {
-        return type.length - 1;
+    protected Layout layout(final Random random) {
+        return Layout.of(type.length - 1);
     }
 
     @Override

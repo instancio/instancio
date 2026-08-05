@@ -47,9 +47,9 @@ public class PeselGenerator extends WeightsModCheckGenerator implements PeselSpe
     }
 
     @Override
-    protected String payload(final Random random) {
+    protected String payload(final Random random, final int length) {
         final String birthdate = requireNonNull(peselDateGenerator.tryGenerateNonNull(random));
-        final String serialNumber = random.digits(payloadLength() - birthdate.length());
+        final String serialNumber = random.digits(length - birthdate.length());
         final Gender selectedGender = gender == null ? random.oneOf(Gender.values()) : gender;
         final StringBuilder payload = new StringBuilder(birthdate).append(serialNumber);
         final Character ch = random.oneOf(selectedGender.digits);

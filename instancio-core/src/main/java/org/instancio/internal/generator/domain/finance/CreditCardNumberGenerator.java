@@ -60,18 +60,19 @@ public class CreditCardNumberGenerator extends BaseModCheckGenerator implements 
     }
 
     @Override
-    protected String payload(final Random random) {
+    protected Layout layout(final Random random) {
         if (cardType == null) {
             cardType = random.oneOf(CCTypeImpl.values());
         }
-
-        final String payload = super.payload(random);
-        final String prefix = random.oneOf(cardType.getPrefixes()).toString();
-        return prefix + payload.substring(prefix.length());
+        return Layout.of(cardType.getLength() - 1);
     }
 
     @Override
-    protected int payloadLength() {
-        return requireNonNull(cardType, "cardType is null").getLength() - 1;
+    protected String payload(final Random random, final int length) {
+        final String payload = super.payload(random, length);
+        final String prefix = random.oneOf(
+                requireNonNull(cardType, "cardType is null").getPrefixes()).toString();
+
+        return prefix + payload.substring(prefix.length());
     }
 }
