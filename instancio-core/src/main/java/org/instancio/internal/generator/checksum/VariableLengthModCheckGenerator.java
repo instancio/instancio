@@ -82,10 +82,15 @@ abstract class VariableLengthModCheckGenerator
      */
     @Override
     protected Layout layout(final Random random) {
+        final int resolvedStartIndex = startIndex;
         final int generatedSize = random.intRange(minSize, maxSize);
+        final int configuredEndIndex = endIndex;
+        final int configuredCheckDigitIndex = checkDigitIndex;
 
-        final int resolvedEndIndex = endIndex == -1 ? generatedSize - 1 : endIndex;
-        final int resolvedCheckDigitIndex = checkDigitIndex == -1 ? resolvedEndIndex : checkDigitIndex;
+        final int resolvedEndIndex = configuredEndIndex == -1 ? generatedSize - 1 : configuredEndIndex;
+        final int resolvedCheckDigitIndex = configuredCheckDigitIndex == -1
+                ? resolvedEndIndex
+                : configuredCheckDigitIndex;
 
         // The check digit overwrites the last payload digit if they overlap,
         // therefore the payload must stop one digit short of the check digit
@@ -93,42 +98,44 @@ abstract class VariableLengthModCheckGenerator
                 ? resolvedEndIndex - 1
                 : resolvedEndIndex;
 
-        validateIndices(resolvedEndIndex, resolvedCheckDigitIndex, payloadEndIndex);
+        validateIndices(resolvedStartIndex, resolvedEndIndex, resolvedCheckDigitIndex, payloadEndIndex);
 
         // The number must be long enough to hold the payload and the check digit
         final int size = Math.max(resolvedCheckDigitIndex + 1,
                 Math.max(generatedSize, payloadEndIndex + 1));
 
         return new Layout(
-                /* prefixLength  = */ startIndex,
-                /* payloadLength = */ payloadEndIndex - startIndex + 1,
+                /* prefixLength  = */ resolvedStartIndex,
+                /* payloadLength = */ payloadEndIndex - resolvedStartIndex + 1,
                 /* suffixLength  = */ size - payloadEndIndex - 1,
                 /* checkPosition = */ resolvedCheckDigitIndex);
     }
 
     private void validateIndices(
+            final int resolvedStartIndex,
             final int resolvedEndIndex,
             final int resolvedCheckDigitIndex,
             final int payloadEndIndex) {
 
-        final boolean isValidCheckDigitIndex = resolvedCheckDigitIndex < startIndex
+        final boolean isValidCheckDigitIndex = resolvedCheckDigitIndex < resolvedStartIndex
                 || resolvedCheckDigitIndex >= resolvedEndIndex;
 
         ApiValidator.isTrue(isValidCheckDigitIndex, () -> getErrorMessage(
                 "checkDigitIndex must satisfy condition:" + NL
                         + "  ->  checkDigitIndex < startIndex || checkDigitIndex >= endIndex",
-                resolvedEndIndex, resolvedCheckDigitIndex));
+                resolvedStartIndex, resolvedEndIndex, resolvedCheckDigitIndex));
 
         // the check digit must be calculated from at least one digit
-        ApiValidator.isTrue(payloadEndIndex >= startIndex, () -> getErrorMessage(
+        ApiValidator.isTrue(payloadEndIndex >= resolvedStartIndex, () -> getErrorMessage(
                 "startIndex and endIndex must satisfy condition:" + NL
                         + "  ->  startIndex < endIndex || (startIndex <= endIndex && checkDigitIndex != endIndex)",
-                resolvedEndIndex, resolvedCheckDigitIndex));
+                resolvedStartIndex, resolvedEndIndex, resolvedCheckDigitIndex));
     }
 
     @SuppressWarnings({"StringBufferReplaceableByString", "UnnecessaryStringBuilder"})
     private String getErrorMessage(
             final String reason,
+            final int resolvedStartIndex,
             final int resolvedEndIndex,
             final int resolvedCheckDigitIndex) {
 
@@ -136,7 +143,7 @@ abstract class VariableLengthModCheckGenerator
                 .append(reason).append(NL)
                 .append(NL)
                 .append("Actual values were:").append(NL)
-                .append("  -> startIndex .......: ").append(startIndex).append(NL)
+                .append("  -> startIndex .......: ").append(resolvedStartIndex).append(NL)
                 .append("  -> endIndex .........: ").append(resolvedEndIndex).append(NL)
                 .append("  -> checkDigitIndex ..: ").append(resolvedCheckDigitIndex).append(NL)
                 .toString();

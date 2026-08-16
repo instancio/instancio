@@ -18,6 +18,7 @@ package org.instancio.internal.generator.checksum;
 import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGenerator;
+import org.instancio.internal.util.Fail;
 import org.instancio.internal.util.NumberUtils;
 
 public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
@@ -41,6 +42,25 @@ public abstract class BaseModCheckGenerator extends AbstractGenerator<String> {
      * @param checkPosition index at which the check digit is placed
      */
     public record Layout(int prefixLength, int payloadLength, int suffixLength, int checkPosition) {
+
+        public Layout {
+            // A layout must describe a number that the check digit actually fits into.
+            // Every subclass derives the segment lengths and the check position from a
+            // single, consistent snapshot of its configuration, so a violation here means
+            // the snapshot was not consistent (for example, a generator whose state was
+            // modified while it was generating a value). Failing here reports the offending
+            // values instead of an opaque StringIndexOutOfBoundsException later on.
+            final int size = prefixLength + payloadLength + suffixLength;
+
+            if (prefixLength < 0 || payloadLength < 1 || suffixLength < 0
+                    || checkPosition < 0 || checkPosition >= size) {
+
+                throw Fail.withInternalError(
+                        "invalid mod-check layout: prefixLength=%s, payloadLength=%s,"
+                                + " suffixLength=%s, checkPosition=%s (number size=%s)",
+                        prefixLength, payloadLength, suffixLength, checkPosition, size);
+            }
+        }
 
         /**
          * Layout of a fixed-length number that consists of a payload
