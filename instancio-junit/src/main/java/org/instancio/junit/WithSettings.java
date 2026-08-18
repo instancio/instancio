@@ -29,6 +29,10 @@ import java.lang.annotation.Target;
  * <p>This annotation must be placed on a {@link Settings} field.
  * There can be at most one field annotated {@code @WithSettings} per test class.
  *
+ * <p>The annotated field may be static or non-static. Prior to version {@code 6.0.0},
+ * a static field was required if the test class contained a {@code @ParameterizedTest}
+ * method; this restriction no longer applies.
+ *
  * <pre>{@code
  * @ExtendWith(InstancioExtension.class)
  * class ExampleTest {

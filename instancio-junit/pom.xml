@@ -52,8 +52,6 @@
                             org.instancio.support;version=!,
                             org.instancio;version=!,
                             org.junit.jupiter.api.extension;version=!,
-                            org.junit.jupiter.params.provider;version=!;resolution:=optional,
-                            org.junit.jupiter.params.support;version=!;resolution:=optional,
                         </Import-Package>
                     </instructions>
                 </configuration>
@@ -71,12 +69,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

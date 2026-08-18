@@ -41,17 +41,6 @@ final class Fail {
         return apiException(msg);
     }
 
-    static InstancioApiException withSettingsOnNullOrNonStaticField() {
-        final String msg = new StringBuilder(SB_SIZE)
-                .append("Possible causes:").append(NL)
-                .append(" -> @WithSettings must be annotated on a non-null field.").append(NL)
-                .append(" -> If @WithSettings is used in a test class that contains a @ParameterizedTest,").append(NL)
-                .append("    the annotated Settings field must be static.")
-                .toString();
-
-        return apiException(msg);
-    }
-
     static InstancioApiException withSettingsOnWrongFieldType(final Field field) {
         final String msg = new StringBuilder(SB_SIZE)
                 .append("Cause:").append(NL)

@@ -4754,8 +4754,12 @@ class ExampleTest {
 !!! attention ""
     <lnum>11</lnum> Settings passed to the builder method take precedence over the injected settings.
 
-Instancio supports `@WithSettings` placed on static and non-static fields.
-However, if the test class contains a `@ParameterizedTest` method, then the settings field *must be static*.
+Instancio supports `@WithSettings` placed on static and non-static fields,
+including in test classes that contain `@ParameterizedTest` methods.
+
+!!! note ""
+    Prior to version `6.0.0`, a test class containing a `@ParameterizedTest` method
+    required the `@WithSettings` field to be static. This restriction no longer applies.
 
 ## Reproducing Failed Tests
 

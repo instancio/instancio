@@ -197,28 +197,6 @@ class InstancioExtensionTest {
         assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
     }
 
-    /**
-     * Mimics a test class with a {@code ParameterizedTest} and a non-static
-     * {@code Settings} field (a JUnit extension can only access static fields
-     * when ParameterizedTest is executed).
-     */
-    @Test
-    @DisplayName("Verify exception is thrown if @WithSettings is on a non-static field")
-    void withNonStaticSettingsField() {
-        doReturn(Optional.of(DummyWithNonStaticSettingsTest.class)).when(context).getTestClass();
-
-        final String expectedMsg = """
-                Error running test
-                
-                Possible causes:
-                 -> @WithSettings must be annotated on a non-null field.
-                 -> If @WithSettings is used in a test class that contains a @ParameterizedTest,
-                    the annotated Settings field must be static.
-                """;
-
-        assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
-    }
-
     @SuppressWarnings("NullAway")
     private static void assertApiExceptionWithMessage(final ThrowingCallable throwingCallable, final String expectedMsg) {
         assertThatThrownBy(throwingCallable)
@@ -289,11 +267,6 @@ class InstancioExtensionTest {
         private final Settings settings1 = SETTINGS;
         @WithSettings
         private final Settings settings2 = SETTINGS;
-    }
-
-    static class DummyWithNonStaticSettingsTest {
-        @WithSettings
-        private Settings settings = SETTINGS;
     }
 
     static class DummyWithNullSettingsTest {
