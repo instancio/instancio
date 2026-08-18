@@ -100,16 +100,14 @@ public final class ExtensionSupport {
 
         final Field field = fields.get(0);
 
-        // Test instance is not present for parameterized tests, in which case
-        // we expect the settings annotation to be on a static field
-        final Optional<Object> testInstance = context.getTestInstances().flatMap(testInstances -> testInstances.findInstance(testClass));
-        final Object settings = ReflectionUtils.getFieldValue(field, testInstance.orElse(null));
+        final Object testInstance = context.getTestInstances()
+                .flatMap(testInstances -> testInstances.findInstance(testClass))
+                .orElse(null);
 
-        if (testInstance.isPresent() && settings == null) {
-            throw Fail.withSettingsOnNullField();
-        }
+        final Object settings = ReflectionUtils.getFieldValue(field, testInstance);
+
         if (settings == null) {
-            throw Fail.withSettingsOnNullOrNonStaticField();
+            throw Fail.withSettingsOnNullField();
         }
         if (!(settings instanceof Settings s)) {
             throw Fail.withSettingsOnWrongFieldType(field);
