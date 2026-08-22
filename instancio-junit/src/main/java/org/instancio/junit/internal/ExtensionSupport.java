@@ -52,8 +52,8 @@ public final class ExtensionSupport {
             final ExtensionContext context,
             @Nullable final Settings settings) {
 
-        final Seed seedAnnotation = context.getTestMethod()
-                .map(m -> m.getAnnotation(Seed.class))
+        final Seed seedAnnotation = AnnotationSupport
+                .findAnnotation(context.getTestMethod(), Seed.class)
                 .orElse(null);
 
         final long seed;
