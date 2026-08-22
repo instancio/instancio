@@ -52,6 +52,8 @@
                             org.instancio.support;version=!,
                             org.instancio;version=!,
                             org.junit.jupiter.api.extension;version=!,
+                            org.junit.platform.commons.function;version=!,
+                            org.junit.platform.commons.support;version=!,
                         </Import-Package>
                     </instructions>
                 </configuration>
@@ -68,6 +70,11 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-commons</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

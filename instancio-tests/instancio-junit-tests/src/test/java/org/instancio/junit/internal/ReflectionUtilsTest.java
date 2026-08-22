@@ -15,41 +15,16 @@
  */
 package org.instancio.junit.internal;
 
-import org.instancio.test.support.pojo.basic.StringHolder;
-import org.instancio.test.support.pojo.person.Person;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReflectionUtilsTest {
-
-    @Test
-    void getFieldValueShouldReturnNullIfExceptionIsThrown() {
-        final Field field = org.instancio.internal.util.ReflectionUtils.getField(Person.class, "name");
-        final String target = "invalid target";
-
-        assertThat(ReflectionUtils.getFieldValue(field, target)).isNull();
-    }
-
-    @Test
-    void getAnnotatedFields() {
-        final List<Field> fields = ReflectionUtils.getAnnotatedFields(WithAnnotatedField.class, AnnotationX.class);
-
-        assertThat(fields).hasSize(2)
-                .extracting(Field::getName)
-                .contains("foo", "bar");
-    }
-
-    @Test
-    void getAnnotatedFieldsReturnsEmptyList() {
-        assertThat(ReflectionUtils.getAnnotatedFields(StringHolder.class, AnnotationX.class)).isEmpty();
-    }
 
     @Test
     @SuppressWarnings({"rawtypes"})

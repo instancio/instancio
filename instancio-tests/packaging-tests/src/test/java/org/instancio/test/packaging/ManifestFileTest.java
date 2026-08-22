@@ -62,7 +62,9 @@ class ManifestFileTest {
             "org.instancio.settings,",
             "org.instancio.support,",
             "org.instancio,",
-            "org.junit.jupiter.api.extension"
+            "org.junit.jupiter.api.extension",
+            "org.junit.platform.commons.function",
+            "org.junit.platform.commons.support"
     };
 
     private static final String[] INSTANCIO_KOTLIN_EXPECTED_IMPORTS = {

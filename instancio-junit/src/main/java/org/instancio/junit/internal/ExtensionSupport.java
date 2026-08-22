@@ -27,11 +27,15 @@ import org.instancio.support.Seeds;
 import org.instancio.support.ThreadLocalTestContext;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.junit.platform.commons.support.ReflectionSupport;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class ExtensionSupport {
 
@@ -77,34 +81,50 @@ public final class ExtensionSupport {
     }
 
     @Nullable
-    @SuppressWarnings("java:S3011")
     private static Settings processWithSettingsAnnotation(final ExtensionContext context) {
-        final List<Class<?>> testClasses = new ArrayList<>(context.getEnclosingTestClasses());
-        context.getTestClass().ifPresent(testClasses::add);
-
-        return testClasses.stream()
-                .map(t -> findSettings(t, context))
+        // instances are ordered from outermost to innermost, so settings
+        // declared by inner classes are overlaid on those of their outer classes
+        return context.getRequiredTestInstances().getAllInstances().stream()
+                .map(ExtensionSupport::findSettings)
                 .flatMap(Optional::stream)
                 .reduce(Settings::merge)
                 .orElse(null);
     }
 
-    private static Optional<Settings> findSettings(Class<?> testClass, ExtensionContext context) {
-        final List<Field> fields = ReflectionUtils.getAnnotatedFields(testClass, WithSettings.class);
+    /**
+     * Returns the settings declared by the given instance's class and its supertypes,
+     * merged such that settings declared by subtypes take precedence.
+     */
+    private static Optional<Settings> findSettings(final Object testInstance) {
+        final List<Field> fields = AnnotationSupport.findAnnotatedFields(
+                testInstance.getClass(), WithSettings.class);
 
-        if (fields.size() > 1) {
-            throw Fail.multipleAnnotatedFields(fields);
-        } else if (fields.isEmpty()) {
+        if (fields.isEmpty()) {
             return Optional.empty();
         }
 
-        final Field field = fields.get(0);
+        checkAtMostOneFieldPerDeclaringClass(fields);
 
-        final Object testInstance = context.getTestInstances()
-                .flatMap(testInstances -> testInstances.findInstance(testClass))
+        return fields.stream()
+                .map(field -> getSettingsValue(field, testInstance))
+                .reduce(Settings::merge);
+    }
+
+    private static void checkAtMostOneFieldPerDeclaringClass(final List<Field> fields) {
+        final Map<Class<?>, List<Field>> fieldsByDeclaringClass = fields.stream()
+                .collect(Collectors.groupingBy(Field::getDeclaringClass, LinkedHashMap::new, Collectors.toList()));
+
+        for (List<Field> declaredFields : fieldsByDeclaringClass.values()) {
+            if (declaredFields.size() > 1) {
+                throw Fail.multipleAnnotatedFields(declaredFields);
+            }
+        }
+    }
+
+    private static Settings getSettingsValue(final Field field, final Object testInstance) {
+        final Object settings = ReflectionSupport.tryToReadFieldValue(field, testInstance)
+                .toOptional()
                 .orElse(null);
-
-        final Object settings = ReflectionUtils.getFieldValue(field, testInstance);
 
         if (settings == null) {
             throw Fail.withSettingsOnNullField();
@@ -112,7 +132,7 @@ public final class ExtensionSupport {
         if (!(settings instanceof Settings s)) {
             throw Fail.withSettingsOnWrongFieldType(field);
         }
-        return Optional.of(s);
+        return s;
     }
 
     private ExtensionSupport() {

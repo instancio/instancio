@@ -65,7 +65,7 @@ final class Fail {
         }
 
         final String msg = sb.append(NL)
-                .append("Only one annotated Settings field is expected")
+                .append("Only one annotated Settings field per class is expected")
                 .toString();
 
         return apiException(msg);
