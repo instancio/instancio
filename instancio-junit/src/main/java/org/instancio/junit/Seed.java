@@ -43,9 +43,12 @@ import java.lang.annotation.Target;
  * <p>
  * If the seed annotation is not specified, a random seed will be used, resulting
  * in random data generated on each test run.
+ * <p>
+ * This annotation can also be used as a meta-annotation. A {@code @Seed} declared
+ * directly on a test method takes precedence over one that is meta-present.
  */
 @Documented
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Seed {
 
