@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * An annotation for supplying custom settings to a unit test class.
  *
  * <p>This annotation must be placed on a {@link Settings} field.
- * There can be at most one field annotated {@code @WithSettings} per test class.
+ * There can be at most one field annotated {@code @WithSettings} per class.
  *
  * <p>The annotated field may be static or non-static. Prior to version {@code 6.0.0},
  * a static field was required if the test class contained a {@code @ParameterizedTest}
@@ -73,6 +73,49 @@ import java.lang.annotation.Target;
  *     // Effective value of STRING_MIN_LENGTH = 10 and STRING_MAX_LENGTH = 20
  * }
  * }</pre>
+ *
+ * <h2>Inheritance</h2>
+ *
+ * <p>Since version {@code 6.0.0}, settings declared by a superclass or an
+ * implemented interface are inherited by subclasses. This allows a common
+ * set of settings to be shared by extending a base test class:
+ *
+ * <pre>{@code
+ * abstract class BaseTest {
+ *     @WithSettings
+ *     protected final Settings settings = Settings.create()
+ *         .set(Keys.STRING_MIN_LENGTH, 3)
+ *         .set(Keys.STRING_MAX_LENGTH, 20);
+ * }
+ *
+ * @ExtendWith(InstancioExtension.class)
+ * class ExampleTest extends BaseTest {
+ *
+ *     // Effective value of STRING_MIN_LENGTH = 3 and STRING_MAX_LENGTH = 20
+ * }
+ * }</pre>
+ *
+ * <p>As with {@code @Nested} test classes, inherited settings are merged
+ * rather than replaced: a subclass that declares its own {@code @WithSettings}
+ * field overrides only the matching settings, and inherits the rest.
+ *
+ * <pre>{@code
+ * @ExtendWith(InstancioExtension.class)
+ * class ExampleTest extends BaseTest {
+ *
+ *     @WithSettings
+ *     private final Settings settings = Settings.create()
+ *         .set(Keys.STRING_MIN_LENGTH, 10);
+ *
+ *     // Effective value of STRING_MIN_LENGTH = 10 and STRING_MAX_LENGTH = 20
+ * }
+ * }</pre>
+ *
+ * <p>When both mechanisms are combined, settings are applied from the
+ * outermost enclosing class down to the test class itself, and within each
+ * class from its supertypes down to the class itself. In other words, the
+ * closer a declaration is to the test class being executed, the higher its
+ * precedence.
  *
  * @since 1.1.1
  */

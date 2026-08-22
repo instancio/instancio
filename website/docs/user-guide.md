@@ -4725,7 +4725,7 @@ class ExampleTest {
     <lnum>4</lnum> Inject custom settings to be used by every test method within the class.<br/>
     <lnum>10</lnum> Every object will be created using the injected settings.
 
-!!! warning "There can be only one field annotated `@WithSettings` per test class."
+!!! warning "There can be only one field annotated `@WithSettings` per class."
 
 Instancio also supports overriding the injected settings using the `withSettings` method as shown below.
 The settings provided via the method take precedence over the injected settings (see [Settings Precedence](#settings-precedence) for further information).
@@ -4760,6 +4760,57 @@ including in test classes that contain `@ParameterizedTest` methods.
 !!! note ""
     Prior to version `6.0.0`, a test class containing a `@ParameterizedTest` method
     required the `@WithSettings` field to be static. This restriction no longer applies.
+
+### Inherited and Nested Settings
+
+Injected settings are not confined to the class that declares them.
+Settings are also picked up from:
+
+- superclasses and implemented interfaces of the test class
+- enclosing classes, when using `@Nested` test classes
+
+Where more than one `@WithSettings` field applies, the settings are *merged* rather than replaced.
+Each declaration overrides only the keys it sets explicitly, and inherits the rest.
+This makes it possible to share a common baseline of settings and refine it per test class.
+
+``` java linenums="1" title="Inheriting and overriding Settings" hl_lines="3 12"
+abstract class BaseTest {
+
+    @WithSettings
+    protected final Settings settings = Settings.create()
+        .set(Keys.STRING_MIN_LENGTH, 3)
+        .set(Keys.STRING_MAX_LENGTH, 20);
+}
+
+@ExtendWith(InstancioExtension.class)
+class ExampleTest extends BaseTest {
+
+    @WithSettings
+    private final Settings settings = Settings.create()
+        .set(Keys.STRING_MIN_LENGTH, 10);
+
+    @Test
+    void example() {
+        // STRING_MIN_LENGTH = 10 (overridden)
+        // STRING_MAX_LENGTH = 20 (inherited)
+    }
+}
+```
+!!! attention ""
+    <lnum>3</lnum> The baseline settings declared by the base class.<br/>
+    <lnum>12</lnum> Only `STRING_MIN_LENGTH` is overridden; `STRING_MAX_LENGTH` is inherited.
+
+The same applies to `@Nested` test classes, where the inner class settings
+are overlaid on top of the outer class settings.
+
+When both mechanisms are combined, settings are applied from the outermost enclosing
+class down to the test class itself, and within each class from its supertypes down to
+the class itself. In short, **the closer a declaration is to the test class being
+executed, the higher its precedence**.
+
+!!! note ""
+    Prior to version `6.0.0`, settings were resolved from the test class alone.
+    Settings declared by supertypes and enclosing classes were ignored.
 
 ## Reproducing Failed Tests
 

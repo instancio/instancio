@@ -16,19 +16,14 @@
 package org.instancio.junit.internal;
 
 import org.instancio.internal.util.Sonar;
-import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
 
 public final class ReflectionUtils {
 
@@ -59,23 +54,6 @@ public final class ReflectionUtils {
                 results.add(annotation);
                 collectionAnnotations(type, results);
             }
-        }
-    }
-
-    static List<Field> getAnnotatedFields(final Class<?> klass, final Class<? extends Annotation> annotation) {
-        return Arrays.stream(klass.getDeclaredFields())
-                .filter(field -> field.getAnnotation(annotation) != null)
-                .collect(toList());
-    }
-
-    @Nullable
-    @SuppressWarnings("java:S3011")
-    static Object getFieldValue(final Field field, @Nullable final Object target) {
-        try {
-            field.setAccessible(true);
-            return field.get(target);
-        } catch (Exception ex) {
-            return null;
         }
     }
 
