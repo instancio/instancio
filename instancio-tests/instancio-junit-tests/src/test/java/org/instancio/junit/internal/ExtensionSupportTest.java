@@ -23,10 +23,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstances;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +39,9 @@ class ExtensionSupportTest {
     @Mock
     private ExtensionContext context;
 
+    @Mock
+    private TestInstances testInstances;
+
     @AfterEach
     void cleanup() {
         ThreadLocalTestContext.getInstance().remove();
@@ -48,7 +52,8 @@ class ExtensionSupportTest {
         ThreadLocalTestContext.getInstance().set(
                 new InternalTestContext(new DefaultRandom(), Settings.create()));
 
-        doReturn(Optional.of(NoSettingsTest.class)).when(context).getTestClass();
+        doReturn(testInstances).when(context).getRequiredTestInstances();
+        doReturn(List.of(new NoSettingsTest())).when(testInstances).getAllInstances();
 
         ExtensionSupport.processAnnotations(context, ThreadLocalTestContext.getInstance());
 

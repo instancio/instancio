@@ -116,11 +116,8 @@ class InstancioExtensionTest {
     @Test
     @DisplayName("Verify annotated Settings are passed to thread local")
     void beforeEachWithSettingsAnnotation() throws IllegalAccessException {
-        doReturn(Optional.of(DummyTest.class)).when(context).getTestClass();
         doReturn(testInstances).when(context).getRequiredTestInstances();
-        doReturn(Optional.of(testInstances)).when(context).getTestInstances();
         doReturn(List.of(new DummyTest())).when(testInstances).getAllInstances();
-        doReturn(Optional.of(new DummyTest())).when(testInstances).findInstance(DummyTest.class);
 
         final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
         doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
@@ -138,7 +135,8 @@ class InstancioExtensionTest {
     @Test
     @DisplayName("Verify exception is thrown if test class has more than one field annotated @WithSettings")
     void moreThanOneFieldAnnotatedWithSettings() {
-        doReturn(Optional.of(DummyWithTwoSettingsTest.class)).when(context).getTestClass();
+        doReturn(testInstances).when(context).getRequiredTestInstances();
+        doReturn(List.of(new DummyWithTwoSettingsTest())).when(testInstances).getAllInstances();
 
         final String expectedMsg = """
                 Error running test
@@ -149,7 +147,30 @@ class InstancioExtensionTest {
                     (1) private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings1
                     (2) private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings2
                 
-                Only one annotated Settings field is expected
+                Only one annotated Settings field per class is expected
+                """;
+
+        assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
+    }
+
+    @Test
+    @DisplayName("Verify only the offending class is reported when a superclass has more than one annotated field")
+    void moreThanOneFieldAnnotatedWithSettingsInSuperclass() {
+        doReturn(testInstances).when(context).getRequiredTestInstances();
+        doReturn(List.of(new DummyWithTwoSettingsInSuperclassTest())).when(testInstances).getAllInstances();
+
+        // the subclass declares one annotated field, which is legal;
+        // only the two fields declared by the superclass are reported
+        final String expectedMsg = """
+                Error running test
+
+                Cause:
+                 -> Found more than one field annotated '@WithSettings'
+
+                    (1) private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings1
+                    (2) private final org.instancio.settings.Settings org.instancio.junit.InstancioExtensionTest$DummyWithTwoSettingsTest.settings2
+
+                Only one annotated Settings field per class is expected
                 """;
 
         assertApiExceptionWithMessage(() -> extension.beforeEach(context), expectedMsg);
@@ -158,11 +179,8 @@ class InstancioExtensionTest {
     @Test
     @DisplayName("Verify exception is thrown if @WithSettings is not on Settings field")
     void withSettingsOnWrongFieldType() {
-        doReturn(Optional.of(DummyWithSettingsOnWrongFieldTypeTest.class)).when(context).getTestClass();
-        doReturn(Optional.of(testInstances)).when(context).getTestInstances();
-        doReturn(Optional.of(new DummyWithSettingsOnWrongFieldTypeTest()))
-                .when(testInstances)
-                .findInstance(DummyWithSettingsOnWrongFieldTypeTest.class);
+        doReturn(testInstances).when(context).getRequiredTestInstances();
+        doReturn(List.of(new DummyWithSettingsOnWrongFieldTypeTest())).when(testInstances).getAllInstances();
 
         final String expectedMsg = """
                 Error running test
@@ -180,11 +198,8 @@ class InstancioExtensionTest {
     @Test
     @DisplayName("Verify exception is thrown if @WithSettings is on a field with null value")
     void withSettingsOnNullField() {
-        doReturn(Optional.of(DummyWithNullSettingsTest.class)).when(context).getTestClass();
-        doReturn(Optional.of(testInstances)).when(context).getTestInstances();
-        doReturn(Optional.of(new DummyWithNullSettingsTest()))
-                .when(testInstances)
-                .findInstance(DummyWithNullSettingsTest.class);
+        doReturn(testInstances).when(context).getRequiredTestInstances();
+        doReturn(List.of(new DummyWithNullSettingsTest())).when(testInstances).getAllInstances();
 
         final String expectedMsg = """
                 Error running test
@@ -267,6 +282,11 @@ class InstancioExtensionTest {
         private final Settings settings1 = SETTINGS;
         @WithSettings
         private final Settings settings2 = SETTINGS;
+    }
+
+    static class DummyWithTwoSettingsInSuperclassTest extends DummyWithTwoSettingsTest {
+        @WithSettings
+        private final Settings settings3 = SETTINGS;
     }
 
     static class DummyWithNullSettingsTest {
