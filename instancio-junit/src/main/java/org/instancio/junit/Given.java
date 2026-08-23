@@ -19,6 +19,7 @@ import org.instancio.documentation.ExperimentalApi;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -62,6 +63,33 @@ import java.lang.annotation.Target;
  * }
  * }</pre>
  *
+ * <h2>Repeated declarations</h2>
+ *
+ * <p>This annotation is repeatable. Repeating it is equivalent to listing
+ * all the providers in a single declaration, so that:
+ *
+ * <pre>{@code
+ * @Given(FooProvider.class)
+ * @Given(BarProvider.class)
+ * private String value;
+ * }</pre>
+ *
+ * <p>has the same effect as:
+ *
+ * <pre>{@code
+ * @Given( {FooProvider.class, BarProvider.class} )
+ * private String value;
+ * }</pre>
+ *
+ * <p>Note that repeating the annotation adds an alternative rather than an
+ * additional step: the providers form a single set of candidates, from which
+ * one is selected at random each time a value is generated. They are never
+ * applied together.
+ *
+ * <p>Candidates are gathered from every {@code @Given} that applies to an
+ * element, whether declared directly or contributed by a meta-annotation,
+ * so that composed annotations combine into one set.
+ *
  * @see GivenProvider
  * @since 5.0.0
  */
@@ -69,6 +97,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
+@Repeatable(Given.List.class)
 public @interface Given {
 
     /**
@@ -87,4 +116,27 @@ public @interface Given {
      */
     @ExperimentalApi
     Class<? extends GivenProvider>[] value() default {};
+
+    /**
+     * Container for repeated {@link Given @Given} declarations.
+     *
+     * <p>This annotation is applied automatically by the compiler and is not
+     * intended to be declared directly.
+     *
+     * @since 6.0.0
+     */
+    @ExperimentalApi
+    @Documented
+    @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.PARAMETER})
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface List {
+
+        /**
+         * The contained {@link Given @Given} annotations.
+         *
+         * @return the repeated annotations
+         * @since 6.0.0
+         */
+        Given[] value();
+    }
 }

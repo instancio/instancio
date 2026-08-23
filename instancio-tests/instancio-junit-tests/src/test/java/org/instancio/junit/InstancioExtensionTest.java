@@ -17,8 +17,6 @@ package org.instancio.junit;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.instancio.exception.InstancioApiException;
-import org.instancio.junit.internal.ElementAnnotations;
-import org.instancio.junit.internal.FieldAnnotationMap;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.InternalTestContext;
@@ -98,12 +96,6 @@ class InstancioExtensionTest {
         doReturn(testInstances).when(context).getRequiredTestInstances();
         doReturn(List.of(new DummyTest())).when(testInstances).getAllInstances();
 
-        final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
-        doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
-        doReturn(new FieldAnnotationMap(DummyTest.class))
-                .when(store)
-                .get(DummyTest.class, FieldAnnotationMap.class);
-
         // Method under test
         extension.beforeEach(context);
 
@@ -118,12 +110,6 @@ class InstancioExtensionTest {
     void beforeEachWithSettingsAnnotation() throws IllegalAccessException {
         doReturn(testInstances).when(context).getRequiredTestInstances();
         doReturn(List.of(new DummyTest())).when(testInstances).getAllInstances();
-
-        final ExtensionContext.Store store = mock(ExtensionContext.Store.class);
-        doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
-        doReturn(new FieldAnnotationMap(DummyTest.class))
-                .when(store)
-                .get(DummyTest.class, FieldAnnotationMap.class);
 
         // Method under test
         extension.beforeEach(context);
@@ -223,12 +209,10 @@ class InstancioExtensionTest {
     @Test
     @DisplayName("Resources should be cleared after each test method")
     void afterEach() {
-        ExtensionContext.Store store = mock(ExtensionContext.Store.class);
-        doReturn(store).when(context).getStore(ExtensionContext.Namespace.create("org.instancio"));
-
         extension.afterEach(context);
+
         verify(threadLocalTestContext).remove();
-        verify(store).remove("elementAnnotations", ElementAnnotations.class);
+        verifyNoInteractions(context);
     }
 
     @Test

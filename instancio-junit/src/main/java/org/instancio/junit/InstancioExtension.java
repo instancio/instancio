@@ -15,39 +15,35 @@
  */
 package org.instancio.junit;
 
-import org.instancio.internal.util.Fail;
-import org.instancio.internal.util.Sonar;
-import org.instancio.junit.internal.ElementAnnotations;
 import org.instancio.junit.internal.ExtensionSupport;
-import org.instancio.junit.internal.FieldAnnotationMap;
+import org.instancio.junit.internal.Fail;
+import org.instancio.junit.internal.GivenAnnotations;
 import org.instancio.junit.internal.ObjectCreator;
-import org.instancio.junit.internal.ReflectionUtils;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.InternalTestContext;
 import org.instancio.support.Log;
 import org.instancio.support.ThreadLocalTestContext;
-import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.jupiter.api.extension.TestInstantiationAwareExtension;
+import org.junit.platform.commons.support.HierarchyTraversalMode;
+import org.junit.platform.commons.support.ReflectionSupport;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.instancio.junit.internal.Constants.INSTANCIO_NAMESPACE;
 
 /**
  * The Instancio JUnit extension adds support for additional
@@ -103,16 +99,11 @@ import static org.instancio.junit.internal.Constants.INSTANCIO_NAMESPACE;
  *
  * @since 1.1.0
  */
-@SuppressWarnings("PMD.ExcessiveImports")
 public class InstancioExtension implements
-        BeforeAllCallback,
         BeforeEachCallback,
-        AfterAllCallback,
         AfterEachCallback,
         AfterTestExecutionCallback,
         ParameterResolver {
-
-    private static final String ELEMENT_ANNOTATIONS = "elementAnnotations";
 
     private final ThreadLocalTestContext threadLocalTestContext;
 
@@ -129,66 +120,44 @@ public class InstancioExtension implements
         this.threadLocalTestContext = threadLocalTestContext;
     }
 
+    /**
+     * Opting in to the test-method scope is recommended by JUnit for forward
+     * compatibility, as it is due to become the default behaviour.
+     */
     @Override
-    public void beforeAll(final ExtensionContext context) {
-        final List<Class<?>> testClasses = new ArrayList<>(context.getEnclosingTestClasses());
-        testClasses.add(context.getRequiredTestClass());
-        testClasses.forEach(testClass ->
-                context.getStore(INSTANCIO_NAMESPACE).put(testClass, new FieldAnnotationMap(testClass))
-        );
+    public TestInstantiationAwareExtension.ExtensionContextScope getTestInstantiationExtensionContextScope(
+            final ExtensionContext rootContext) {
+
+        return TestInstantiationAwareExtension.ExtensionContextScope.TEST_METHOD;
     }
 
     @Override
     public void beforeEach(final ExtensionContext context) throws IllegalAccessException {
-        ExtensionSupport.processAnnotations(context, threadLocalTestContext);
+        threadLocalTestContext.set(ExtensionSupport.createTestContext(context));
 
         for (Object testInstance : context.getRequiredTestInstances().getAllInstances()) {
-            populateTestInstanceFields(testInstance, context);
+            populateTestInstanceFields(testInstance);
         }
     }
 
-    @SuppressWarnings(Sonar.ACCESSIBILITY_UPDATE_SHOULD_BE_REMOVED)
-    private void populateTestInstanceFields(final Object testInstance, final ExtensionContext context) throws IllegalAccessException {
-        final Class<?> testClass = testInstance.getClass();
-        final FieldAnnotationMap annotationMap = context.getStore(INSTANCIO_NAMESPACE)
-                .get(testClass, FieldAnnotationMap.class);
+    private void populateTestInstanceFields(final Object testInstance) throws IllegalAccessException {
+        final List<Field> fields = ReflectionSupport.findFields(
+                testInstance.getClass(), GivenAnnotations::isAnnotated, HierarchyTraversalMode.TOP_DOWN);
 
-        if (annotationMap == null) {
-            return;
-        }
-
-        for (Field field : testClass.getDeclaredFields()) {
-            final List<Annotation> annotations = annotationMap.get(field);
-
-            if (!containsAnnotation(annotations, Given.class)) {
-                continue;
-            }
+        for (Field field : fields) {
             if (Modifier.isStatic(field.getModifiers())) {
-                throw Fail.withUsageError("@Given annotation is not supported for static fields");
+                throw Fail.givenOnStaticField(field);
             }
 
-            final ElementAnnotations elementAnnotations = new ElementAnnotations(annotations);
-            final InternalTestContext internalTestContext = requireNonNull(threadLocalTestContext.get());
-            final Object fieldValue = new ObjectCreator(internalTestContext.getSettings(), internalTestContext.getRandom())
-                    .createObject(field, field.getGenericType(), elementAnnotations);
+            final Object fieldValue = createObject(field, field.getGenericType());
 
-            ReflectionUtils.setAccessible(field).set(testInstance, fieldValue);
+            ReflectionSupport.makeAccessible(field).set(testInstance, fieldValue);
         }
-    }
-
-    @Override
-    public void afterAll(final ExtensionContext context) {
-        final List<Class<?>> testClasses = new ArrayList<>(context.getEnclosingTestClasses());
-        testClasses.add(context.getRequiredTestClass());
-        testClasses.forEach(testClass ->
-                context.getStore(INSTANCIO_NAMESPACE).remove(testClass, FieldAnnotationMap.class)
-        );
     }
 
     @Override
     public void afterEach(final ExtensionContext context) {
         threadLocalTestContext.remove();
-        context.getStore(INSTANCIO_NAMESPACE).remove(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
     }
 
     @Override
@@ -220,20 +189,8 @@ public class InstancioExtension implements
             final ParameterContext parameterContext,
             final ExtensionContext extensionContext) {
 
-        if (parameterContext.getDeclaringExecutable() instanceof Constructor) {
-            return false;
-        }
-
-        final Parameter parameter = parameterContext.getParameter();
-        final List<Annotation> annotations = ReflectionUtils.collectionAnnotations(parameter);
-
-        final boolean supportsParameter = containsAnnotation(annotations, Given.class);
-
-        if (supportsParameter) {
-            extensionContext.getStore(INSTANCIO_NAMESPACE)
-                    .put(ELEMENT_ANNOTATIONS, new ElementAnnotations(annotations));
-        }
-        return supportsParameter;
+        return !(parameterContext.getDeclaringExecutable() instanceof Constructor)
+                && GivenAnnotations.isAnnotated(parameterContext.getParameter());
     }
 
     @Override
@@ -243,25 +200,13 @@ public class InstancioExtension implements
 
         final Parameter parameter = parameterContext.getParameter();
 
-        final ElementAnnotations elementAnnotations = extensionContext.getStore(INSTANCIO_NAMESPACE)
-                .get(ELEMENT_ANNOTATIONS, ElementAnnotations.class);
-
-        final Type targetType = parameter.getParameterizedType();
-
-        final InternalTestContext internalTestContext = requireNonNull(threadLocalTestContext.get());
-        return new ObjectCreator(internalTestContext.getSettings(), internalTestContext.getRandom())
-                .createObject(parameter, targetType, requireNonNull(elementAnnotations));
+        return createObject(parameter, parameter.getParameterizedType());
     }
 
-    private static boolean containsAnnotation(
-            final List<Annotation> annotations,
-            final Class<? extends Annotation> annotationType) {
+    private Object createObject(final AnnotatedElement element, final Type targetType) {
+        final InternalTestContext internalTestContext = requireNonNull(threadLocalTestContext.get());
 
-        for (Annotation a : annotations) {
-            if (a.annotationType() == annotationType) {
-                return true;
-            }
-        }
-        return false;
+        return new ObjectCreator(internalTestContext.getSettings(), internalTestContext.getRandom())
+                .createObject(element, targetType);
     }
 }

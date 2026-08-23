@@ -48,14 +48,14 @@ class ExtensionSupportTest {
     }
 
     @Test
-    void processAnnotations_shouldClearThreadLocalSettings_whenNoWithSettingsAnnotationPresent() {
+    void createTestContext_shouldClearThreadLocalSettings_whenNoWithSettingsAnnotationPresent() {
         ThreadLocalTestContext.getInstance().set(
                 new InternalTestContext(new DefaultRandom(), Settings.create()));
 
         doReturn(testInstances).when(context).getRequiredTestInstances();
         doReturn(List.of(new NoSettingsTest())).when(testInstances).getAllInstances();
 
-        ExtensionSupport.processAnnotations(context, ThreadLocalTestContext.getInstance());
+        ThreadLocalTestContext.getInstance().set(ExtensionSupport.createTestContext(context));
 
         assertThat(requireNonNull(ThreadLocalTestContext.getInstance().get()).getSettings()).isNull();
     }
