@@ -21,6 +21,7 @@ import org.instancio.InstancioFeedApi;
 import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
 import org.instancio.feed.Feed;
+import org.instancio.internal.util.ReflectionUtils;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.internal.util.Verify;
 import org.instancio.junit.GivenProvider;
@@ -48,10 +49,9 @@ public class ObjectCreator {
 
     public Object createObject(
             final AnnotatedElement annotatedElement,
-            final Type targetType,
-            final ElementAnnotations elementAnnotations) {
+            final Type targetType) {
 
-        final List<Class<? extends GivenProvider>> providerClasses = elementAnnotations.getProviderClasses();
+        final List<Class<? extends GivenProvider>> providerClasses = GivenAnnotations.findProviderClasses(annotatedElement);
         final Class<?> targetClass = TypeUtils.getRawType(targetType);
         final Type actualTargetType = targetClass == Supplier.class || targetClass == Stream.class
                 ? ((ParameterizedType) targetType).getActualTypeArguments()[0] //NOSONAR
@@ -64,7 +64,7 @@ public class ObjectCreator {
         } else {
             supplier = () -> {
                 final InternalElementContext elementContext = new InternalElementContext(
-                        annotatedElement, actualTargetType, elementAnnotations, random);
+                        annotatedElement, actualTargetType, random);
 
                 final GivenProvider provider = ReflectionUtils.newInstance(random.oneOf(providerClasses));
                 return provider.provide(elementContext);

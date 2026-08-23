@@ -46,7 +46,9 @@ class InstancioExtensionStaticFieldAnnotatedWithGivenTest {
                 event(test("testMethod"), finishedWithFailure(
                         instanceOf(InstancioApiException.class),
                         message(msg -> msg.contains(
-                                "@Given annotation is not supported for static fields")))));
+                                "@Given annotation is not supported for static fields.")
+                                && msg.contains("Found annotation on:")
+                                && msg.contains("SampleTest.value")))));
     }
 
     @ExtendWith(InstancioExtension.class)

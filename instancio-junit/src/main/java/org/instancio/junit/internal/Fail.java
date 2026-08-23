@@ -16,6 +16,7 @@
 
 package org.instancio.junit.internal;
 
+import org.instancio.documentation.InternalApi;
 import org.instancio.exception.InstancioApiException;
 
 import java.lang.reflect.Field;
@@ -24,12 +25,25 @@ import java.util.List;
 import static org.instancio.internal.util.Constants.NL;
 
 @SuppressWarnings({"StringBufferReplaceableByString", "UnnecessaryStringBuilder"})
-final class Fail {
+@InternalApi
+public final class Fail {
 
     private static final int SB_SIZE = 512;
 
     private Fail() {
         // non-instantiable
+    }
+
+    public static InstancioApiException givenOnStaticField(final Field field) {
+        final String msg = new StringBuilder(SB_SIZE)
+                .append("Cause:").append(NL)
+                .append(" -> @Given annotation is not supported for static fields.").append(NL)
+                .append(NL)
+                .append("Found annotation on:").append(NL)
+                .append(" -> ").append(field)
+                .toString();
+
+        return apiException(msg);
     }
 
     static InstancioApiException withSettingsOnNullField() {

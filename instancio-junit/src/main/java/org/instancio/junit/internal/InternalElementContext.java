@@ -16,30 +16,30 @@
 package org.instancio.junit.internal;
 
 import org.instancio.Random;
+import org.instancio.documentation.InternalApi;
 import org.instancio.internal.util.TypeUtils;
 import org.instancio.junit.GivenProvider;
 import org.jspecify.annotations.Nullable;
+import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 
+@InternalApi
 public class InternalElementContext implements GivenProvider.ElementContext {
 
     private final AnnotatedElement targetElement;
-    private final ElementAnnotations elementAnnotations;
     private final Type targetType;
     private final Random random;
 
     public InternalElementContext(
             final AnnotatedElement targetElement,
             final Type targetType,
-            final ElementAnnotations elementAnnotations,
             final Random random) {
 
         this.targetElement = targetElement;
         this.targetType = targetType;
-        this.elementAnnotations = elementAnnotations;
         this.random = random;
     }
 
@@ -66,6 +66,6 @@ public class InternalElementContext implements GivenProvider.ElementContext {
     @Nullable
     @Override
     public <A extends @Nullable Annotation> A getAnnotation(final Class<A> annotationType) {
-        return elementAnnotations.getAnnotation(annotationType);
+        return AnnotationSupport.findAnnotation(targetElement, annotationType).orElse(null);
     }
 }

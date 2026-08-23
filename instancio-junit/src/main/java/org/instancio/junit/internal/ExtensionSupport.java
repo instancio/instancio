@@ -16,6 +16,7 @@
 package org.instancio.junit.internal;
 
 import org.instancio.Random;
+import org.instancio.documentation.InternalApi;
 import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
 import org.instancio.settings.Keys;
@@ -24,7 +25,6 @@ import org.instancio.support.DefaultRandom;
 import org.instancio.support.Global;
 import org.instancio.support.InternalTestContext;
 import org.instancio.support.Seeds;
-import org.instancio.support.ThreadLocalTestContext;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -37,15 +37,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@InternalApi
 public final class ExtensionSupport {
 
-    public static void processAnnotations(
-            final ExtensionContext context,
-            final ThreadLocalTestContext threadLocalTestContext) {
-
+    public static InternalTestContext createTestContext(final ExtensionContext context) {
         final Settings settings = processWithSettingsAnnotation(context);
         final DefaultRandom random = processSeedAnnotation(context, settings);
-        threadLocalTestContext.set(new InternalTestContext(random, settings));
+        return new InternalTestContext(random, settings);
     }
 
     private static DefaultRandom processSeedAnnotation(

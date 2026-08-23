@@ -4638,6 +4638,36 @@ void withStream(@Given Stream<Integer> stream) {
 }
 ```
 
+### Inherited `@Given` Fields
+
+Fields annotated with `@Given` are not confined to the class that declares them.
+They are also picked up from superclasses and implemented interfaces of the test class,
+which allows a common set of generated inputs to be shared by extending a base test class:
+
+``` java linenums="1" title="Inheriting @Given fields" hl_lines="3 10"
+abstract class BaseTest {
+
+    @Given
+    protected Person person;
+}
+
+@ExtendWith(InstancioExtension.class)
+class ExampleTest extends BaseTest {
+
+    @Given
+    private String value;
+
+    @Test
+    void example() {
+        // both 'person' and 'value' are populated
+    }
+}
+```
+
+!!! note ""
+    Prior to version `6.0.0`, only fields declared by the test class itself were populated.
+    A `@Given` field declared by a supertype was silently ignored.
+
 ### Using Custom `GivenProvider`
 
 The `@Given` annotation can accept one or more `GivenProvider` classes
@@ -4696,6 +4726,28 @@ void example(@GivenProductCode String productCode) {
 !!! note "Using multiple providers"
     When multiple providers are specified, e.g. `@Given({Provider1.class, Provider2.class})`
     Instancio will choose providers randomly from the specified classes.
+
+Since `@Given` is repeatable, the providers may also be listed as separate
+declarations. The following two are equivalent:
+
+``` java linenums="1"
+@Given({Provider1.class, Provider2.class})
+private String value;
+```
+
+``` java linenums="1"
+@Given(Provider1.class)
+@Given(Provider2.class)
+private String value;
+```
+
+Providers are gathered from every `@Given` that applies to an element, including those
+contributed by a custom annotation as shown above. They form a single set of candidates
+from which one is selected at random each time a value is generated, and are never
+applied together.
+
+!!! info "Experimental API `@since 6.0.0`"
+    Repeating the `@Given` annotation.
 
 
 ## Settings Injection
