@@ -65,7 +65,7 @@
         <version.jspecify>1.0.1</version.jspecify>
         <version.junit>6.1.3</version.junit>
         <version.kotlin>2.4.10</version.kotlin>
-        <version.protobuf-java>4.35.1</version.protobuf-java>
+        <version.protobuf-java>4.36.0</version.protobuf-java>
         <version.slf4j>2.0.18</version.slf4j>
         <version.errorprone>2.50.0</version.errorprone>
         <version.nullaway>0.13.8</version.nullaway>
