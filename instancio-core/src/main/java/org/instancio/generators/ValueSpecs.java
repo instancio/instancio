@@ -153,7 +153,7 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      * @since 5.0.0
      */
     @SuppressWarnings("unchecked")
-    <T extends @Nullable Object> OneOfArraySpec<T> oneOf(@Nullable T... choices);
+    <T> OneOfArraySpec<T> oneOf(@Nullable T... choices);
 
     /**
      * Picks a random value from the given choices.
@@ -163,7 +163,7 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
      * @return API builder reference
      * @since 5.0.0
      */
-    <T extends @Nullable Object> OneOfCollectionSpec<T> oneOf(Collection<T> choices);
+    <T> OneOfCollectionSpec<T> oneOf(Collection<T> choices);
 
     /**
      * A spec for generating intervals of various types, such as

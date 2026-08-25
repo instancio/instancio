@@ -26,6 +26,7 @@ import org.instancio.settings.FeedDataEndAction;
 import org.instancio.settings.FeedFormatType;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.jspecify.annotations.Nullable;
 
 public final class FeedApiImpl<F extends Feed> implements InstancioFeedApi<F> {
 
@@ -78,7 +79,7 @@ public final class FeedApiImpl<F extends Feed> implements InstancioFeedApi<F> {
     }
 
     @Override
-    public <V> InstancioFeedApi<F> withSetting(final SettingKey<V> key, final V value) {
+    public <V extends @Nullable Object> InstancioFeedApi<F> withSetting(final SettingKey<V> key, final V value) {
         feedContextBuilder.withSetting(key, value);
         return this;
     }

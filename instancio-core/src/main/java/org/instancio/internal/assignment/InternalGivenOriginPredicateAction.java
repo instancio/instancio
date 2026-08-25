@@ -22,6 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.Flattener;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,27 +64,27 @@ public class InternalGivenOriginPredicateAction
     }
 
     @Override
-    public <T> GivenOriginPredicateAction supply(final TargetSelector selector, final Generator<T> generator) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction supply(final TargetSelector selector, final Generator<T> generator) {
         return addAction(selector, GeneratorHolder.of(generator));
     }
 
     @Override
-    public <T> GivenOriginPredicateAction supply(final TargetSelector selector, final Supplier<T> supplier) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction supply(final TargetSelector selector, final Supplier<T> supplier) {
         return addAction(selector, GeneratorHolder.of(supplier));
     }
 
     @Override
-    public <T> GivenOriginPredicateAction set(final TargetSelector selector, final T obj) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction set(final TargetSelector selector, final T obj) {
         return addAction(selector, GeneratorHolder.of(obj));
     }
 
     @Override
-    public <T> GivenOriginPredicateAction generate(final TargetSelector selector, final GeneratorSpecProvider<T> gen) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction generate(final TargetSelector selector, final GeneratorSpecProvider<T> gen) {
         return addAction(selector, GeneratorHolder.of(gen));
     }
 
     @Override
-    public <T> GivenOriginPredicateAction generate(final TargetSelector selector, final GeneratorSpec<T> spec) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction generate(final TargetSelector selector, final GeneratorSpec<T> spec) {
         return addAction(selector, GeneratorHolder.of(spec));
     }
 }

@@ -47,7 +47,7 @@ public class InternalValueOfOriginDestinationPredicate
     }
 
     @Override
-    public <T> Assignment when(@Nullable final Predicate<T> predicate) {
+    public <T extends @Nullable Object> Assignment when(@Nullable final Predicate<T> predicate) {
         this.predicate = predicate;
         return this;
     }

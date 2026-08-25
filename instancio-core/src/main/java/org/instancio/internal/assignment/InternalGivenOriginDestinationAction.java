@@ -22,6 +22,7 @@ import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.Flattener;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,52 +42,52 @@ public class InternalGivenOriginDestinationAction
     }
 
     @Override
-    public <S, T> GivenOriginDestinationAction generate(Predicate<S> predicate, GeneratorSpecProvider<T> gen) {
+    public <S extends @Nullable Object, T extends @Nullable Object> GivenOriginDestinationAction generate(Predicate<S> predicate, GeneratorSpecProvider<T> gen) {
         return add(predicate, GeneratorHolder.of(gen));
     }
 
     @Override
-    public <S, T> GivenOriginDestinationAction generate(Predicate<S> predicate, GeneratorSpec<T> spec) {
+    public <S extends @Nullable Object, T extends @Nullable Object> GivenOriginDestinationAction generate(Predicate<S> predicate, GeneratorSpec<T> spec) {
         return add(predicate, GeneratorHolder.of(spec));
     }
 
     @Override
-    public <S, T> GivenOriginDestinationAction set(Predicate<S> predicate, T value) {
+    public <S extends @Nullable Object, T extends @Nullable Object> GivenOriginDestinationAction set(Predicate<S> predicate, T value) {
         return add(predicate, GeneratorHolder.of(value));
     }
 
     @Override
-    public <S, T> GivenOriginDestinationAction supply(final Predicate<S> predicate, final Generator<T> generator) {
+    public <S extends @Nullable Object, T extends @Nullable Object> GivenOriginDestinationAction supply(final Predicate<S> predicate, final Generator<T> generator) {
         return add(predicate, GeneratorHolder.of(generator));
     }
 
     @Override
-    public <S, T> GivenOriginDestinationAction supply(final Predicate<S> predicate, final Supplier<T> supplier) {
+    public <S extends @Nullable Object, T extends @Nullable Object> GivenOriginDestinationAction supply(final Predicate<S> predicate, final Supplier<T> supplier) {
         return add(predicate, GeneratorHolder.of(supplier));
     }
 
     @Override
-    public <T> Assignment elseGenerate(GeneratorSpecProvider<T> gen) {
+    public <T extends @Nullable Object> Assignment elseGenerate(GeneratorSpecProvider<T> gen) {
         return add(negatePredicates(), GeneratorHolder.of(gen));
     }
 
     @Override
-    public <T> Assignment elseGenerate(GeneratorSpec<T> spec) {
+    public <T extends @Nullable Object> Assignment elseGenerate(GeneratorSpec<T> spec) {
         return add(negatePredicates(), GeneratorHolder.of(spec));
     }
 
     @Override
-    public <T> Assignment elseSet(T value) {
+    public <T extends @Nullable Object> Assignment elseSet(T value) {
         return add(negatePredicates(), GeneratorHolder.of(value));
     }
 
     @Override
-    public <T> Assignment elseSupply(final Generator<T> generator) {
+    public <T extends @Nullable Object> Assignment elseSupply(final Generator<T> generator) {
         return add(negatePredicates(), GeneratorHolder.of(generator));
     }
 
     @Override
-    public <T> Assignment elseSupply(final Supplier<T> supplier) {
+    public <T extends @Nullable Object> Assignment elseSupply(final Supplier<T> supplier) {
         return add(negatePredicates(), GeneratorHolder.of(supplier));
     }
 

@@ -20,14 +20,14 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.test.support.util.Constants;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.root;
@@ -56,12 +56,13 @@ class CreateAsTest {
 
     @Test
     void withNullableResult() {
-        final Set<String> results = Stream.generate(() ->
-                        Instancio.of(Integer.class)
-                                .withNullable(root())
-                                .as(r -> r == null ? null : r.toString()))
-                .limit(Constants.SAMPLE_SIZE_DD)
-                .collect(Collectors.toSet());
+        final Set<@Nullable String> results = new HashSet<>();
+
+        for (int i = 0; i < Constants.SAMPLE_SIZE_DD; i++) {
+            results.add(Instancio.of(Integer.class)
+                    .withNullable(root())
+                    .as(r -> r == null ? null : r.toString()));
+        }
 
         assertThat(results)
                 .hasSizeGreaterThan(1)

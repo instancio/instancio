@@ -145,7 +145,7 @@ public interface InstancioCartesianProductApi<T extends @Nullable Object> extend
      */
     @Override
     @ExperimentalApi
-    <V> InstancioCartesianProductApi<T> setModel(TargetSelector selector, Model<V> model);
+    <V extends @Nullable Object> InstancioCartesianProductApi<T> setModel(TargetSelector selector, Model<V> model);
 
     /**
      * {@inheritDoc}
