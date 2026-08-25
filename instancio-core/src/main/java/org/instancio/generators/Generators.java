@@ -163,7 +163,7 @@ public interface Generators extends CommonGeneratorSpecs {
      * @since 1.0.1
      */
     @SuppressWarnings("unchecked")
-    <T extends @Nullable Object> OneOfArrayGeneratorSpec<T> oneOf(@Nullable T... choices);
+    <T> OneOfArrayGeneratorSpec<T> oneOf(@Nullable T... choices);
 
     /**
      * Picks a random value from the given choices.

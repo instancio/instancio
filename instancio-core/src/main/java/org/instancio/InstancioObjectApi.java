@@ -94,7 +94,7 @@ public interface InstancioObjectApi<T extends @Nullable Object> extends
      */
     @Override
     @ExperimentalApi
-    <V> InstancioObjectApi<T> setModel(TargetSelector selector, Model<V> model);
+    <V extends @Nullable Object> InstancioObjectApi<T> setModel(TargetSelector selector, Model<V> model);
 
     /**
      * {@inheritDoc}

@@ -20,6 +20,7 @@ import org.instancio.GivenOriginPredicateAction;
 import org.instancio.TargetSelector;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -34,27 +35,27 @@ class InternalGivenOriginPredicateRequiredAction implements GivenOriginPredicate
     }
 
     @Override
-    public <T> GivenOriginPredicateAction supply(final TargetSelector destination, final Generator<T> generator) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction supply(final TargetSelector destination, final Generator<T> generator) {
         return create(destination, GeneratorHolder.of(generator));
     }
 
     @Override
-    public <T> GivenOriginPredicateAction supply(final TargetSelector destination, final Supplier<T> supplier) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction supply(final TargetSelector destination, final Supplier<T> supplier) {
         return create(destination, GeneratorHolder.of(supplier));
     }
 
     @Override
-    public <T> GivenOriginPredicateAction set(final TargetSelector destination, final T obj) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction set(final TargetSelector destination, final T obj) {
         return create(destination, GeneratorHolder.of(obj));
     }
 
     @Override
-    public <T> GivenOriginPredicateAction generate(final TargetSelector destination, final GeneratorSpecProvider<T> gen) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction generate(final TargetSelector destination, final GeneratorSpecProvider<T> gen) {
         return create(destination, GeneratorHolder.of(gen));
     }
 
     @Override
-    public <T> GivenOriginPredicateAction generate(final TargetSelector destination, final GeneratorSpec<T> spec) {
+    public <T extends @Nullable Object> GivenOriginPredicateAction generate(final TargetSelector destination, final GeneratorSpec<T> spec) {
         return create(destination, GeneratorHolder.of(spec));
     }
 

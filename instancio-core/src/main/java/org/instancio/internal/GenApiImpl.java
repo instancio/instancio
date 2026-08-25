@@ -72,7 +72,7 @@ public final class GenApiImpl implements InstancioGenApi {
     }
 
     @Override
-    public <V> InstancioGenApi withSetting(final SettingKey<V> key, final V value) {
+    public <V extends @Nullable Object> InstancioGenApi withSetting(final SettingKey<V> key, final V value) {
         if (settings == null) {
             settings = InternalSettings.create();
         }

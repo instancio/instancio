@@ -24,6 +24,7 @@ import org.instancio.ValueOf;
 import org.instancio.ValueOfOriginDestination;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -45,27 +46,27 @@ public class InternalValueOf implements ValueOf {
     }
 
     @Override
-    public <T> Assignment generate(final GeneratorSpecProvider<T> gen) {
+    public <T extends @Nullable Object> Assignment generate(final GeneratorSpecProvider<T> gen) {
         return create(GeneratorHolder.of(gen));
     }
 
     @Override
-    public <T> Assignment generate(final GeneratorSpec<T> spec) {
+    public <T extends @Nullable Object> Assignment generate(final GeneratorSpec<T> spec) {
         return create(GeneratorHolder.of(spec));
     }
 
     @Override
-    public <T> Assignment set(final T value) {
+    public <T extends @Nullable Object> Assignment set(final T value) {
         return create(GeneratorHolder.of(value));
     }
 
     @Override
-    public <T> Assignment supply(final Generator<T> generator) {
+    public <T extends @Nullable Object> Assignment supply(final Generator<T> generator) {
         return create(GeneratorHolder.of(generator));
     }
 
     @Override
-    public <T> Assignment supply(final Supplier<T> supplier) {
+    public <T extends @Nullable Object> Assignment supply(final Supplier<T> supplier) {
         return create(GeneratorHolder.of(supplier));
     }
 

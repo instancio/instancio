@@ -37,6 +37,7 @@ import org.instancio.settings.FillType;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
 import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -80,7 +81,7 @@ public class ApiImpl<T> implements InstancioApi<T>, InstancioObjectApi<T> {
     }
 
     @Override
-    public <V> ApiImpl<T> generate(
+    public <V extends @Nullable Object> ApiImpl<T> generate(
             final TargetSelector selector,
             final GeneratorSpecProvider<V> gen) {
 
@@ -89,7 +90,7 @@ public class ApiImpl<T> implements InstancioApi<T>, InstancioObjectApi<T> {
     }
 
     @Override
-    public <V> ApiImpl<T> generate(
+    public <V extends @Nullable Object> ApiImpl<T> generate(
             final TargetSelector selector,
             final GeneratorSpec<V> spec) {
 
@@ -107,25 +108,25 @@ public class ApiImpl<T> implements InstancioApi<T>, InstancioObjectApi<T> {
     }
 
     @Override
-    public <V> ApiImpl<T> filter(final TargetSelector selector, final FilterPredicate<V> predicate) {
+    public <V extends @Nullable Object> ApiImpl<T> filter(final TargetSelector selector, final FilterPredicate<V> predicate) {
         modelContextBuilder.filter(selector, predicate);
         return this;
     }
 
     @Override
-    public <V> ApiImpl<T> set(final TargetSelector selector, final V value) {
+    public <V extends @Nullable Object> ApiImpl<T> set(final TargetSelector selector, final V value) {
         modelContextBuilder.withSet(selector, value);
         return this;
     }
 
     @Override
-    public <V> ApiImpl<T> setModel(final TargetSelector selector, final Model<V> model) {
+    public <V extends @Nullable Object> ApiImpl<T> setModel(final TargetSelector selector, final Model<V> model) {
         modelContextBuilder.setModel(selector, model);
         return this;
     }
 
     @Override
-    public <V> ApiImpl<T> supply(
+    public <V extends @Nullable Object> ApiImpl<T> supply(
             final TargetSelector selector,
             final Generator<V> generator) {
 
@@ -134,7 +135,7 @@ public class ApiImpl<T> implements InstancioApi<T>, InstancioObjectApi<T> {
     }
 
     @Override
-    public <V> ApiImpl<T> supply(
+    public <V extends @Nullable Object> ApiImpl<T> supply(
             final TargetSelector selector,
             final Supplier<V> supplier) {
 
@@ -211,7 +212,7 @@ public class ApiImpl<T> implements InstancioApi<T>, InstancioObjectApi<T> {
     }
 
     @Override
-    public <V> ApiImpl<T> withSetting(final SettingKey<V> key, final V value) {
+    public <V extends @Nullable Object> ApiImpl<T> withSetting(final SettingKey<V> key, final V value) {
         modelContextBuilder.withSetting(key, value);
         return this;
     }
