@@ -15,8 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
-
 import java.util.function.Predicate;
 
 /**
@@ -43,7 +41,6 @@ public interface DepthPredicateSelector {
      * @see DepthSelector
      * @since 2.14.0
      */
-    @ExperimentalApi
     ScopeableSelector atDepth(Predicate<Integer> predicate);
 
 }

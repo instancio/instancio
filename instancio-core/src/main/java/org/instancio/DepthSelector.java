@@ -15,8 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
-
 /**
  * Interface for specifying the depth of a selector's target.
  *
@@ -37,7 +35,6 @@ public interface DepthSelector {
      * @see DepthPredicateSelector
      * @since 2.14.0
      */
-    @ExperimentalApi
     GroupableSelector atDepth(int depth);
 
 }
