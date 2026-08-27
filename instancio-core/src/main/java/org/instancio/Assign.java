@@ -15,7 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.assignment.InternalGivenOrigin;
 import org.instancio.internal.assignment.InternalGivenOriginDestinationAction;
@@ -28,7 +27,6 @@ import org.instancio.internal.assignment.InternalValueOf;
  * @see InstancioApi#assign(Assignment...)
  * @since 3.0.0
  */
-@ExperimentalApi
 public final class Assign {
 
     /**
@@ -94,7 +92,6 @@ public final class Assign {
      * @see #valueOf(Class)
      * @since 3.0.0
      */
-    @ExperimentalApi
     public static ValueOf valueOf(final TargetSelector target) {
         return new InternalValueOf(target);
     }
@@ -119,7 +116,6 @@ public final class Assign {
      * @see #valueOf(TargetSelector)
      * @since 3.0.0
      */
-    @ExperimentalApi
     public static <T> ValueOf valueOf(final Class<T> target) {
         return new InternalValueOf(Select.all(target));
     }
@@ -145,7 +141,6 @@ public final class Assign {
      * @see #valueOf(TargetSelector)
      * @since 3.0.0
      */
-    @ExperimentalApi
     public static <T, R> ValueOf valueOf(final GetMethodSelector<T, R> target) {
         return new InternalValueOf(Select.field(target));
     }
@@ -198,7 +193,6 @@ public final class Assign {
      * @see #given(TargetSelector)
      * @since 3.0.0
      */
-    @ExperimentalApi
     public static GivenOriginDestination given(final TargetSelector origin, final TargetSelector destination) {
         ApiValidator.validateAssignmentOrigin(origin);
         return new InternalGivenOriginDestinationAction(origin, destination);
@@ -250,7 +244,6 @@ public final class Assign {
      * @see #given(GetMethodSelector)
      * @since 3.0.0
      */
-    @ExperimentalApi
     public static GivenOrigin given(final TargetSelector origin) {
         ApiValidator.validateAssignmentOrigin(origin);
         return new InternalGivenOrigin(origin);
@@ -278,7 +271,6 @@ public final class Assign {
      * @see #given(TargetSelector)
      * @since 3.0.0
      */
-    @ExperimentalApi
     public static <T, R> GivenOrigin given(final GetMethodSelector<T, R> origin) {
         return new InternalGivenOrigin(Select.field(origin));
     }
@@ -303,7 +295,6 @@ public final class Assign {
      * @see #given(TargetSelector)
      * @since 3.0.0
      */
-    @ExperimentalApi
     public static <T> GivenOrigin given(final Class<T> origin) {
         return new InternalGivenOrigin(Select.all(origin));
     }

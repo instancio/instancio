@@ -15,7 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
@@ -28,7 +27,6 @@ import java.util.function.Predicate;
  * @see Assign#given(TargetSelector)
  * @since 3.0.0
  */
-@ExperimentalApi
 public interface GivenOrigin {
 
     /**
