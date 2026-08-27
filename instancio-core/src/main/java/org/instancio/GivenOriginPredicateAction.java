@@ -15,14 +15,11 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
-
 /**
  * Defines optional methods that can be chained to
  * {@link Assign#given(TargetSelector, TargetSelector)} builder expression.
  *
  * @since 3.0.0
  */
-@ExperimentalApi
 public interface GivenOriginPredicateAction extends GivenOriginPredicate, Assignment {
 }

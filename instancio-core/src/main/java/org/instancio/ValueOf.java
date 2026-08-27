@@ -15,7 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
 import org.instancio.generators.Generators;
@@ -30,7 +29,6 @@ import java.util.function.Supplier;
  * @see Assign#valueOf(TargetSelector)
  * @since 3.0.0
  */
-@ExperimentalApi
 public interface ValueOf {
 
     /**

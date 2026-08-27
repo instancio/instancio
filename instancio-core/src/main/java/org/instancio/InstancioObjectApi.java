@@ -169,7 +169,6 @@ public interface InstancioObjectApi<T extends @Nullable Object> extends
      * @since 5.3.0
      */
     @Override
-    @ExperimentalApi
     InstancioObjectApi<T> assign(Assignment... assignments);
 
     /**

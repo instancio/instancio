@@ -351,7 +351,6 @@ public final class Select {
      * @see #setter(Class, String, Class)
      * @since 4.0.0
      */
-    @ExperimentalApi
     public static Selector setter(final String methodName) {
         final String description = "setter(\"%s\")".formatted(methodName);
 
@@ -375,7 +374,6 @@ public final class Select {
      * @see #setter(SetMethodSelector)
      * @since 4.0.0
      */
-    @ExperimentalApi
     public static Selector setter(final Class<?> declaringClass, final String methodName) {
         final String description = "setter(%s, \"%s\")".formatted(
                 declaringClass.getSimpleName(),
@@ -398,7 +396,6 @@ public final class Select {
      *                               the specified name and parameter type
      * @since 4.0.0
      */
-    @ExperimentalApi
     public static Selector setter(final Class<?> declaringClass, final String methodName, final Class<?> parameterType) {
         ApiValidator.notNull(parameterType, "parameterType must not be null");
         final String description = "setter(%s, \"%s(%s)\")".formatted(
@@ -441,7 +438,6 @@ public final class Select {
      * @see #setter(Class, String, Class)
      * @since 4.0.0
      */
-    @ExperimentalApi
     public static <T, U> Selector setter(final SetMethodSelector<T, U> methodReference) {
         ApiValidator.notNull(methodReference, "setter method reference must not be null");
 

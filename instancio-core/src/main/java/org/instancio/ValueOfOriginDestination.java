@@ -15,7 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Function;
@@ -26,7 +25,6 @@ import java.util.function.Predicate;
  *
  * @since 3.0.0
  */
-@ExperimentalApi
 public interface ValueOfOriginDestination extends Assignment {
 
     /**

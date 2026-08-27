@@ -1251,8 +1251,6 @@ By default, the engine generates non-null values, unless specified otherwise.
 
 ### Using `assign()`
 
-!!! info "Experimental API `@since 3.0.0`"
-
 The assignment API allows customising an object by passing in one or more `Assignment` objects as a vararg:
 
 ```java
@@ -4574,8 +4572,6 @@ Instancio supports the JUnit framework through the {{InstancioExtension}}, which
 - Support for running tests [concurrently](https://docs.junit.org/current/writing-tests/parallel-execution.html)
 
 ## `@Given` Injection
-
-!!! info "Experimental API `@since 5.0.0`"
 
 The {{Given}} annotation can be used to inject generated values into fields and method parameters:
 

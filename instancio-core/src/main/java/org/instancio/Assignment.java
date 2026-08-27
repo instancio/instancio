@@ -15,8 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
-
 /**
  * An assignment that can be passed to the
  * {@link InstancioApi#assign(Assignment...)} method.
@@ -29,6 +27,5 @@ import org.instancio.documentation.ExperimentalApi;
  * @see Assign
  * @since 3.0.0
  */
-@ExperimentalApi
 public interface Assignment {
 }

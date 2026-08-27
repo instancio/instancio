@@ -15,8 +15,6 @@
  */
 package org.instancio;
 
-import org.instancio.documentation.ExperimentalApi;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.TypeVariable;
 import java.util.function.Predicate;
@@ -137,7 +135,6 @@ public interface FieldSelectorBuilder extends
      * @since 4.2.0
      */
     @Override
-    @ExperimentalApi
     GroupableSelector within(Scope... scopes);
 
     /**
@@ -146,6 +143,5 @@ public interface FieldSelectorBuilder extends
      * @since 4.2.0
      */
     @Override
-    @ExperimentalApi
     Scope toScope();
 }

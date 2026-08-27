@@ -247,7 +247,6 @@ public interface InstancioCartesianProductApi<T extends @Nullable Object> extend
      * @since 4.0.0
      */
     @Override
-    @ExperimentalApi
     InstancioCartesianProductApi<T> assign(Assignment... assignments);
 
     /**

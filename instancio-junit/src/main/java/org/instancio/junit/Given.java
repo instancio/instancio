@@ -93,7 +93,6 @@ import java.lang.annotation.Target;
  * @see GivenProvider
  * @since 5.0.0
  */
-@ExperimentalApi
 @Documented
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
