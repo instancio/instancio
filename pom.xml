@@ -72,7 +72,7 @@
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.11.0</version.central-publishing-maven-plugin>
         <version.jacoco-maven-plugin>0.8.15</version.jacoco-maven-plugin>
-        <version.maven-bundle-plugin>6.1.0</version.maven-bundle-plugin>
+        <version.maven-bundle-plugin>6.1.2</version.maven-bundle-plugin>
         <version.maven-checkstyle-plugin>3.6.0</version.maven-checkstyle-plugin>
         <version.maven-compiler-plugin>3.16.0</version.maven-compiler-plugin>
         <version.maven-enforcer-plugin>3.6.3</version.maven-enforcer-plugin>
