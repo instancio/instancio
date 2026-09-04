@@ -85,11 +85,11 @@ class SetWithScopeTest {
     @Test
     void selectExactField() {
         final PersonHolder result = Instancio.of(PersonHolder.class)
-                .set(allInts().within(scope(Person.class, "age")), 100)
+                .set(allInts().within(scope(Person.class, "age")), -1)
                 .create();
 
-        assertThat(result.getPerson().getAge()).isEqualTo(100);
-        assertThat(result.getRichPerson().getAge()).isNotEqualTo(100);
+        assertThat(result.getPerson().getAge()).isEqualTo(-1);
+        assertThat(result.getRichPerson().getAge()).isNotEqualTo(-1);
     }
 
     @Test
