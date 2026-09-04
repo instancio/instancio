@@ -76,9 +76,7 @@ public class EmitGenerator<T extends @Nullable Object> extends AbstractGenerator
     @Override
     public EmitGeneratorSpec<T> items(final Iterable<? extends T> items) {
         ApiValidator.notNull(items, "'items' Iterable must not be null");
-        for (T item : items) {
-            addItem(item);
-        }
+        items.forEach(this::addItem);
         return this;
     }
 
