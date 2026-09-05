@@ -62,10 +62,12 @@ class PersonToPersonDTOTest {
 ```
 
 
-If this test fails, Instancio will report the failure as follows:
+If this test fails, Instancio will report the seed once all tests have been executed:
 
 ```
-Test method 'verifyPersonDTO' failed with seed: 34567
+1 test failed. A failure can be reproduced by annotating the test method with @Seed:
+
+  @Seed(34567L) PersonToPersonDTOTest.verifyPersonDTO (seed source: random seed)
 ```
 
 Using the reported seed value `34567`, we can annotate the test method to reproduce the data:

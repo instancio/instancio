@@ -19,10 +19,10 @@ import org.instancio.junit.internal.ExtensionSupport;
 import org.instancio.junit.internal.Fail;
 import org.instancio.junit.internal.GivenAnnotations;
 import org.instancio.junit.internal.ObjectCreator;
+import org.instancio.junit.internal.SeedSummary;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.InternalTestContext;
-import org.instancio.support.Log;
 import org.instancio.support.ThreadLocalTestContext;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -33,6 +33,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestInstantiationAwareExtension;
 import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ReflectionSupport;
+import org.opentest4j.IncompleteExecutionException;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -77,9 +78,17 @@ import static java.util.Objects.requireNonNull;
  * }
  * }</pre>
  *
- * <p>The failed test will report the seed value that was used, for example:
+ * <p>Once all tests have been executed, the seed values of the failed
+ * tests are reported as a summary, for example:
  *
- * <p><b>{@code "Test method 'verifyPerson' failed with seed: 12345"}</b>
+ * <pre>{@code
+ * 1 test failed. A failure can be reproduced by annotating the test method with @Seed:
+ *
+ *   @Seed(12345L) ExampleTest.verifyPerson (seed source: random seed)
+ * }</pre>
+ *
+ * <p>The seed of each failed test is also published as a JUnit report entry,
+ * which is displayed by IDEs and included in XML test reports.
  *
  * <p>Subsequently, the failing test can be reproduced by annotating the test method
  * with the {@link Seed} annotation:
@@ -162,20 +171,38 @@ public class InstancioExtension implements
 
     @Override
     public void afterTestExecution(final ExtensionContext context) {
-        if (context.getExecutionException().isPresent()) {
-            final Method testMethod = context.getRequiredTestMethod();
+        final Throwable executionException = context.getExecutionException().orElse(null);
 
-            final DefaultRandom random = requireNonNull(threadLocalTestContext.get()).getRandom();
-
-            // For @Test, @RepeatedTest, and @ParameterizedTest, each failed sample
-            // reports its own seed. Adding the @Seed annotation to a @ParameterizedTest
-            // ensures the same random data is generated for each run.
-            final String seedMsg = String.format("Test method '%s' failed with seed: %d (seed source: %s)\n",
-                    testMethod.getName(), random.getSeed(), random.getSource().getDescription());
-
-            context.publishReportEntry("Instancio", seedMsg);
-            Log.msg(Log.Category.TEST_FAILURE_SEED, seedMsg);
+        // e.g. a failed assumption
+        if (executionException == null || executionException instanceof IncompleteExecutionException) {
+            return;
         }
+
+        final Method testMethod = context.getRequiredTestMethod();
+
+        final DefaultRandom random = requireNonNull(threadLocalTestContext.get()).getRandom();
+
+        // For @Test, @RepeatedTest, and @ParameterizedTest, each failed sample
+        // reports its own seed. Adding the @Seed annotation to a @ParameterizedTest
+        // ensures the same random data is generated for each run.
+        final String seedMsg = String.format("Test method '%s' failed with seed: %d (seed source: %s)\n",
+                testMethod.getName(), random.getSeed(), random.getSource().getDescription());
+
+        context.publishReportEntry("Instancio", seedMsg);
+        SeedSummary.getInstance(context)
+                .add(getTestName(context, testMethod), random.getSeed(), random.getSource());
+    }
+
+    private static String getTestName(final ExtensionContext context, final Method testMethod) {
+        final String className = context.getRequiredTestClass().getName();
+        final String testName = className.substring(className.lastIndexOf('.') + 1) + '.' + testMethod.getName();
+
+        // invocation of a @ParameterizedTest or @RepeatedTest, e.g. "[1] foo"
+        final boolean isTemplateInvocation = context.getParent()
+                .flatMap(ExtensionContext::getTestMethod)
+                .isPresent();
+
+        return isTemplateInvocation ? testName + ' ' + context.getDisplayName() : testName;
     }
 
     /**

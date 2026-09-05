@@ -4245,7 +4245,7 @@ The table below summarises these categories and their corresponding log levels:
 | `TRACE` | **`org.instancio.log.seed`**{ title="Logs the effective seed value and its source." }                                                                        |
 | `TRACE` | **`org.instancio.log.settings`**{ title="Logs the current Settings configuration." }                                                                         |
 | `WARN`  | **`org.instancio.log.suppressed.error`**{ title="Logs exceptions that were suppressed instead of thrown, typically when Keys.FAIL_ON_ERROR is disabled." }   |
-| `WARN`  | **`org.instancio.log.test.failure.seed`**{ title="Logs the effective seed value and its source on test failure." }   |
+| `WARN`  | **`org.instancio.log.test.failure.seed`**{ title="Logs a summary of the seeds of all failed tests at the end of the test run." }   |
 
 
 In addition to logging, the builder API provides the `verbose()` method that outputs
@@ -4947,7 +4947,19 @@ void verifyShippingAddress() {
 }
 ```
 
-The JUnit context will include the following message:
+Once all tests have been executed, Instancio will report the seeds of all failed tests as a summary:
+
+```
+3 tests failed. A failure can be reproduced by annotating the test method with @Seed:
+
+  @Seed(8532L) ShippingServiceTest.verifyShippingAddress (seed source: random seed)
+  @Seed(4821L) OrderServiceTest.verifyOrderTotal (seed source: random seed)
+  @Seed(1907L) InvoiceServiceTest.verifyInvoice (seed source: @Seed)
+```
+
+The summary is logged under the `org.instancio.log.test.failure.seed` category (see [Debugging](#debugging)).
+In addition, the seed of each failed test is published as a JUnit report entry,
+which is displayed by IDEs and included in XML test reports:
 
 ```
 Test method 'verifyShippingAddress' failed with seed: 8532 (seed source: random seed)
@@ -4963,7 +4975,7 @@ or used a seed provided by the user. The possible seed sources are listed below
 
 !!! warning "Seeds specified using {{withSeed}} or {{withSettings}} methods are not reported by the Instancio extension."
 
-The failed test can be reproduced by using the seed reported in the failure message.
+The failed test can be reproduced by using the reported seed.
 This can be done by placing the {{Seed}} annotation on the test method:
 
 ``` java linenums="1" title="Reproducing a failed test" hl_lines="2"

@@ -6,4 +6,5 @@ open module org.instancio.tests.jpms.standalone {
 
     requires org.junit.jupiter.api;
     requires org.junit.jupiter.engine;
+    requires org.junit.platform.testkit;
 }
