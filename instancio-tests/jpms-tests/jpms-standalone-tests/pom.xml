@@ -9,4 +9,11 @@
     <artifactId>jpms-standalone-tests</artifactId>
     <name>Instancio tests: JPMS Standalone Tests</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-testkit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

@@ -108,7 +108,8 @@ public final class Log {
         SUPPRESSED_ERROR(Level.WARN, "org.instancio.log.suppressed.error"),
 
         /**
-         * Logs the effective seed value and its source on test failure.
+         * Logs the effective seed values and their sources of all failed tests,
+         * as a single summary once all tests have been executed.
          *
          * @since 6.0.0
          */

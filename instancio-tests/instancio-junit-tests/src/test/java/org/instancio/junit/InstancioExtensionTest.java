@@ -17,6 +17,7 @@ package org.instancio.junit;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.instancio.exception.InstancioApiException;
+import org.instancio.junit.internal.SeedSummary;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
 import org.instancio.support.InternalTestContext;
@@ -33,6 +34,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.opentest4j.TestAbortedException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -41,6 +43,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -65,6 +68,12 @@ class InstancioExtensionTest {
 
     @Mock
     private TestInstances testInstances;
+
+    @Mock
+    private ExtensionContext.Store store;
+
+    @Mock
+    private SeedSummary seedSummary;
 
     @Captor
     private ArgumentCaptor<InternalTestContext> testContextCaptor;
@@ -223,6 +232,10 @@ class InstancioExtensionTest {
 
         when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
         when(context.getRequiredTestMethod()).thenReturn(method);
+        when(context.getRequiredTestClass()).thenAnswer(answer -> DummyTest.class);
+        when(context.getRoot()).thenReturn(context);
+        when(context.getStore(any(ExtensionContext.Namespace.class))).thenReturn(store);
+        when(store.computeIfAbsent(eq(SeedSummary.class), any(), eq(SeedSummary.class))).thenReturn(seedSummary);
         when(threadLocalTestContext.get()).thenReturn(new InternalTestContext(
                 new DefaultRandom(seedFromRandom, Seeds.Source.SEED_ANNOTATION), null));
 
@@ -231,6 +244,42 @@ class InstancioExtensionTest {
 
         final String expectedMsg = String.format("'%s' failed with seed: %s", method.getName(), seedFromRandom);
         verify(context).publishReportEntry(eq("Instancio"), contains(expectedMsg));
+    }
+
+    @Test
+    @DisplayName("Seed of a failed test is collected for the end-of-run summary")
+    void afterTestExecutionWithFailedTest_collectsSeedForSummary() throws NoSuchMethodException {
+        final long seedFromRandom = 789;
+        final Method method = DummyTest.class.getDeclaredMethod(METHOD_WITH_SEED_ANNOTATION);
+
+        when(context.getExecutionException()).thenReturn(Optional.of(new Throwable()));
+        when(context.getRequiredTestMethod()).thenReturn(method);
+        when(context.getRequiredTestClass()).thenAnswer(answer -> DummyTest.class);
+        when(context.getRoot()).thenReturn(context);
+        when(context.getStore(any(ExtensionContext.Namespace.class))).thenReturn(store);
+        when(store.computeIfAbsent(eq(SeedSummary.class), any(), eq(SeedSummary.class))).thenReturn(seedSummary);
+        when(threadLocalTestContext.get()).thenReturn(new InternalTestContext(
+                new DefaultRandom(seedFromRandom, Seeds.Source.SEED_ANNOTATION), null));
+
+        // Method under test
+        extension.afterTestExecution(context);
+
+        verify(seedSummary).add(
+                "InstancioExtensionTest$DummyTest." + METHOD_WITH_SEED_ANNOTATION,
+                seedFromRandom,
+                Seeds.Source.SEED_ANNOTATION);
+    }
+
+    @Test
+    @DisplayName("Should have nothing to do if test was aborted, e.g. by a failed assumption")
+    void afterTestExecutionWithAbortedTest() {
+        when(context.getExecutionException()).thenReturn(Optional.of(new TestAbortedException()));
+
+        // Method under test
+        extension.afterTestExecution(context);
+
+        verifyNoMoreInteractions(context);
+        verifyNoInteractions(threadLocalTestContext);
     }
 
     @Test

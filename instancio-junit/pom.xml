@@ -54,6 +54,7 @@
                             org.junit.jupiter.api.extension;version=!,
                             org.junit.platform.commons.function;version=!,
                             org.junit.platform.commons.support;version=!,
+                            org.opentest4j;version=!,
                         </Import-Package>
                     </instructions>
                 </configuration>
