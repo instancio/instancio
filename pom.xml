@@ -85,7 +85,7 @@
         <version.maven-site-plugin>3.22.0</version.maven-site-plugin>
         <version.maven-source-plugin>3.4.0</version.maven-source-plugin>
         <version.kover-maven-plugin>0.9.9</version.kover-maven-plugin>
-        <version.sonar-maven-plugin>5.7.0.6970</version.sonar-maven-plugin>
+        <version.sonar-maven-plugin>5.8.0.7211</version.sonar-maven-plugin>
         <version.spotbugs-maven-plugin>4.10.4.1</version.spotbugs-maven-plugin>
         <version.versions-maven-plugin>2.21.0</version.versions-maven-plugin>
         <version.flatten-maven-plugin>1.8.0</version.flatten-maven-plugin>
