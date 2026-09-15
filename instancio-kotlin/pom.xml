@@ -12,7 +12,7 @@
     <description>Kotlin extensions for the Instancio API</description>
 
     <properties>
-        <version.build-helper-maven-plugin>3.6.1</version.build-helper-maven-plugin>
+        <version.build-helper-maven-plugin>3.6.2</version.build-helper-maven-plugin>
         <version.dokka-maven-plugin>2.2.0</version.dokka-maven-plugin>
     </properties>
 
