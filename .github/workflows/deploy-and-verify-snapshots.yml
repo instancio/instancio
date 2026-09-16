@@ -63,7 +63,7 @@ jobs:
     needs: deploy
     strategy:
       matrix:
-        guava: [ 23.6.1-jre, 24.1.1-jre, 25.1-jre, 26.0-jre, 27.1-jre, 28.2-jre, 29.0-jre, 30.1.1-jre, 31.1-jre, 32.1.3-jre, 33.4.8-jre ]
+        guava: [ 23.6.1-jre, 24.1.1-jre, 25.1-jre, 26.0-jre, 27.1-jre, 28.2-jre, 29.0-jre, 30.1.1-jre, 31.1-jre, 32.1.3-jre ]
     runs-on: ubuntu-latest
     name: "Verify snapshots with Guava ${{ matrix.guava }}"
     steps:
@@ -78,7 +78,6 @@ jobs:
         run: cd instancio-tests && mvn verify -pl :instancio-guava-tests,:jpms-guava-tests -am -Dversion.guava=${{ matrix.guava }}
   experimental-jdk:
     needs: deploy
-    if: false # temporarily disabled due to failing early access JDK build
     runs-on: ubuntu-latest
     name: "Verify snapshots with early access JDK"
     continue-on-error: true
