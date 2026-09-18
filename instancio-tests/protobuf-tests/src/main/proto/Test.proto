@@ -44,6 +44,17 @@ message SupportedNumericTypesAsMapValues {
   map<string, int64> longs = 2;
   map<string, float> floats = 3;
   map<string, double> doubles = 4;
+  map<string, uint32> unsigned_ints = 5;
+  map<string, uint64> unsigned_longs = 6;
+  map<string, fixed32> fixed_ints = 7;
+  map<string, fixed64> fixed_longs = 8;
+}
+
+message SupportedNumericTypesAsMapKeys {
+  map<uint32, string> unsigned_int_keys = 1;
+  map<uint64, string> unsigned_long_keys = 2;
+  map<fixed32, string> fixed_int_keys = 3;
+  map<fixed64, string> fixed_long_keys = 4;
 }
 
 message SupportedNumericTypesAsCollectionValues {
@@ -51,6 +62,10 @@ message SupportedNumericTypesAsCollectionValues {
   repeated int64 longs = 2;
   repeated float floats = 3;
   repeated double doubles = 4;
+  repeated uint32 unsigned_ints = 5;
+  repeated uint64 unsigned_longs = 6;
+  repeated fixed32 fixed_ints = 7;
+  repeated fixed64 fixed_longs = 8;
 }
 
 message SupportedOtherTypesAsMapValues {
