@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: 26
+          java-version: 27
           cache: maven
 
       - name: 'Build project'
@@ -47,7 +47,7 @@ jobs:
         uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: 26
+          java-version: 27
           cache: maven
 
       - name: 'Install dependencies'
