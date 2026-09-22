@@ -22,12 +22,12 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
 
 public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
         implements InstantSpec {
 
-    private static final int MAX_NANO = 999_999_999;
     static final Instant DEFAULT_MIN = Constants.DEFAULT_MIN.atZone(Constants.ZONE_OFFSET).toInstant();
     static final Instant DEFAULT_MAX = Constants.DEFAULT_MAX.atZone(Constants.ZONE_OFFSET).toInstant();
 
@@ -97,22 +97,19 @@ public class InstantGenerator extends JavaTimeTemporalGenerator<Instant>
         ApiValidator.validateStartEnd(min, max);
     }
 
+    // widens visibility for callers in other packages
     @Override
     public Instant tryGenerateNonNull(final Random random) {
-        final long sec = random.longRange(min.getEpochSecond(), max.getEpochSecond());
-        final int nano;
+        return super.tryGenerateNonNull(random);
+    }
 
-        if (sec == min.getEpochSecond() && sec == max.getEpochSecond()) {
-            nano = random.intRange(Math.min(min.getNano(), max.getNano()), Math.max(min.getNano(), max.getNano()));
-        } else if (sec == min.getEpochSecond()) {
-            nano = random.intRange(Math.max(min.getNano(), max.getNano()), MAX_NANO);
-        } else if (sec == max.getEpochSecond()) {
-            nano = random.intRange(0, max.getNano());
-        } else {
-            nano = random.intRange(0, MAX_NANO);
-        }
+    @Override
+    Instant toStartInstant(final Instant value) {
+        return value;
+    }
 
-        final Instant result = Instant.ofEpochSecond(sec, nano);
-        return truncateTo == null ? result : result.truncatedTo(truncateTo);
+    @Override
+    Instant fromInstant(final Instant instant, final ZoneOffset offset) {
+        return truncateTo == null ? instant : instant.truncatedTo(truncateTo);
     }
 }

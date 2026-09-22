@@ -15,14 +15,18 @@
  */
 package org.instancio.internal.generator.time;
 
-import org.instancio.Random;
 import org.instancio.documentation.VisibleForTesting;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.LocalTimeSpec;
 import org.instancio.internal.ApiValidator;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
+
+import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
 public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
         implements LocalTimeSpec {
@@ -109,11 +113,13 @@ public class LocalTimeGenerator extends JavaTimeTemporalGenerator<LocalTime>
     }
 
     @Override
-    protected LocalTime tryGenerateNonNull(final Random random) {
-        final LocalTime result = LocalTime.ofNanoOfDay(random.longRange(
-                min.toNanoOfDay(),
-                max.toNanoOfDay()));
+    Instant toStartInstant(final LocalTime value) {
+        return value.atDate(LocalDate.EPOCH).toInstant(ZONE_OFFSET);
+    }
 
+    @Override
+    LocalTime fromInstant(final Instant instant, final ZoneOffset offset) {
+        final LocalTime result = LocalTime.ofInstant(instant, offset);
         return truncateTo == null ? result : result.truncatedTo(truncateTo);
     }
 }

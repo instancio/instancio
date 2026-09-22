@@ -15,13 +15,12 @@
  */
 package org.instancio.internal.generator.time;
 
-import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.OffsetDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
@@ -33,11 +32,8 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     static final OffsetDateTime DEFAULT_MIN = Constants.DEFAULT_MIN.atOffset(ZONE_OFFSET);
     static final OffsetDateTime DEFAULT_MAX = Constants.DEFAULT_MAX.atOffset(ZONE_OFFSET);
 
-    private final LocalDateTimeGenerator delegate;
-
     public OffsetDateTimeGenerator(final GeneratorContext context) {
         super(context, DEFAULT_MIN, DEFAULT_MAX);
-        delegate = new LocalDateTimeGenerator(context);
     }
 
     @Override
@@ -103,10 +99,23 @@ public class OffsetDateTimeGenerator extends JavaTimeTemporalGenerator<OffsetDat
     }
 
     @Override
-    protected OffsetDateTime tryGenerateNonNull(final Random random) {
-        delegate.range(min.toLocalDateTime(), max.toLocalDateTime());
-        final LocalDateTime ldt = delegate.tryGenerateNonNull(random);
-        final OffsetDateTime result = OffsetDateTime.of(ldt, ZONE_OFFSET);
+    Instant toStartInstant(final OffsetDateTime value) {
+        return value.toInstant();
+    }
+
+    @Override
+    Instant firstUtcInstant() {
+        return LOCAL_DATE_TIME_FIRST_INSTANT;
+    }
+
+    @Override
+    Instant lastUtcInstant() {
+        return LOCAL_DATE_TIME_LAST_INSTANT;
+    }
+
+    @Override
+    OffsetDateTime fromInstant(final Instant instant, final ZoneOffset offset) {
+        final OffsetDateTime result = instant.atOffset(offset);
         return truncateTo == null ? result : result.truncatedTo(truncateTo);
     }
 }

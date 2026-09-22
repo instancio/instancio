@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.generator.time;
 
+import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.TemporalGeneratorSpec;
 import org.instancio.internal.ApiValidator;
@@ -22,11 +23,19 @@ import org.instancio.internal.generator.AbstractGenerator;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
 
 abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGenerator<T>
         implements TemporalGeneratorSpec<T> {
+
+    private static final int MAX_NANO = 999_999_999;
+
+    static final Instant LOCAL_DATE_TIME_FIRST_INSTANT = LocalDateTime.MIN.toInstant(ZoneOffset.UTC);
+    static final Instant LOCAL_DATE_TIME_LAST_INSTANT = LocalDateTime.MAX.toInstant(ZoneOffset.UTC);
 
     private final T defaultMin;
     private final T defaultMax;
@@ -48,6 +57,48 @@ abstract class JavaTimeTemporalGenerator<T extends Temporal> extends AbstractGen
     abstract T getEarliestFuture();
 
     abstract void validateRange();
+
+    abstract Instant toStartInstant(T value);
+
+    /**
+     * Types spanning a period, such as {@code Year}, return the last instant of the
+     * period, otherwise the period of {@code max} could never be generated.
+     */
+    Instant toEndInstant(final T value) {
+        return toStartInstant(value);
+    }
+
+    /**
+     * The instants UTC can express for this type. An instant outside them takes the offset
+     * of the bound on its side: the bound is expressed in that offset and the instant lies
+     * between the bounds, so it always fits.
+     */
+    Instant firstUtcInstant() {
+        return Instant.MIN;
+    }
+
+    Instant lastUtcInstant() {
+        return Instant.MAX;
+    }
+
+    abstract T fromInstant(Instant instant, ZoneOffset offset);
+
+    @Override
+    protected T tryGenerateNonNull(final Random random) {
+        final Instant start = toStartInstant(min);
+        final Instant end = toEndInstant(max);
+        final long sec = random.longRange(start.getEpochSecond(), end.getEpochSecond());
+        final int minNano = sec == start.getEpochSecond() ? start.getNano() : 0;
+        final int maxNano = sec == end.getEpochSecond() ? end.getNano() : MAX_NANO;
+        final Instant instant = Instant.ofEpochSecond(sec, random.intRange(minNano, maxNano));
+        return fromInstant(instant, offsetFor(instant));
+    }
+
+    private ZoneOffset offsetFor(final Instant instant) {
+        if (instant.isBefore(firstUtcInstant())) return ZoneOffset.from(min);
+        if (instant.isAfter(lastUtcInstant())) return ZoneOffset.from(max);
+        return ZoneOffset.UTC;
+    }
 
     @Override
     public TemporalGeneratorSpec<T> past() {

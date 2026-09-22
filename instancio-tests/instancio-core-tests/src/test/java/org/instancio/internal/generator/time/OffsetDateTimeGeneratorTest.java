@@ -17,10 +17,14 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,6 +61,16 @@ class OffsetDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<Offs
     }
 
     @Override
+    OffsetDateTime getTemporalMin() {
+        return OffsetDateTime.MIN;
+    }
+
+    @Override
+    OffsetDateTime getTemporalMax() {
+        return OffsetDateTime.MAX;
+    }
+
+    @Override
     OffsetDateTime getStart() {
         return START;
     }
@@ -85,6 +99,23 @@ class OffsetDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<Offs
             final OffsetDateTime result = generator.generate(random);
             assertThat(result).isAfter(now.toLocalDateTime().atOffset(ZoneOffset.UTC));
         }
+    }
+
+    @MethodSource("rangesWithOffsets")
+    @ParameterizedTest
+    void rangeWithOffsets(final OffsetDateTime min, final OffsetDateTime max) {
+        generator.range(min, max);
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            assertThat(generator.generate(random)).isBetween(min, max);
+        }
+    }
+
+    private static Stream<Arguments> rangesWithOffsets() {
+        return Stream.of(
+                Arguments.of(OffsetDateTime.parse("2020-01-01T10:00+02:00"), OffsetDateTime.parse("2020-01-01T09:30Z")),
+                Arguments.of(OffsetDateTime.parse("2020-01-01T07:00-02:00"), OffsetDateTime.parse("2020-01-01T10:00Z")),
+                Arguments.of(OffsetDateTime.MIN, OffsetDateTime.MIN.plusDays(1)),
+                Arguments.of(OffsetDateTime.MAX.minusDays(1), OffsetDateTime.MAX));
     }
 
     @Test

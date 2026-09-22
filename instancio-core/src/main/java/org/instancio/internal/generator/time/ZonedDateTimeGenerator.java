@@ -21,6 +21,8 @@ import org.instancio.generator.specs.ZonedDateTimeSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalUnit;
 
@@ -32,12 +34,8 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
     static final ZonedDateTime DEFAULT_MIN = Constants.DEFAULT_MIN.atZone(ZONE_OFFSET);
     static final ZonedDateTime DEFAULT_MAX = Constants.DEFAULT_MAX.atZone(ZONE_OFFSET);
 
-    private final InstantGenerator delegate;
-
     public ZonedDateTimeGenerator(final GeneratorContext context) {
         super(context, DEFAULT_MIN, DEFAULT_MAX);
-
-        delegate = new InstantGenerator(context);
     }
 
     @Override
@@ -102,10 +100,30 @@ public class ZonedDateTimeGenerator extends JavaTimeTemporalGenerator<ZonedDateT
         ApiValidator.validateStartEnd(min, max);
     }
 
+    // widens visibility for callers in other packages
     @Override
     public ZonedDateTime tryGenerateNonNull(final Random random) {
-        delegate.range(min.toInstant(), max.toInstant());
-        final ZonedDateTime result = ZonedDateTime.ofInstant(delegate.tryGenerateNonNull(random), ZONE_OFFSET);
+        return super.tryGenerateNonNull(random);
+    }
+
+    @Override
+    Instant toStartInstant(final ZonedDateTime value) {
+        return value.toInstant();
+    }
+
+    @Override
+    Instant firstUtcInstant() {
+        return LOCAL_DATE_TIME_FIRST_INSTANT;
+    }
+
+    @Override
+    Instant lastUtcInstant() {
+        return LOCAL_DATE_TIME_LAST_INSTANT;
+    }
+
+    @Override
+    ZonedDateTime fromInstant(final Instant instant, final ZoneOffset offset) {
+        final ZonedDateTime result = ZonedDateTime.ofInstant(instant, offset);
         return truncateTo == null ? result : result.truncatedTo(truncateTo);
     }
 }

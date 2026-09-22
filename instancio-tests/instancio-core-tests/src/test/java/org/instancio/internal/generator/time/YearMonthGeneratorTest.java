@@ -15,6 +15,7 @@
  */
 package org.instancio.internal.generator.time;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -95,5 +96,15 @@ class YearMonthGeneratorTest extends TemporalGeneratorSpecTestTemplate<YearMonth
             }
         }
         return args.stream();
+    }
+
+    @Test
+    void rangeCoversMinAndMax() {
+        final YearMonth min = YearMonth.of(2020, 1);
+        final YearMonth max = YearMonth.of(2020, 2);
+        generator.range(min, max);
+
+        assertThat(Stream.generate(() -> generator.generate(random)).limit(1000))
+                .contains(min, max);
     }
 }

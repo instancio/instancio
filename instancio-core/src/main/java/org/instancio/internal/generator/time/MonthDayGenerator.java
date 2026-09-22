@@ -21,17 +21,22 @@ import org.instancio.generator.specs.MonthDaySpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.AbstractGenerator;
 
-import java.time.Month;
 import java.time.MonthDay;
 
 public class MonthDayGenerator extends AbstractGenerator<MonthDay>
         implements MonthDaySpec {
 
+    // a leap year, so that February 29 can be generated
+    private static final int YEAR = 2000;
+
     private MonthDay min = MonthDay.of(1, 1);
     private MonthDay max = MonthDay.of(12, 31);
 
+    private final LocalDateGenerator delegate;
+
     public MonthDayGenerator(final GeneratorContext context) {
         super(context);
+        delegate = new LocalDateGenerator(context);
     }
 
     @Override
@@ -68,21 +73,7 @@ public class MonthDayGenerator extends AbstractGenerator<MonthDay>
 
     @Override
     protected MonthDay tryGenerateNonNull(final Random random) {
-        final int minMonth = min.getMonthValue();
-        final int maxMonth = max.getMonthValue();
-        final int month = random.intRange(minMonth, maxMonth);
-
-        int minDay = 1;
-        int maxDay = 31;
-
-        if (month == minMonth) {
-            minDay = min.getDayOfMonth();
-            maxDay = Math.max(minDay, max.getDayOfMonth());
-        } else if (month == maxMonth) {
-            maxDay = max.getDayOfMonth();
-        }
-
-        final int day = random.intRange(minDay, maxDay);
-        return MonthDay.of(month, Math.min(day, Month.of(month).maxLength()));
+        delegate.range(min.atYear(YEAR), max.atYear(YEAR));
+        return MonthDay.from(delegate.tryGenerateNonNull(random));
     }
 }
