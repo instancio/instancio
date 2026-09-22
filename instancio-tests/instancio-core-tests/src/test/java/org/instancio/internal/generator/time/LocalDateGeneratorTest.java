@@ -19,6 +19,9 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class LocalDateGeneratorTest extends TemporalGeneratorSpecTestTemplate<LocalDate> {
 
@@ -87,5 +90,15 @@ class LocalDateGeneratorTest extends TemporalGeneratorSpecTestTemplate<LocalDate
             final LocalDate start = Instancio.create(LocalDate.class);
             assertGeneratedValueIsWithinRange(start, start.plusDays(random.intRange(1, Integer.MAX_VALUE)));
         }
+    }
+
+    @Test
+    void rangeCoversMinAndMax() {
+        final LocalDate min = LocalDate.of(2020, 1, 1);
+        final LocalDate max = LocalDate.of(2020, 1, 2);
+        generator.range(min, max);
+
+        assertThat(Stream.generate(() -> generator.generate(random)).limit(1000))
+                .contains(min, max);
     }
 }

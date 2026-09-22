@@ -17,10 +17,16 @@ package org.instancio.internal.generator.time;
 
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ZonedDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<ZonedDateTime> {
 
@@ -72,6 +78,23 @@ class ZonedDateTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<Zoned
     @Override
     ZonedDateTime getStartPlusRandomLargeIncrement() {
         return START.plusYears(random.intRange(1, 10));
+    }
+
+    @MethodSource("rangesWithOffsets")
+    @ParameterizedTest
+    void rangeWithOffsets(final ZonedDateTime min, final ZonedDateTime max) {
+        generator.range(min, max);
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            assertThat(generator.generate(random)).isBetween(min, max);
+        }
+    }
+
+    private static Stream<Arguments> rangesWithOffsets() {
+        final ZonedDateTime min = LocalDateTime.MIN.atZone(ZoneOffset.MAX);
+        final ZonedDateTime max = LocalDateTime.MAX.atZone(ZoneOffset.MIN);
+        return Stream.of(
+                Arguments.of(min, min.plusDays(1)),
+                Arguments.of(max.minusDays(1), max));
     }
 
     @Test

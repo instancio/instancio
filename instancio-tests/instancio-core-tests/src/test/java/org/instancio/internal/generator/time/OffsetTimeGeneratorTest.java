@@ -18,11 +18,17 @@ package org.instancio.internal.generator.time;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
+import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -50,12 +56,12 @@ class OffsetTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<OffsetTi
 
     @Override
     OffsetTime getDefaultMin() {
-        return OffsetTime.MIN;
+        return OffsetTimeGenerator.DEFAULT_MIN;
     }
 
     @Override
     OffsetTime getDefaultMax() {
-        return OffsetTime.MAX;
+        return OffsetTimeGenerator.DEFAULT_MAX;
     }
 
     @Override
@@ -86,6 +92,35 @@ class OffsetTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<OffsetTi
         assertThat(generator.generate(random)).isBetween(START, max);
     }
 
+    @CsvSource({
+            "09:30Z, 10:15Z",
+            "10:00+02:00, 09:30Z",
+            "07:00-02:00, 10:00Z",
+            "01:00+02:00, 01:00Z",
+            "23:00Z, 23:00-02:00",
+            "00:00+18:00, 23:59:59.999999999-18:00"
+    })
+    @ParameterizedTest
+    void rangeWithOffsets(final OffsetTime min, final OffsetTime max) {
+        generator.range(min, max);
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            assertThat(generator.generate(random)).isBetween(min, max);
+        }
+    }
+
+    @Test
+    void rangeCoversEveryMinute() {
+        final OffsetTime min = OffsetTime.parse("09:00Z");
+        generator.range(min, OffsetTime.parse("10:30Z"));
+
+        final Set<OffsetTime> results = new HashSet<>();
+        for (int i = 0; i < SAMPLE_SIZE; i++) {
+            results.add(generator.generate(random).truncatedTo(ChronoUnit.MINUTES));
+        }
+
+        assertThat(results).containsAll(Stream.iterate(min, t -> t.plusMinutes(1)).limit(90).toList());
+    }
+
 
     @Nested
     class OverflowTest {
@@ -98,7 +133,7 @@ class OffsetTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<OffsetTi
 
             final OffsetTime result = gen.past().generate(random);
 
-            assertThat(result).isEqualTo(OffsetTime.MIN.toLocalTime().atOffset(ZoneOffset.UTC));
+            assertThat(result).isEqualTo(LocalTime.MIN.atOffset(ZoneOffset.UTC));
         }
 
         @ValueSource(ints = {0, 1, 999_999_999})
@@ -109,7 +144,7 @@ class OffsetTimeGeneratorTest extends TemporalGeneratorSpecTestTemplate<OffsetTi
 
             final OffsetTime result = gen.future().generate(random);
 
-            assertThat(result).isEqualTo(OffsetTime.MAX.toLocalTime().atOffset(ZoneOffset.UTC));
+            assertThat(result).isEqualTo(LocalTime.MAX.atOffset(ZoneOffset.UTC));
         }
     }
 }

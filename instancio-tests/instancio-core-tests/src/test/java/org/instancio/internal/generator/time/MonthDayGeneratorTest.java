@@ -31,7 +31,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.Month;
 import java.time.MonthDay;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,6 +76,20 @@ class MonthDayGeneratorTest {
     void range(final MonthDay min, final MonthDay max) {
         generator.range(min, max);
         assertThat(generator.generate(random)).isBetween(min, max);
+    }
+
+    @Test
+    void rangeCoversEveryDay() {
+        final MonthDay min = MonthDay.of(1, 20);
+        generator.range(min, MonthDay.of(3, 10));
+
+        final Set<MonthDay> results = new HashSet<>();
+        for (int i = 0; i < 10_000; i++) {
+            results.add(generator.generate(random));
+        }
+
+        // 12 days of January, 29 of February and 10 of March
+        assertThat(results).hasSize(51);
     }
 
     @Test

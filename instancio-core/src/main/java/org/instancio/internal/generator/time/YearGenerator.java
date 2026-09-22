@@ -15,13 +15,19 @@
  */
 package org.instancio.internal.generator.time;
 
-import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.YearSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Month;
 import java.time.Year;
+import java.time.ZoneOffset;
+
+import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
 public class YearGenerator extends JavaTimeTemporalGenerator<Year>
         implements YearSpec {
@@ -90,7 +96,17 @@ public class YearGenerator extends JavaTimeTemporalGenerator<Year>
     }
 
     @Override
-    protected Year tryGenerateNonNull(final Random random) {
-        return Year.of(random.intRange(min.getValue(), max.getValue()));
+    Instant toStartInstant(final Year value) {
+        return value.atDay(1).atStartOfDay().toInstant(ZONE_OFFSET);
+    }
+
+    @Override
+    Instant toEndInstant(final Year value) {
+        return value.atMonth(Month.DECEMBER).atEndOfMonth().atTime(LocalTime.MAX).toInstant(ZONE_OFFSET);
+    }
+
+    @Override
+    Year fromInstant(final Instant instant, final ZoneOffset offset) {
+        return Year.from(LocalDate.ofInstant(instant, offset));
     }
 }

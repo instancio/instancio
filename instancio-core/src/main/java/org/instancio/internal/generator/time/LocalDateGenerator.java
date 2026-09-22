@@ -21,9 +21,12 @@ import org.instancio.generator.specs.LocalDateSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 
-import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
 public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate>
         implements LocalDateSpec {
@@ -91,10 +94,24 @@ public class LocalDateGenerator extends JavaTimeTemporalGenerator<LocalDate>
         ApiValidator.validateStartEnd(min, max);
     }
 
+    // widens visibility for callers in other packages
     @Override
     public LocalDate tryGenerateNonNull(final Random random) {
-        return LocalDate.ofEpochDay(random.longRange(
-                min.getLong(EPOCH_DAY),
-                max.getLong(EPOCH_DAY)));
+        return super.tryGenerateNonNull(random);
+    }
+
+    @Override
+    Instant toStartInstant(final LocalDate value) {
+        return value.atStartOfDay().toInstant(ZONE_OFFSET);
+    }
+
+    @Override
+    Instant toEndInstant(final LocalDate value) {
+        return value.atTime(LocalTime.MAX).toInstant(ZONE_OFFSET);
+    }
+
+    @Override
+    LocalDate fromInstant(final Instant instant, final ZoneOffset offset) {
+        return LocalDate.ofInstant(instant, offset);
     }
 }

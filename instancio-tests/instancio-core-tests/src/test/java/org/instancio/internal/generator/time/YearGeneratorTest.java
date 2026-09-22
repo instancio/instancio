@@ -15,7 +15,12 @@
  */
 package org.instancio.internal.generator.time;
 
+import org.junit.jupiter.api.Test;
+
 import java.time.Year;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class YearGeneratorTest extends TemporalGeneratorSpecTestTemplate<Year> {
 
@@ -76,5 +81,15 @@ class YearGeneratorTest extends TemporalGeneratorSpecTestTemplate<Year> {
     @Override
     Year getStartPlusRandomLargeIncrement() {
         return START.plusYears(random.intRange(1, 10_000));
+    }
+
+    @Test
+    void rangeCoversMinAndMax() {
+        final Year min = Year.of(2020);
+        final Year max = Year.of(2021);
+        generator.range(min, max);
+
+        assertThat(Stream.generate(() -> generator.generate(random)).limit(1000))
+                .contains(min, max);
     }
 }

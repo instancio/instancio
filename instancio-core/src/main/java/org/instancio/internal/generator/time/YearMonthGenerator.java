@@ -15,13 +15,18 @@
  */
 package org.instancio.internal.generator.time;
 
-import org.instancio.Random;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.specs.YearMonthSpec;
 import org.instancio.internal.ApiValidator;
 import org.instancio.internal.util.Constants;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.YearMonth;
+import java.time.ZoneOffset;
+
+import static org.instancio.internal.util.Constants.ZONE_OFFSET;
 
 public class YearMonthGenerator extends JavaTimeTemporalGenerator<YearMonth>
         implements YearMonthSpec {
@@ -90,12 +95,17 @@ public class YearMonthGenerator extends JavaTimeTemporalGenerator<YearMonth>
     }
 
     @Override
-    protected YearMonth tryGenerateNonNull(final Random random) {
-        final int minMonth = min.getYear() * 12 + min.getMonthValue() - 1;
-        final int maxMonth = max.getYear() * 12 + max.getMonthValue() - 1;
-        final int result = random.intRange(minMonth, maxMonth);
-        final int year = result / 12;
-        final int month = result - year * 12 + 1;
-        return YearMonth.of(year, month);
+    Instant toStartInstant(final YearMonth value) {
+        return value.atDay(1).atStartOfDay().toInstant(ZONE_OFFSET);
+    }
+
+    @Override
+    Instant toEndInstant(final YearMonth value) {
+        return value.atEndOfMonth().atTime(LocalTime.MAX).toInstant(ZONE_OFFSET);
+    }
+
+    @Override
+    YearMonth fromInstant(final Instant instant, final ZoneOffset offset) {
+        return YearMonth.from(LocalDate.ofInstant(instant, offset));
     }
 }

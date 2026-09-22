@@ -19,6 +19,9 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class InstantGeneratorTest extends TemporalGeneratorSpecTestTemplate<Instant> {
 
@@ -80,6 +83,14 @@ class InstantGeneratorTest extends TemporalGeneratorSpecTestTemplate<Instant> {
     @Override
     Instant getStartPlusRandomLargeIncrement() {
         return START.plusSeconds(random.intRange(1, FIFTY_YEARS_IN_SECONDS));
+    }
+
+    @Test
+    void nanosOfMinSecondBelowNanosOfMax() {
+        generator.range(Instant.ofEpochSecond(0, 100), Instant.ofEpochSecond(1, 999_999_998));
+
+        assertThat(Stream.generate(() -> generator.generate(random)).limit(SAMPLE_SIZE))
+                .anyMatch(r -> r.getEpochSecond() == 0 && r.getNano() < 999_999_998);
     }
 
     @Test
