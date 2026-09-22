@@ -33,7 +33,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.ServiceProviderContext;
-import org.instancio.support.ThreadLocalTestContext;
+import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.pojo.arrays.object.WithIntegerArray;
 import org.instancio.test.support.pojo.collections.lists.ListInteger;
 import org.instancio.test.support.pojo.collections.maps.MapIntegerItemOfString;
@@ -60,8 +60,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class CustomGeneratorProvider implements InstancioServiceProvider {
 
     private static final GeneratorContext GENERATOR_CONTEXT = new InternalGeneratorContext(
-            Settings.defaults(),
-            ThreadLocalTestContext.getInstance().get().getRandom());
+            Settings.defaults(), new DefaultRandom());
 
     public static final String STRING_GENERATOR_VALUE = "overridden string generator from SPI Generator!";
     public static final String FOO_RECORD_VALUE = "expected-foo-value";
