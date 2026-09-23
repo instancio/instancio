@@ -20,7 +20,6 @@
         <version.assertj>3.27.7</version.assertj>
         <version.equalsverifier>4.5.2</version.equalsverifier>
         <version.junit.pioneer>2.3.0</version.junit.pioneer>
-        <version.logback>1.6.3</version.logback>
         <version.lombok>1.18.48</version.lombok>
         <version.mockito>5.23.0</version.mockito>
         <!-- plugins -->
@@ -133,12 +132,6 @@
                 <groupId>org.instancio</groupId>
                 <artifactId>instancio-test-support</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${version.logback}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
