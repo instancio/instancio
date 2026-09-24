@@ -370,7 +370,7 @@ class SettingsTest {
                 .withPropertyKey("user.defined.key")
                 .create();
 
-        final Settings settings = Settings.from(PropertiesLoader.loadDefaultPropertiesFile());
+        final Settings settings = Settings.from(PropertiesLoader.load().properties());
 
         assertThat(settings.get(key)).isEqualTo(12345);
     }

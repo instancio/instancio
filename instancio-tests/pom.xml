@@ -35,7 +35,7 @@
         <module>feature-tests</module>
         <module>instancio-guava-tests</module>
         <module>default-package-tests</module>
-        <module>global-seed-tests</module>
+        <module>global-settings-tests</module>
         <module>groovy-tests</module>
         <module>kotlin-tests</module>
         <module>protobuf-tests</module>

@@ -15,7 +15,6 @@
  */
 package org.instancio.junit.internal;
 
-import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
 import org.instancio.junit.Seed;
 import org.instancio.junit.WithSettings;
@@ -57,7 +56,7 @@ public final class ExtensionSupport {
         final long seed;
         final Seeds.Source source;
         final Long settingsSeed = settings == null ? null : settings.get(Keys.SEED);
-        final Random configuredRandom = Global.getConfiguredRandom();
+        final DefaultRandom configuredRandom = Global.getConfiguredRandom();
 
         if (settingsSeed != null) {
             seed = settingsSeed;
@@ -67,7 +66,7 @@ public final class ExtensionSupport {
             source = Seeds.Source.SEED_ANNOTATION;
         } else if (configuredRandom != null) {
             seed = configuredRandom.getSeed();
-            source = Seeds.Source.GLOBAL;
+            source = configuredRandom.getSource();
         } else {
             seed = Seeds.randomSeed();
             source = Seeds.Source.RANDOM;

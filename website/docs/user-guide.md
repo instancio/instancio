@@ -3790,7 +3790,7 @@ Settings.from(Settings other)
     <lnum>3</lnum> Creates settings from a `Map` or `java.util.Properties`.<br/>
     <lnum>4</lnum> Creates a copy of `other` settings (a clone operation).
 
-Settings can be overridden programmatically or through a properties file.
+Settings can be overridden programmatically, through a properties file, system properties, or environment variables.
 
 !!! info
     To inspect all the keys and default values, simply: `System.out.println(Settings.defaults())`
@@ -3842,17 +3842,63 @@ please refer to the {{Keys}} Javadoc.
 
 {% include "includes/instancio-properties-sample.md" %}
 
+### Using a Different Properties File
+
+To load a different file instead of `instancio.properties`, set the `instancio.config.file`
+system property or the `INSTANCIO_CONFIG_FILE` environment variable:
+
+```sh
+INSTANCIO_CONFIG_FILE=/path/to/instancio-ci.properties
+```
+
+The value is a file system path, and the file extension does not matter.
+Relative paths are resolved against the working directory, which for Maven Surefire and Gradle
+is the directory of the module being tested, so prefer absolute paths in multi-module builds.
+When both are set, the system property takes precedence. An empty value is ignored.
+If the file does not exist, an error is thrown.
+
+## Overriding Settings Using System Properties and Environment Variables
+
+Any property key can also be set as a system property prefixed with `instancio.`,
+or as an environment variable prefixed with `INSTANCIO_`, with the rest of the key
+in upper case and dots replaced by underscores:
+
+| Properties file        | System property                    | Environment variable          |
+|------------------------|------------------------------------|-------------------------------|
+| `seed`                 | `-Dinstancio.seed`                 | `INSTANCIO_SEED`              |
+| `string.min.length`    | `-Dinstancio.string.min.length`    | `INSTANCIO_STRING_MIN_LENGTH` |
+| `subtype.<class name>` | `-Dinstancio.subtype.<class name>` | not supported                 |
+
+Empty values are ignored, so a CI variable that expands to nothing leaves the setting unchanged.
+
+Environment variable names can be all upper case (`INSTANCIO_SEED`) or all lower case (`instancio_seed`);
+if both are set, the upper-case one takes precedence. Names in mixed case are ignored.
+This also applies to `INSTANCIO_CONFIG_FILE`.
+
+Environment variable names are converted back to property keys by lower-casing them,
+so custom keys can only be set this way if their property key is lower case and contains no underscores.
+For the same reason, subtypes cannot be mapped via environment variables:
+an `INSTANCIO_SUBTYPE_*` variable is reported as an error.
+Since `instancio.config.file` selects the properties file, a custom key named `config.file`
+can only be set in the properties file itself.
+
+!!! warning
+    Global settings are read once, when Instancio is first used.
+    Calling `System.setProperty()` after that has no effect.
+
 ## Settings Precedence
 
 Instancio layers settings on top of each other, each layer overriding the previous ones.
 This is done in the following order:
 
 1. `Settings.defaults()`
-1. Settings from `instancio.properties`
+1. Settings from `instancio.properties` (or the file specified by `instancio.config.file`)
+1. Settings from `INSTANCIO_*` environment variables
+1. Settings from `instancio.*` system properties
 1. Settings injected using `@WithSettings` annotation when using `InstancioExtension` (see [Settings Injection](#settings-injection))
 1. Settings supplied using the builder API's {{withSettings}} method
 
-In the absence of any other configuration, Instancio uses defaults as returned by `Settings.defaults()`. If `instancio.properties` is found at the root of the classpath, it will override the defaults. Finally, settings can also be overridden at runtime using `@WithSettings` annotation or {{withSettings}} method. The latter takes precedence over everything else.
+In the absence of any other configuration, Instancio uses defaults as returned by `Settings.defaults()`. If `instancio.properties` is found at the root of the classpath, it will override the defaults. Environment variables and system properties override the properties file. Finally, settings can also be overridden at runtime using `@WithSettings` annotation or {{withSettings}} method. The latter takes precedence over everything else.
 
 # Instancio Service Provider Interface
 
@@ -4241,7 +4287,7 @@ The table below summarises these categories and their corresponding log levels:
 | `WARN`  | **`org.instancio.log.constructor.bypassed`**{ title="Logs a message when instantiating an object via constructor fails and Instancio bypasses the constructor, creating the object without invoking it." } |
 | `WARN`  | **`org.instancio.log.max.depth.reached`**{ title="Logs a message when the maximum object graph depth limit is reached." }                                    |
 | `WARN`  | **`org.instancio.log.max.generation.attempts.reached`**{ title="Logs a message when the maximum number of generation attempts is reached." }                 |
-| `DEBUG` | **`org.instancio.log.properties`**{ title="Logs whether the instancio.properties file was found on the classpath or if default properties are being used." } |
+| `DEBUG` | **`org.instancio.log.properties`**{ title="Logs which properties file, environment variables and system properties the global settings were loaded from." } |
 | `TRACE` | **`org.instancio.log.seed`**{ title="Logs the effective seed value and its source." }                                                                        |
 | `TRACE` | **`org.instancio.log.settings`**{ title="Logs the current Settings configuration." }                                                                         |
 | `WARN`  | **`org.instancio.log.suppressed.error`**{ title="Logs exceptions that were suppressed instead of thrown, typically when Keys.FAIL_ON_ERROR is disabled." }   |
@@ -4402,20 +4448,20 @@ These are ranked from highest to lowest precedence:
 1. {{withSettings}} or {{withSetting}} method of the builder API using `Keys.SEED`
 1. `@WithSettings` annotations (requires [`InstancioExtension`](#junit-framework-integration))
 1. `@Seed` annotation  (requires [`InstancioExtension`](#junit-framework-integration))
-1. `instancio.properties` file (see [Global Seed](#global-seed) for details)
+1. global seed from `instancio.properties`, an environment variable, or a system property (see [Global Seed](#global-seed) for details)
 1. random seed
 
 Precedence rules are summarised in the following table, where each number represents a seed value,
 and `R` represents a random seed.
 
-| Random<br>seed | `.properties` | `@Seed` | `@WithSettings` | `.withSettings()` | `.withSeed()` | Actual<br>seed |
-|:--------------:|:-------------:|:-------:|:---------------:|:-----------------:|:-------------:|:--------------:|
-|       R        |       5       |    4    |        3        |         2         |     **1**     |     **1**      |
-|       R        |       5       |    4    |        3        |       **2**       |       -       |     **2**      |
-|       R        |       5       |    4    |      **3**      |         -         |       -       |     **3**      |
-|       R        |       5       |  **4**  |        -        |         -         |       -       |     **4**      |
-|       R        |     **5**     |    -    |        -        |         -         |       -       |     **5**      |
-|     **R**      |       -       |    -    |        -        |         -         |       -       |     **R**      |
+| Random<br>seed | Global<br>seed | `@Seed` | `@WithSettings` | `.withSettings()` | `.withSeed()` | Actual<br>seed |
+|:--------------:|:--------------:|:-------:|:---------------:|:-----------------:|:-------------:|:--------------:|
+|       R        |       5        |    4    |        3        |         2         |     **1**     |     **1**      |
+|       R        |       5        |    4    |        3        |       **2**       |       -       |     **2**      |
+|       R        |       5        |    4    |      **3**      |         -         |       -       |     **3**      |
+|       R        |       5        |  **4**  |        -        |         -         |       -       |     **4**      |
+|       R        |     **5**      |    -    |        -        |         -         |       -       |     **5**      |
+|     **R**      |       -        |    -    |        -        |         -         |       -       |     **R**      |
 
 
 ### `@WithSettings` seed
@@ -4476,6 +4522,9 @@ A global seed can be specified in `instancio.properties` using the `seed` proper
 seed=9283754
 ```
 
+or, as with any other setting, using `-Dinstancio.seed=9283754` or `INSTANCIO_SEED=9283754`
+(see [Overriding Settings Using System Properties and Environment Variables](#overriding-settings-using-system-properties-and-environment-variables)).
+
 There are some important differences in how the global seed works depending on whether
 tests declare the `InstancioExtension`.
 
@@ -4484,7 +4533,7 @@ tests declare the `InstancioExtension`.
 When tests are run without the extension, the same `Random` instance is used across all test classes and methods.
 Therefore, generated data is affected by the order in which test methods are run.
 
-Let's assume the configured seed in the properties file produces the following output if `test1` is run first:
+Let's assume the global seed produces the following output if `test1` is run first:
 
 ```java linenums="1"
 class ExampleTest {
@@ -4513,7 +4562,7 @@ as it makes it harder to reproduce the data in case of test failure.
 #### Global Seed With the `InstancioExtension`
 
 When using the extension, each test method gets its own instance of `Random` initialised
-with the seed from the properties file. As a result, generated data is not affected by the order
+with the global seed. As a result, generated data is not affected by the order
 in which test methods are run.
 
 For example, the following snippet will always produce the same output:
@@ -4559,7 +4608,7 @@ org.instancio.support.Seeds
 This will create a log message for every generated root object created via the API:
 
 ```
-Generating org.example.Pojo with seed 1473150975436346185 (seed source: RANDOM)
+Generating org.example.Pojo with seed 1473150975436346185 (seed source: random seed)
 ```
 
 # JUnit Framework Integration
@@ -4971,6 +5020,8 @@ or used a seed provided by the user. The possible seed sources are listed below
 
 - seed specified via `Settings` annotated with `@WithSettings`
 - seed specified using the `@Seed` annotation
+- [global seed](#global-seed), reported as where it was set: `instancio.properties`, the path of the file
+  specified by `instancio.config.file`, `-Dinstancio.seed`, or the name of the environment variable
 - random seed (default behaviour when an explicit seed is not specified)
 
 !!! warning "Seeds specified using {{withSeed}} or {{withSettings}} methods are not reported by the Instancio extension."

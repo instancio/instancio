@@ -30,23 +30,12 @@ import java.security.SecureRandom;
 @InternalApi
 public final class Seeds {
 
-    public enum Source {
-        MANUAL(".withSeed()"),
-        WITH_SETTINGS_BUILDER(".withSettings()"),
-        WITH_SETTINGS_ANNOTATION("@WithSettings"),
-        SEED_ANNOTATION("@Seed"),
-        GLOBAL("instancio.properties"),
-        RANDOM("random seed");
-
-        private final String description;
-
-        Source(final String description) {
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
+    public record Source(String description) {
+        public static final Source MANUAL = new Source(".withSeed()");
+        public static final Source WITH_SETTINGS_BUILDER = new Source(".withSettings()");
+        public static final Source WITH_SETTINGS_ANNOTATION = new Source("@WithSettings");
+        public static final Source SEED_ANNOTATION = new Source("@Seed");
+        public static final Source RANDOM = new Source("random seed");
     }
 
     /**
@@ -71,6 +60,6 @@ public final class Seeds {
 
     public static void logSeed(final Random random, final Type rootType) {
         Log.msg(Log.Category.SEED, "Generating {} with seed {} (seed source: {})",
-                rootType, random.getSeed(), ((DefaultRandom) random).getSource());
+                rootType, random.getSeed(), ((DefaultRandom) random).getSource().description());
     }
 }

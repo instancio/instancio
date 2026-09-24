@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.properties;
+package org.instancio.test.globalsettings;
 
 import org.instancio.Instancio;
 import org.instancio.Result;
