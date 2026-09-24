@@ -67,7 +67,7 @@ public final class SeedSummary implements AutoCloseable {
 
         return failedTests.stream()
                 .map(test -> "  @Seed(%dL) %s (seed source: %s)".formatted(
-                        test.seed(), test.testName(), test.seedSource().getDescription()))
+                        test.seed(), test.testName(), test.seedSource().description()))
                 .collect(Collectors.joining(NL, header + NL + NL, NL));
     }
 

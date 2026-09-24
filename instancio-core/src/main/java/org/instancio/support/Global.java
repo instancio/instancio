@@ -15,7 +15,6 @@
  */
 package org.instancio.support;
 
-import org.instancio.Random;
 import org.instancio.documentation.InternalApi;
 import org.instancio.internal.context.PropertiesLoader;
 import org.instancio.internal.settings.InternalSettings;
@@ -23,29 +22,35 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Settings;
 import org.jspecify.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 @InternalApi
 public final class Global {
 
-    private static final Settings PROPERTIES_FILE_SETTINGS = InternalSettings.getLockedDefaults()
-            .merge(Settings.from(PropertiesLoader.loadDefaultPropertiesFile()))
+    private static final PropertiesLoader.LoadedProperties PROPERTIES = PropertiesLoader.load();
+
+    private static final Settings GLOBAL_SETTINGS = InternalSettings.getLockedDefaults()
+            .merge(Settings.from(PROPERTIES.properties()))
             .lock();
 
-    private static final @Nullable Long PROPERTIES_FILE_SEED = PROPERTIES_FILE_SETTINGS.get(Keys.SEED);
-    private static final @Nullable Random CONFIGURED_RANDOM = PROPERTIES_FILE_SEED == null
-            ? null : new DefaultRandom(PROPERTIES_FILE_SEED, Seeds.Source.GLOBAL);
+    private static final @Nullable Long GLOBAL_SEED = GLOBAL_SETTINGS.get(Keys.SEED);
+    private static final @Nullable DefaultRandom CONFIGURED_RANDOM = GLOBAL_SEED == null
+            ? null : new DefaultRandom(GLOBAL_SEED, new Seeds.Source(requireNonNull(PROPERTIES.seedSource())));
 
     /**
-     * Default settings overlaid with settings from {@code instancio.properties}.
+     * Default settings overlaid with settings from {@code instancio.properties}
+     * (or the file specified by {@code instancio.config.file}),
+     * {@code INSTANCIO_*} environment variables and {@code instancio.*} system properties.
      *
-     * @return settings from properties file
+     * @return global settings
      */
-    public static Settings getPropertiesFileSettings() {
-        return PROPERTIES_FILE_SETTINGS;
+    public static Settings getGlobalSettings() {
+        return GLOBAL_SETTINGS;
     }
 
     /**
      * Resolves effective settings by layering:
-     * properties file, thread-local, and {@code overrides}.
+     * global settings, thread-local, and {@code overrides}.
      *
      * @param overrides optional overrides with the highest priority
      * @return merged (possibly locked) settings
@@ -54,15 +59,15 @@ public final class Global {
         final InternalTestContext internalTestContext = ThreadLocalTestContext.getInstance().get();
         final Settings threadLocalSettings = internalTestContext == null ? null : internalTestContext.getSettings();
         if (threadLocalSettings == null && overrides == null) {
-            return PROPERTIES_FILE_SETTINGS; // locked instance
+            return GLOBAL_SETTINGS; // locked instance
         }
-        return InternalSettings.from(PROPERTIES_FILE_SETTINGS)
+        return InternalSettings.from(GLOBAL_SETTINGS)
                 .copyFrom(threadLocalSettings)
                 .copyFrom(overrides);
     }
 
     @Nullable
-    public static Random getConfiguredRandom() {
+    public static DefaultRandom getConfiguredRandom() {
         return CONFIGURED_RANDOM;
     }
 

@@ -108,10 +108,12 @@ assertThat(person.getAge()).isBetween(0, 100);
 
 ## Configuration precedence
 
-Since there are three ways to provide configuration, Instancio has the following precedence rules when resolving configuration values.
+Instancio has the following precedence rules when resolving configuration values.
 From lowest to highest:
 
 - Configuration from `instancio.properties`
+- Configuration from `INSTANCIO_*` environment variables
+- Configuration from `instancio.*` system properties
 - Configuration from `@WithSettings`
 - Configuration from `withSettings()`
 

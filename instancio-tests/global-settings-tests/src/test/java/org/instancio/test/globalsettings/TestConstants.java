@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.properties;
+package org.instancio.test.globalsettings;
 
 final class TestConstants {
 
-    // defined in instancio.properties
-    static final long GLOBAL_SEED = -112233;
+    // -Dinstancio.seed in pom.xml
+    static final long GLOBAL_SEED = 3;
 }

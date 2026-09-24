@@ -81,7 +81,7 @@
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>
-            <artifactId>global-seed-tests</artifactId>
+            <artifactId>global-settings-tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

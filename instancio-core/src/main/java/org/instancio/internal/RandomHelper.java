@@ -35,7 +35,7 @@ public final class RandomHelper {
      *   <li>{@code withSettings(Settings)}</li>
      *   <li>{@code @WithSettings Settings}</li>
      *   <li>{@code @Seed(long)}</li>
-     *   <li>{@code instancio.properties}</li>
+     *   <li>global seed: {@code instancio.properties}, environment variable or system property</li>
      *   <li>random seed</li>
      * </ol>
      *
@@ -51,10 +51,10 @@ public final class RandomHelper {
             return new DefaultRandom(withSeed, Seeds.Source.MANUAL);
         }
 
-        // Based on instancio.properties seed, if defined
+        // Based on the global seed, if defined
         final Random configuredRandom = Global.getConfiguredRandom();
 
-        // This ensures we can override seed from the properties file using a custom Settings instance.
+        // This ensures we can override the global seed using a custom Settings instance.
         if (settingsSeed != null && (configuredRandom == null || configuredRandom.getSeed() != settingsSeed)) {
             return new DefaultRandom(settingsSeed, Seeds.Source.WITH_SETTINGS_BUILDER);
         }

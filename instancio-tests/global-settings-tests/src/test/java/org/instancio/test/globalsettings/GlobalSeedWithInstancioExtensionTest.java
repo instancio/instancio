@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.properties;
+package org.instancio.test.globalsettings;
 
 import org.instancio.Instancio;
 import org.instancio.Result;
@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *   <li>(b) withSettings()</li>
  *   <li>(c) @WithSettings</li>
  *   <li>(d) @Seed()</li>
- *   <li>(e) Global seed (from properties file)</li>
+ *   <li>(e) Global seed</li>
  *   <li>(f) random seed, if none of the above specified (default behaviour, not tested here)</li>
  * </ul>
  */
@@ -79,7 +79,7 @@ class GlobalSeedWithInstancioExtensionTest {
 
     @Test
     @Seed(ANNOTATION_SEED)
-    @DisplayName("(b) withSettings() takes precedence over seed from properties and @Seed annotation")
+    @DisplayName("(b) withSettings() takes precedence over global seed and @Seed annotation")
     void settingsSeedTakesPrecedenceOverGlobalSeed() {
         final long seed = Instancio.create(long.class);
         final Settings settings = Settings.create().set(Keys.SEED, seed);
@@ -108,7 +108,7 @@ class GlobalSeedWithInstancioExtensionTest {
 
         @Test
         @Seed(ANNOTATION_SEED)
-        @DisplayName("(c) @WithSettings seed takes precedence over seed from properties and @Seed annotation")
+        @DisplayName("(c) @WithSettings seed takes precedence over global seed and @Seed annotation")
         void withSettingsAnnotation() {
             final Result<String> result = Instancio.of(String.class).asResult();
             assertThat(result.getSeed()).isEqualTo(WITH_SETTINGS_ANNOTATION_SEED);
@@ -117,14 +117,14 @@ class GlobalSeedWithInstancioExtensionTest {
 
     @Test
     @Seed(ANNOTATION_SEED)
-    @DisplayName("(d) @Seed() takes precedence over seed from properties file")
+    @DisplayName("(d) @Seed() takes precedence over global seed")
     void seedAnnotation() {
         final Result<String> result = Instancio.of(String.class).asResult();
         assertThat(result.getSeed()).isEqualTo(ANNOTATION_SEED);
     }
 
     @Test
-    @DisplayName("(e) Global seed from properties file")
+    @DisplayName("(e) Global seed")
     void seedFromProperties() {
         final Result<String> s1 = Instancio.of(String.class).asResult();
         final Result<String> s2 = Instancio.of(String.class).asResult();

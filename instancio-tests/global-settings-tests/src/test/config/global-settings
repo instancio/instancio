@@ -1,0 +1,4 @@
+string.type=DIGITS
+integer.max=100
+seed=1
+subtype.java.util.List=java.util.LinkedList

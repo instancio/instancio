@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.instancio</groupId>
+        <artifactId>instancio-tests</artifactId>
+        <version>6.0.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>global-settings-tests</artifactId>
+    <packaging>jar</packaging>
+    <name>Instancio tests: Global Settings Tests</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-test-support</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <instancio.config.file>src/test/config/global-settings</instancio.config.file>
+                        <instancio.seed>3</instancio.seed>
+                        <instancio.subtype.java.util.Collection>java.util.ArrayDeque</instancio.subtype.java.util.Collection>
+                        <instancio.myApp.retry_count>3</instancio.myApp.retry_count>
+                    </systemPropertyVariables>
+                    <environmentVariables>
+                        <INSTANCIO_INTEGER_MAX>200</INSTANCIO_INTEGER_MAX>
+                        <INSTANCIO_SEED>2</INSTANCIO_SEED>
+                        <INSTANCIO_MY_RETRY_COUNT>5</INSTANCIO_MY_RETRY_COUNT>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

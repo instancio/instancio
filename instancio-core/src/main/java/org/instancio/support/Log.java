@@ -77,8 +77,8 @@ public final class Log {
         MAX_GENERATION_ATTEMPTS(Level.WARN, "org.instancio.log.max.generation.attempts.reached"),
 
         /**
-         * Logs whether the {@code instancio.properties} file was found
-         * on the classpath or if default properties are being used.
+         * Logs which properties file, environment variables
+         * and system properties global settings were loaded from.
          *
          * @since 6.0.0
          */
