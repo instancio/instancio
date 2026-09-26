@@ -8,7 +8,7 @@
     </parent>
     <artifactId>bean-validation-jakarta-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Instancio tests: Jakarta Bean Validation Tests</name>
+    <name>Instancio Tests: Jakarta Bean Validation Tests</name>
 
     <properties>
         <sonar.exclusions>**/test/pojo/beanvalidation/**/*</sonar.exclusions>

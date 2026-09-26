@@ -8,7 +8,7 @@
     </parent>
     <artifactId>jackson-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Instancio tests: Jackson Tests</name>
+    <name>Instancio Tests: Jackson Tests</name>
 
     <properties>
         <maven.enforcer.require.java.version>[21,)</maven.enforcer.require.java.version>

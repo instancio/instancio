@@ -7,7 +7,7 @@
         <version>6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>packaging-tests</artifactId>
-    <name>Instancio tests: Packaging Tests</name>
+    <name>Instancio Tests: Packaging Tests</name>
 
     <dependencies>
         <dependency>

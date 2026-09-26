@@ -8,7 +8,7 @@
     </parent>
     <artifactId>kotlin-tests</artifactId>
     <packaging>pom</packaging>
-    <name>Instancio tests: Kotlin Tests</name>
+    <name>Instancio Tests: Kotlin Tests</name>
 
     <modules>
         <module>kotlin-test-support</module>

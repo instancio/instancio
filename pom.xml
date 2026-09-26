@@ -111,8 +111,8 @@
         <module>instancio-guava</module>
         <module>instancio-protobuf</module>
         <module>instancio-bom</module>
-        <module>instancio-tests</module>
         <module>instancio-benchmark</module>
+        <module>instancio-tests</module>
     </modules>
 
     <profiles>

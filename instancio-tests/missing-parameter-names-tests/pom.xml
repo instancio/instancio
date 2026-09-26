@@ -8,7 +8,7 @@
     </parent>
     <artifactId>missing-parameter-names-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Instancio tests: Missing Constructor Parameter Names</name>
+    <name>Instancio Tests: Missing Constructor Parameter Names</name>
 
     <properties>
         <sonar.exclusions>src/main/java/**</sonar.exclusions>

@@ -8,7 +8,7 @@
     </parent>
     <artifactId>instancio-junit-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Instancio tests: instancio-junit Tests</name>
+    <name>Instancio Tests: instancio-junit Tests</name>
 
     <build>
         <plugins>

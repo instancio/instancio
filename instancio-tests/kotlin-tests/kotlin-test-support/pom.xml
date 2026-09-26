@@ -7,5 +7,5 @@
         <version>6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>kotlin-test-support</artifactId>
-    <name>Instancio tests: Kotlin Test Support</name>
+    <name>Instancio Tests: Kotlin Test Support</name>
 </project>

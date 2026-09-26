@@ -8,7 +8,7 @@
     </parent>
     <artifactId>instancio-guava-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Instancio tests: instancio-guava Tests</name>
+    <name>Instancio Tests: instancio-guava Tests</name>
 
     <properties>
         <sonar.exclusions>**/test/pojo/guava/**/*</sonar.exclusions>

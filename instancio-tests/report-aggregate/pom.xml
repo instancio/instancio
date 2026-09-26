@@ -8,7 +8,7 @@
     </parent>
     <artifactId>report-aggregate</artifactId>
     <packaging>pom</packaging>
-    <name>Instancio tests: Aggregate Report</name>
+    <name>Instancio Tests: Aggregate Report</name>
 
     <build>
         <plugins>

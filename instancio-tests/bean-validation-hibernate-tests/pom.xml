@@ -8,7 +8,7 @@
     </parent>
     <artifactId>bean-validation-hibernate-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Instancio tests: Hibernate Bean Validation Tests</name>
+    <name>Instancio Tests: Hibernate Bean Validation Tests</name>
 
     <properties>
         <sonar.exclusions>**/test/pojo/beanvalidation/**/*</sonar.exclusions>

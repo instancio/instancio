@@ -7,7 +7,7 @@
         <version>6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>jpms-bean-validation-hibernate-tests</artifactId>
-    <name>Instancio tests: JPMS Bean Validation Hibernate Tests</name>
+    <name>Instancio Tests: JPMS Bean Validation Hibernate Tests</name>
 
     <dependencies>
         <dependency>

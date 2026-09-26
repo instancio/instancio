@@ -7,7 +7,7 @@
         <version>6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>java-interop-kotlin-tests</artifactId>
-    <name>Instancio tests: Java-Kotlin Interop Tests</name>
+    <name>Instancio Tests: Java-Kotlin Interop Tests</name>
 
     <dependencies>
         <dependency>

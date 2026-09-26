@@ -7,7 +7,7 @@
         <version>6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>jpms-spi-impl</artifactId>
-    <name>Instancio tests: JPMS Sample SPI implementation</name>
+    <name>Instancio Tests: JPMS Sample SPI implementation</name>
 
     <properties>
         <sonar.skip>true</sonar.skip>

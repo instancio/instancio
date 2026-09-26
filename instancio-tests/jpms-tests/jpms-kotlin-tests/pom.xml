@@ -7,7 +7,7 @@
         <version>6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>jpms-kotlin-tests</artifactId>
-    <name>Instancio tests: JPMS instancio-kotlin Tests</name>
+    <name>Instancio Tests: JPMS instancio-kotlin Tests</name>
 
     <dependencies>
         <dependency>

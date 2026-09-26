@@ -7,7 +7,7 @@
         <version>6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>groovy-tests</artifactId>
-    <name>Instancio tests: Groovy Tests</name>
+    <name>Instancio Tests: Groovy Tests</name>
 
     <properties>
         <version.gmavenplus-plugin>5.1.0</version.gmavenplus-plugin>

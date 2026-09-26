@@ -7,7 +7,7 @@
         <version>6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>jpms-bean-validation-jakarta-tests</artifactId>
-    <name>Instancio tests: JPMS Bean Validation Jakarta Tests</name>
+    <name>Instancio Tests: JPMS Bean Validation Jakarta Tests</name>
 
     <dependencies>
         <dependency>

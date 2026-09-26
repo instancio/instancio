@@ -7,7 +7,7 @@
         <version>6.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>concurrency-tests</artifactId>
-    <name>Instancio tests: Concurrency Tests</name>
+    <name>Instancio Tests: Concurrency Tests</name>
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
