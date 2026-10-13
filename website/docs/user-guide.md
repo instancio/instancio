@@ -875,7 +875,7 @@ Select.allStrings().within(all(Person.class).toScope())
 ### Selector Depth
 
 Regular and predicate selectors can also be narrowed down by specifying target's depth.
-Both selector types allow specifying depth as an integer value:
+Depth can be specified as an integer value, which matches targets at exactly that depth:
 
 ``` java linenums="1"
 Select.all(Class<T> targetClass).atDepth(int depth)
@@ -886,9 +886,13 @@ Select.fields(Predicate<Field> fieldPredicate).atDepth(int depth)
 Select.types(Predicate<Class> typePredicate).atDepth(int depth)
 ```
 
-In addition, predicate selectors also support specifying depth as a predicate:
+or as a predicate, for example, to match a range of depths:
 
 ``` java linenums="1"
+Select.all(Class<T> targetClass).atDepth(Predicate<Integer> depthPredicate)
+Select.field(Class<T> targetClass, String field).atDepth(Predicate<Integer> depthPredicate)
+Select.field(GetMethodSelector<T, R> methodReference).atDepth(Predicate<Integer> depthPredicate)
+
 Select.fields(Predicate<Field> fieldPredicate).atDepth(Predicate<Integer> depthPredicate)
 Select.types(Predicate<Class> typePredicate).atDepth(Predicate<Integer> depthPredicate)
 ```
@@ -940,27 +944,41 @@ Select.all(A.class).atDepth(2)
 ``` java title="Select the <code>A</code> nodes at depths 3 and 4 (and beyond, if any)"
 Select.types().of(A.class).atDepth(depth -> depth > 2)
 
-=> Root[a=A[value="MWAASZU"], b=B[a1=A[value="ODSRTG"], a2=A[value="TDG"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
+=> Root[a=A[value="MWAASZU"], b=B[a1=A[value="ODSRTG"], a2=A[value="TDG"], c=C[a=A[value="Hello!"], d=D[a=A[value="Hello!"]]]]]
 ```
 
 ``` java title="Select all (four) <code>A</code> nodes reachable from <code>B</code>"
 Select.all(A.class).within(scope(B.class))
 
-=> Root[a=A[value="GNDUXU"], b=B[a1=A[value="hello!"], a2=A[value="hello!"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
+=> Root[a=A[value="GNDUXU"], b=B[a1=A[value="Hello!"], a2=A[value="Hello!"], c=C[a=A[value="Hello!"], d=D[a=A[value="Hello!"]]]]]
 ```
 
-The next example is targeting `allStrings()`, therefore the value is being set to `"Hello!"` instead of `new A("Hello!")`.
-This snippet targets all strings that are reachable from class `A`, but only if class `A` is at depth `3` or greater.
+The next two examples are targeting `allStrings()`, therefore the value is being set to `"Hello!"` instead of `new A("Hello!")`.
+This snippet targets all strings that are reachable from class `A`, but only if class `A` is at depth `3`.
 
-``` java title="Select all Strings reachable from <code>A</code> nodes at depth 3 or greater" linenums="1" hl_lines="2"
+``` java title="Select all Strings reachable from <code>A</code> nodes at depth 3" linenums="1" hl_lines="2"
 Root root = Instancio.of(Root.class)
     .set(Select.allStrings().within(all(A.class).atDepth(3).toScope()), "Hello!")
     .create();
 
-=> Root[a=A[value="SERWVQV"], b=B[a1=A[value="PTF"], a2=A[value="CHZP"], c=C[a=A[value="hello!"], d=D[a=A[value="hello!"]]]]]
+=> Root[a=A[value="SERWVQV"], b=B[a1=A[value="PTF"], a2=A[value="CHZP"], c=C[a=A[value="Hello!"], d=D[a=A[value="TTI"]]]]]
 ```
 !!! attention ""
-    <lnum>2</lnum> When a selector `atDepth(N)` is converted to `toScope()`, the selection matches any target at depth `N` or greater.
+    <lnum>2</lnum> When a selector `atDepth(N)` is converted to `toScope()`, the scope matches targets at depth `N` only.
+    The `A` at depth `4` is not matched.
+
+To match `A` nodes at depth `3` or greater, specify the depth as a predicate:
+
+``` java title="Select all Strings reachable from <code>A</code> nodes at depth 3 or greater"
+Select.allStrings().within(all(A.class).atDepth(depth -> depth >= 3).toScope())
+
+=> Root[a=A[value="MSJEONL"], b=B[a1=A[value="XRBFYZAZDT"], a2=A[value="DVXUCU"], c=C[a=A[value="Hello!"], d=D[a=A[value="Hello!"]]]]]
+```
+
+!!! note ""
+    Prior to version `6.0.0`, a regular selector such as `all(A.class).atDepth(N)` converted using `toScope()`
+    matched targets at depth `N` or greater, whereas predicate selectors matched depth `N` only.
+    Both now match depth `N` only.
 
 
 The final example is targeting the field `A.value` but only within the `a1` field of class `B`:
@@ -968,7 +986,7 @@ The final example is targeting the field `A.value` but only within the `a1` fiel
 ``` java title="Select <code>A.value</code> of the <code>a1</code> field"
 Select.field(A::value).within(field(B::a1).toScope())
 
-=> Root[a=A[value="DBOS"], b=B[a1=A[value="hello!"], a2=A[value="KFBWJL"], c=C[a=A[value="VLTNXF"], d=D[a=A[value="CDV"]]]]]
+=> Root[a=A[value="DBOS"], b=B[a1=A[value="Hello!"], a2=A[value="KFBWJL"], c=C[a=A[value="VLTNXF"], d=D[a=A[value="CDV"]]]]]
 ```
 
 
