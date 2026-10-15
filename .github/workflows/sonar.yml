@@ -4,20 +4,19 @@ on:
     workflows: [ Build ]
     types:
       - completed
-env:
-  MAVEN_ARGS: "-B -ntp"
 jobs:
   sonar:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       actions: read
+      contents: read
+      pull-requests: read
+      statuses: write
     steps:
       - name: 'Sonar analysis'
-        uses: evaristegalois11/sonar-fork-analysis@9d67a15f17407c3bf39bb09c39a9d5d3794eeecd # v1.3.0
+        uses: galois-groups/sonar-fork-analysis@45be2ac8bb7cdc723a2c48efcdb5f0936e98f1b6 # v2.0.0
         with:
-          distribution: temurin
-          java-version: 27
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
           project-key: instancio_instancio
+          sonar-organization: instancio
+          sonar-token: ${{ secrets.SONAR_TOKEN }}

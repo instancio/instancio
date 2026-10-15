@@ -13,6 +13,8 @@ jobs:
     if: ${{ !github.event.pull_request.draft }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v6
@@ -22,10 +24,11 @@ jobs:
           cache: maven
 
       - name: 'Build project'
-        run: mvn clean install
-
-      - name: 'Prepare Sonar analysis'
-        uses: evaristegalois11/sonar-fork-analysis@9d67a15f17407c3bf39bb09c39a9d5d3794eeecd # v1.3.0
+        uses: galois-groups/sonar-fork-analysis@45be2ac8bb7cdc723a2c48efcdb5f0936e98f1b6 # v2.0.0
+        with:
+          project-key: instancio_instancio
+          sonar-organization: instancio
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
 
   kotlin-compatibility:
     runs-on: ubuntu-latest
