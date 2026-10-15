@@ -16,6 +16,7 @@
 package org.example.spi;
 
 import org.instancio.Node;
+import org.instancio.generator.GeneratorSpec;
 import org.instancio.generator.specs.InstantSpec;
 import org.instancio.generator.specs.LocalDateSpec;
 import org.instancio.generator.specs.LongSpec;
@@ -63,6 +64,11 @@ public class CustomAnnotationProcessor implements InstancioServiceProvider {
     @Target(ElementType.TYPE_USE)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface CustomNullable {
+    }
+
+    @Target(ElementType.TYPE_USE)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface GenericSpecNullable {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -145,6 +151,13 @@ public class CustomAnnotationProcessor implements InstancioServiceProvider {
         @AnnotationHandler
         void customNullable(final CustomNullable annotation, final NullableGeneratorSpec<?> spec) {
             spec.nullable();
+        }
+
+        @AnnotationHandler
+        void genericSpecNullable(final GenericSpecNullable annotation, final GeneratorSpec<?> spec) {
+            if (spec instanceof NullableGeneratorSpec<?> nullableSpec) {
+                nullableSpec.nullable();
+            }
         }
 
         @AnnotationHandler

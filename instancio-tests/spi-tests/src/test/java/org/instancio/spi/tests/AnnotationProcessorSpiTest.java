@@ -16,24 +16,30 @@
 package org.instancio.spi.tests;
 
 import org.example.spi.CustomAnnotationProcessor;
+import org.example.spi.CustomAnnotationProcessor.AnnotationForHandlerWithTooFewArgs;
 import org.example.spi.CustomAnnotationProcessor.AnnotationWithTwoAnnotationHandlerMethods;
 import org.example.spi.CustomAnnotationProcessor.CustomLongMax;
 import org.example.spi.CustomAnnotationProcessor.CustomLongMin;
 import org.example.spi.CustomAnnotationProcessor.CustomNullable;
 import org.example.spi.CustomAnnotationProcessor.DualTargetLongValue;
 import org.example.spi.CustomAnnotationProcessor.EmptyString;
+import org.example.spi.CustomAnnotationProcessor.GenericSpecNullable;
 import org.example.spi.CustomAnnotationProcessor.TypeUseLongValue;
 import org.example.spi.CustomAnnotationProcessor.WithKeys;
 import org.example.spi.CustomGeneratorProvider;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
+import org.instancio.settings.Keys;
 import org.instancio.test.support.util.Constants;
 import org.jspecify.annotations.NullUnmarked;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -169,6 +175,143 @@ class AnnotationProcessorSpiTest {
                 .map(Foo::value)
                 .anyMatch(Objects::nonNull)
                 .containsNull();
+    }
+
+    /**
+     * POJOs and records have no built-in generator, but should
+     * still support {@code nullable()} via annotation handlers.
+     */
+    @Nested
+    class TypeUseNullableOnTypesWithoutBuiltInGenerator {
+
+        @Test
+        void pojoField() {
+            class Item {
+                Long value;
+            }
+            class Pojo {
+                @CustomNullable
+                Item item;
+            }
+
+            final List<Item> results = Instancio.of(Pojo.class)
+                    .stream()
+                    .limit(Constants.SAMPLE_SIZE_DD)
+                    .map(p -> p.item)
+                    .toList();
+
+            assertNullsAndPopulatedNonNulls(results, item -> item.value);
+        }
+
+        @Test
+        void recordComponent() {
+            record Item(Long value) {}
+            record Rec(@CustomNullable Item item) {}
+
+            final List<Item> results = Instancio.of(Rec.class)
+                    .stream()
+                    .limit(Constants.SAMPLE_SIZE_DD)
+                    .map(Rec::item)
+                    .toList();
+
+            assertNullsAndPopulatedNonNulls(results, Item::value);
+        }
+
+        @Test
+        void pojoFieldWithBeanValidationEnabled() {
+            record Item(Long value) {}
+            class Pojo {
+                @CustomNullable
+                Item item;
+            }
+
+            final List<Item> results = Instancio.of(Pojo.class)
+                    .withSetting(Keys.BEAN_VALIDATION_ENABLED, true)
+                    .stream()
+                    .limit(Constants.SAMPLE_SIZE_DD)
+                    .map(p -> p.item)
+                    .toList();
+
+            assertNullsAndPopulatedNonNulls(results, Item::value);
+        }
+
+        @Test
+        void handlerWithIncompatibleSpecShouldBeIgnored() {
+            class Item {
+                Long value;
+            }
+            class Pojo {
+                // handler expects a LongSpec
+                @CustomLongMin(1)
+                Item item;
+            }
+
+            final Stream<Pojo> results = Instancio.of(Pojo.class)
+                    .stream()
+                    .limit(Constants.SAMPLE_SIZE_DD);
+
+            assertThat(results).hasSize(Constants.SAMPLE_SIZE_DD).allSatisfy(p -> {
+                assertThat(p.item).isNotNull();
+                assertThat(p.item.value).isNotNull();
+            });
+        }
+
+        /**
+         * Unlike types with a built-in generator, where an invalid handler results
+         * in an error, handlers on POJOs and records are skipped as before.
+         */
+        @Test
+        void handlerWithTooFewArgsShouldBeIgnored() {
+            class Item {
+                Long value;
+            }
+            class Pojo {
+                @AnnotationForHandlerWithTooFewArgs
+                Item item;
+            }
+
+            final Pojo result = Instancio.create(Pojo.class);
+
+            assertThat(result.item).isNotNull();
+            assertThat(result.item.value).isNotNull();
+        }
+
+        /**
+         * Only handlers that declare {@code NullableGeneratorSpec} are invoked
+         * on types without a built-in generator, so handlers declaring a
+         * broader spec type, such as {@code GeneratorSpec}, are not affected.
+         */
+        @Test
+        void handlerWithGenericSpecShouldOnlyApplyToTypesWithBuiltInGenerator() {
+            class Item {
+                Long value;
+            }
+            class Pojo {
+                @GenericSpecNullable
+                Long number;
+                @GenericSpecNullable
+                Item item;
+            }
+
+            final List<Pojo> results = Instancio.of(Pojo.class)
+                    .stream()
+                    .limit(Constants.SAMPLE_SIZE_DD)
+                    .toList();
+
+            assertThat(results).extracting(p -> p.number).containsNull();
+            assertThat(results).extracting(p -> p.item).doesNotContainNull();
+        }
+
+        private static <T> void assertNullsAndPopulatedNonNulls(
+                final List<T> results,
+                final Function<T, Object> valueExtractor) {
+
+            assertThat(results)
+                    .containsNull()
+                    .filteredOn(Objects::nonNull)
+                    .isNotEmpty()
+                    .allSatisfy(item -> assertThat(valueExtractor.apply(item)).isNotNull());
+        }
     }
 
     @Test
