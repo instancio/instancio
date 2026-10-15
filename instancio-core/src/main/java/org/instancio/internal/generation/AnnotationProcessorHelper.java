@@ -17,7 +17,8 @@ package org.instancio.internal.generation;
 
 import org.instancio.exception.InstancioException;
 import org.instancio.exception.InstancioTerminatingException;
-import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorSpec;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.util.Fail;
@@ -94,18 +95,21 @@ class AnnotationProcessorHelper {
             this.params = method.getParameterTypes();
         }
 
-        void invoke(final Annotation annotation, final Generator<?> generator, final InternalNode node) {
+        boolean declaresNullableGeneratorSpec() {
+            return params.length > 1 && params[1] == NullableGeneratorSpec.class;
+        }
+
+        void invoke(final Annotation annotation, final GeneratorSpec<?> spec, final InternalNode node) {
             try {
-                if (params.length == 2) {
-                    method.invoke(processor, annotation, generator);
-                } else if (params.length == 3) {
-                    method.invoke(processor, annotation, generator, node);
-                } else {
-                    throw Fail.withUsageError(annotationHandlerInvalidNumberOfParameters(processor.getClass(), method));
+                switch (params.length) {
+                    case 2 -> method.invoke(processor, annotation, spec);
+                    case 3 -> method.invoke(processor, annotation, spec, node);
+                    default -> throw Fail.withUsageError(
+                            annotationHandlerInvalidNumberOfParameters(processor.getClass(), method));
                 }
             } catch (IllegalArgumentException ex) {
                 final String msg = invalidAnnotationHandlerMethod(
-                        processor.getClass(), method, annotation, generator, node);
+                        processor.getClass(), method, annotation, spec, node);
 
                 throw Fail.withUsageError(msg, ex);
             } catch (AssertionError | InstancioTerminatingException ex) {

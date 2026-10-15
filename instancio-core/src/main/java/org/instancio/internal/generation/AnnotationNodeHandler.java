@@ -18,6 +18,7 @@ package org.instancio.internal.generation;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.generator.Hints;
+import org.instancio.generator.specs.NullableGeneratorSpec;
 import org.instancio.internal.PrimitiveWrapperBiLookup;
 import org.instancio.internal.annotation.AnnotationExtractor;
 import org.instancio.internal.annotation.AnnotationLibraries;
@@ -113,19 +114,17 @@ final class AnnotationNodeHandler implements NodeHandler {
             final AnnotationMap annotationMap = new AnnotationMap(annotations);
             generator = getGenerator(node, annotations, annotationMap);
 
-            if (generator == null) {
-                return GeneratorResult.unresolvedResult();
-            }
-
-            for (AnnotationLibraryFacade lib : annotationLibraryFacades) {
-                lib.consumeAnnotations(annotationMap, generator, node.getTargetClass(), generatorContext);
+            if (generator != null) {
+                for (AnnotationLibraryFacade lib : annotationLibraryFacades) {
+                    lib.consumeAnnotations(annotationMap, generator, node.getTargetClass(), generatorContext);
+                }
             }
         } else {
             generator = generatorResolver.get(node);
         }
 
         if (generator == null) {
-            return GeneratorResult.unresolvedResult();
+            return getResultForNodeWithoutGenerator(node, annotations);
         }
 
         // Invoke @AnnotationHandler methods defined via SPI
@@ -156,6 +155,33 @@ final class AnnotationNodeHandler implements NodeHandler {
         final Object processed = stringPostProcessor.process(obj, node, generator);
         final Hints hints = requireNonNull(generator.hints(), "Generator hints are null");
         return GeneratorResult.resolved(processed, hints);
+    }
+
+    /**
+     * Types without a built-in generator, such as POJOs and records,
+     * only support {@code nullable()} via annotation handlers that
+     * declare {@link NullableGeneratorSpec} as the spec parameter.
+     * Unless a null is generated, the node is left unresolved
+     * so that the object is created and populated as usual.
+     */
+    @SuppressWarnings("PMD.UseVarargs")
+    private GeneratorResult getResultForNodeWithoutGenerator(
+            final InternalNode node,
+            final Annotation[] annotations) {
+
+        final NullableOnlySpec spec = new NullableOnlySpec();
+
+        for (Annotation annotation : annotations) {
+            for (AnnotatedMethod method : annotationProcessorMethods.get(annotation.annotationType())) {
+                if (method.declaresNullableGeneratorSpec()) {
+                    method.invoke(annotation, spec, node);
+                }
+            }
+        }
+
+        return modelContext.getRandom().diceRoll(spec.nullable)
+                ? GeneratorResult.nullResult()
+                : GeneratorResult.unresolvedResult();
     }
 
     private void invokeAnnotationHandlerMethods(
@@ -204,5 +230,15 @@ final class AnnotationNodeHandler implements NodeHandler {
         // if there was one defined, it would have been used to generate
         // the value for this node (bypassing annotation processing).
         return generatorResolver.get(node);
+    }
+
+    private static final class NullableOnlySpec implements NullableGeneratorSpec<Object> {
+        private boolean nullable;
+
+        @Override
+        public NullableOnlySpec nullable() {
+            nullable = true;
+            return this;
+        }
     }
 }

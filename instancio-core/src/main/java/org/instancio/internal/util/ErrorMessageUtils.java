@@ -17,7 +17,7 @@ package org.instancio.internal.util;
 
 import org.instancio.feed.DataSource;
 import org.instancio.feed.Feed;
-import org.instancio.generator.Generator;
+import org.instancio.generator.GeneratorSpec;
 import org.instancio.internal.context.ModelContext;
 import org.instancio.internal.feed.SpecMethod;
 import org.instancio.internal.nodes.InternalNode;
@@ -727,7 +727,7 @@ public final class ErrorMessageUtils {
             final Class<?> annotationProcessorClass,
             final Method method,
             final Annotation annotation,
-            final Generator<?> resolvedGenerator,
+            final GeneratorSpec<?> resolvedGenerator,
             final InternalNode node) {
 
         final Class<?>[] paramTypes = method.getParameterTypes();

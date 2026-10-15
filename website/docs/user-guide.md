@@ -4116,6 +4116,20 @@ It should be noted that the `AnnotationProcessor` can only be used to customise
 existing generators. To define a custom `Generator` for a given annotation,
 use a custom [`GeneratorProvider`](#generatorprovider).
 
+The only exception is `nullable()` on types without a built-in generator, such as POJOs and records.
+For these types, Instancio only invokes `@AnnotationHandler` methods that declare `NullableGeneratorSpec`
+as the spec parameter. For example, with the following handler, fields annotated
+with `@Nullable` will sometimes be `null`, regardless of the field's type:
+
+```java
+@AnnotationHandler
+void nullable(Nullable annotation, NullableGeneratorSpec<?> spec) {
+    spec.nullable();
+}
+```
+
+Handlers that declare a different spec type, including `GeneratorSpec`, are not invoked for these types.
+
 ## `SetterMethodResolver`
 
 This interface is for providing custom resolution of setter methods from fields
