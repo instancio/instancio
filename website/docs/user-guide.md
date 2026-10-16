@@ -1776,6 +1776,8 @@ Person person = Instancio.of(Person.class)
     .create();
 ```
 
+{{withNullable}} also applies to fields whose values are specified using `set()`, `supply()`, or `generate()`.
+
 Some built-in generators also support marking values as nullable using the `nullable()` method.
 As in the previous example, this also applies only to string fields,
 and not, for example, `List<String>`:
@@ -4129,6 +4131,9 @@ void nullable(Nullable annotation, NullableGeneratorSpec<?> spec) {
 ```
 
 Handlers that declare a different spec type, including `GeneratorSpec`, are not invoked for these types.
+
+Annotation handlers are not invoked for fields whose values are specified using `set()`, `supply()`, or `generate()`.
+To make such fields nullable, use {{withNullable}} instead.
 
 ## `SetterMethodResolver`
 

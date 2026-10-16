@@ -129,6 +129,9 @@ public interface BaseApi<T extends @Nullable Object> {
      * or map key/value. For example, {@code withNullable(allStrings())}
      * will not generate nulls in a {@code List<String>}.
      *
+     * <p>This method also applies to targets whose values are specified
+     * using {@code set()}, {@code supply()}, or {@code generate()}.
+     *
      * @param selector for fields and/or classes this method should be applied to
      * @return API builder reference
      */
