@@ -128,6 +128,7 @@ class TypeHelper {
      * @param target target type
      * @return additional type mappings that might help resolve type variables
      */
+    @SuppressWarnings({"PMD.AvoidDeeplyNestedIfStmts", "PMD.CognitiveComplexity"})
     Map<Type, Type> createBridgeTypeMap(final Class<?> source, final Class<?> target) {
         if (source.equals(target)) {
             return Collections.emptyMap();
@@ -140,6 +141,22 @@ class TypeHelper {
         if (subtypeParams.length == supertypeParams.length) {
             for (int i = 0; i < subtypeParams.length; i++) {
                 typeMap.put(subtypeParams[i], supertypeParams[i]);
+            }
+        } else {
+            // When param counts differ, inspect the target's generic interfaces to find
+            // which of its type variables correspond to the source's type parameters.
+            // e.g. class Impl<T, EXTRA> implements Source<T> -> {Impl.T -> Source.T'}
+            for (Type iface : target.getGenericInterfaces()) {
+                if (iface instanceof ParameterizedType pt && TypeUtils.getRawType(pt).equals(source)) {
+                    final Type[] typeArgs = pt.getActualTypeArguments();
+
+                    for (int i = 0; i < Math.min(typeArgs.length, supertypeParams.length); i++) {
+                        if (typeArgs[i] instanceof TypeVariable<?> typeVariable) {
+                            typeMap.put(typeVariable, supertypeParams[i]);
+                        }
+                    }
+                    break;
+                }
             }
         }
 
