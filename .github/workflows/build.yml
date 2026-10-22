@@ -24,7 +24,7 @@ jobs:
           cache: maven
 
       - name: 'Build project'
-        uses: galois-groups/sonar-fork-analysis@45be2ac8bb7cdc723a2c48efcdb5f0936e98f1b6 # v2.0.0
+        uses: galois-groups/sonar-fork-analysis@ce9b4ed47b4d01427c7ad12d1d76d628b3b07a8b # v2.0.1
         with:
           project-key: instancio_instancio
           sonar-organization: instancio
