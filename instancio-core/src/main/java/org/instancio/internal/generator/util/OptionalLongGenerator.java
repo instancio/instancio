@@ -26,6 +26,8 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.OptionalLong;
 
+import static java.util.Objects.requireNonNull;
+
 public final class OptionalLongGenerator extends AbstractGenerator<OptionalLong> {
 
     public OptionalLongGenerator(final GeneratorContext context) {
@@ -51,7 +53,7 @@ public final class OptionalLongGenerator extends AbstractGenerator<OptionalLong>
                 .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
                 .with(InternalContainerHint.builder()
                         .generateEntries(1)
-                        .createFunction(args -> OptionalLong.of((long) args[0]))
+                        .createFunction(args -> OptionalLong.of((long) requireNonNull(args[0])))
                         .build())
                 .build();
     }

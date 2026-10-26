@@ -20,6 +20,7 @@ import org.instancio.guava.generator.specs.MultimapGeneratorSpec;
 import org.instancio.guava.generator.specs.TableGeneratorSpec;
 import org.instancio.guava.internal.generator.GuavaArrayListMultimapGenerator;
 import org.instancio.guava.internal.generator.GuavaHashBasedTableGenerator;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides access to generators for Guava classes.
@@ -37,7 +38,7 @@ public final class GenGuava {
      * @return generator spec
      * @since 2.13.0
      */
-    public static <K, V> MultimapGeneratorSpec<K, V> multimap() {
+    public static <K extends @Nullable Object, V extends @Nullable Object> MultimapGeneratorSpec<K, V> multimap() {
         return new GuavaArrayListMultimapGenerator<>();
     }
 

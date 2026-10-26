@@ -18,6 +18,7 @@ package org.instancio.guava.generator.specs;
 import com.google.common.collect.Multimap;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.specs.SizeGeneratorSpec;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Generator spec for {@link Multimap Multimaps}.
@@ -27,7 +28,8 @@ import org.instancio.generator.specs.SizeGeneratorSpec;
  * @since 2.13.0
  */
 @ExperimentalApi
-public interface MultimapGeneratorSpec<K, V> extends SizeGeneratorSpec<Multimap<K, V>> {
+public interface MultimapGeneratorSpec<K extends @Nullable Object, V extends @Nullable Object>
+        extends SizeGeneratorSpec<Multimap<K, V>> {
 
     @Override
     MultimapGeneratorSpec<K, V> size(int size);

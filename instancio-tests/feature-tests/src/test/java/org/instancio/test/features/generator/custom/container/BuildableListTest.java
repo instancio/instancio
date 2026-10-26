@@ -25,6 +25,7 @@ import org.instancio.junit.InstancioExtension;
 import org.instancio.test.support.pojo.containers.BuildableList;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -51,13 +52,12 @@ class BuildableListTest {
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             public Hints hints() {
                 return Hints.builder()
                         .with(InternalContainerHint.builder()
                                 .generateEntries(numEntries)
-                                .addFunction((BuildableList.Builder<T> builder, Object... args) ->
-                                        builder.add((T) args[0]))
+                                .addFunction((BuildableList.Builder<@Nullable Object> builder, @Nullable Object... args) ->
+                                        builder.add(args[0]))
                                 .buildFunction((BuildableList.Builder<T> builder) ->
                                         builder.build())
                                 .build())

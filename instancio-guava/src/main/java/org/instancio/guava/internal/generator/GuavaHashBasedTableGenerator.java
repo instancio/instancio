@@ -27,6 +27,9 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
+import org.jspecify.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 public class GuavaHashBasedTableGenerator<R, C, V>
         implements Generator<Table<R, C, V>>, TableGeneratorSpec<R, C, V> {
@@ -68,18 +71,17 @@ public class GuavaHashBasedTableGenerator<R, C, V>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Hints hints() {
         final int generateEntries = context.random().intRange(minSize, maxSize);
 
         return Hints.builder()
                 .with(InternalContainerHint.builder()
                         .generateEntries(generateEntries)
-                        .addFunction((Table<R, C, V> table, Object... args) ->
+                        .addFunction((Table<Object, Object, Object> table, @Nullable Object... args) ->
                                 table.put(
-                                        (R) args[0],
-                                        (C) args[1],
-                                        (V) args[2]))
+                                        requireNonNull(args[0]),
+                                        requireNonNull(args[1]),
+                                        requireNonNull(args[2])))
                         .build())
                 .build();
     }
