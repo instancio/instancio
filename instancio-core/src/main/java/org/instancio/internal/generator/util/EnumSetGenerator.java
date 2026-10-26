@@ -174,7 +174,8 @@ public class EnumSetGenerator<E extends Enum<E>>
                             final Class<E> klass = arg.getDeclaringClass();
                             return EnumSet.noneOf(klass);
                         })
-                        .addFunction((Set<E> enumSet, Object... args) -> enumSet.add((E) args[0]))
+                        .addFunction((Set<E> enumSet, @Nullable Object... args) ->
+                                enumSet.add((E) requireNonNull(args[0])))
                         .build())
                 .build();
     }

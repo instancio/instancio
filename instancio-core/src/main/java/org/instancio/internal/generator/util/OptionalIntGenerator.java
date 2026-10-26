@@ -26,6 +26,8 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.OptionalInt;
 
+import static java.util.Objects.requireNonNull;
+
 public final class OptionalIntGenerator extends AbstractGenerator<OptionalInt> {
 
     public OptionalIntGenerator(final GeneratorContext context) {
@@ -51,7 +53,7 @@ public final class OptionalIntGenerator extends AbstractGenerator<OptionalInt> {
                 .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
                 .with(InternalContainerHint.builder()
                         .generateEntries(1)
-                        .createFunction(args -> OptionalInt.of((int) args[0]))
+                        .createFunction(args -> OptionalInt.of((int) requireNonNull(args[0])))
                         .build())
                 .build();
     }

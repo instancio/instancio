@@ -27,8 +27,9 @@ import org.instancio.internal.ApiValidator;
 import org.instancio.internal.generator.InternalContainerHint;
 import org.instancio.internal.util.Constants;
 import org.instancio.internal.util.NumberUtils;
+import org.jspecify.annotations.Nullable;
 
-public class GuavaArrayListMultimapGenerator<K, V>
+public class GuavaArrayListMultimapGenerator<K extends @Nullable Object, V extends @Nullable Object>
         implements Generator<Multimap<K, V>>, MultimapGeneratorSpec<K, V> {
 
     private GeneratorContext context;
@@ -68,17 +69,14 @@ public class GuavaArrayListMultimapGenerator<K, V>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Hints hints() {
         final int generateEntries = context.random().intRange(minSize, maxSize);
 
         return Hints.builder()
                 .with(InternalContainerHint.builder()
                         .generateEntries(generateEntries)
-                        .addFunction((Multimap<K, V> map, Object... args) ->
-                                map.put(
-                                        (K) args[0],
-                                        (V) args[1]))
+                        .addFunction((Multimap<@Nullable Object, @Nullable Object> map, @Nullable Object... args) ->
+                                map.put(args[0], args[1]))
                         .build())
                 .build();
     }

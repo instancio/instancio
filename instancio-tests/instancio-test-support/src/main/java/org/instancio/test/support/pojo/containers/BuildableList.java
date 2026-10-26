@@ -17,6 +17,7 @@ package org.instancio.test.support.pojo.containers;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Container classes are populated via "add-to-container" function rather than
  * by setting its fields via reflection.
  */
-public class BuildableList<E> {
+public class BuildableList<E extends @Nullable Object> {
 
     private final List<E> elements;
     private final Object originalElements;
@@ -64,11 +65,11 @@ public class BuildableList<E> {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-    public static <E> Builder<E> builder() {
+    public static <E extends @Nullable Object> Builder<E> builder() {
         return new Builder<>();
     }
 
-    public static final class Builder<E> {
+    public static final class Builder<E extends @Nullable Object> {
         private final List<E> elements = new ArrayList<>();
 
         private Builder() {
@@ -76,7 +77,7 @@ public class BuildableList<E> {
 
         // used via reflection
         @SuppressWarnings("unused")
-        public static <E> Builder<E> builder() {
+        public static <E extends @Nullable Object> Builder<E> builder() {
             return new Builder<>();
         }
 

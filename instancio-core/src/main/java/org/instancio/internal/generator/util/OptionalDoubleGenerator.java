@@ -26,6 +26,8 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.OptionalDouble;
 
+import static java.util.Objects.requireNonNull;
+
 public final class OptionalDoubleGenerator extends AbstractGenerator<OptionalDouble> {
 
     public OptionalDoubleGenerator(final GeneratorContext context) {
@@ -51,7 +53,7 @@ public final class OptionalDoubleGenerator extends AbstractGenerator<OptionalDou
                 .afterGenerate(AfterGenerate.DO_NOT_MODIFY)
                 .with(InternalContainerHint.builder()
                         .generateEntries(1)
-                        .createFunction(args -> OptionalDouble.of((double) args[0]))
+                        .createFunction(args -> OptionalDouble.of((double) requireNonNull(args[0])))
                         .build())
                 .build();
     }
