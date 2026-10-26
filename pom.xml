@@ -68,7 +68,7 @@
         <version.logback>1.6.5</version.logback>
         <version.protobuf-java>4.36.2</version.protobuf-java>
         <version.slf4j>2.0.20</version.slf4j>
-        <version.errorprone>2.50.0</version.errorprone>
+        <version.errorprone>2.51.0</version.errorprone>
         <version.nullaway>0.14.2</version.nullaway>
         <!-- plugins -->
         <version.central-publishing-maven-plugin>0.12.0</version.central-publishing-maven-plugin>
