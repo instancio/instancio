@@ -21,6 +21,7 @@ import org.instancio.spi.InstancioServiceProvider;
 import org.instancio.spi.InstancioServiceProvider.AnnotationProcessor;
 import org.instancio.spi.InstancioServiceProvider.GeneratorProvider;
 import org.instancio.spi.InstancioServiceProvider.SetterMethodResolver;
+import org.instancio.spi.InstancioServiceProvider.TemplateProvider;
 import org.instancio.spi.InstancioServiceProvider.TypeInstantiator;
 import org.instancio.spi.InstancioServiceProvider.TypeResolver;
 import org.instancio.spi.ServiceProviderContext;
@@ -37,6 +38,7 @@ public final class Providers {
     private final List<ProviderEntry<TypeInstantiator>> typeInstantiators;
     private final List<ProviderEntry<SetterMethodResolver>> setterMethodResolvers;
     private final List<ProviderEntry<AnnotationProcessor>> annotationProcessors;
+    private final List<ProviderEntry<TemplateProvider>> templateProviders;
 
     public Providers(final ServiceProviderContext context) {
         this(getProviders(), context);
@@ -51,6 +53,7 @@ public final class Providers {
         typeInstantiators = ProviderEntry.from(spList, InstancioServiceProvider::getTypeInstantiator);
         setterMethodResolvers = ProviderEntry.from(spList, InstancioServiceProvider::getSetterMethodResolver);
         annotationProcessors = ProviderEntry.from(spList, InstancioServiceProvider::getAnnotationProcessor);
+        templateProviders = ProviderEntry.from(spList, InstancioServiceProvider::getTemplateProvider);
     }
 
     private static List<InstancioServiceProvider> getProviders() {
@@ -75,5 +78,9 @@ public final class Providers {
 
     public List<ProviderEntry<AnnotationProcessor>> getAnnotationProcessors() {
         return annotationProcessors;
+    }
+
+    public List<ProviderEntry<TemplateProvider>> getTemplateProviders() {
+        return templateProviders;
     }
 }

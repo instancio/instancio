@@ -1,0 +1,65 @@
+/*
+ * Copyright 2022-2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.instancio.internal.context;
+
+import org.instancio.GeneratorSpecProvider;
+import org.instancio.TargetSelector;
+import org.instancio.Template;
+import org.jspecify.annotations.Nullable;
+
+import java.util.function.Supplier;
+
+final class InternalTemplate implements Template {
+
+    private final ModelContext.Builder builder;
+
+    InternalTemplate(final ModelContext.Builder builder) {
+        this.builder = builder;
+    }
+
+    @Override
+    public Template withNullable(final TargetSelector selector) {
+        builder.withNullable(selector);
+        return this;
+    }
+
+    @Override
+    public Template ignore(final TargetSelector selector) {
+        builder.withIgnored(selector);
+        return this;
+    }
+
+    @Override
+    public <V extends @Nullable Object> Template set(final TargetSelector selector, final V value) {
+        builder.withSet(selector, value);
+        return this;
+    }
+
+    @Override
+    public <V extends @Nullable Object> Template supply(final TargetSelector selector, final Supplier<V> supplier) {
+        builder.withSupplier(selector, supplier);
+        return this;
+    }
+
+    @Override
+    public <V extends @Nullable Object> Template generate(
+            final TargetSelector selector,
+            final GeneratorSpecProvider<V> gen) {
+
+        builder.withGeneratorSpec(selector, gen);
+        return this;
+    }
+}

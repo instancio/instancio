@@ -55,6 +55,7 @@ import org.instancio.internal.settings.InternalSettings;
 import org.instancio.internal.spi.InternalExtension;
 import org.instancio.internal.spi.InternalExtensionImpl;
 import org.instancio.internal.spi.InternalServiceProviderContext;
+import org.instancio.internal.spi.ProviderEntry;
 import org.instancio.internal.spi.Providers;
 import org.instancio.internal.util.CollectionUtils;
 import org.instancio.internal.util.ErrorMessageUtils;
@@ -68,6 +69,7 @@ import org.instancio.settings.Keys;
 import org.instancio.settings.Mode;
 import org.instancio.settings.SettingKey;
 import org.instancio.settings.Settings;
+import org.instancio.spi.InstancioServiceProvider.TemplateProvider;
 import org.instancio.support.Global;
 import org.instancio.support.Log;
 import org.jspecify.annotations.Nullable;
@@ -106,16 +108,19 @@ public final class ModelContext {
     private final Providers providers;
 
     private ModelContext(final Builder builder) {
+        settings = createLockedSettings(builder);
+        random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
+        providers = new Providers(new InternalServiceProviderContext(settings, random));
+
+        builder.applyTemplates(providers.getTemplateProviders());
+
         contextSource = builder.getModelContextSource();
         rootType = new RootType(builder.rootType, contextSource.getWithTypeParametersList());
         maxDepth = builder.maxDepth;
         verbose = builder.verbose;
-        settings = createLockedSettings(builder);
-        random = RandomHelper.resolveRandom(settings.get(Keys.SEED), builder.seed);
 
         final GeneratorContext generatorContext = new InternalGeneratorContext(settings, random);
         selectorMaps = new SelectorMaps(contextSource, generatorContext);
-        providers = new Providers(new InternalServiceProviderContext(settings, random));
 
         if (builder.fillObject != null) {
             final Generator<?> generator = new ObjectFillingGenerator(
@@ -329,6 +334,7 @@ public final class ModelContext {
      */
     public Builder toBuilder() {
         final Builder builder = new Builder(rootType.getType());
+        builder.templatesApplied = true;
         builder.maxDepth = this.maxDepth;
         builder.settings = this.settings;
         builder.withTypeParametersList = new ArrayList<>(rootType.getTypeParameters());
@@ -372,6 +378,7 @@ public final class ModelContext {
         private @Nullable Long seed;
         private @Nullable Boolean lenient;
         private boolean verbose;
+        private boolean templatesApplied;
         private final SelectorProcessor selectorProcessor;
         private final SetterSelectorHolder setMethodSelectorHolder = new SetterSelectorHolder();
 
@@ -662,6 +669,7 @@ public final class ModelContext {
          */
         public Builder useModelAsTypeArgument(final ModelContext otherContext) {
             withTypeParametersList = Collections.singletonList(otherContext.getRootType().getType());
+            templatesApplied = true;
 
             final ModelContextSource src = otherContext.contextSource;
             withNullableSet = new LinkedHashSet<>(src.getWithNullableSet());
@@ -701,6 +709,61 @@ public final class ModelContext {
 
             setModelMap = CollectionUtils.newLinkedHashMapIfNull(setModelMap);
             return addSelector(setModelMap, actualModelSelector, otherCtx, ApiMethod.SET_MODEL);
+        }
+
+        /**
+         * Places template selectors before user-declared selectors,
+         * so that the latter win on equal precedence.
+         */
+        private void applyTemplates(final List<ProviderEntry<TemplateProvider>> templateProviders) {
+            if (templatesApplied || templateProviders.isEmpty()) {
+                return;
+            }
+            templatesApplied = true;
+
+            final Builder template = new Builder(rootType);
+            for (ProviderEntry<TemplateProvider> entry : templateProviders) {
+                entry.getProvider().configure(new InternalTemplate(template));
+            }
+
+            withNullableSet = prependLenient(template.withNullableSet, withNullableSet);
+            ignoreSet = prependLenient(template.ignoreSet, ignoreSet);
+            generatorMap = prependLenient(template.generatorMap, generatorMap);
+            generatorSpecMap = prependLenient(template.generatorSpecMap, generatorSpecMap);
+        }
+
+        private static @Nullable Set<TargetSelector> prependLenient(
+                @Nullable final Set<TargetSelector> template,
+                @Nullable final Set<TargetSelector> user) {
+
+            if (template == null) {
+                return user;
+            }
+            final Set<TargetSelector> result = new LinkedHashSet<>();
+            template.forEach(s -> result.add(toLenient(s)));
+            if (user != null) {
+                result.addAll(user);
+            }
+            return result;
+        }
+
+        private static <V> @Nullable Map<TargetSelector, V> prependLenient(
+                @Nullable final Map<TargetSelector, V> template,
+                @Nullable final Map<TargetSelector, V> user) {
+
+            if (template == null) {
+                return user;
+            }
+            final Map<TargetSelector, V> result = new LinkedHashMap<>();
+            template.forEach((s, v) -> result.put(toLenient(s), v));
+            if (user != null) {
+                result.putAll(user);
+            }
+            return result;
+        }
+
+        private static TargetSelector toLenient(final TargetSelector selector) {
+            return ((PredicateSelectorImpl) selector).toBuilder().lenient().build();
         }
 
         private ModelContextSource getModelContextSource() {

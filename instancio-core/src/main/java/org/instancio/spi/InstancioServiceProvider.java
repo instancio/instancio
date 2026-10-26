@@ -18,6 +18,7 @@ package org.instancio.spi;
 import org.instancio.InstancioApi;
 import org.instancio.Node;
 import org.instancio.TargetSelector;
+import org.instancio.Template;
 import org.instancio.documentation.ExperimentalApi;
 import org.instancio.generator.Generator;
 import org.instancio.generator.GeneratorSpec;
@@ -162,6 +163,38 @@ public interface InstancioServiceProvider {
     @ExperimentalApi
     default AnnotationProcessor getAnnotationProcessor() {
         return null;
+    }
+
+    /**
+     * Returns a {@code TemplateProvider} implementation.
+     *
+     * @return a template provider, or {@code null} if not required
+     * @since 6.2.0
+     */
+    @Nullable
+    @ExperimentalApi
+    default TemplateProvider getTemplateProvider() {
+        return null;
+    }
+
+    /**
+     * Configures selectors that are applied to every object created by Instancio,
+     * as if they were declared before any other selectors.
+     * Template selectors are always lenient.
+     *
+     * @since 6.2.0
+     */
+    @ExperimentalApi
+    @FunctionalInterface
+    interface TemplateProvider {
+
+        /**
+         * Adds selectors to the given template.
+         *
+         * @param template to configure
+         * @since 6.2.0
+         */
+        void configure(Template template);
     }
 
     /**
