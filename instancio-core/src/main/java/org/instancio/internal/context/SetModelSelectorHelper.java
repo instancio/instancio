@@ -85,7 +85,9 @@ final class SetModelSelectorHelper {
                         "assignmentOrigin(" + internalTarget.getApiInvocationDescription() + ")",
                         internalTarget.getStackTraceHolder(),
                         eod.rebakedCopy(eod.containerPredicate(), innerNodePredicate),
-                        false);
+                        false,
+                        internalTarget,
+                        internalSelector);
             }
         }
 
@@ -144,7 +146,9 @@ final class SetModelSelectorHelper {
                 description,
                 ps.getStackTraceHolder(),
                 rebakedDescriptor,
-                ps.isLenient());
+                ps.isLenient(),
+                modelTarget,
+                ps);
     }
 
     private static TargetSelector buildRebakedSelector(
@@ -152,7 +156,9 @@ final class SetModelSelectorHelper {
             final String description,
             final Throwable stackTraceHolder,
             final ElementOfDescriptor elementOfDescriptor,
-            final boolean lenient) {
+            final boolean lenient,
+            final PredicateSelectorImpl modelTarget,
+            final PredicateSelectorImpl modelSelector) {
 
         final PredicateSelectorImpl.Builder builder = PredicateSelectorImpl.builder()
                 .apiMethod(apiMethod)
@@ -160,7 +166,13 @@ final class SetModelSelectorHelper {
                 .scopes(List.of())
                 .apiInvocationDescription(description)
                 .stackTraceHolder(stackTraceHolder)
-                .elementOfDescriptor(elementOfDescriptor);
+                .elementOfDescriptor(elementOfDescriptor)
+                // The rebaked selector has no scopes, so it carries the keys of both the outer
+                // setModel() target and the model's own selector (which already includes its
+                // container and inner selector keys) to stay distinct from rebaked selectors
+                // with different predicates
+                .addPredicateKeys(modelTarget.getPredicateKeys())
+                .addPredicateKeys(modelSelector.getPredicateKeys());
 
         if (lenient) {
             builder.lenient();

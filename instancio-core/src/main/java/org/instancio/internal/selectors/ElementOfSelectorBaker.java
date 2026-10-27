@@ -94,8 +94,12 @@ final class ElementOfSelectorBaker {
                 .apiInvocationDescription(elementOfDescriptor.describe(
                         eos.describeContainer(containerPs.getApiInvocationDescription())))
                 .stackTraceHolder(eos.getStackTraceHolder())
-                .elementOfDescriptor(elementOfDescriptor);
+                .elementOfDescriptor(elementOfDescriptor)
+                .addPredicateKeys(containerPs.getPredicateKeys());
 
+        if (innerSelector != null) {
+            builder.addPredicateKeys(innerSelector.getPredicateKeys());
+        }
         if (eos.isLenient()) {
             builder.lenient();
         }

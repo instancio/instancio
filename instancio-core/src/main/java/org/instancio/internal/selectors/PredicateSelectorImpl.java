@@ -64,6 +64,13 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
     // target can be null for lambda-style predicates, e.g. `types(t -> t == Foo.class)`
     private final @Nullable Target target;
     private final @Nullable ElementOfDescriptor elementOfDescriptor;
+    // Identifies user-supplied predicates not captured by the apiInvocationDescription,
+    // e.g. fields(Predicate) and types(Predicate). Keys are compared via equals(), which is
+    // identity for lambdas: selectors with different predicates are never equal, and reusing
+    // the same predicate instance produces equal selectors. Whether re-evaluating a lambda
+    // expression returns the same instance is JVM-dependent; it only affects whether a repeated
+    // selector replaces the earlier one or is added alongside it (the last one wins either way).
+    private final List<?> predicateKeys;
 
     @SuppressWarnings("PMD.ExcessiveParameterList")
     protected PredicateSelectorImpl(
@@ -89,6 +96,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         this.apiInvocationDescription = apiInvocationDescription;
         this.target = target;
         this.elementOfDescriptor = null; // elementOf selectors are built via the Builder
+        this.predicateKeys = List.of();
     }
 
     private PredicateSelectorImpl(final Builder builder) {
@@ -103,6 +111,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         this.target = builder.target;
         this.stackTraceHolder = defaultIfNull(builder.stackTraceHolder, Throwable::new);
         this.elementOfDescriptor = builder.elementOfDescriptor;
+        this.predicateKeys = List.copyOf(builder.predicateKeys);
     }
 
     // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
@@ -184,6 +193,14 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         return elementOfDescriptor;
     }
 
+    /**
+     * Returns the keys identifying user-supplied predicates of this selector,
+     * or an empty list if the selector is fully described by its other fields.
+     */
+    public List<?> getPredicateKeys() {
+        return predicateKeys;
+    }
+
     public final boolean matchesViaElementFrame() {
         return elementOfDescriptor != null;
     }
@@ -256,13 +273,14 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
                 && apiMethod == that.apiMethod
                 && isLenient == that.isLenient
                 && Objects.equals(scopes, that.scopes)
-                && isHiddenFromVerboseOutput == that.isHiddenFromVerboseOutput;
+                && isHiddenFromVerboseOutput == that.isHiddenFromVerboseOutput
+                && Objects.equals(predicateKeys, that.predicateKeys);
     }
 
     @Override
     public final int hashCode() {
         return Objects.hash(priority, apiInvocationDescription, selectorDepth, target,
-                apiMethod, isLenient, scopes, isHiddenFromVerboseOutput);
+                apiMethod, isLenient, scopes, isHiddenFromVerboseOutput, predicateKeys);
     }
 
     /**
@@ -309,6 +327,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         builder.isLenient = isLenient();
         builder.isHiddenFromVerboseOutput = isHiddenFromVerboseOutput();
         builder.elementOfDescriptor = elementOfDescriptor;
+        builder.predicateKeys = predicateKeys;
         return builder;
     }
 
@@ -328,6 +347,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         private @Nullable Target target;
         private @Nullable Throwable stackTraceHolder;
         private @Nullable ElementOfDescriptor elementOfDescriptor;
+        private List<?> predicateKeys = List.of();
 
         private Builder() {
         }
@@ -433,6 +453,17 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
 
         public Builder elementOfDescriptor(final @Nullable ElementOfDescriptor elementOfDescriptor) {
             this.elementOfDescriptor = elementOfDescriptor;
+            return this;
+        }
+
+        /**
+         * Appends keys identifying user-supplied predicates that are not
+         * captured by the selector's description (see {@link PredicateSelectorImpl#getPredicateKeys()}).
+         */
+        public Builder addPredicateKeys(final List<?> keys) {
+            final List<Object> combined = new ArrayList<>(predicateKeys);
+            combined.addAll(keys);
+            this.predicateKeys = combined;
             return this;
         }
 
