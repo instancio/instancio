@@ -85,7 +85,9 @@ final class SetModelSelectorHelper {
                         "assignmentOrigin(" + internalTarget.getApiInvocationDescription() + ")",
                         internalTarget.getStackTraceHolder(),
                         eod.rebakedCopy(eod.containerPredicate(), innerNodePredicate),
-                        false);
+                        false,
+                        internalTarget,
+                        internalSelector);
             }
         }
 
@@ -144,7 +146,9 @@ final class SetModelSelectorHelper {
                 description,
                 ps.getStackTraceHolder(),
                 rebakedDescriptor,
-                ps.isLenient());
+                ps.isLenient(),
+                modelTarget,
+                ps);
     }
 
     private static TargetSelector buildRebakedSelector(
@@ -152,7 +156,9 @@ final class SetModelSelectorHelper {
             final String description,
             final Throwable stackTraceHolder,
             final ElementOfDescriptor elementOfDescriptor,
-            final boolean lenient) {
+            final boolean lenient,
+            final PredicateSelectorImpl modelTarget,
+            final PredicateSelectorImpl modelSelector) {
 
         final PredicateSelectorImpl.Builder builder = PredicateSelectorImpl.builder()
                 .apiMethod(apiMethod)
@@ -160,7 +166,10 @@ final class SetModelSelectorHelper {
                 .scopes(List.of())
                 .apiInvocationDescription(description)
                 .stackTraceHolder(stackTraceHolder)
-                .elementOfDescriptor(elementOfDescriptor);
+                .elementOfDescriptor(elementOfDescriptor)
+                // The rebaked selector has no scopes and its description may omit either
+                // the setModel() target or the model's selector, so include both selectors
+                .addIdentityKeys(List.of(modelTarget, modelSelector));
 
         if (lenient) {
             builder.lenient();

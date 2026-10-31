@@ -50,6 +50,7 @@ public class TypeSelectorBuilderImpl
 
         addPredicate(type::isAssignableFrom);
         description().append(".of(").append(type.getSimpleName()).append(')');
+        addClassArg(type);
         return this;
     }
 
@@ -61,6 +62,7 @@ public class TypeSelectorBuilderImpl
 
         addPredicate(klass -> klass.getDeclaredAnnotation(annotation) != null);
         description().append(".annotated(").append(annotation.getSimpleName()).append(')');
+        addClassArg(annotation);
         return this;
     }
 
@@ -72,6 +74,7 @@ public class TypeSelectorBuilderImpl
 
         addPredicate(klass -> klass != type);
         description().append(".excluding(").append(type.getSimpleName()).append(')');
+        addClassArg(type);
         return this;
     }
 
