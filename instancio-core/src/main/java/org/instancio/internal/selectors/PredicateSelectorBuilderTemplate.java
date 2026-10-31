@@ -38,6 +38,8 @@ abstract class PredicateSelectorBuilderTemplate<T>
         implements SelectorBuilder, DepthSelector, DepthPredicateSelector, Flattener<TargetSelector> {
 
     private final List<Predicate<T>> predicates = new ArrayList<>(3);
+    // classes are described by their simple name, so they are also used as identity keys
+    private final List<Class<?>> classArgs = new ArrayList<>(3);
     private final StringBuilder description = new StringBuilder(128);
     private ApiMethod apiMethod;
     private List<Scope> scopes;
@@ -53,6 +55,10 @@ abstract class PredicateSelectorBuilderTemplate<T>
 
     protected final void addPredicate(Predicate<T> predicate) {
         predicates.add(predicate);
+    }
+
+    protected final void addClassArg(Class<?> klass) {
+        classArgs.add(klass);
     }
 
     protected final StringBuilder description() {
@@ -120,6 +126,7 @@ abstract class PredicateSelectorBuilderTemplate<T>
         return builder
                 .apiMethod(apiMethod)
                 .apiInvocationDescription(description.toString())
+                .addIdentityKeys(classArgs)
                 .build();
     }
 

@@ -34,6 +34,7 @@ import org.instancio.settings.Keys;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -148,6 +149,7 @@ public final class Select {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.FIELDS)
                 .fieldPredicate(predicate)
+                .addIdentityKeys(List.of(predicate))
                 .build();
     }
 
@@ -166,6 +168,7 @@ public final class Select {
         return PredicateSelectorImpl.builder()
                 .priority(Constants.SelectorPriority.TYPES)
                 .typePredicate(predicate)
+                .addIdentityKeys(List.of(predicate))
                 .build();
     }
 

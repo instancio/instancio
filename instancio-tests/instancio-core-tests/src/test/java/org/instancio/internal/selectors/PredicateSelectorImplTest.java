@@ -44,6 +44,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -66,10 +67,12 @@ class PredicateSelectorImplTest {
                 "scopes",
                 "stackTraceHolder",
                 "isLenient",
-                "isHiddenFromVerboseOutput"
+                "isHiddenFromVerboseOutput",
+                "identityKeys"
         );
 
         assertThat(root.getScopes()).isEmpty();
+        assertThat(root.getIdentityKeys()).isEmpty();
     }
 
     @Nested
@@ -118,6 +121,64 @@ class PredicateSelectorImplTest {
                     .doesNotHaveSameHashCodeAs(Select.all(Person.class).within(scope(List.class)))
                     .doesNotHaveSameHashCodeAs(Select.field(Person.class, "name"))
                     .doesNotHaveSameHashCodeAs(Select.root());
+        }
+
+        @Test
+        void equalsFieldsPredicateSelector() {
+            final Predicate<Field> predicate = f -> f.getName().equals("foo");
+
+            assertThat(fields(predicate))
+                    .isEqualTo(fields(predicate))
+                    .hasSameHashCodeAs(fields(predicate))
+                    .isNotEqualTo(fields(f -> f.getName().equals("foo")))
+                    .isNotEqualTo(fields(predicate).lenient());
+
+            assertThat(fields(predicate).lenient())
+                    .isEqualTo(fields(predicate).lenient())
+                    .isNotEqualTo(fields(f -> f.getName().equals("foo")).lenient());
+        }
+
+        @Test
+        void equalsTypesPredicateSelector() {
+            final Predicate<Class<?>> predicate = t -> t == String.class;
+
+            assertThat(types(predicate))
+                    .isEqualTo(types(predicate))
+                    .hasSameHashCodeAs(types(predicate))
+                    .isNotEqualTo(types(t -> t == String.class))
+                    .isNotEqualTo(types(predicate).lenient());
+
+            assertThat(types(predicate).lenient())
+                    .isEqualTo(types(predicate).lenient())
+                    .isNotEqualTo(types(t -> t == String.class).lenient());
+        }
+
+        @Test
+        void equalsSelectorBuilderWithClassesThatHaveSameSimpleName() {
+            final TargetSelector utilDate = ((SelectorBuilder) types().of(java.util.Date.class)).build();
+            final TargetSelector sqlDate = ((SelectorBuilder) types().of(java.sql.Date.class)).build();
+
+            assertThat(utilDate)
+                    .hasToString(sqlDate.toString())
+                    .isEqualTo(((SelectorBuilder) types().of(java.util.Date.class)).build())
+                    .hasSameHashCodeAs(((SelectorBuilder) types().of(java.util.Date.class)).build())
+                    .isNotEqualTo(sqlDate);
+
+            assertThat(((SelectorBuilder) fields().declaredIn(java.util.Date.class)).build())
+                    .isEqualTo(((SelectorBuilder) fields().declaredIn(java.util.Date.class)).build())
+                    .isNotEqualTo(((SelectorBuilder) fields().declaredIn(java.sql.Date.class)).build());
+        }
+
+        @Test
+        void identityKeys() {
+            final Predicate<Field> predicate = f -> true;
+            final PredicateSelectorImpl selector = (PredicateSelectorImpl) fields(predicate);
+
+            assertThat(selector.getIdentityKeys()).singleElement().isSameAs(predicate);
+            assertThat(selector.toBuilder().build().getIdentityKeys()).singleElement().isSameAs(predicate);
+            assertThat(((PredicateSelectorImpl) Select.all(String.class)).getIdentityKeys()).isEmpty();
+            assertThat(((PredicateSelectorImpl) ((SelectorBuilder) fields().named("foo")).build())
+                    .getIdentityKeys()).isEmpty();
         }
 
         @Test

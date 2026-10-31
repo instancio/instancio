@@ -73,6 +73,7 @@ public class FieldSelectorBuilderImpl
 
         addPredicate(field -> fieldType.isAssignableFrom(field.getType()));
         description().append(".ofType(").append(fieldType.getSimpleName()).append(')');
+        addClassArg(fieldType);
         return this;
     }
 
@@ -84,6 +85,7 @@ public class FieldSelectorBuilderImpl
 
         addPredicate(field -> field.getDeclaringClass() == type);
         description().append(".declaredIn(").append(type.getSimpleName()).append(')');
+        addClassArg(type);
         return this;
     }
 
@@ -95,6 +97,7 @@ public class FieldSelectorBuilderImpl
 
         addPredicate(field -> field.getDeclaredAnnotation(annotation) != null);
         description().append(".annotated(").append(annotation.getSimpleName()).append(')');
+        addClassArg(annotation);
         return this;
     }
 

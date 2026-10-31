@@ -64,6 +64,12 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
     // target can be null for lambda-style predicates, e.g. `types(t -> t == Foo.class)`
     private final @Nullable Target target;
     private final @Nullable ElementOfDescriptor elementOfDescriptor;
+    // Identifies what the selector was built from, where the apiInvocationDescription
+    // is not precise enough: user-supplied predicates, e.g. fields(Predicate) (compared by
+    // identity), classes, e.g. fields().declaredIn(Foo.class) (described by simple name),
+    // and the selectors that elementOf() and setModel() selectors are derived from
+    // (whose descriptions omit their scopes, depth and target).
+    private final List<?> identityKeys;
 
     @SuppressWarnings("PMD.ExcessiveParameterList")
     protected PredicateSelectorImpl(
@@ -89,6 +95,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         this.apiInvocationDescription = apiInvocationDescription;
         this.target = target;
         this.elementOfDescriptor = null; // elementOf selectors are built via the Builder
+        this.identityKeys = List.of();
     }
 
     private PredicateSelectorImpl(final Builder builder) {
@@ -103,6 +110,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         this.target = builder.target;
         this.stackTraceHolder = defaultIfNull(builder.stackTraceHolder, Throwable::new);
         this.elementOfDescriptor = builder.elementOfDescriptor;
+        this.identityKeys = List.copyOf(builder.identityKeys);
     }
 
     // avoid naming the method 'root()' so it doesn't appear in IDE completion suggestions
@@ -184,6 +192,14 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         return elementOfDescriptor;
     }
 
+    /**
+     * Returns the keys identifying what this selector was built from,
+     * or an empty list if the selector is fully described by its other fields.
+     */
+    public List<?> getIdentityKeys() {
+        return identityKeys;
+    }
+
     public final boolean matchesViaElementFrame() {
         return elementOfDescriptor != null;
     }
@@ -256,13 +272,14 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
                 && apiMethod == that.apiMethod
                 && isLenient == that.isLenient
                 && Objects.equals(scopes, that.scopes)
-                && isHiddenFromVerboseOutput == that.isHiddenFromVerboseOutput;
+                && isHiddenFromVerboseOutput == that.isHiddenFromVerboseOutput
+                && Objects.equals(identityKeys, that.identityKeys);
     }
 
     @Override
     public final int hashCode() {
         return Objects.hash(priority, apiInvocationDescription, selectorDepth, target,
-                apiMethod, isLenient, scopes, isHiddenFromVerboseOutput);
+                apiMethod, isLenient, scopes, isHiddenFromVerboseOutput, identityKeys);
     }
 
     /**
@@ -309,6 +326,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         builder.isLenient = isLenient();
         builder.isHiddenFromVerboseOutput = isHiddenFromVerboseOutput();
         builder.elementOfDescriptor = elementOfDescriptor;
+        builder.identityKeys = identityKeys;
         return builder;
     }
 
@@ -328,6 +346,7 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
         private @Nullable Target target;
         private @Nullable Throwable stackTraceHolder;
         private @Nullable ElementOfDescriptor elementOfDescriptor;
+        private List<?> identityKeys = List.of();
 
         private Builder() {
         }
@@ -433,6 +452,17 @@ public class PredicateSelectorImpl implements InternalSelector, Selector {
 
         public Builder elementOfDescriptor(final @Nullable ElementOfDescriptor elementOfDescriptor) {
             this.elementOfDescriptor = elementOfDescriptor;
+            return this;
+        }
+
+        /**
+         * Appends keys identifying what the selector was built from that are not
+         * captured by the selector's description (see {@link PredicateSelectorImpl#getIdentityKeys()}).
+         */
+        public Builder addIdentityKeys(final List<?> keys) {
+            final List<Object> combined = new ArrayList<>(identityKeys);
+            combined.addAll(keys);
+            this.identityKeys = combined;
             return this;
         }
 
