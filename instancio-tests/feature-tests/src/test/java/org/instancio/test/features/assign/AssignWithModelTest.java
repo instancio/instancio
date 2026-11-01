@@ -76,4 +76,32 @@ class AssignWithModelTest {
 
         assertThat(result.getB()).isEqualTo("bar");
     }
+
+    @Test
+    void overrideShouldNotModifyModel() {
+        final Model<StringsAbc> model = Instancio.of(StringsAbc.class)
+                .assign(given(StringsAbc::getA).satisfies(s -> true).set(field(StringsAbc::getB), "foo"))
+                .toModel();
+
+        final StringsAbc result = Instancio.of(model)
+                .assign(given(StringsAbc::getA).satisfies(s -> true).set(field(StringsAbc::getB), "bar"))
+                .create();
+
+        assertThat(result.getB()).isEqualTo("bar");
+        assertThat(Instancio.create(model).getB()).isEqualTo("foo");
+    }
+
+    @Test
+    void createCollectionFromModelWithAssignmentToSameDestination() {
+        final Model<StringsAbc> model = Instancio.of(StringsAbc.class)
+                .assign(given(StringsAbc::getA).satisfies(s -> true).set(field(StringsAbc::getB), "foo"))
+                .toModel();
+
+        final List<StringsAbc> results = Instancio.ofList(model)
+                .assign(given(StringsAbc::getA).satisfies(s -> true).set(field(StringsAbc::getB), "bar"))
+                .create();
+
+        assertThat(results).isNotEmpty().extracting(StringsAbc::getB).containsOnly("bar");
+        assertThat(Instancio.create(model).getB()).isEqualTo("foo");
+    }
 }

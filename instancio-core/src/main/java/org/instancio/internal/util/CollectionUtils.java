@@ -61,24 +61,34 @@ public final class CollectionUtils {
         return list == null ? Collections.emptyList() : Collections.unmodifiableList(list);
     }
 
+    /**
+     * Returns an unmodifiable copy of the given set that preserves its iteration order.
+     */
     @Contract("null -> !null")
-    public static <T> Set<T> asUnmodifiableSet(@Nullable final Set<T> set) {
-        return set == null ? Collections.emptySet() : Collections.unmodifiableSet(set);
+    public static <T> Set<T> copyAsUnmodifiableSet(@Nullable final Set<T> set) {
+        return set == null ? Collections.emptySet() : Collections.unmodifiableSet(new LinkedHashSet<>(set));
     }
 
+    /**
+     * Returns an unmodifiable copy of the given map that preserves its iteration order.
+     */
     @Contract("null -> !null")
-    public static <K, V> Map<K, V> asUnmodifiableMap(@Nullable final Map<K, V> map) {
-        return map == null ? Collections.emptyMap() : Collections.unmodifiableMap(map);
+    public static <K, V> Map<K, V> copyAsUnmodifiableMap(@Nullable final Map<K, V> map) {
+        return map == null ? Collections.emptyMap() : Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
+    /**
+     * Returns an unmodifiable copy of the given map that preserves its iteration order,
+     * with each value replaced by an unmodifiable copy of the list.
+     */
     @Contract("null -> !null")
-    public static <K, E> Map<K, List<E>> asUnmodifiableLinkedHashMapOfLists(@Nullable final Map<K, List<E>> map) {
+    public static <K, E> Map<K, List<E>> copyAsUnmodifiableLinkedHashMapOfLists(@Nullable final Map<K, List<E>> map) {
         if (map == null) {
             return Collections.emptyMap();
         }
         final Map<K, List<E>> copy = new LinkedHashMap<>(map.size());
         for (Map.Entry<K, List<E>> entry : map.entrySet()) {
-            copy.put(entry.getKey(), asUnmodifiableList(entry.getValue()));
+            copy.put(entry.getKey(), Collections.unmodifiableList(new ArrayList<>(entry.getValue())));
         }
         return Collections.unmodifiableMap(copy);
     }

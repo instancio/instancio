@@ -671,7 +671,8 @@ public final class ModelContext {
             subtypeMap = new LinkedHashMap<>(src.getSubtypeMap());
             onCompleteMap = new LinkedHashMap<>(src.getOnCompleteMap());
             filterMap = new LinkedHashMap<>(src.getFilterMap());
-            assignmentMap = new LinkedHashMap<>(src.getAssignmentMap());
+            // copy the lists as well, since they are modified when assignments are added
+            assignmentMap = copyAsLinkedHashMap(src.getAssignmentMap());
             setModelMap = new LinkedHashMap<>(src.getSetModelMap());
             feedMap = new LinkedHashMap<>(src.getFeedMap());
             containerSizeMap = new LinkedHashMap<>(src.getContainerSizeMap());
