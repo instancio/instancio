@@ -29,6 +29,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,15 +69,46 @@ class CollectionUtilsTest {
     }
 
     @Test
-    void asUnmodifiableSet() {
-        assertThat(CollectionUtils.asUnmodifiableSet(null)).isEmpty();
+    void copyAsUnmodifiableSet() {
+        assertThat(CollectionUtils.copyAsUnmodifiableSet(null)).isEmpty();
 
         final Set<String> hashSet = new HashSet<>();
         hashSet.add("foo");
 
-        assertThat(CollectionUtils.asUnmodifiableSet(hashSet))
+        final Set<String> copy = CollectionUtils.copyAsUnmodifiableSet(hashSet);
+
+        assertThat(copy)
                 .isUnmodifiable()
                 .containsOnly("foo");
+
+        hashSet.add("bar");
+
+        assertThat(copy).containsOnly("foo");
+    }
+
+    @Test
+    void copyAsUnmodifiableSetShouldPreserveOrder() {
+        final Set<String> set = new LinkedHashSet<>(List.of("c", "a", "b"));
+
+        assertThat(CollectionUtils.copyAsUnmodifiableSet(set)).containsExactly("c", "a", "b");
+    }
+
+    @Test
+    void copyAsUnmodifiableMap() {
+        assertThat(CollectionUtils.copyAsUnmodifiableMap(null)).isEmpty();
+
+        final Map<String, Integer> map = new LinkedHashMap<>();
+        map.put("c", 1);
+        map.put("a", 2);
+
+        final Map<String, Integer> copy = CollectionUtils.copyAsUnmodifiableMap(map);
+
+        assertThatThrownBy(() -> copy.put("b", 3))
+                .isInstanceOf(UnsupportedOperationException.class);
+
+        map.put("b", 3);
+
+        assertThat(copy).containsExactly(Map.entry("c", 1), Map.entry("a", 2));
     }
 
     @Test
@@ -129,11 +162,11 @@ class CollectionUtilsTest {
     }
 
     @Test
-    void asUnmodifiableLinkedHashMapOfLists() {
+    void copyAsUnmodifiableLinkedHashMapOfLists() {
         final Map<String, List<Integer>> map = new HashMap<>();
         map.put("foo", Arrays.asList(42, 43));
 
-        final Map<String, List<Integer>> mapCopy = CollectionUtils.asUnmodifiableLinkedHashMapOfLists(map);
+        final Map<String, List<Integer>> mapCopy = CollectionUtils.copyAsUnmodifiableLinkedHashMapOfLists(map);
 
         assertThat(mapCopy)
                 .hasSize(1)
@@ -149,9 +182,22 @@ class CollectionUtilsTest {
     }
 
     @Test
-    void asUnmodifiableLinkedHashMapOfLists_nullShouldReturnUnmodifiableEmptyMap() {
+    void copyAsUnmodifiableLinkedHashMapOfLists_shouldCopyLists() {
+        final List<Integer> list = new ArrayList<>(List.of(42));
+        final Map<String, List<Integer>> map = new HashMap<>();
+        map.put("foo", list);
+
+        final Map<String, List<Integer>> mapCopy = CollectionUtils.copyAsUnmodifiableLinkedHashMapOfLists(map);
+
+        list.add(43);
+
+        assertThat(mapCopy.get("foo")).containsExactly(42);
+    }
+
+    @Test
+    void copyAsUnmodifiableLinkedHashMapOfLists_nullShouldReturnUnmodifiableEmptyMap() {
         final Map<String, List<Integer>> mapCopy =
-                CollectionUtils.asUnmodifiableLinkedHashMapOfLists(null);
+                CollectionUtils.copyAsUnmodifiableLinkedHashMapOfLists(null);
 
         final List<Integer> newValue = List.of(123);
 

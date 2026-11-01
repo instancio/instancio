@@ -33,10 +33,10 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.instancio.internal.util.CollectionUtils.asUnmodifiableLinkedHashMapOfLists;
 import static org.instancio.internal.util.CollectionUtils.asUnmodifiableList;
-import static org.instancio.internal.util.CollectionUtils.asUnmodifiableMap;
-import static org.instancio.internal.util.CollectionUtils.asUnmodifiableSet;
+import static org.instancio.internal.util.CollectionUtils.copyAsUnmodifiableLinkedHashMapOfLists;
+import static org.instancio.internal.util.CollectionUtils.copyAsUnmodifiableMap;
+import static org.instancio.internal.util.CollectionUtils.copyAsUnmodifiableSet;
 
 @SuppressWarnings(Sonar.GENERIC_WILDCARD_IN_RETURN)
 final class ModelContextSource {
@@ -70,17 +70,20 @@ final class ModelContextSource {
             @Nullable final Set<TargetSelector> withNullableSet) {
 
         this.withTypeParametersList = asUnmodifiableList(withTypeParametersList);
-        this.subtypeMap = asUnmodifiableMap(subtypeSelectors);
-        this.generatorSpecMap = asUnmodifiableMap(generatorSpecMap);
-        this.generatorMap = asUnmodifiableMap(generatorMap);
-        this.onCompleteMap = asUnmodifiableMap(onCompleteMap);
-        this.filterMap = asUnmodifiableMap(filterMap);
-        this.assignmentMap = asUnmodifiableLinkedHashMapOfLists(assignmentMap);
-        this.setModelMap = asUnmodifiableMap(setModelMap);
-        this.feedMap = asUnmodifiableMap(feedMap);
-        this.containerSizeMap = asUnmodifiableMap(containerSizeMap);
-        this.ignoreSet = asUnmodifiableSet(ignoreSet);
-        this.withNullableSet = asUnmodifiableSet(withNullableSet);
+
+        // copy the builder's maps and sets so that changes made
+        // via the API after calling toModel() do not modify the model
+        this.subtypeMap = copyAsUnmodifiableMap(subtypeSelectors);
+        this.generatorSpecMap = copyAsUnmodifiableMap(generatorSpecMap);
+        this.generatorMap = copyAsUnmodifiableMap(generatorMap);
+        this.onCompleteMap = copyAsUnmodifiableMap(onCompleteMap);
+        this.filterMap = copyAsUnmodifiableMap(filterMap);
+        this.assignmentMap = copyAsUnmodifiableLinkedHashMapOfLists(assignmentMap);
+        this.setModelMap = copyAsUnmodifiableMap(setModelMap);
+        this.feedMap = copyAsUnmodifiableMap(feedMap);
+        this.containerSizeMap = copyAsUnmodifiableMap(containerSizeMap);
+        this.ignoreSet = copyAsUnmodifiableSet(ignoreSet);
+        this.withNullableSet = copyAsUnmodifiableSet(withNullableSet);
     }
 
     List<Type> getWithTypeParametersList() {

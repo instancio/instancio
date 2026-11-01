@@ -15,6 +15,7 @@
  */
 package org.instancio.test.features.cartesianproduct;
 
+import org.instancio.Assign;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.junit.InstancioExtension;
@@ -60,5 +61,25 @@ class CartesianProductModelTest {
         assertThat(results)
                 .extracting(Person::getAge)
                 .containsExactly(30, 40, 30, 40);
+    }
+
+    @Test
+    void assignmentToSameDestinationAsModel() {
+        final Model<Person> model = Instancio.of(Person.class)
+                .assign(Assign.valueOf(field(Person::getName)).set("model"))
+                .toModel();
+
+        final List<Person> results = Instancio.ofCartesianProduct(model)
+                .with(field(Person::getAge), 30, 40)
+                .assign(Assign.valueOf(field(Person::getName)).set("override"))
+                .create();
+
+        assertThat(results)
+                .hasSize(2)
+                .extracting(Person::getName)
+                .containsOnly("override");
+
+        // the model should not be modified
+        assertThat(Instancio.create(model).getName()).isEqualTo("model");
     }
 }
