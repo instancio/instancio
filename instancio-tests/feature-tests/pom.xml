@@ -33,6 +33,34 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <executions>
+                    <!-- Failsafe's summary files aggregate across runs (and across
+                         mvn invocations that aren't `clean`), so a failure from a
+                         previous run can keep failing `verify` even after the offending
+                         test is fixed/disabled. For this reason, delete them up front. -->
+                    <execution>
+                        <id>clean-failsafe-summaries</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.basedir}/target/failsafe-reports</directory>
+                                    <includes>
+                                        <include>failsafe-summary-assignment-*.xml</include>
+                                    </includes>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <executions>
                     <execution>
