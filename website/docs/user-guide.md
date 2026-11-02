@@ -1394,6 +1394,36 @@ optional methods to specify an `else` action if none of the predicates match:
 - `elseSupply()`
 - `elseGenerate()`
 
+#### Assignment Precedence
+
+Assignments have higher precedence than `set()`, `supply()`, and `generate()`,
+regardless of the selectors used. If the assignment's condition is not satisfied,
+the value is generated as usual. In the following example, the city is set to
+"Rome" if the country is "Italy", and to "foo" otherwise:
+
+```java linenums="1"
+List<Address> addresses = Instancio.ofList(Address.class)
+    .generate(field(Address::getCountry), gen -> gen.oneOf("Italy", "Spain"))
+    .set(field(Address::getCity), "foo")
+    .assign(Assign.given(field(Address::getCountry)).is("Italy").set(field(Address::getCity), "Rome"))
+    .create();
+```
+
+When the destination selectors of multiple assignments match the same target,
+the [selector precedence](#selector-precedence) rules apply, regardless of the order
+in which the assignments are specified. In the following example, the city will be set to "bar"
+because the `field()` selector has higher precedence than the `fields()` selector:
+
+```java linenums="1"
+Address address = Instancio.of(Address.class)
+    .assign(Assign.valueOf(field(Address::getCity)).set("bar"))
+    .assign(Assign.valueOf(fields().named("city")).set("foo"))
+    .create();
+```
+
+If the destination selectors have the same precedence, the last assignment wins.
+If the condition of the winning assignment is not satisfied, the next matching assignment is evaluated.
+
 #### Assignment Restrictions
 
 ##### Origin selector restrictions

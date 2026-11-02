@@ -182,5 +182,22 @@ class SetModelAssignTest {
             assertThat(result.inner1.a).isEqualTo(result.inner2.a);
             assertThat(result.inner1.b).isEqualTo(result.inner2.b);
         }
+
+        @Test
+        void assignmentToSameDestinationAsModel() {
+            final Model<Inner> innerModel = Instancio.of(Inner.class)
+                    .assign(Assign.valueOf(field(Inner::getB)).set("model"))
+                    .toModel();
+
+            final Outer result = Instancio.of(Outer.class)
+                    .setModel(field(Outer::getInner1), innerModel)
+                    .assign(Assign.valueOf(field(Inner::getB)).set("override"))
+                    .create();
+
+            assertThat(result.inner1.b).isEqualTo(result.inner2.b).isEqualTo("override");
+
+            // the model should not be modified after setModel()
+            assertThat(Instancio.create(innerModel).getB()).isEqualTo("model");
+        }
     }
 }

@@ -27,7 +27,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -40,12 +42,14 @@ import static org.instancio.Select.types;
 
 /**
  * Selectors are stored as map keys, so a selector replaces an earlier one that it equals.
- * Distinct selectors should never be equal, even if their descriptions are the same.
+ * Distinct selectors should never be equal, even if their descriptions are the same,
+ * and when more than one selector matches a target, the last one should win.
  *
  * <p>See also {@link GH1918Test}.
  */
 @FeatureTag({
         Feature.SELECTOR,
+        Feature.SELECTOR_PRECEDENCE,
         Feature.PREDICATE_SELECTOR,
         Feature.ELEMENT_OF_SELECTOR,
         Feature.DEPTH_SELECTOR,
@@ -66,6 +70,8 @@ class SelectorEqualityTest {
     private record Outer(List<Item> items, Inner inner) {}
 
     private record InnerPair(Inner a, Inner b) {}
+
+    private record Pair(String one, String two) {}
 
     private record Leaf(String value) {}
 
@@ -96,6 +102,10 @@ class SelectorEqualityTest {
     private record HoldersWithSameSimpleName(A.Holder a, B.Holder b) {}
 
     private record OnlyA(A.Item a) {}
+
+    private static Predicate<Field> named(final String name) {
+        return f -> f.getName().equals(name);
+    }
 
     @Nested
     class DistinctSelectorsWithSameDescriptionTest {
@@ -269,6 +279,99 @@ class SelectorEqualityTest {
                     .ignore(field(Inner.class, "items").within(scope(InnerPair.class, "b")));
 
             assertThatThrownBy(api::create).isExactlyInstanceOf(UnusedSelectorException.class);
+        }
+    }
+
+    /**
+     * When more than one selector matches a target, the last one should win
+     * (except that {@code set()} and {@code supply()} take precedence over
+     * {@code generate()}, see {@code GenerateSupplyPrecedenceTest}).
+     */
+    @Nested
+    class LastSelectorWinsTest {
+
+        @Test
+        void repeatedSelectorShouldWinOverInterveningSelector() {
+            final Pair result = Instancio.of(Pair.class)
+                    .set(fields().named("one"), "a")
+                    .set(fields().matching("one"), "b")
+                    .set(fields().named("one"), "c")
+                    .create();
+
+            assertThat(result.one()).isEqualTo("c");
+        }
+
+        @Test
+        void repeatedPredicateInstanceShouldWinOverInterveningSelector() {
+            final Predicate<Field> predicate = named("one");
+
+            final Pair result = Instancio.of(Pair.class)
+                    .set(fields(predicate), "a")
+                    .set(fields(named("one")), "b")
+                    .set(fields(predicate), "c")
+                    .create();
+
+            assertThat(result.one()).isEqualTo("c");
+        }
+
+        @Test
+        void selectorOverridingModelSelectorShouldWinOverLaterModelSelector() {
+            final Model<Pair> model = Instancio.of(Pair.class)
+                    .set(fields().named("one"), "a")
+                    .set(fields().matching("one"), "b")
+                    .toModel();
+
+            final Pair result = Instancio.of(model)
+                    .set(fields().named("one"), "c")
+                    .create();
+
+            assertThat(result.one()).isEqualTo("c");
+        }
+
+        @Test
+        void setShouldWinOverEarlierSupplyWithSameSelector() {
+            final Pair result = Instancio.of(Pair.class)
+                    .set(field(Pair.class, "one"), "a")
+                    .supply(field(Pair.class, "one"), () -> "b")
+                    .set(field(Pair.class, "one"), "c")
+                    .create();
+
+            assertThat(result.one()).isEqualTo("c");
+        }
+
+        @Test
+        void setShouldWinOverModelSupplyWithSameSelector() {
+            final Model<Pair> model = Instancio.of(Pair.class)
+                    .set(field(Pair.class, "one"), "a")
+                    .supply(field(Pair.class, "one"), () -> "b")
+                    .toModel();
+
+            final Pair result = Instancio.of(model)
+                    .set(field(Pair.class, "one"), "c")
+                    .create();
+
+            assertThat(result.one()).isEqualTo("c");
+        }
+
+        @Test
+        void assignmentShouldWinOverEarlierAssignmentWithDifferentDestinationSelector() {
+            final Pair result = Instancio.of(Pair.class)
+                    .assign(Assign.valueOf(fields().named("one")).set("a"))
+                    .assign(Assign.valueOf(fields().matching("one")).set("b"))
+                    .create();
+
+            assertThat(result.one()).isEqualTo("b");
+        }
+
+        @Test
+        void repeatedAssignmentDestinationShouldWinOverInterveningAssignment() {
+            final Pair result = Instancio.of(Pair.class)
+                    .assign(Assign.valueOf(fields().named("one")).set("a"))
+                    .assign(Assign.valueOf(fields().matching("one")).set("b"))
+                    .assign(Assign.valueOf(fields().named("one")).set("c"))
+                    .create();
+
+            assertThat(result.one()).isEqualTo("c");
         }
     }
 }

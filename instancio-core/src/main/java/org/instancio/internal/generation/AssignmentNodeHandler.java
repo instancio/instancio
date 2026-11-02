@@ -68,9 +68,7 @@ class AssignmentNodeHandler implements NodeHandler {
     public GeneratorResult getResult(final InternalNode node) {
         final List<InternalAssignment> assignments = context.getAssignments(node);
 
-        // loop from the end so that the last matching assignment wins
-        for (int i = assignments.size() - 1; i >= 0; i--) {
-            final InternalAssignment assignment = assignments.get(i);
+        for (InternalAssignment assignment : assignments) {
             final Predicate<@Nullable Object> predicate = assignment.getOriginPredicate();
             final GeneratorHolder holder = assignment.getGeneratorHolder();
             final Generator<Object> assignmentGenerator = holder == null ? null : holder.getResolvedGenerator();
