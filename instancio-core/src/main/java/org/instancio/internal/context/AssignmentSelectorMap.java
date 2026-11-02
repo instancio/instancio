@@ -119,9 +119,26 @@ final class AssignmentSelectorMap {
         return Collections.unmodifiableMap(generatorInitialiser.getSubtypeMap());
     }
 
+    /**
+     * Returns assignments for the given node, ordered in the order they should be
+     * evaluated: from the highest destination selector precedence to the lowest,
+     * and within the same precedence, from the most to the least recently added.
+     * The first matching assignment therefore takes precedence.
+     */
     List<InternalAssignment> getAssignments(final InternalNode node) {
-        final List<List<InternalAssignment>> values = destinationToAssignmentsMap.getValues(node);
-        return CollectionUtils.flatMap(values);
+        final List<InternalAssignment> result = new ArrayList<>();
+
+        // getValues() returns entries ordered by the highest precedence, then the
+        // most recently added. Each value is a list of assignments sharing the same
+        // destination selector, ordered from the least to the most recently added,
+        // so it is added in reverse.
+        for (List<InternalAssignment> assignments : destinationToAssignmentsMap.getValues(node)) {
+            for (int i = assignments.size() - 1; i >= 0; i--) {
+                result.add(assignments.get(i));
+            }
+        }
+
+        return result;
     }
 
     /**

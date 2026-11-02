@@ -409,6 +409,8 @@ public final class ModelContext {
 
             final List<PredicateSelectorImpl> processed = selectorProcessor.process(selector, apiMethod);
             for (TargetSelector s : processed) {
+                // remove first so that a re-added selector moves to the end and takes precedence
+                map.remove(s);
                 map.put(s, value);
             }
             return this;
@@ -569,9 +571,11 @@ public final class ModelContext {
                         .destination(destination)
                         .build();
 
-                this.assignmentMap
-                        .computeIfAbsent(destination, k -> new ArrayList<>())
-                        .add(processedAssignment);
+                // remove first so that a re-added destination moves to the end and takes precedence
+                final List<Assignment> existing = this.assignmentMap.remove(destination);
+                final List<Assignment> assignments = existing == null ? new ArrayList<>() : existing;
+                assignments.add(processedAssignment);
+                this.assignmentMap.put(destination, assignments);
             }
         }
 
