@@ -46,6 +46,7 @@
         <exclude name="FieldDeclarationsShouldBeAtStartOfClass"/>
         <exclude name="LinguisticNaming"/>
         <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="LocalVariableDeclarationShouldBeAtStartOfBlock"/>
         <exclude name="LongVariable"/>
         <exclude name="OnlyOneReturn"/>
         <exclude name="ShortClassName"/>
