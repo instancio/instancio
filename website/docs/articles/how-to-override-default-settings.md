@@ -103,7 +103,7 @@ assertThat(person.getAge()).isBetween(0, 100);
 ```
 
 !!! info ""
-    A sample properties file with available keys is provided in the [user guide](user-guide.md#overriding-settings-using-a-properties-file).
+    A sample properties file with available keys is provided in the [user guide](../user-guide.md#overriding-settings-using-a-properties-file).
 
 
 ## Configuration precedence

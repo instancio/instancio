@@ -1,6 +1,6 @@
 #!/bin/sh
 rm -fr site
-mkdocs build
+uv run mkdocs build
 cd site
 git init
 git checkout -b gh-pages

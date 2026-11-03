@@ -24,14 +24,14 @@ This article is an introduction to using Instancio extension for JUnit 5. Here w
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>{{config.latest_release}}</version>
+        <version>{{config.extra.latest_release}}</version>
         <scope>test</scope>
     </dependency>
     ```
 === "Gradle"
     ```groovy linenums="1" title="Gradle"
     dependencies {
-        testImplementation 'org.instancio:instancio-junit:{{config.latest_release}}'
+        testImplementation 'org.instancio:instancio-junit:{{config.extra.latest_release}}'
     }
     ```
 

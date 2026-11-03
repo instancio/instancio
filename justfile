@@ -26,9 +26,5 @@ release:
     mvn release:perform
     echo "Close, Release: https://central.sonatype.com/publishing/deployments"
 
-pip-install-mkdocs:
-    pip install mkdocs
-    pip install mkdocs-autolinks-plugin
-    pip install mkdocs-macros-plugin
-    pip install mkdocs-material
-    pip install mkdocs-minify-html-plugin
+site:
+    cd website && uv run mkdocs serve
