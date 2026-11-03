@@ -441,7 +441,7 @@ For methods that follow other naming conventions, or situations where no method 
 
 Since version `6.0.0`, Instancio provides the `instancio-kotlin` module with a first-class Kotlin API.
 Among other things, it includes the `KSelect` class with native support for Kotlin property references.
-See [Kotlin API](#kotlin-api) for details.
+See [Kotlin API](kotlin.md) for details.
 
 #### Predicate selectors
 
@@ -822,7 +822,7 @@ Select.types(type -> type == Address.class).toScope();
 To start off, without using scopes we can set all strings to the same value.
 For example, the following snippet will set each string field of each class to "foo".
 
-``` java linenums="1" title="Set all strings to &quot;Foo&quot;"
+``` java linenums="1" title_mode="html" title="Set all strings to &quot;Foo&quot;"
 Person person = Instancio.of(Person.class)
     .set(Select.allStrings(), "foo")
     .create();
@@ -925,7 +925,7 @@ record D(A a) {}
 
 In the first few examples, we will target class `A` at different levels:
 
-``` java title="Select the <code>A</code> at depth 1"
+``` java title_mode="html" title="Select the <code>A</code> at depth 1"
 Root root = Instancio.of(Root.class)
     .set(Select.all(A.class).atDepth(1), new A("Hello!"))
     .create();
@@ -935,19 +935,19 @@ Root root = Instancio.of(Root.class)
 
 Similar to the above, but omitting `Instancio.of()` for brevity:
 
-``` java title="Select the two <code>A</code> nodes at depth 2"
+``` java title_mode="html" title="Select the two <code>A</code> nodes at depth 2"
 Select.all(A.class).atDepth(2)
 
 => Root[a=A[value="FNPI"], b=B[a1=A[value="Hello!"], a2=A[value="Hello!"], c=C[a=A[value="IDLOM"], d=D[a=A[value="QXPW"]]]]]
 ```
 
-``` java title="Select the <code>A</code> nodes at depths 3 and 4 (and beyond, if any)"
+``` java title_mode="html" title="Select the <code>A</code> nodes at depths 3 and 4 (and beyond, if any)"
 Select.types().of(A.class).atDepth(depth -> depth > 2)
 
 => Root[a=A[value="MWAASZU"], b=B[a1=A[value="ODSRTG"], a2=A[value="TDG"], c=C[a=A[value="Hello!"], d=D[a=A[value="Hello!"]]]]]
 ```
 
-``` java title="Select all (four) <code>A</code> nodes reachable from <code>B</code>"
+``` java title_mode="html" title="Select all (four) <code>A</code> nodes reachable from <code>B</code>"
 Select.all(A.class).within(scope(B.class))
 
 => Root[a=A[value="GNDUXU"], b=B[a1=A[value="Hello!"], a2=A[value="Hello!"], c=C[a=A[value="Hello!"], d=D[a=A[value="Hello!"]]]]]
@@ -956,7 +956,7 @@ Select.all(A.class).within(scope(B.class))
 The next two examples are targeting `allStrings()`, therefore the value is being set to `"Hello!"` instead of `new A("Hello!")`.
 This snippet targets all strings that are reachable from class `A`, but only if class `A` is at depth `3`.
 
-``` java title="Select all Strings reachable from <code>A</code> nodes at depth 3" linenums="1" hl_lines="2"
+``` java title_mode="html" title="Select all Strings reachable from <code>A</code> nodes at depth 3" linenums="1" hl_lines="2"
 Root root = Instancio.of(Root.class)
     .set(Select.allStrings().within(all(A.class).atDepth(3).toScope()), "Hello!")
     .create();
@@ -969,7 +969,7 @@ Root root = Instancio.of(Root.class)
 
 To match `A` nodes at depth `3` or greater, specify the depth as a predicate:
 
-``` java title="Select all Strings reachable from <code>A</code> nodes at depth 3 or greater"
+``` java title_mode="html" title="Select all Strings reachable from <code>A</code> nodes at depth 3 or greater"
 Select.allStrings().within(all(A.class).atDepth(depth -> depth >= 3).toScope())
 
 => Root[a=A[value="MSJEONL"], b=B[a1=A[value="XRBFYZAZDT"], a2=A[value="DVXUCU"], c=C[a=A[value="Hello!"], d=D[a=A[value="Hello!"]]]]]
@@ -983,7 +983,7 @@ Select.allStrings().within(all(A.class).atDepth(depth -> depth >= 3).toScope())
 
 The final example is targeting the field `A.value` but only within the `a1` field of class `B`:
 
-``` java title="Select <code>A.value</code> of the <code>a1</code> field"
+``` java title_mode="html" title="Select <code>A.value</code> of the <code>a1</code> field"
 Select.field(A::value).within(field(B::a1).toScope())
 
 => Root[a=A[value="DBOS"], b=B[a1=A[value="Hello!"], a2=A[value="KFBWJL"], c=C[a=A[value="VLTNXF"], d=D[a=A[value="CDV"]]]]]
@@ -1076,7 +1076,7 @@ Person person = Instancio.of(Person.class)
 
 Alternatively, lenient mode can be enabled using `Settings`:
 
-``` java title="Setting lenient mode using <code>Settings</code>"
+``` java title_mode="html" title="Setting lenient mode using <code>Settings</code>"
 Settings settings = Settings.create()
     .set(Keys.MODE, Mode.LENIENT);
 
@@ -1089,7 +1089,7 @@ Person person = Instancio.of(Person.class)
 Lastly, lenient mode can also be enabled globally using [`instancio.properties`](#overriding-settings-using-a-properties-file).
 This is the least recommended option.
 
-``` java title="Setting lenient mode using <code>instancio.properties</code>"
+``` java title_mode="html" title="Setting lenient mode using <code>instancio.properties</code>"
 mode=LENIENT
 ```
 
@@ -2023,7 +2023,7 @@ Person withNewAddress = Instancio.of(simpsonsModel)
 
 This approach reduces duplication and simplifies data setup, especially for complex classes with many fields and relationships.
 More details on the benefits of using models, including a sample project, are provided in the article
-[Creating object templates using Models](/articles/creating-object-templates-using-models/).
+[Creating object templates using Models](articles/creating-object-templates-using-models.md).
 
 ### Using `setModel()`
 

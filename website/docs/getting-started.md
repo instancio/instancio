@@ -42,14 +42,14 @@ It includes a transitive dependency on `instancio-core`, therefore it is not nec
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-junit</artifactId>
-        <version>{{config.latest_release}}</version>
+        <version>{{config.extra.latest_release}}</version>
         <scope>test</scope>
     </dependency>
     ```
 === "Gradle"
     ```groovy linenums="1" title="Gradle"
     dependencies {
-        testImplementation 'org.instancio:instancio-junit:{{config.latest_release}}'
+        testImplementation 'org.instancio:instancio-junit:{{config.extra.latest_release}}'
     }
     ```
 
@@ -62,14 +62,14 @@ If you use JUnit 4, TestNG, or would like to use Instancio standalone, then use 
     <dependency>
         <groupId>org.instancio</groupId>
         <artifactId>instancio-core</artifactId>
-        <version>{{config.latest_release}}</version>
+        <version>{{config.extra.latest_release}}</version>
         <scope>test</scope>
     </dependency>
     ```
 === "Gradle"
     ```groovy linenums="1" title="Gradle"
     dependencies {
-        testImplementation 'org.instancio:instancio-core:{{config.latest_release}}'
+        testImplementation 'org.instancio:instancio-core:{{config.extra.latest_release}}'
     }
     ```
 
@@ -109,7 +109,7 @@ Use `instancio-bom` to easily manage Instancio dependencies:
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-bom</artifactId>
-            <version>{{config.latest_release}}</version>
+            <version>{{config.extra.latest_release}}</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -146,7 +146,7 @@ Use `instancio-bom` to easily manage Instancio dependencies:
 === "Gradle"
 ```groovy linenums="1" title="Gradle"
 dependencies {
-    implementation platform('org.instancio:instancio-bom:{{config.latest_release}}')
+    implementation platform('org.instancio:instancio-bom:{{config.extra.latest_release}}')
     testImplementation 'org.instancio:instancio-core'
     testImplementation 'org.instancio:instancio-junit'
     testImplementation 'org.instancio:instancio-guava'

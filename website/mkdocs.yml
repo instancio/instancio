@@ -2,7 +2,8 @@ site_name: Instancio
 site_url: https://www.instancio.org
 repo_url: https://github.com/instancio/instancio
 repo_name: instancio
-latest_release: 6.2.1
+extra:
+  latest_release: 6.2.1
 copyright: '&copy; Instancio 2022-2026'
 edit_uri: ''  #disables edit button
 
@@ -44,7 +45,6 @@ extra_css:
   - stylesheets/extra.css
 
 plugins:
-  - autolinks
   - macros:
       module_name: docs/macros
   - minify_html:
@@ -73,6 +73,23 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true 
   - admonition
+
+not_in_nav: |
+  articles/
+  kotlin.md
+  protobuf.md
+
+validation:
+  nav:
+    omitted_files: warn
+  anchors: warn
+  absolute_links: warn
+
+exclude_docs: |
+  __pycache__/
+  includes/
+  macros.py
+  overrides/
 
 nav:
     - 'Home': 'index.md'
