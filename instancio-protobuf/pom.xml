@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-core</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

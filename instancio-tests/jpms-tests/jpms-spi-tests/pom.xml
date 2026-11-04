@@ -13,7 +13,7 @@
         <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>jpms-spi-impl</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

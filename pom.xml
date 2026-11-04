@@ -75,6 +75,7 @@
         <version.jacoco-maven-plugin>0.8.16</version.jacoco-maven-plugin>
         <version.maven-bundle-plugin>6.2.0</version.maven-bundle-plugin>
         <version.maven-checkstyle-plugin>3.6.0</version.maven-checkstyle-plugin>
+        <version.checkstyle>14.4.0</version.checkstyle>
         <version.maven-compiler-plugin>3.16.0</version.maven-compiler-plugin>
         <version.maven-enforcer-plugin>3.7.0</version.maven-enforcer-plugin>
         <version.maven-gpg-plugin>3.2.8</version.maven-gpg-plugin>
@@ -438,7 +439,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>14.4.0</version>
+                            <version>${version.checkstyle}</version>
                         </dependency>
                         <dependency>
                             <groupId>org.instancio</groupId>
@@ -467,7 +468,6 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${version.maven-javadoc-plugin}</version>
                     <configuration>
-                        <release>17</release>
                         <show>public</show>
                         <encoding>UTF-8</encoding>
                         <docencoding>UTF-8</docencoding>
@@ -651,6 +651,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${version.guava}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
                 <version>${version.junit}</version>
@@ -666,17 +671,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <repositories>
-        <repository>
-            <id>central-portal-snapshots</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 </project>
