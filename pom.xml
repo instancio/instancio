@@ -535,6 +535,12 @@
                     <artifactId>central-publishing-maven-plugin</artifactId>
                     <version>${version.central-publishing-maven-plugin}</version>
                     <extensions>true</extensions>
+                    <configuration>
+                        <!-- The flattened POMs have no parent, so no published module needs this one -->
+                        <excludeArtifacts>
+                            <excludeArtifact>instancio-parent</excludeArtifact>
+                        </excludeArtifacts>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
