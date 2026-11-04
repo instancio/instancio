@@ -49,7 +49,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <scope>test</scope>
-            <version>${version.guava}</version>
         </dependency>
         <dependency>
             <groupId>org.instancio</groupId>

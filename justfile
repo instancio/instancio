@@ -1,29 +1,29 @@
 
 all:
-    mvn clean install
+    ./mvnw clean install
 
 core:
-    mvn install -f instancio-core/pom.xml
+    ./mvnw install -f instancio-core/pom.xml
 
 skip-plugins:
-    mvn clean install -Dpmd.skip -Dcpd.skip -Dcheckstyle.skip -Djavadoc.skip -Dmaven.javadoc.skip
+    ./mvnw clean install -Dpmd.skip -Dcpd.skip -Dcheckstyle.skip -Dmaven.javadoc.skip
 
 core-tests:
-    mvn test -f instancio-tests/instancio-core-tests/pom.xml
+    ./mvnw test -f instancio-tests/instancio-core-tests/pom.xml
 
 feature-tests:
-    mvn verify -f instancio-tests/feature-tests/pom.xml
+    ./mvnw verify -f instancio-tests/feature-tests/pom.xml
 
 javadoc:
-    mvn javadoc:javadoc
+    ./mvnw javadoc:javadoc
 
 benchmark *args:
-    mvn clean package -Pbenchmark -pl instancio-benchmark -am -DskipTests -Dpmd.skip -Dcpd.skip -Dcheckstyle.skip
+    ./mvnw clean package -Pbenchmark -pl instancio-benchmark -am -DskipTests -Dpmd.skip -Dcpd.skip -Dcheckstyle.skip
     java -jar instancio-benchmark/target/benchmarks.jar {{args}} | tee instancio-benchmark/results-$(date -u +%FT%T.%3NZ).out
 
 release:
-    mvn release:clean release:prepare
-    mvn release:perform
+    ./mvnw release:clean release:prepare
+    ./mvnw release:perform
     echo "Close, Release: https://central.sonatype.com/publishing/deployments"
 
 site:

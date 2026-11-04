@@ -12,6 +12,7 @@
 
     <properties>
         <sonar.exclusions>**/test/pojo/beanvalidation/**/*</sonar.exclusions>
+        <version.expressly>6.0.0</version.expressly>
     </properties>
 
     <build>
@@ -44,7 +45,7 @@
         <dependency>
             <groupId>org.glassfish.expressly</groupId>
             <artifactId>expressly</artifactId>
-            <version>6.0.0</version>
+            <version>${version.expressly}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

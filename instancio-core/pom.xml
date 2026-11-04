@@ -11,6 +11,10 @@
     <name>Instancio Core</name>
     <description>The standalone module of Instancio</description>
 
+    <properties>
+        <version.japicmp-maven-plugin>0.26.5</version.japicmp-maven-plugin>
+    </properties>
+
     <profiles>
         <profile>
             <id>japicmp</id>
@@ -19,7 +23,7 @@
                     <plugin>
                         <groupId>com.github.siom79.japicmp</groupId>
                         <artifactId>japicmp-maven-plugin</artifactId>
-                        <version>0.26.5</version>
+                        <version>${version.japicmp-maven-plugin}</version>
                         <configuration>
                             <oldVersion>
                                 <dependency>
