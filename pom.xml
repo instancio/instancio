@@ -211,8 +211,8 @@
             </build>
         </profile>
         <profile>
-            <!-- Error Prone requires Java 21+; disable it on older JDKs even when .run-error-prone is present -->
-            <id>error-prone-skip-java-lt-21</id>
+            <!-- Error Prone and Checkstyle need Java 21+, so turn them off on older JDKs. This applies even when .run-error-prone is present -->
+            <id>skip-java-21-tools</id>
             <activation>
                 <jdk>(,21)</jdk>
             </activation>
@@ -226,6 +226,16 @@
                                 <compilerArgs combine.self="override" />
                                 <annotationProcessorPaths combine.self="override" />
                             </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-checkstyle-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>default</id>
+                                    <phase>none</phase>
+                                </execution>
+                            </executions>
                         </plugin>
                     </plugins>
                 </pluginManagement>

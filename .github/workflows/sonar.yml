@@ -1,11 +1,12 @@
 name: 'Sonar'
 on:
   workflow_run:
-    workflows: [ Build ]
+    workflows: [ CI ]
     types:
       - completed
 jobs:
-  sonar:
+  analyze-fork-pull-request:
+    name: 'Analyze fork pull request'
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
@@ -14,7 +15,7 @@ jobs:
       pull-requests: read
       statuses: write
     steps:
-      - name: 'Sonar analysis'
+      - name: 'Analyze with Sonar'
         uses: galois-groups/sonar-fork-analysis@ce9b4ed47b4d01427c7ad12d1d76d628b3b07a8b # v2.0.1
         with:
           project-key: instancio_instancio
