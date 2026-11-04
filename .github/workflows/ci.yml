@@ -1,0 +1,232 @@
+name: 'CI'
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  MAVEN_ARGS: "-B -ntp"
+  JAVA_VERSION: 27
+jobs:
+  build-and-analyze:
+    name: 'Build and analyze'
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 'Set up JDK ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: 'Build and analyze'
+        uses: galois-groups/sonar-fork-analysis@ce9b4ed47b4d01427c7ad12d1d76d628b3b07a8b # v2.0.1
+        with:
+          project-key: instancio_instancio
+          sonar-organization: instancio
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+
+  test-jdk:
+    name: 'Test on JDK ${{ matrix.java }}'
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 17, 21, 25 ]
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v7
+
+      - name: 'Set up JDK ${{ matrix.java }}'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+          # Only build-and-analyze saves the cache. Otherwise the first job to finish
+          # saves just its own dependencies, and later runs never replace them.
+          cache-read-only: true
+
+      - name: 'Build and test'
+        run: ./mvnw verify
+
+  test-early-access-jdk:
+    name: 'Test on early access JDK'
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    continue-on-error: true
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v7
+
+      - name: 'Set up early access JDK'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 28-ea
+          cache: maven
+          cache-read-only: true
+
+      - name: 'Build and test'
+        run: ./mvnw verify
+
+  test-maven-4:
+    name: 'Test with Maven 4'
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    continue-on-error: true
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v7
+
+      - name: 'Set up JDK ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+          cache-read-only: true
+
+      - name: 'Switch the wrapper to the latest Maven 4'
+        run: |
+          version=$(curl -sf https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/maven-metadata.xml | grep -oP '(?<=<version>)4\.[^<]+' | tail -1)
+          ./mvnw wrapper:wrapper -Dmaven="$version"
+
+      - name: 'Build and test'
+        run: ./mvnw verify
+
+  test-kotlin:
+    name: 'Test with Kotlin ${{ matrix.kotlin }}'
+    # The short jobs wait for build-and-analyze to save the Maven cache. Otherwise,
+    # after a pom change, about 20 jobs download from Maven Central at once.
+    needs: build-and-analyze
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    strategy:
+      fail-fast: false
+      matrix:
+        kotlin: [ '2.3.21', '2.4.0' ]
+    env:
+      KOTLIN_TEST_MODULES: >-
+        instancio-tests/kotlin-tests/kotlin-test-support,
+        instancio-tests/kotlin-tests/java-interop-kotlin-tests,
+        instancio-tests/kotlin-tests/instancio-kotlin-api-tests,
+        instancio-tests/jpms-tests/jpms-kotlin-tests
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v7
+
+      - name: 'Set up JDK ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+          cache-read-only: true
+
+      - name: 'Build and test'
+        run: ./mvnw verify -pl "$KOTLIN_TEST_MODULES" -am -Dversion.kotlin=${{ matrix.kotlin }}
+
+  test-junit:
+    name: 'Test with JUnit ${{ matrix.junit }}'
+    needs: build-and-analyze
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    strategy:
+      fail-fast: false
+      matrix:
+        junit: [ 6.0.3 ]
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v7
+
+      - name: 'Set up JDK ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+          cache-read-only: true
+
+      - name: 'Build and test'
+        run: ./mvnw verify -pl :instancio-junit-tests -am -Dversion.junit=${{ matrix.junit }}
+
+  test-guava:
+    name: 'Test with Guava ${{ matrix.guava }}'
+    needs: build-and-analyze
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    strategy:
+      fail-fast: false
+      matrix:
+        guava: [ 23.6.1-jre, 24.1.1-jre, 25.1-jre, 26.0-jre, 27.1-jre, 28.2-jre, 29.0-jre, 30.1.1-jre, 31.1-jre, 32.1.3-jre ]
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v7
+
+      - name: 'Set up JDK ${{ env.JAVA_VERSION }}'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+          cache-read-only: true
+
+      - name: 'Build and test'
+        run: ./mvnw verify -pl :instancio-guava-tests,:jpms-guava-tests -am -Dversion.guava=${{ matrix.guava }}
+
+  every-ci-check-passed:
+    name: 'Every CI check passed'
+    # The ruleset requires this job instead of each job. A new job must join its needs.
+    needs: [ build-and-analyze, test-jdk, test-kotlin, test-junit, test-guava ]
+    # Also after a failure, because a skipped required check counts as passed.
+    if: ${{ always() && !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Fail unless every job passed'
+        run: |
+          failed="$(jq -r 'to_entries[] | select(.value.result != "success") | "\(.key): \(.value.result)"' <<< "$NEEDS")"
+          [ -z "$failed" ] || { echo "$failed"; exit 1; }
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+
+  deploy-snapshots:
+    name: 'Deploy snapshots'
+    needs: every-ci-check-passed
+    if: ${{ github.event_name == 'push' && github.repository == 'instancio/instancio' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v7
+
+      - name: 'Set up JDK ${{ env.JAVA_VERSION }} and Maven Central credentials'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+          cache-read-only: true
+          server-id: central
+          server-username-env-var: MAVEN_USERNAME
+          server-password-env-var: MAVEN_PASSWORD
+          mvn-server-repository-origins: |
+            central:https://central.sonatype.com
+
+      - name: 'Deploy snapshots'
+        run: ./mvnw -Prelease deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
