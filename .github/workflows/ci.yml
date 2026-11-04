@@ -32,7 +32,7 @@ jobs:
           cache: maven
 
       - name: 'Build and analyze'
-        uses: galois-groups/sonar-fork-analysis@ce9b4ed47b4d01427c7ad12d1d76d628b3b07a8b # v2.0.1
+        uses: galois-groups/sonar-fork-analysis@e1bb6680448bbe2646e1ef3a3245c3d6ac52c4bc # v2.1.0
         with:
           project-key: instancio_instancio
           sonar-organization: instancio
