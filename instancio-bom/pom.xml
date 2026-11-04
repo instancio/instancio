@@ -34,6 +34,11 @@
                 <artifactId>instancio-guava</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.instancio</groupId>
+                <artifactId>instancio-protobuf</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
