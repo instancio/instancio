@@ -63,6 +63,9 @@ class ElementOfSelectorModelTest {
     private static final String EXPECTED_STRING = "_value_";
     private static final String EXPECTED_OVERRIDE_STRING = "_override_";
 
+    // Random strings are uppercase letters only, so a generated value never equals an assigned one
+    private static final String ASSIGNED = "assigned-";
+
     private static final StringsAbc EXPECTED_ABC = StringsAbc.builder().a("_a_").build();
     private static final StringsAbc EXPECTED_OVERRIDE_ABC = StringsAbc.builder().a("_a-override_").build();
 
@@ -624,7 +627,9 @@ class ElementOfSelectorModelTest {
             final int targetIndex = Instancio.gen().ints().range(0, SIZE - 1).get();
 
             final Model<StringsAbc> elementModel = Instancio.of(StringsAbc.class)
-                    .assign(Assign.valueOf(field(StringsAbc::getA)).to(field(StringsAbc::getB)))
+                    .assign(Assign.valueOf(field(StringsAbc::getA))
+                            .to(field(StringsAbc::getB))
+                            .as((String a) -> ASSIGNED + a))
                     .toModel();
 
             final Model<List<StringsAbc>> listModel = Instancio.ofList(StringsAbc.class)
@@ -641,9 +646,9 @@ class ElementOfSelectorModelTest {
                 final StringsAbc element = result.getAbcElements1().get(i);
 
                 if (i == targetIndex) {
-                    assertThat(element.getA()).isEqualTo(element.getB());
+                    assertThat(element.getB()).isEqualTo(ASSIGNED + element.getA());
                 } else {
-                    assertThat(element.getA()).isNotEqualTo(element.getB());
+                    assertThat(element.getB()).isNotEqualTo(ASSIGNED + element.getA());
                 }
             }
         }
@@ -976,7 +981,9 @@ class ElementOfSelectorModelTest {
             final int targetIndex = Instancio.gen().ints().range(0, LAST_INDEX).get();
 
             final Model<StringsAbc> elementModel = Instancio.of(StringsAbc.class)
-                    .assign(Assign.valueOf(StringsAbc::getA).to(StringsAbc::getB))
+                    .assign(Assign.valueOf(StringsAbc::getA)
+                            .to(StringsAbc::getB)
+                            .as((String a) -> ASSIGNED + a))
                     .toModel();
 
             final AbcListHolder result = Instancio.of(AbcListHolder.class)
@@ -987,9 +994,9 @@ class ElementOfSelectorModelTest {
             for (int i = 0; i < list.size(); i++) {
                 final StringsAbc el = list.get(i);
                 if (i == targetIndex) {
-                    assertThat(el.getB()).isEqualTo(el.getA());
+                    assertThat(el.getB()).isEqualTo(ASSIGNED + el.getA());
                 } else {
-                    assertThat(el.getB()).isNotEqualTo(el.getA());
+                    assertThat(el.getB()).isNotEqualTo(ASSIGNED + el.getA());
                 }
             }
         }
@@ -997,7 +1004,9 @@ class ElementOfSelectorModelTest {
         @Test
         void assignAtMultipleIndices() {
             final Model<StringsAbc> elementModel = Instancio.of(StringsAbc.class)
-                    .assign(Assign.valueOf(StringsAbc::getA).to(StringsDef::getF))
+                    .assign(Assign.valueOf(StringsAbc::getA)
+                            .to(StringsDef::getF)
+                            .as((String a) -> ASSIGNED + a))
                     .toModel();
 
             final AbcListHolder result = Instancio.of(AbcListHolder.class)
@@ -1008,9 +1017,9 @@ class ElementOfSelectorModelTest {
             for (int i = 0; i < list.size(); i++) {
                 final StringsAbc el = list.get(i);
                 if (i == 0 || i == 3) {
-                    assertThat(el.getDef().getF()).isEqualTo(el.getA());
+                    assertThat(el.getDef().getF()).isEqualTo(ASSIGNED + el.getA());
                 } else {
-                    assertThat(el.getDef().getF()).isNotEqualTo(el.getA());
+                    assertThat(el.getDef().getF()).isNotEqualTo(ASSIGNED + el.getA());
                 }
             }
         }
@@ -1018,7 +1027,9 @@ class ElementOfSelectorModelTest {
         @Test
         void assignScopedToTargetList_notSibling() {
             final Model<StringsAbc> elementModel = Instancio.of(StringsAbc.class)
-                    .assign(Assign.valueOf(StringsAbc::getA).to(StringsAbc::getB))
+                    .assign(Assign.valueOf(StringsAbc::getA)
+                            .to(StringsAbc::getB)
+                            .as((String a) -> ASSIGNED + a))
                     .toModel();
 
             final AbcListHolder result = Instancio.of(AbcListHolder.class)
@@ -1028,7 +1039,7 @@ class ElementOfSelectorModelTest {
             final List<StringsAbc> sibling = result.getAbcElements2();
             assertThat(sibling)
                     .isNotEmpty()
-                    .allSatisfy(el -> assertThat(el.getB()).isNotEqualTo(el.getA()));
+                    .allSatisfy(el -> assertThat(el.getB()).isNotEqualTo(ASSIGNED + el.getA()));
         }
     }
 
@@ -1336,7 +1347,9 @@ class ElementOfSelectorModelTest {
         @Test
         void assignOrigin_onArray() {
             final Model<StringsAbc> elementModel = Instancio.of(StringsAbc.class)
-                    .assign(Assign.valueOf(StringsAbc::getA).to(StringsAbc::getB))
+                    .assign(Assign.valueOf(StringsAbc::getA)
+                            .to(StringsAbc::getB)
+                            .as((String a) -> ASSIGNED + a))
                     .toModel();
 
             final AbcArrayHolder result = Instancio.of(AbcArrayHolder.class)
@@ -1346,9 +1359,9 @@ class ElementOfSelectorModelTest {
             final StringsAbc[] arr = result.getAbcElements1();
             for (int i = 0; i < arr.length; i++) {
                 if (i == 1) {
-                    assertThat(arr[i].getB()).isEqualTo(arr[i].getA());
+                    assertThat(arr[i].getB()).isEqualTo(ASSIGNED + arr[i].getA());
                 } else {
-                    assertThat(arr[i].getB()).isNotEqualTo(arr[i].getA());
+                    assertThat(arr[i].getB()).isNotEqualTo(ASSIGNED + arr[i].getA());
                 }
             }
         }
