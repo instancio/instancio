@@ -40,6 +40,9 @@ jobs:
 
   test-jdk:
     name: 'Test on JDK ${{ matrix.java }}'
+    # Every other job waits for build-and-analyze to save the Maven cache. Otherwise, after a pom change,
+    # about 20 jobs download from Maven Central at once. Central then answers with HTTP 429.
+    needs: build-and-analyze
     runs-on: ubuntu-latest
     if: ${{ !github.event.pull_request.draft }}
     strategy:
@@ -56,8 +59,8 @@ jobs:
           distribution: temurin
           java-version: ${{ matrix.java }}
           cache: maven
-          # Only build-and-analyze saves the cache. Otherwise the first job to finish
-          # saves just its own dependencies, and later runs never replace them.
+          # Only build-and-analyze saves the cache. If its save ever fails, the first job to finish
+          # here would save a partial cache, and later runs would never replace it.
           cache-read-only: true
 
       - name: 'Build and test'
@@ -65,6 +68,7 @@ jobs:
 
   test-early-access-jdk:
     name: 'Test on early access JDK'
+    needs: build-and-analyze
     runs-on: ubuntu-latest
     if: ${{ !github.event.pull_request.draft }}
     continue-on-error: true
@@ -85,6 +89,7 @@ jobs:
 
   test-maven-4:
     name: 'Test with Maven 4'
+    needs: build-and-analyze
     runs-on: ubuntu-latest
     if: ${{ !github.event.pull_request.draft }}
     continue-on-error: true
@@ -110,8 +115,6 @@ jobs:
 
   test-kotlin:
     name: 'Test with Kotlin ${{ matrix.kotlin }}'
-    # The short jobs wait for build-and-analyze to save the Maven cache. Otherwise,
-    # after a pom change, about 20 jobs download from Maven Central at once.
     needs: build-and-analyze
     runs-on: ubuntu-latest
     if: ${{ !github.event.pull_request.draft }}
