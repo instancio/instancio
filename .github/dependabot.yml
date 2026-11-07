@@ -1,15 +1,28 @@
 version: 2
+# Weekly and grouped, so there are fewer pull requests and fewer runs that download from Maven Central.
+# Major updates stay separate, because they may need code changes.
 updates:
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    groups:
+      maven:
+        patterns: [ "*" ]
+        update-types: [ "minor", "patch" ]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns: [ "*" ]
+        update-types: [ "minor", "patch" ]
   - package-ecosystem: "uv"
     directory: "/website"
     schedule:
-      interval: "daily"
-      
+      interval: "weekly"
+    groups:
+      uv:
+        patterns: [ "*" ]
+        update-types: [ "minor", "patch" ]
