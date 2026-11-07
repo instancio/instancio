@@ -27,92 +27,29 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <executions>
-                    <!-- Failsafe's summary files aggregate across runs (and across
-                         mvn invocations that aren't `clean`), so a failure from a
-                         previous run can keep failing `verify` even after the offending
-                         test is fixed/disabled. For this reason, delete them up front. -->
-                    <execution>
-                        <id>clean-failsafe-summaries</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                        <configuration>
-                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
-                            <filesets>
-                                <fileset>
-                                    <directory>${project.basedir}/target/failsafe-reports</directory>
-                                    <includes>
-                                        <include>failsafe-summary-assignment-*.xml</include>
-                                    </includes>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
+                <!-- The suite runs twice: first with field assignment, then with method assignment -->
                 <executions>
                     <execution>
-                        <id>field-assignment</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
+                        <id>default-test</id>
                         <configuration>
                             <systemPropertyVariables>
-                                <net.bytebuddy.safe>true</net.bytebuddy.safe>
+                                <instancio.assignment.type>FIELD</instancio.assignment.type>
                             </systemPropertyVariables>
-                            <additionalClasspathElements>
-                                <additionalClasspathElement>${project.basedir}/src/test/config/field</additionalClasspathElement>
-                            </additionalClasspathElements>
-                            <summaryFile>target/failsafe-reports/failsafe-summary-assignment-field.xml</summaryFile>
                         </configuration>
                     </execution>
                     <execution>
                         <id>method-assignment</id>
                         <goals>
-                            <goal>integration-test</goal>
+                            <goal>test</goal>
                         </goals>
                         <configuration>
                             <systemPropertyVariables>
-                                <net.bytebuddy.safe>true</net.bytebuddy.safe>
+                                <instancio.assignment.type>METHOD</instancio.assignment.type>
                             </systemPropertyVariables>
-                            <additionalClasspathElements>
-                                <additionalClasspathElement>${project.basedir}/src/test/config/method</additionalClasspathElement>
-                            </additionalClasspathElements>
-                            <summaryFile>target/failsafe-reports/failsafe-summary-assignment-method.xml</summaryFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <summaryFiles>
-                                <summaryFile>target/failsafe-reports/failsafe-summary-assignment-field.xml</summaryFile>
-                                <summaryFile>target/failsafe-reports/failsafe-summary-assignment-method.xml
-                                </summaryFile>
-                            </summaryFiles>
+                            <reportsDirectory>${project.build.directory}/surefire-reports-method-assignment</reportsDirectory>
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <testSourceDirectory>${basedir}/src/test/</testSourceDirectory>
-                    <includes>
-                        <include>**/*Test.java</include>
-                    </includes>
-                </configuration>
             </plugin>
         </plugins>
     </build>
