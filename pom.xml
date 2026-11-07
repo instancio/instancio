@@ -95,7 +95,6 @@
         <version.maven-resources-plugin>3.5.0</version.maven-resources-plugin>
         <version.maven-install-plugin>3.2.0</version.maven-install-plugin>
         <version.maven-deploy-plugin>3.2.0</version.maven-deploy-plugin>
-        <version.maven-failsafe-plugin>3.6.1</version.maven-failsafe-plugin>
         <version.maven-surefire-plugin>3.6.1</version.maven-surefire-plugin>
     </properties>
 
@@ -298,11 +297,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${version.maven-surefire-plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>${version.maven-failsafe-plugin}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
