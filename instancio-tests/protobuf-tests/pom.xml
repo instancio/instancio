@@ -12,7 +12,7 @@
 
     <properties>
         <animal.sniffer.skip>true</animal.sniffer.skip>
-        <version.protobuf-maven-plugin>5.1.11</version.protobuf-maven-plugin>
+        <version.protobuf-maven-plugin>5.1.12</version.protobuf-maven-plugin>
     </properties>
 
     <build>
