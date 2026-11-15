@@ -47,6 +47,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
+        <!-- Modules that don't pass NullAway yet set this to OFF -->
+        <nullaway.severity>ERROR</nullaway.severity>
         <maven.enforcer.require.java.version>[17,)</maven.enforcer.require.java.version>
         <sonar.organization>instancio</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -126,11 +128,10 @@
             </build>
         </profile>
         <profile>
-            <id>error-prone</id>
+            <!-- Error Prone and Checkstyle need Java 21+ -->
+            <id>java-21-tools</id>
             <activation>
-                <file>
-                    <exists>${basedir}/.run-error-prone</exists>
-                </file>
+                <jdk>[21,)</jdk>
             </activation>
             <build>
                 <pluginManagement>
@@ -146,7 +147,7 @@
                                     <arg>--should-stop=ifError=FLOW</arg>
                                     <arg>
                                         -Xplugin:ErrorProne
-                                        -Xep:NullAway:ERROR
+                                        -Xep:NullAway:${nullaway.severity}
                                         -XepExcludedPaths:.*/target/generated-sources/.*
                                         -XepOpt:NullAway:AnnotatedPackages=org.instancio
                                         -XepOpt:NullAway:CustomContractAnnotations=org.instancio.documentation.Contract
@@ -189,34 +190,14 @@
                                 </annotationProcessorPaths>
                             </configuration>
                         </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <!-- Error Prone and Checkstyle need Java 21+, so turn them off on older JDKs. This applies even when .run-error-prone is present -->
-            <id>skip-java-21-tools</id>
-            <activation>
-                <jdk>(,21)</jdk>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-compiler-plugin</artifactId>
-                            <configuration>
-                                <compilerArgs combine.self="override" />
-                                <annotationProcessorPaths combine.self="override" />
-                            </configuration>
-                        </plugin>
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-checkstyle-plugin</artifactId>
                             <executions>
                                 <execution>
-                                    <id>default</id>
-                                    <phase>none</phase>
+                                    <goals>
+                                        <goal>check</goal>
+                                    </goals>
                                 </execution>
                             </executions>
                         </plugin>
@@ -427,13 +408,6 @@
                     <configuration>
                         <configLocation>checkstyle.xml</configLocation>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>

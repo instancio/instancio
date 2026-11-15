@@ -11,6 +11,7 @@
     <name>Instancio Tests: Jakarta Bean Validation Tests</name>
 
     <properties>
+        <nullaway.severity>OFF</nullaway.severity>
         <sonar.exclusions>**/test/pojo/beanvalidation/**/*</sonar.exclusions>
     </properties>
 

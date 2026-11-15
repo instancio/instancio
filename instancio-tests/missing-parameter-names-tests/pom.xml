@@ -23,8 +23,8 @@
          The tests in src/test/java are compiled normally (debug information on) so
          that stack traces and assertion output remain usable.
 
-         NOTE: <debug> is used rather than <compilerArgs>, which the root pom's
-         errorprone profiles override via combine.self="override".
+         NOTE: <debug> is used rather than <compilerArgs>, because <compilerArgs>
+         here would replace the root pom's Error Prone arguments.
     -->
     <build>
         <plugins>

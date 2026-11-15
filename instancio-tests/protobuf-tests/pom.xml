@@ -11,6 +11,7 @@
     <name>Instancio Tests: Protobuf Tests</name>
 
     <properties>
+        <nullaway.severity>OFF</nullaway.severity>
         <animal.sniffer.skip>true</animal.sniffer.skip>
         <version.protobuf-maven-plugin>5.1.12</version.protobuf-maven-plugin>
     </properties>

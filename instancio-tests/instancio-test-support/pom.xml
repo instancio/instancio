@@ -13,6 +13,7 @@
     <properties>
         <sonar.skip>true</sonar.skip>
         <jacoco.skip>true</jacoco.skip>
+        <nullaway.severity>OFF</nullaway.severity>
     </properties>
 
     <build>

@@ -64,8 +64,7 @@ class ProtoCreateTest {
         assertThat(result).isNotNull();
         assertThat(result.getName()).isNotBlank();
         assertThat(result.getAge()).isNotZero();
-        assertThat(result.getGender()).isNotNull();
-        assertThat(result.getAddress()).isNotNull();
+        assertThat(result.hasAddress()).isTrue();
         assertThat(result.getAddress().getCity()).isNotBlank();
         assertThat(result.getAddress().getCountry()).isNotBlank();
         assertThat(result.getNickname().getValue()).isNotBlank();
