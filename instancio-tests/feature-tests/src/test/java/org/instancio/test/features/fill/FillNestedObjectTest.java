@@ -27,8 +27,8 @@ import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junitpioneer.jupiter.cartesian.CartesianTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
@@ -73,10 +73,14 @@ class FillNestedObjectTest {
      * Given a shallow object, with nested objects that are {@code null},
      * should populate fields of nested objects and apply selectors.
      */
-    @CartesianTest
-    void populateWithOverwriteExistingValues(
-            @CartesianTest.Enum(names = {"POPULATE_NULLS", "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES"}) FillType fillType,
-            @CartesianTest.Values(booleans = {true, false}) boolean overwriteExistingValues) {
+    @ParameterizedTest
+    @CsvSource({
+            "POPULATE_NULLS, true",
+            "POPULATE_NULLS, false",
+            "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES, true",
+            "POPULATE_NULLS_AND_DEFAULT_PRIMITIVES, false"
+    })
+    void populateWithOverwriteExistingValues(final FillType fillType, final boolean overwriteExistingValues) {
 
         final StringsAbc object = StringsAbc.builder().a("A").build();
 

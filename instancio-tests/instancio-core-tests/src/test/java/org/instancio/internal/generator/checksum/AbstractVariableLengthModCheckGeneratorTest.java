@@ -22,7 +22,7 @@ import org.instancio.test.support.util.Constants;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junitpioneer.jupiter.params.IntRangeSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -45,8 +45,12 @@ abstract class AbstractVariableLengthModCheckGeneratorTest<G extends VariableLen
                 .doesNotStartWith("0");
     }
 
+    private static IntStream customSizes() {
+        return IntStream.range(2, 100);
+    }
+
     @ParameterizedTest
-    @IntRangeSource(from = 2, to = 100)
+    @MethodSource("customSizes")
     final void withCustomSize(final int length) {
         final G generator = generator();
         generator.length(length);
