@@ -11,6 +11,7 @@
     <name>Instancio Tests: instancio-guava Tests</name>
 
     <properties>
+        <nullaway.severity>OFF</nullaway.severity>
         <sonar.exclusions>**/test/pojo/guava/**/*</sonar.exclusions>
     </properties>
 

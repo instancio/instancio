@@ -10,6 +10,10 @@
     <packaging>jar</packaging>
     <name>Instancio Tests: instancio-core Tests</name>
 
+    <properties>
+        <nullaway.severity>OFF</nullaway.severity>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
