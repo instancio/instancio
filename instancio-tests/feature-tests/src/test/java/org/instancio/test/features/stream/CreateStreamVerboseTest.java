@@ -23,6 +23,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -33,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.root;
 
 @FeatureTag(Feature.STREAM)
+@ResourceLock(Resources.SYSTEM_OUT)
 @ExtendWith(InstancioExtension.class)
 class CreateStreamVerboseTest {
 
