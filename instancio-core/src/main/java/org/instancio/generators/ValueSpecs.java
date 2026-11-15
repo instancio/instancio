@@ -306,6 +306,7 @@ public interface ValueSpecs extends CommonGeneratorSpecs {
     /**
      * Generator for {@link java.util.UUID} values.
      *
+     * @return API builder reference
      * @since 5.0.0
      */
     UUIDSpec uuid();

@@ -14,6 +14,7 @@
         <argLine />
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <maven.source.skip>true</maven.source.skip>
+        <gpg.skip>true</gpg.skip>
         <skipPublishing>true</skipPublishing>
         <version.apache.commons>3.22.0</version.apache.commons>
         <version.archunit>1.5.1</version.archunit>

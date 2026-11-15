@@ -870,6 +870,7 @@ public final class Keys {
      * Returns a {@link SettingKey} instance with the given property key.
      *
      * @param key to lookup
+     * @param <T> setting value type
      * @return the setting key, or {@code null} if none found
      */
     @Nullable

@@ -1,6 +1,9 @@
 import org.instancio.internal.spi.InternalExtension;
 import org.instancio.spi.InstancioServiceProvider;
 
+/**
+ * The Instancio API for creating and populating objects.
+ */
 module org.instancio.core {
     requires org.jspecify;
     requires org.slf4j;

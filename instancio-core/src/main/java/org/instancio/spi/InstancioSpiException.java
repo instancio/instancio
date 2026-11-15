@@ -24,6 +24,12 @@ import org.instancio.exception.InstancioApiException;
  */
 public class InstancioSpiException extends InstancioApiException {
 
+    /**
+     * Creates an exception with the given message.
+     *
+     * @param message the detail message
+     * @since 2.11.0
+     */
     public InstancioSpiException(String message) {
         super(message);
     }

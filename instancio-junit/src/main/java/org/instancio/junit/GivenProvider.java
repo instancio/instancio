@@ -149,6 +149,7 @@ public interface GivenProvider {
          * Returns an annotation of the specified type, if present.
          *
          * @param annotationType the type of the annotation to retrieve
+         * @param <A>            the annotation type
          * @return the annotation if present, otherwise {@code null}
          * @throws InstancioApiException is more than one annotation
          *                               of the specified type is found
