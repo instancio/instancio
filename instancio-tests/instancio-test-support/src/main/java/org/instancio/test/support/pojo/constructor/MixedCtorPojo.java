@@ -18,6 +18,7 @@ package org.instancio.test.support.pojo.constructor;
 /**
  * A POJO combining constructor-assigned and directly-assigned fields.
  */
+@SuppressWarnings("NullAway.Init")
 public class MixedCtorPojo {
 
     private final String finalCtorField;

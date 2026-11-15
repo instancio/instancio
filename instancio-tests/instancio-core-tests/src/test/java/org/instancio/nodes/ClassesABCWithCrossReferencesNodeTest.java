@@ -19,6 +19,7 @@ import org.instancio.internal.nodes.InternalNode;
 import org.instancio.test.support.pojo.cyclic.ClassesABCWithCrossReferences;
 import org.instancio.test.support.tags.CyclicTag;
 import org.instancio.testsupport.templates.NodeTestTemplate;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -51,7 +52,7 @@ class ClassesABCWithCrossReferencesNodeTest extends NodeTestTemplate<ClassesABCW
         assertThat(stats.nodesAtDepth[4]).isEqualTo(18);
     }
 
-    private void assertNodeRecursively(final InternalNode node, final int expectedDepth, final Stats stats) {
+    private void assertNodeRecursively(final @Nullable InternalNode node, final int expectedDepth, final Stats stats) {
         if (node == null) return;
 
         stats.maxDepth = Math.max(stats.maxDepth, node.getDepth());

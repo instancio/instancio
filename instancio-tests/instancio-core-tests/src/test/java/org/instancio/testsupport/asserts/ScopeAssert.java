@@ -24,6 +24,7 @@ import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
 import org.jspecify.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("UnusedReturnValue")
@@ -39,7 +40,7 @@ public class ScopeAssert extends AbstractAssert<ScopeAssert, Scope> {
     }
 
     public ScopeAssert hasTargetClass(final Class<?> expected) {
-        final Target target = getTarget();
+        final Target target = requireNonNull(getTarget());
 
         if (target instanceof TargetField tf) {
             assertThat(tf.getTargetClass()).isEqualTo(expected);
@@ -50,7 +51,7 @@ public class ScopeAssert extends AbstractAssert<ScopeAssert, Scope> {
     }
 
     public ScopeAssert hasField(final String expected) {
-        final Target target = getTarget();
+        final Target target = requireNonNull(getTarget());
         assertThat(((TargetField) target).getField().getName()).isEqualTo(expected);
         return this;
     }

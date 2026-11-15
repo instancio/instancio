@@ -17,7 +17,6 @@
         <skipPublishing>true</skipPublishing>
         <sonar.skip>true</sonar.skip>
         <jacoco.skip>true</jacoco.skip>
-        <nullaway.severity>OFF</nullaway.severity>
         <version.jmh>1.37</version.jmh>
         <version.maven-shade-plugin>3.6.2</version.maven-shade-plugin>
     </properties>

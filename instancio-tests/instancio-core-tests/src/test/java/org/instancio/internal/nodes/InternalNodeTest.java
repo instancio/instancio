@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
@@ -311,10 +312,10 @@ class InternalNodeTest {
             assertThat(personNode.toDisplayString())
                     .isEqualTo("class Person");
 
-            assertThat(getChildNode(personNode, "age").toDisplayString())
+            assertThat(requireNonNull(getChildNode(personNode, "age")).toDisplayString())
                     .isEqualTo("field Person.age, setter Person.setAge(int)");
 
-            assertThat(getChildNode(personNode, "finalField").toDisplayString())
+            assertThat(requireNonNull(getChildNode(personNode, "finalField")).toDisplayString())
                     .isEqualTo("field Person.finalField");
 
             assertThat(NODE_FACTORY.createRootNode(String.class).toDisplayString())
@@ -324,7 +325,7 @@ class InternalNodeTest {
                     .isEqualTo("class Pair<Item<String>, Foo<List<Integer>>>");
 
             final InternalNode mixedPojo = NODE_FACTORY.createRootNode(MixedPojo.class);
-            assertThat(getChildNode(mixedPojo, "setDynamicField", String.class).toDisplayString())
+            assertThat(requireNonNull(getChildNode(mixedPojo, "setDynamicField", String.class)).toDisplayString())
                     .isEqualTo("setter MixedPojo.setDynamicField(String)");
         }
 

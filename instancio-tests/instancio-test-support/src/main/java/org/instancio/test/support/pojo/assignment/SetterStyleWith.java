@@ -20,7 +20,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Getter
-@SuppressWarnings("unused") // false positive: setters are used via reflection
+@SuppressWarnings({"unused", "NullAway.Init"}) // fields and setters are used via reflection
 public class SetterStyleWith implements SetterStylePojo {
     private int primitiveInt;
     private Integer integerWrapper;

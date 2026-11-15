@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.scope;
 
@@ -101,14 +102,14 @@ class FormatTest {
 
         assertThat(Format.nodePathToRoot(person, "")).isEqualTo("<0:Person>");
 
-        final InternalNode address = NodeUtils.getChildNode(person, "address");
+        final InternalNode address = requireNonNull(NodeUtils.getChildNode(person, "address"));
         assertThat(Format.nodePathToRoot(address, "  ")).isEqualToNormalizingNewlines(
                 """
                           <1:Person: Address address; setAddress(Address)>
                            └──<0:Person>\
                         """);
 
-        final InternalNode phoneNumbers = NodeUtils.getChildNode(address, "phoneNumbers");
+        final InternalNode phoneNumbers = requireNonNull(NodeUtils.getChildNode(address, "phoneNumbers"));
         assertThat(Format.nodePathToRoot(phoneNumbers, " > ")).isEqualToNormalizingWhitespace(
                 """
                          > <2:Address: List<Phone> phoneNumbers; setPhoneNumbers(List<Phone>)>

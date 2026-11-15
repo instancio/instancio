@@ -24,6 +24,7 @@ import lombok.ToString;
  */
 @Getter
 @ToString
+@SuppressWarnings("NullAway.Init")
 public class OverloadedUnmatchedSettersPojo {
     private String a;
     private int b;

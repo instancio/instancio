@@ -44,6 +44,7 @@ class ProvidersTest {
         assertThat(providers.getTypeInstantiators()).isEmpty();
     }
 
+    @SuppressWarnings("NullAway.Init")
     private static class InstancioServiceProviderImpl implements InstancioServiceProvider {
         int initCount;
         ServiceProviderContext context;

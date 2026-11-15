@@ -24,16 +24,19 @@ public class MultipleInterfaceImpls {
     }
 
     @Getter
+    @SuppressWarnings("NullAway.Init")
     public static class WidgetA implements Widget {
         private String widgetName;
     }
 
     @Getter
+    @SuppressWarnings("NullAway.Init")
     public static class WidgetB implements Widget {
         private String widgetName;
     }
 
     @Getter
+    @SuppressWarnings("NullAway.Init")
     public static class WidgetContainer {
         private Widget widget;
     }

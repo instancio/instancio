@@ -44,6 +44,7 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.testsupport.fixtures.Types;
 import org.instancio.testsupport.utils.TypeUtils;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -113,6 +114,7 @@ class ModelContextTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void elementFrameStackIsRealWhenElementOfSelectorPresent() {
         final ModelContext ctx = ModelContext.builder(Person.class)
                 .withSet(elementOf(field(Person.class, "pets")).at(0), null)
@@ -237,6 +239,7 @@ class ModelContextTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void nullSubtype() {
         final ModelContext.Builder builder = ModelContext.builder(Person.class);
         final Selector allLists = all(List.class);
@@ -253,6 +256,7 @@ class ModelContextTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void unusedSelectors() {
         final ModelContext ctx = ModelContext.builder(Person.class)
                 .withSupplier(field("name"), () -> "foo")
@@ -391,7 +395,7 @@ class ModelContextTest {
         return field(field.getDeclaringClass(), field.getName());
     }
 
-    private static InternalNode mockNode(Class<?> targetClass, Field field) {
+    private static InternalNode mockNode(Class<?> targetClass, @Nullable Field field) {
         final InternalNode node = mock(InternalNode.class);
         doReturn(targetClass).when(node).getRawType();
         doReturn(field).when(node).getField();

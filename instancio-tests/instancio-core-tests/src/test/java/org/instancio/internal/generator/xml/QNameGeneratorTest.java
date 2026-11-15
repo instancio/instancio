@@ -16,13 +16,14 @@
 package org.instancio.internal.generator.xml;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.jspecify.annotations.Nullable;
 
 import javax.xml.namespace.QName;
 
 class QNameGeneratorTest extends AbstractGeneratorTestTemplate<QName, QNameGenerator> {
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 

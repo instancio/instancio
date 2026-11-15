@@ -42,6 +42,7 @@ class AnnotationProcessorBVTest {
             .set(Keys.COLLECTION_NULLABLE, false)
             .set(Keys.STRING_NULLABLE, false);
 
+    @SuppressWarnings("NullAway.Init")
     private static class Pojo {
         @StringSuffix(FOO)
         @Size(min = SIZE, max = SIZE)

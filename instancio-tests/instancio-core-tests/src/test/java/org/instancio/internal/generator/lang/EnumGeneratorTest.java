@@ -92,6 +92,7 @@ class EnumGeneratorTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void validation() {
         final EnumGenerator<Gender> generator = new EnumGenerator<>(context, Gender.class);
 

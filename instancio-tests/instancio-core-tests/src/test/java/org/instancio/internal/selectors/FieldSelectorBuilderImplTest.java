@@ -98,7 +98,7 @@ class FieldSelectorBuilderImplTest {
     }
 
     @Test
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     void validation() {
         assertThatThrownBy(() -> selectorBuilder.named(null))
                 .isExactlyInstanceOf(InstancioApiException.class)

@@ -156,7 +156,7 @@ class ElementOfSelectorImplTest {
     }
 
     @Test
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     void fieldRejectsNullSelector() {
         final ElementOfSelector selector = elementOf(AbcListHolder::getAbcElements1);
 
@@ -166,7 +166,7 @@ class ElementOfSelectorImplTest {
     }
 
     @Test
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     void targetRejectsNullSelector() {
         final ElementOfSelector selector = elementOf(AbcListHolder::getAbcElements1);
 

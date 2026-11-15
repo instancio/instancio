@@ -33,6 +33,7 @@ import static org.assertj.core.api.Assertions.withPrecision;
 class NumberUtilsTest {
 
     @Test
+    @SuppressWarnings("NullAway")
     void calculateNewMin() {
         assertNewMin(null, 0, 50, -2);
         assertNewMin(1, 0, 50, -2);
@@ -50,6 +51,7 @@ class NumberUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void calculateNewMax() {
         assertNewMax(null, 0, 50, 2);
         assertNewMax(-1, 0, 50, 2);

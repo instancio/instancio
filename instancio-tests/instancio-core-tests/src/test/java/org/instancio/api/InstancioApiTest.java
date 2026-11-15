@@ -26,6 +26,7 @@ import org.instancio.test.support.pojo.person.Address;
 import org.instancio.test.support.pojo.person.AddressExtension;
 import org.instancio.test.support.pojo.person.Gender;
 import org.instancio.test.support.pojo.person.Person;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -224,6 +225,6 @@ class InstancioApiTest {
     }
 
     private static class ClassWithStaticField {
-        private static String value;
+        private static @Nullable String value;
     }
 }

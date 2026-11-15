@@ -15,6 +15,8 @@
  */
 package org.instancio.test.support.pojo.dynamic;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ public abstract class DynPojoBase {
 
     protected final Map<String, Object> data = new HashMap<>();
 
-    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals", "NullAway"})
     protected final <T> T get(String key) {
         return (T) data.get(key);
     }
@@ -57,7 +59,7 @@ public abstract class DynPojoBase {
         return sb.append("]").toString();
     }
 
-    private static String getValueAsString(final Object obj) {
+    private static @Nullable String getValueAsString(final Object obj) {
         if (obj == null) {
             return null;
         }

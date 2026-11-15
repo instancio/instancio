@@ -17,6 +17,7 @@ package org.instancio.test.support.pojo.misc;
 
 import java.io.Serializable;
 
+@SuppressWarnings("NullAway.Init")
 public class WithSerialVersionUID implements Serializable {
 
     private static final long serialVersionUID = 5516075349620653480L;

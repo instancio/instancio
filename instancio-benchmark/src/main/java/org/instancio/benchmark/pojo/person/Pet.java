@@ -15,6 +15,7 @@
  */
 package org.instancio.benchmark.pojo.person;
 
+@SuppressWarnings("NullAway.Init")
 public class Pet {
 
     enum PetType {CAT, DOG}

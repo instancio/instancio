@@ -24,6 +24,7 @@ import org.instancio.support.DefaultRandom;
 import org.instancio.test.support.tags.Feature;
 import org.instancio.test.support.tags.FeatureTag;
 import org.instancio.testsupport.asserts.HintsAssert;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -38,7 +39,7 @@ public abstract class AbstractGeneratorTestTemplate<T, G extends AbstractGenerat
     protected final int SAMPLE_SIZE = 500;
     protected final Random random = new DefaultRandom();
 
-    protected abstract String getApiMethod();
+    protected abstract @Nullable String getApiMethod();
 
     protected abstract G generator();
 

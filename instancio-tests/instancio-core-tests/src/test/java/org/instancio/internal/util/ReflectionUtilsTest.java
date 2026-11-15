@@ -43,7 +43,7 @@ class ReflectionUtilsTest {
     @Nested
     class GetClassTest {
         @Test
-        @SuppressWarnings("DataFlowIssue")
+        @SuppressWarnings({"NullAway", "DataFlowIssue"})
         void nullClassName() {
             assertThatThrownBy(() -> ReflectionUtils.getClass(null))
                     .isExactlyInstanceOf(InstancioApiException.class)
@@ -123,6 +123,7 @@ class ReflectionUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void getEnumValues() {
         final Gender[] enumValues = ReflectionUtils.getEnumValues(Gender.class);
         assertThat(enumValues).containsExactly(Gender.values());
@@ -161,6 +162,7 @@ class ReflectionUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void getField() {
         record SampleRecord(String foo, int bar) {}
 
@@ -183,6 +185,7 @@ class ReflectionUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void getFieldValue() {
         final Person person = Person.builder().name("foo").build();
 

@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.misc;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +29,7 @@ class SupplierBackedGeneratorTest extends AbstractGeneratorTestTemplate<Object, 
             getGeneratorContext(), () -> EXPECTED_VALUE);
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 

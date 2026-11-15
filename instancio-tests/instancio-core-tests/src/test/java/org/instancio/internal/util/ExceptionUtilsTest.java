@@ -26,6 +26,7 @@ class ExceptionUtilsTest {
     @Nested
     class CausedByTest {
         @Test
+        @SuppressWarnings("NullAway")
         void getCausedIsNull() {
             assertThat(ExceptionUtils.getCausedBy(null)).isEmpty();
         }

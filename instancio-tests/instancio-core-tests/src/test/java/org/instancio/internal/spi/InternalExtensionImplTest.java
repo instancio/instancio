@@ -21,6 +21,7 @@ import org.instancio.test.support.pojo.misc.getters.PropertyStylePojo;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class InternalExtensionImplTest {
@@ -32,15 +33,15 @@ class InternalExtensionImplTest {
         @Test
         void resolveFieldName() {
             // java beans style
-            assertThat(resolver.resolveField(BeanStylePojo.class, "getFoo").getName()).isEqualTo("foo");
-            assertThat(resolver.resolveField(BeanStylePojo.class, "isBar").getName()).isEqualTo("bar");
+            assertThat(requireNonNull(resolver.resolveField(BeanStylePojo.class, "getFoo")).getName()).isEqualTo("foo");
+            assertThat(requireNonNull(resolver.resolveField(BeanStylePojo.class, "isBar")).getName()).isEqualTo("bar");
 
             // property style getters (e.g. java records)
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "foo").getName()).isEqualTo("foo");
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "bar").getName()).isEqualTo("bar");
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "isBaz").getName()).isEqualTo("isBaz");
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "haz").getName()).isEqualTo("haz");
-            assertThat(resolver.resolveField(PropertyStylePojo.class, "hasGaz").getName()).isEqualTo("hasGaz");
+            assertThat(requireNonNull(resolver.resolveField(PropertyStylePojo.class, "foo")).getName()).isEqualTo("foo");
+            assertThat(requireNonNull(resolver.resolveField(PropertyStylePojo.class, "bar")).getName()).isEqualTo("bar");
+            assertThat(requireNonNull(resolver.resolveField(PropertyStylePojo.class, "isBaz")).getName()).isEqualTo("isBaz");
+            assertThat(requireNonNull(resolver.resolveField(PropertyStylePojo.class, "haz")).getName()).isEqualTo("haz");
+            assertThat(requireNonNull(resolver.resolveField(PropertyStylePojo.class, "hasGaz")).getName()).isEqualTo("hasGaz");
         }
     }
 }

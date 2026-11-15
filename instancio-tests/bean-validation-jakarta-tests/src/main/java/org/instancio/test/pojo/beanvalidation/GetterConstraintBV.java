@@ -21,7 +21,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.ToString;
 
-@SuppressWarnings("NullablePrimitive")
+@SuppressWarnings({"NullablePrimitive", "NullAway.Init"})
 public class GetterConstraintBV {
 
     @ToString

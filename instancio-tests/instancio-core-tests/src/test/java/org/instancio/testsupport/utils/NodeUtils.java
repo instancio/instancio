@@ -16,6 +16,7 @@
 package org.instancio.testsupport.utils;
 
 import org.instancio.internal.nodes.InternalNode;
+import org.jspecify.annotations.Nullable;
 
 public class NodeUtils {
 
@@ -23,14 +24,14 @@ public class NodeUtils {
         // non-instantiable
     }
 
-    public static InternalNode getChildNode(InternalNode parent, String fieldName) {
+    public static @Nullable InternalNode getChildNode(InternalNode parent, String fieldName) {
         return parent.getChildren().stream()
                 .filter(it -> it.getField() != null && it.getField().getName().equals(fieldName))
                 .findAny()
                 .orElse(null);
     }
 
-    public static InternalNode getChildNode(InternalNode parent, String setterName, Class<?> parameterType) {
+    public static @Nullable InternalNode getChildNode(InternalNode parent, String setterName, Class<?> parameterType) {
         return parent.getChildren().stream()
                 .filter(it -> it.getSetter() != null
                         && it.getSetter().getName().equals(setterName)

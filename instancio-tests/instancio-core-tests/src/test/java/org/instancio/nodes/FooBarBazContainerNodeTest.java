@@ -23,6 +23,7 @@ import org.instancio.test.support.pojo.generics.foobarbaz.FooBarBazContainer;
 import org.instancio.testsupport.templates.NodeTestTemplate;
 import org.instancio.testsupport.utils.NodeUtils;
 
+import static java.util.Objects.requireNonNull;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
@@ -47,7 +48,7 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
                         "Baz<java.lang.String>>>")
                 .hasChildrenOfSize(2);
 
-        final InternalNode fooValueNode = NodeUtils.getChildNode(itemNode, "fooValue");
+        final InternalNode fooValueNode = requireNonNull(NodeUtils.getChildNode(itemNode, "fooValue"));
         assertNode(fooValueNode)
                 .hasDepth(2)
                 .hasTargetClass(Bar.class)
@@ -63,7 +64,7 @@ class FooBarBazContainerNodeTest extends NodeTestTemplate<FooBarBazContainer> {
                 .hasTargetClass(Object.class)
                 .hasNoChildren();
 
-        final InternalNode barValueNode = NodeUtils.getChildNode(fooValueNode, "barValue");
+        final InternalNode barValueNode = requireNonNull(NodeUtils.getChildNode(fooValueNode, "barValue"));
         assertNode(barValueNode)
                 .hasDepth(3)
                 .hasTargetClass(Baz.class)

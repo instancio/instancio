@@ -83,6 +83,7 @@ class DurationGeneratorTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void validation() {
         assertThatThrownBy(() -> generator.of(2, 1, ChronoUnit.NANOS))
                 .isExactlyInstanceOf(InstancioApiException.class)

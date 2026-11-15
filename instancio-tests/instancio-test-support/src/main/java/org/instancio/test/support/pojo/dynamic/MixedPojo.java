@@ -19,6 +19,7 @@ package org.instancio.test.support.pojo.dynamic;
  * A class containing different types of fields,
  * including regular and dynamic fields.
  */
+@SuppressWarnings("NullAway.Init")
 public class MixedPojo extends DynPojoBase {
 
     private static final String DYNAMIC_FIELD = "dynamicField";

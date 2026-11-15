@@ -32,6 +32,7 @@ import static org.instancio.Select.all;
 @ExtendWith(InstancioExtension.class)
 class ApplyFeedBVTest {
 
+    @SuppressWarnings("NullAway.Init")
     private static class Pojo {
         @NotNull
         @Digits(integer = 5, fraction = 0)

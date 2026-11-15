@@ -19,6 +19,7 @@ import org.apache.commons.lang3.Strings;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.SoftAssertions;
 import org.instancio.test.support.util.Constants;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,7 +162,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         return this;
     }
 
-    private void assertMap(Map<?, ?> map, Field field) {
+    private void assertMap(Map<?, ?> map, @Nullable Field field) {
         softly.assertThat(map)
                 .as("Unexpected map results; field: %s", format(field))
                 .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE);
@@ -172,14 +173,14 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         }
     }
 
-    private void assertCollection(Collection<?> collection, Field field) {
+    private void assertCollection(Collection<?> collection, @Nullable Field field) {
         softly.assertThat(collection)
                 .as("Unexpected collection results; field: %s", format(field))
                 .hasSizeBetween(Constants.MIN_SIZE, Constants.MAX_SIZE)
                 .allSatisfy(it -> assertThatObject(it).isFullyPopulated());
     }
 
-    private void assertArray(Object array, Field field) {
+    private void assertArray(Object array, @Nullable Field field) {
         final int size = Array.getLength(array);
 
         softly.assertThat(size)
@@ -192,7 +193,7 @@ public class ReflectionAssert extends AbstractAssert<ReflectionAssert, Object> {
         }
     }
 
-    private static String format(final Field field) {
+    private static String format(final @Nullable Field field) {
         return field == null ? "n/a" : String.format("%s.%s", field.getDeclaringClass().getSimpleName(), field.getName());
     }
 

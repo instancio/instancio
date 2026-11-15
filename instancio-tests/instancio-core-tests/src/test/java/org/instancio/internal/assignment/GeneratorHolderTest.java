@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class GeneratorHolderTest {
 
     @Test
+    @SuppressWarnings("NullAway")
     void ofSupplier() {
         assertThatThrownBy(() -> GeneratorHolder.of((Supplier<?>) null))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -35,6 +36,7 @@ class GeneratorHolderTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void ofGenerator() {
         assertThatThrownBy(() -> GeneratorHolder.of((Generator<?>) null))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -42,6 +44,7 @@ class GeneratorHolderTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void ofGeneratorSpecProvider() {
         assertThatThrownBy(() -> GeneratorHolder.of((GeneratorSpecProvider<?>) null))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -49,6 +52,7 @@ class GeneratorHolderTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void ofGeneratorSpec() {
         assertThatThrownBy(() -> GeneratorHolder.of((GeneratorSpec<?>) null))
                 .isExactlyInstanceOf(InstancioApiException.class)

@@ -18,6 +18,7 @@ package org.instancio.test.pojo.beanvalidation;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CPF;
 
+@SuppressWarnings("NullAway.Init")
 public class CpfBV {
 
     @CPF

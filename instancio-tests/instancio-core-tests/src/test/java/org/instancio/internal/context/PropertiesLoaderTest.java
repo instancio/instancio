@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -225,15 +226,15 @@ class PropertiesLoaderTest {
                 systemProperties("instancio.config.file", file.toString()),
                 Map.of(minEnvVar, "20")).properties());
 
-        assertThat(((Number) raisedMin.get(Keys.get(minKey))).longValue()).isEqualTo(20);
-        assertThat(((Number) raisedMin.get(Keys.get(maxKey))).longValue()).isGreaterThanOrEqualTo(20);
+        assertThat(((Number) raisedMin.get(requireNonNull(Keys.get(minKey)))).longValue()).isEqualTo(20);
+        assertThat(((Number) raisedMin.get(requireNonNull(Keys.get(maxKey)))).longValue()).isGreaterThanOrEqualTo(20);
 
         final Settings loweredMax = Settings.from(PropertiesLoader.load(
                 systemProperties("instancio.config.file", file.toString(), "instancio." + maxKey, "1"),
                 Map.of()).properties());
 
-        assertThat(((Number) loweredMax.get(Keys.get(maxKey))).longValue()).isEqualTo(1);
-        assertThat(((Number) loweredMax.get(Keys.get(minKey))).longValue()).isLessThanOrEqualTo(1);
+        assertThat(((Number) loweredMax.get(requireNonNull(Keys.get(maxKey)))).longValue()).isEqualTo(1);
+        assertThat(((Number) loweredMax.get(requireNonNull(Keys.get(minKey)))).longValue()).isLessThanOrEqualTo(1);
     }
 
     @Test

@@ -17,6 +17,7 @@ package org.instancio.benchmark.pojo.person;
 
 import java.util.List;
 
+@SuppressWarnings("NullAway.Init")
 public class Address {
     private String street;
     private String city;

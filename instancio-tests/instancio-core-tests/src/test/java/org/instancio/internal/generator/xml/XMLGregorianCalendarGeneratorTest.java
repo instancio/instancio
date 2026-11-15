@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.xml;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.jspecify.annotations.Nullable;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -23,7 +24,7 @@ class XMLGregorianCalendarGeneratorTest
         extends AbstractGeneratorTestTemplate<XMLGregorianCalendar, XMLGregorianCalendarGenerator> {
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 

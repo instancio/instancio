@@ -17,6 +17,7 @@ package org.instancio.test.support.asserts;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.SoftAssertions;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -108,7 +109,7 @@ public class ClassAssert extends AbstractAssert<ClassAssert, Class<?>> {
 
     }
 
-    private static Class<?> getSuperInterface(final Class<?> klass, final String interfaceSimpleName) {
+    private static @Nullable Class<?> getSuperInterface(final Class<?> klass, final String interfaceSimpleName) {
         for (Class<?> c : klass.getInterfaces()) {
             if (c.getSimpleName().equals(interfaceSimpleName)) {
                 return c;

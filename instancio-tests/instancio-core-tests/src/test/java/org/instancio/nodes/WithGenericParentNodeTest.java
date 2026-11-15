@@ -25,6 +25,7 @@ import org.instancio.testsupport.utils.NodeUtils;
 
 import java.time.Month;
 
+import static java.util.Objects.requireNonNull;
 import static org.instancio.testsupport.asserts.NodeAssert.assertNode;
 
 class WithGenericParentNodeTest extends NodeTestTemplate<WithGenericParent> {
@@ -36,9 +37,9 @@ class WithGenericParentNodeTest extends NodeTestTemplate<WithGenericParent> {
                 .hasEmptyTypeMap()
                 .hasChildrenOfSize(3);
 
-        assertGenericParent(NodeUtils.getChildNode(rootNode, "genericParent"));
-        assertGenericChild(NodeUtils.getChildNode(rootNode, "genericChild"));
-        assertGenericGrandChild(NodeUtils.getChildNode(rootNode, "genericGrandChild"));
+        assertGenericParent(requireNonNull(NodeUtils.getChildNode(rootNode, "genericParent")));
+        assertGenericChild(requireNonNull(NodeUtils.getChildNode(rootNode, "genericChild")));
+        assertGenericGrandChild(requireNonNull(NodeUtils.getChildNode(rootNode, "genericGrandChild")));
     }
 
     private static void assertGenericParent(final InternalNode node) {

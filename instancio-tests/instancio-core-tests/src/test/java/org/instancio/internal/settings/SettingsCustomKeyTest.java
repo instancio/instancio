@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SettingsCustomKeyTest {
 
+    @SuppressWarnings("NullAway")
     private static final SettingKey<StringHolder> KEY = Keys
             .ofType(StringHolder.class, /* defaultValue = */ null)
             .create();
@@ -51,6 +52,7 @@ class SettingsCustomKeyTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void validation() {
         assertThatThrownBy(() -> Keys.ofType(null, null))
                 .isExactlyInstanceOf(InstancioApiException.class)

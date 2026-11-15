@@ -22,6 +22,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@SuppressWarnings("NullAway.Init")
 public class BaseClassSubClassInheritance {
 
     private SubClass subClass;
@@ -29,6 +30,7 @@ public class BaseClassSubClassInheritance {
     @Getter
     @Setter
     @ToString
+    @SuppressWarnings("NullAway.Init")
     public static class BaseClass {
         private String privateBaseClassField;
         protected String protectedBaseClassField;
@@ -37,6 +39,7 @@ public class BaseClassSubClassInheritance {
     @Getter
     @Setter
     @ToString(callSuper = true)
+    @SuppressWarnings("NullAway.Init")
     public static class SubClass extends BaseClass {
         private String subClassField;
     }

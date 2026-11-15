@@ -21,6 +21,7 @@ import org.instancio.Instancio;
 import org.instancio.TypeToken;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ class CollectionAndGuavaCollectionRepeatabilityTest {
 
     private static final long SEED = 12345L;
 
-    private static Map<String, Integer> first;
+    private static @Nullable Map<String, Integer> first;
 
     @Seed(SEED)
     @Order(1)

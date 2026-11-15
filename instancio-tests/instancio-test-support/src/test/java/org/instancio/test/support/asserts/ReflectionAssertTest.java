@@ -81,6 +81,7 @@ class ReflectionAssertTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void isFullyPopulatedWithNullObject() {
         final Address address = createAddressFilledWithFoo();
 

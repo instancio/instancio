@@ -96,6 +96,7 @@ class CreateClassBulkAutoVerificationTest {
                 Arguments.of(TypeToCreate.of(int[].class)));
     }
 
+    @SuppressWarnings("NullAway.Init")
     private static class TypeToCreate {
         private Class<?> targetClass;
         private Class<?>[] typeArgs;

@@ -23,6 +23,7 @@ import lombok.ToString;
  */
 @Setter
 @ToString
+@SuppressWarnings("NullAway.Init")
 public class PropertiesInterfaceImpl implements PropertiesInterface {
 
     private String value;

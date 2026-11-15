@@ -149,6 +149,7 @@ class ProtoSelectorTest {
             @Given final String expected) {
 
         //@formatter:off
+        @SuppressWarnings("NullAway.Init")
         class Pojo {
             private String value;
             String getValue() { return value; }

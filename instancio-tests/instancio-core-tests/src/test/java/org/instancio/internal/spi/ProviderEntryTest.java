@@ -69,6 +69,7 @@ class ProviderEntryTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void shouldInvokeFunctionOnlyOncePerInstancioServiceProvider() {
         final InstancioServiceProvider provider1 = createProvider();
         final InstancioServiceProvider provider2 = createProvider();

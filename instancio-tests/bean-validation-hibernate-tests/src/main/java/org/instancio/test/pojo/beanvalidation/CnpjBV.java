@@ -18,6 +18,7 @@ package org.instancio.test.pojo.beanvalidation;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
 
+@SuppressWarnings("NullAway.Init")
 public class CnpjBV {
 
     @CNPJ

@@ -25,6 +25,7 @@ public class OverriddenSetterPojo {
     }
 
     @ToString
+    @SuppressWarnings("NullAway.Init")
     public static class Parent {
         private String parentSetterValue;
 
@@ -38,6 +39,7 @@ public class OverriddenSetterPojo {
     }
 
     @ToString(callSuper = true)
+    @SuppressWarnings("NullAway.Init")
     public static class Child extends Parent {
         private String childSetterValue;
 

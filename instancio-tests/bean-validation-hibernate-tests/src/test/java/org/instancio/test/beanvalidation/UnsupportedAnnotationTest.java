@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class UnsupportedAnnotationTest {
 
+    @SuppressWarnings("NullAway.Init")
     private static class Pojo {
 
         @NotNull

@@ -40,6 +40,7 @@ class AnnotationProcessorPrecedenceBVTest {
 
     @Test
     void withCollectionSizeOneFirst() {
+        @SuppressWarnings("NullAway.Init")
         class Pojo {
             @CollectionSizeOne // first
             @Size(min = SIZE, max = SIZE)
@@ -52,6 +53,7 @@ class AnnotationProcessorPrecedenceBVTest {
 
     @Test
     void withCollectionSizeOneLast() {
+        @SuppressWarnings("NullAway.Init")
         class Pojo {
             @Size(min = SIZE, max = SIZE)
             @CollectionSizeOne // last

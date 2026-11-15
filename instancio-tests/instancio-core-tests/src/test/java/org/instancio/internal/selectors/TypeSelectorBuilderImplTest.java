@@ -75,7 +75,7 @@ class TypeSelectorBuilderImplTest {
     }
 
     @Test
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     void validation() {
         assertThatThrownBy(() -> selectorBuilder.of(null))
                 .isExactlyInstanceOf(InstancioApiException.class)

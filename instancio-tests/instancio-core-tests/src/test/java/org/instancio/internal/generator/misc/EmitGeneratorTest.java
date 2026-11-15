@@ -25,6 +25,7 @@ import org.instancio.support.DefaultRandom;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -47,7 +48,7 @@ class EmitGeneratorTest {
 
     @Test
     void emitNullIsFalse() {
-        final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
+        final InternalGeneratorHint hint = requireNonNull(generator.hints().get(InternalGeneratorHint.class));
         assertThat(hint.emitNull()).isFalse();
     }
 
@@ -55,7 +56,7 @@ class EmitGeneratorTest {
     void emitNullIsTrue() {
         generator.whenEmptyEmitNull();
 
-        final InternalGeneratorHint hint = generator.hints().get(InternalGeneratorHint.class);
+        final InternalGeneratorHint hint = requireNonNull(generator.hints().get(InternalGeneratorHint.class));
         assertThat(hint.emitNull()).isTrue();
     }
 

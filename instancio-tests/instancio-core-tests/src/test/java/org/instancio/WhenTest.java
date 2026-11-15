@@ -64,7 +64,7 @@ class WhenTest {
     }
 
     @Test
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     void isIn_rejectsNullArray() {
         assertThatThrownBy(() -> When.isIn((Object[]) null))
                 .isExactlyInstanceOf(InstancioApiException.class)

@@ -33,6 +33,7 @@ class ProtoAdhocTest {
      * This POJO is tailored to verify {@code ProtoSetterMethodResolver}
      * branches that return null.
      */
+    @SuppressWarnings("NullAway.Init")
     private static class ProtoHolder {
         Proto.Person protoPerson;
 

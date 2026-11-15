@@ -39,7 +39,7 @@ class InternalAssignmentTest {
         private final InternalAssignment.Builder builder = InternalAssignment.builder();
 
         @Test
-        @SuppressWarnings("DataFlowIssue")
+        @SuppressWarnings({"NullAway", "DataFlowIssue"})
         void origin() {
             assertThatThrownBy(() -> builder.origin(null))
                     .isExactlyInstanceOf(InstancioApiException.class)
@@ -47,7 +47,7 @@ class InternalAssignmentTest {
         }
 
         @Test
-        @SuppressWarnings("DataFlowIssue")
+        @SuppressWarnings({"NullAway", "DataFlowIssue"})
         void destination() {
             assertThatThrownBy(() -> builder.destination(null))
                     .isExactlyInstanceOf(InstancioApiException.class)

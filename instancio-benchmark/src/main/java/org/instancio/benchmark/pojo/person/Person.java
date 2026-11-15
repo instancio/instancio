@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("NullAway.Init")
 public class Person {
     private UUID id;
     private String firstName;

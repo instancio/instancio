@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.util;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.OptionalInt;
@@ -25,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class OptionalIntGeneratorTest extends AbstractGeneratorTestTemplate<OptionalInt, OptionalIntGenerator> {
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 

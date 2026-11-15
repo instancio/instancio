@@ -155,6 +155,7 @@ class GuavaTableTest {
         }
     }
 
+    @SuppressWarnings("NullAway.Init")
     private static class TableHolder {
         private Table<String, Character, Integer> table1;
         private Table<String, Character, Integer> table2;

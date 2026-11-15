@@ -49,6 +49,7 @@ class KeysTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void createWithoutPropertyKey() {
         final SettingKey<String> key = Keys.ofType(String.class, null).create();
 
@@ -59,7 +60,7 @@ class KeysTest {
     }
 
     @Test
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     void validationNullType() {
         assertThatThrownBy(() -> Keys.ofType(null, null))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -67,7 +68,7 @@ class KeysTest {
     }
 
     @Test
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     void validationNullPropertyKey() {
         final SettingKey.SettingKeyBuilder<String> builder = Keys.ofType(String.class, null);
 

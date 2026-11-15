@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DelayedNodeTest {
 
     @Test
+    @SuppressWarnings("NullAway")
     void verifyToString() {
         final DelayedNode delayedNode = new DelayedNode(Fixtures.node(String.class),
                 GeneratorResult.resolved("foo", Hints.afterGenerate(AfterGenerate.APPLY_SELECTORS)), null);
