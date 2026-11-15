@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 /**
  * Spec for generating {@link Number} types.
  *
+ * @param <T> the number type
  * @since 2.6.0
  */
 public interface NumberSpec<T extends @Nullable Number> extends ValueSpec<T>, NumberGeneratorSpec<T> {

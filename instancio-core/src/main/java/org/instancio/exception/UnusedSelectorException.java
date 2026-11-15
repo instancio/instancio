@@ -33,6 +33,13 @@ public class UnusedSelectorException extends InstancioApiException {
 
     private final transient Map<ApiMethod, List<TargetSelector>> unusedSelectorMap;
 
+    /**
+     * Creates an exception with the given message and unused selectors.
+     *
+     * @param message           the detail message
+     * @param unusedSelectorMap the unused selectors, grouped by the API method they were passed to
+     * @since 6.0.0
+     */
     public UnusedSelectorException(
             final String message,
             final Map<ApiMethod, List<TargetSelector>> unusedSelectorMap) {
@@ -41,6 +48,12 @@ public class UnusedSelectorException extends InstancioApiException {
         this.unusedSelectorMap = Collections.unmodifiableMap(unusedSelectorMap);
     }
 
+    /**
+     * Returns the unused selectors, grouped by the API method they were passed to.
+     *
+     * @return an unmodifiable map of unused selectors
+     * @since 4.5.0
+     */
     public Map<ApiMethod, List<TargetSelector>> getUnusedSelectorMap() {
         return unusedSelectorMap;
     }

@@ -161,6 +161,7 @@ public interface FeedSpecAnnotations {
          * }
          * }</pre>
          *
+         * @return the template
          * @since 5.0.0
          */
         @ExperimentalApi

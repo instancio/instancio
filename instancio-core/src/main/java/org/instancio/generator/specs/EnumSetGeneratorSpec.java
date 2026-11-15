@@ -23,6 +23,7 @@ import java.util.Set;
 /**
  * Generator spec for {@link EnumSet}.
  *
+ * @param <E> enum type
  * @since 2.0.0
  */
 public interface EnumSetGeneratorSpec<E extends Enum<E>> extends GeneratorSpec<Set<E>> {

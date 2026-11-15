@@ -1,3 +1,6 @@
+/**
+ * JUnit Jupiter integration for Instancio.
+ */
 module org.instancio.junit {
   requires transitive org.instancio.core;
 

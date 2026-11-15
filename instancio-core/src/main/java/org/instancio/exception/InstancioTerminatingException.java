@@ -25,10 +25,23 @@ import org.jspecify.annotations.Nullable;
  */
 public class InstancioTerminatingException extends InstancioException {
 
+    /**
+     * Creates an exception with the given message.
+     *
+     * @param message the detail message
+     * @since 2.15.0
+     */
     public InstancioTerminatingException(String message) {
         super(message);
     }
 
+    /**
+     * Creates an exception with the given message and cause.
+     *
+     * @param message the detail message
+     * @param cause   the cause, or {@code null} if there is none
+     * @since 2.15.0
+     */
     public InstancioTerminatingException(String message, @Nullable Throwable cause) {
         super(message, cause);
     }

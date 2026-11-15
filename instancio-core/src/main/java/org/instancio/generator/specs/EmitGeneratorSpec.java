@@ -24,6 +24,7 @@ import java.util.Map;
 /**
  * A generator spec that emits given items to a selector's target.
  *
+ * @param <T> type of value
  * @since 2.12.0
  */
 @ExperimentalApi

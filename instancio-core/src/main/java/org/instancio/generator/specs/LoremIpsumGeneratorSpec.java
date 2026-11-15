@@ -37,6 +37,7 @@ public interface LoremIpsumGeneratorSpec extends GeneratorSpec<String> {
     /**
      * Number of words to generate. Default is {@link #DEFAULT_WORDS}.
      *
+     * @param words number of words
      * @return spec builder
      * @since 1.5.3
      */
@@ -45,6 +46,7 @@ public interface LoremIpsumGeneratorSpec extends GeneratorSpec<String> {
     /**
      * Number of paragraphs to generate. Default is {@link #DEFAULT_PARAGRAPHS}.
      *
+     * @param paragraphs number of paragraphs
      * @return spec builder
      * @since 1.5.3
      */

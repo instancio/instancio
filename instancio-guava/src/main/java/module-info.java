@@ -3,6 +3,9 @@ import org.instancio.guava.internal.spi.GuavaProvider;
 import org.instancio.internal.spi.InternalExtension;
 import org.instancio.spi.InstancioServiceProvider;
 
+/**
+ * Instancio support for Guava types.
+ */
 module org.instancio.guava {
     requires transitive org.instancio.core;
 

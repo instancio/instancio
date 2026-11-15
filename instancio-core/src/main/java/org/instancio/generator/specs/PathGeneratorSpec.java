@@ -27,6 +27,7 @@ import java.nio.file.Path;
 /**
  * Generator spec for customising {@link File Files} and {@link Path Paths}.
  *
+ * @param <T> generated type
  * @since 2.1.0
  */
 public interface PathGeneratorSpec<T> extends AsGeneratorSpec<T> {

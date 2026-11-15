@@ -3,6 +3,9 @@ import org.instancio.protobuf.internal.spi.ProtoInternalExtension;
 import org.instancio.protobuf.internal.spi.ProtoServiceProvider;
 import org.instancio.spi.InstancioServiceProvider;
 
+/**
+ * Instancio support for Protocol Buffers types.
+ */
 module org.instancio.protobuf {
     requires transitive org.instancio.core;
 

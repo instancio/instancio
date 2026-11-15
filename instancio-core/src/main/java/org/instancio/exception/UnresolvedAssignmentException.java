@@ -27,6 +27,13 @@ import org.jspecify.annotations.Nullable;
 @SuppressWarnings(Sonar.NUMBER_OF_PARENTS)
 public class UnresolvedAssignmentException extends InstancioApiException {
 
+    /**
+     * Creates an exception with the given message and cause.
+     *
+     * @param message the detail message
+     * @param cause   the cause, or {@code null} if there is none
+     * @since 3.0.0
+     */
     public UnresolvedAssignmentException(final String message, @Nullable final Throwable cause) {
         super(message, cause);
     }

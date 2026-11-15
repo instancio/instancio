@@ -232,7 +232,7 @@ jobs:
             central:https://central.sonatype.com
 
       - name: 'Deploy snapshots'
-        run: ./mvnw -Prelease deploy -DskipTests
+        run: ./mvnw deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}

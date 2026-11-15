@@ -26,10 +26,23 @@ import org.jspecify.annotations.Nullable;
 @SuppressWarnings(Sonar.NUMBER_OF_PARENTS)
 public class InstancioApiException extends InstancioTerminatingException {
 
+    /**
+     * Creates an exception with the given message.
+     *
+     * @param message the detail message
+     * @since 1.0.1
+     */
     public InstancioApiException(String message) {
         super(message);
     }
 
+    /**
+     * Creates an exception with the given message and cause.
+     *
+     * @param message the detail message
+     * @param cause   the cause, or {@code null} if there is none
+     * @since 1.0.1
+     */
     public InstancioApiException(String message, @Nullable Throwable cause) {
         super(message, cause);
     }

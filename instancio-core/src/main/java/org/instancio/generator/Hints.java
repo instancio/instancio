@@ -56,6 +56,13 @@ public final class Hints {
         return builder().afterGenerate(afterGenerate).build();
     }
 
+    /**
+     * Returns a builder initialised with the hints of the given instance.
+     *
+     * @param copy the hints to copy
+     * @return builder
+     * @since 2.0.0
+     */
     public static Builder builder(final Hints copy) {
         Builder builder = new Builder();
         builder.afterGenerate = copy.afterGenerate;

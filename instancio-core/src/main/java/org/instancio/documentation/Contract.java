@@ -92,6 +92,7 @@ public @interface Contract {
      * Contains the contract clauses describing causal relations
      * between call arguments and the returned value
      *
+     * @return the contract clauses
      * @since 6.0.0
      */
     String value() default "";

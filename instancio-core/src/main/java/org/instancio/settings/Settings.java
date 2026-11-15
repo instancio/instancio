@@ -147,6 +147,7 @@ public interface Settings {
      *
      * @param key   the key to set, not {@code null}
      * @param value to set, can be {@code null}
+     * @param <T>   setting value type
      * @return this instance of settings
      */
     <T extends @Nullable Object> Settings set(SettingKey<T> key, T value);
