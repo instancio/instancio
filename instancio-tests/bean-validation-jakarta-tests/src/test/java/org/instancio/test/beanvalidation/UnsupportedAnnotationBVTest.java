@@ -33,6 +33,7 @@ import static org.instancio.test.support.util.Constants.SAMPLE_SIZE_DD;
 @ExtendWith(InstancioExtension.class)
 class UnsupportedAnnotationBVTest {
 
+    @SuppressWarnings("NullAway.Init")
     private static class WithUnsupported {
         @NotNull
         @Pattern(regexp = "^foo$")

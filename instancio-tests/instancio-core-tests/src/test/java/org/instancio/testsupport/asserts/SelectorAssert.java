@@ -26,9 +26,11 @@ import org.instancio.internal.selectors.TargetClass;
 import org.instancio.internal.selectors.TargetField;
 import org.instancio.internal.selectors.TargetRoot;
 import org.instancio.internal.selectors.TargetSetter;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("UnusedReturnValue")
@@ -49,7 +51,7 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     }
 
     public SelectorAssert hasTargetClass(Class<?> expected) {
-        assertThat(getAs(PredicateSelectorImpl.class).getTarget().getTargetClass()).isEqualTo(expected);
+        assertThat(requireNonNull(getAs(PredicateSelectorImpl.class).getTarget()).getTargetClass()).isEqualTo(expected);
         return this;
     }
 
@@ -57,14 +59,14 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
         return hasFieldName(null);
     }
 
-    public SelectorAssert hasFieldName(String expected) {
-        final Target target = getAs(PredicateSelectorImpl.class).getTarget();
+    public SelectorAssert hasFieldName(@Nullable String expected) {
+        final Target target = requireNonNull(getAs(PredicateSelectorImpl.class).getTarget());
         assertThat(((TargetField) target).getField().getName()).isEqualTo(expected);
         return this;
     }
 
     public SelectorAssert hasMethodName(String expected) {
-        final Target target = getAs(PredicateSelectorImpl.class).getTarget();
+        final Target target = requireNonNull(getAs(PredicateSelectorImpl.class).getTarget());
         assertThat(((TargetSetter) target).getSetter().getName()).isEqualTo(expected);
         return this;
     }
@@ -89,7 +91,7 @@ public class SelectorAssert extends AbstractAssert<SelectorAssert, TargetSelecto
     public SelectorAssert isRootSelector() {
         final PredicateSelectorImpl selector = getAs(PredicateSelectorImpl.class);
         assertThat(selector.getTarget()).isExactlyInstanceOf(TargetRoot.class);
-        assertThat(selector.getTarget().getTargetClass()).isNull();
+        assertThat(requireNonNull(selector.getTarget()).getTargetClass()).isNull();
         assertThat(selector.getScopes()).isEmpty();
         assertThat(selector.getStackTraceHolder()).isNotNull();
         return this;

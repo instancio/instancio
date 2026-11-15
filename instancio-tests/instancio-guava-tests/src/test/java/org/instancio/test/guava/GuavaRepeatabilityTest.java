@@ -20,6 +20,7 @@ import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.instancio.junit.Seed;
 import org.instancio.test.pojo.guava.AllSupportedGuavaTypes;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class GuavaRepeatabilityTest {
 
     private static final long SEED = 12345L;
 
-    private static AllSupportedGuavaTypes first;
+    private static @Nullable AllSupportedGuavaTypes first;
 
     @Seed(SEED)
     @Order(1)

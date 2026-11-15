@@ -31,6 +31,7 @@ class GeneratorActionDecoratorTest {
     /**
      * All internal generators extend from AbstractGenerator.
      */
+    @SuppressWarnings("NullAway")
     private static class DummyInternalGenerator extends AbstractGenerator<Object> {
         private DummyInternalGenerator() {
             super(null);
@@ -47,6 +48,7 @@ class GeneratorActionDecoratorTest {
         }
     }
 
+    @SuppressWarnings("NullAway")
     private static class DummyGenerator implements Generator<Object> {
         private final Hints hints;
 
@@ -96,6 +98,7 @@ class GeneratorActionDecoratorTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void decorateGeneratorWithoutAfterGenerate() {
         assertDecorated(new DummyGenerator(null));
         assertDecorated(new DummyGenerator(Hints.builder().build()));

@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -142,7 +143,7 @@ class CollectionUtilsTest {
         final Map<String, List<Integer>> mutableMapCopy = CollectionUtils.copyAsLinkedHashMap(
                 Collections.unmodifiableMap(map));
 
-        mutableMapCopy.get("foo").add(123);
+        requireNonNull(mutableMapCopy.get("foo")).add(123);
         assertThat(mutableMapCopy).containsValue(List.of(42, 43, 123));
 
         mutableMapCopy.put("bar", Arrays.asList(567));
@@ -175,7 +176,7 @@ class CollectionUtilsTest {
         assertThatThrownBy(() -> mapCopy.put("bar", List.of(123)))
                 .isInstanceOf(UnsupportedOperationException.class);
 
-        final List<Integer> listCopy = mapCopy.get("foo");
+        final List<Integer> listCopy = requireNonNull(mapCopy.get("foo"));
 
         assertThatThrownBy(() -> listCopy.add(123))
                 .isInstanceOf(UnsupportedOperationException.class);
@@ -224,6 +225,7 @@ class CollectionUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void identityIndexOf() {
         final StringHolder a = new StringHolder("x");
         final StringHolder b = new StringHolder("x");

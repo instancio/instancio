@@ -16,6 +16,7 @@
 package org.instancio.internal.annotation;
 
 import org.instancio.internal.util.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -43,12 +45,12 @@ class AnnotationMapTest {
     @Bar
     @Baz
     @SuppressWarnings("unused") // used via reflection
-    private static final Object DUMMY = null;
+    private static final @Nullable Object DUMMY = null;
 
     private static final Annotation[] ANNOTATIONS =
             ReflectionUtils.getField(AnnotationMapTest.class, "DUMMY").getDeclaredAnnotations();
 
-    private static Annotation getAnnotation(Class<?> type) {
+    private static @Nullable Annotation getAnnotation(Class<?> type) {
         return Arrays.stream(ANNOTATIONS)
                 .filter(a -> a.annotationType() == type)
                 .findAny().orElse(null);
@@ -93,7 +95,7 @@ class AnnotationMapTest {
 
         @Test
         void getRemainingExceptPrimary() {
-            final Annotation bar = getAnnotation(Bar.class);
+            final Annotation bar = requireNonNull(getAnnotation(Bar.class));
             map.setPrimary(bar);
 
             assertThat(map.getAnnotations())

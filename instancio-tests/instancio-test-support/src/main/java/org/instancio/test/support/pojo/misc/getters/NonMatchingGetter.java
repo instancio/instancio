@@ -15,6 +15,7 @@
  */
 package org.instancio.test.support.pojo.misc.getters;
 
+@SuppressWarnings("NullAway.Init")
 public class NonMatchingGetter {
     private String foo;
 

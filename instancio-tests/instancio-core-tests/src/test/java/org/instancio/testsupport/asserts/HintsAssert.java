@@ -23,6 +23,7 @@ import org.instancio.generator.hints.CollectionHint;
 import org.instancio.generator.hints.MapHint;
 import org.instancio.internal.generator.InternalContainerHint;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("UnusedReturnValue")
@@ -42,37 +43,37 @@ public class HintsAssert extends AbstractAssert<HintsAssert, Hints> {
     }
 
     public HintsAssert containerHintGenerateEntriesIsBetween(int min, int max) {
-        assertThat(actual.get(InternalContainerHint.class).generateEntries()).isBetween(min, max);
+        assertThat(requireNonNull(actual.get(InternalContainerHint.class)).generateEntries()).isBetween(min, max);
         return this;
     }
 
     public HintsAssert collectionHintGenerateElementsIsBetween(int min, int max) {
-        assertThat(actual.get(CollectionHint.class).generateElements()).isBetween(min, max);
+        assertThat(requireNonNull(actual.get(CollectionHint.class)).generateElements()).isBetween(min, max);
         return this;
     }
 
     public HintsAssert mapHintGenerateEntriesIsBetween(int min, int max) {
-        assertThat(actual.get(MapHint.class).generateEntries()).isBetween(min, max);
+        assertThat(requireNonNull(actual.get(MapHint.class)).generateEntries()).isBetween(min, max);
         return this;
     }
 
     public HintsAssert nullableCollectionElements(boolean expected) {
-        assertThat(actual.get(CollectionHint.class).nullableElements()).isEqualTo(expected);
+        assertThat(requireNonNull(actual.get(CollectionHint.class)).nullableElements()).isEqualTo(expected);
         return this;
     }
 
     public HintsAssert nullableArrayElements(boolean expected) {
-        assertThat(actual.get(ArrayHint.class).nullableElements()).isEqualTo(expected);
+        assertThat(requireNonNull(actual.get(ArrayHint.class)).nullableElements()).isEqualTo(expected);
         return this;
     }
 
     public HintsAssert nullableMapKeys(boolean expected) {
-        assertThat(actual.get(MapHint.class).nullableMapKeys()).isEqualTo(expected);
+        assertThat(requireNonNull(actual.get(MapHint.class)).nullableMapKeys()).isEqualTo(expected);
         return this;
     }
 
     public HintsAssert nullableMapValues(boolean expected) {
-        assertThat(actual.get(MapHint.class).nullableMapValues()).isEqualTo(expected);
+        assertThat(requireNonNull(actual.get(MapHint.class)).nullableMapValues()).isEqualTo(expected);
         return this;
     }
 }

@@ -22,6 +22,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.time.Month;
 
 @Getter
+@SuppressWarnings("NullAway.Init")
 public class WithGenericParent {
 
     private GenericParent<Long> genericParent;
@@ -29,6 +30,7 @@ public class WithGenericParent {
     private GenericGrandChild<Month> genericGrandChild;
 
     @Getter
+    @SuppressWarnings("NullAway.Init")
     public static class GenericParent<PARENT> {
 
         private PARENT parentValue;
@@ -40,6 +42,7 @@ public class WithGenericParent {
     }
 
     @Getter
+    @SuppressWarnings("NullAway.Init")
     public static class GenericChild<CHILD> extends GenericParent<CHILD> {
 
         private CHILD childValue;

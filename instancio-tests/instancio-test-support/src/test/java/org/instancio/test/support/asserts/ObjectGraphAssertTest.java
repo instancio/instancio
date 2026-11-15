@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.test.support.asserts.ObjectGraphAssert.assertThatGraph;
@@ -46,6 +47,7 @@ class ObjectGraphAssertTest {
         }
     }
 
+    @SuppressWarnings("NullAway.Init")
     private static class WithCollections {
         String top;
         List<Leaf> leaves;
@@ -56,11 +58,13 @@ class ObjectGraphAssertTest {
         int[] primitives;
     }
 
+    @SuppressWarnings("NullAway.Init")
     private static class Cyclic {
         String name;
         Cyclic self;
     }
 
+    @SuppressWarnings("NullAway.Init")
     private static class WithNullElements {
         List<Integer> intList;
         Integer[] intArray;
@@ -166,7 +170,7 @@ class ObjectGraphAssertTest {
         @Test
         void failsOnStringInMapValue() {
             final WithCollections w = buildAllExpected();
-            w.leafMap.get("k1").name = WRONG;
+            requireNonNull(w.leafMap.get("k1")).name = WRONG;
 
             assertThatThrownBy(() ->
                     assertThatGraph(w).hasAllValuesOfTypeEqualTo(String.class, EXPECTED))
@@ -347,6 +351,7 @@ class ObjectGraphAssertTest {
         }
 
         @Test
+        @SuppressWarnings("NullAway")
         void rejectsNullValue() {
             final WithCollections w = buildAllExpected();
 
@@ -489,7 +494,7 @@ class ObjectGraphAssertTest {
         @Test
         void byMapKey() {
             final WithCollections w = buildAllExpected();
-            w.leafMap.get("k1").name = WRONG;
+            requireNonNull(w.leafMap.get("k1")).name = WRONG;
 
             assertThatGraph(w)
                     .excludingPaths("leafMap[k1].name")
@@ -692,7 +697,7 @@ class ObjectGraphAssertTest {
         @Test
         void byMapKey() {
             final WithCollections w = buildAllExpected();
-            w.leafMap.get("k1").name = WRONG;
+            requireNonNull(w.leafMap.get("k1")).name = WRONG;
 
             assertThatGraph(w)
                     .includingSubtrees("leafMap[k2]")
@@ -821,6 +826,7 @@ class ObjectGraphAssertTest {
         @Test
         void nullInList_exactlyIn_isolatedGraph() {
             // Single null element in an otherwise empty graph
+            @SuppressWarnings("NullAway.Init")
             class Holder {
                 List<Integer> list;
             }
@@ -837,6 +843,7 @@ class ObjectGraphAssertTest {
             // list = [null, null, 3]: null appears at indices 0 AND 1, but the
             // assertion claims null appears exactly at index 0. The null at index 1
             // leaks outside the expected subtree, so the contract must fail.
+            @SuppressWarnings("NullAway.Init")
             class Holder {
                 List<Integer> list;
             }
@@ -856,6 +863,7 @@ class ObjectGraphAssertTest {
         @Test
         void nullInList_exactlyIn_passesWhenEveryNullInSubtree() {
             // Same graph as above, but the subtree now covers every null element.
+            @SuppressWarnings("NullAway.Init")
             class Holder {
                 List<Integer> list;
             }

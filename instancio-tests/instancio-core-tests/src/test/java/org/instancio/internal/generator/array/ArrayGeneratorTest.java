@@ -96,7 +96,7 @@ class ArrayGeneratorTest extends AbstractGeneratorTestTemplate<String[], ArrayGe
     }
 
     @Test
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"NullAway", "DataFlowIssue"})
     void subtypeValidation() {
         assertThatThrownBy(() -> generator.subtype(null))
                 .isExactlyInstanceOf(InstancioApiException.class)

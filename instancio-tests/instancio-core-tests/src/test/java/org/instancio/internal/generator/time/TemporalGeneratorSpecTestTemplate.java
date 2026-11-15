@@ -21,6 +21,7 @@ import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.InternalGeneratorContext;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -49,11 +50,11 @@ abstract class TemporalGeneratorSpecTestTemplate<T extends Temporal & Comparable
     abstract T getNow();
 
     // only for temporal types that define one, e.g. Instant.MIN
-    T getTemporalMin() {
+    @Nullable T getTemporalMin() {
         return null;
     }
 
-    T getTemporalMax() {
+    @Nullable T getTemporalMax() {
         return null;
     }
 

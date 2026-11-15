@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.net;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -31,7 +32,7 @@ class InetAddressGeneratorTest extends AbstractGeneratorTestTemplate<InetAddress
     private final InetAddressGenerator generator = new InetAddressGenerator(getGeneratorContext());
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 

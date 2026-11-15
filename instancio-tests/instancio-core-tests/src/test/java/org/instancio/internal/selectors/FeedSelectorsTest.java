@@ -21,6 +21,7 @@ import org.instancio.test.support.pojo.person.Person;
 import org.instancio.testsupport.fixtures.Fixtures;
 import org.junit.jupiter.api.Test;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.testsupport.utils.NodeUtils.getChildNode;
 
@@ -32,7 +33,7 @@ class FeedSelectorsTest {
     void verifyToString() {
         final InternalNode personNode = NODE_FACTORY.createRootNode(Person.class);
 
-        assertThat(FeedSelectors.forProperty(getChildNode(personNode, "age")))
+        assertThat(FeedSelectors.forProperty(requireNonNull(getChildNode(personNode, "age"))))
                 .hasToString("FeedSelectors.forProperty(\"age\").lenient() [internal]");
     }
 }

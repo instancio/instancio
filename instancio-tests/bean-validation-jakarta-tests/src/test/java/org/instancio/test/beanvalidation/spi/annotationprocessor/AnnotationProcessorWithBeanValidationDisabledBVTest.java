@@ -49,6 +49,7 @@ class AnnotationProcessorWithBeanValidationDisabledBVTest {
      */
     @RepeatedTest(Constants.SAMPLE_SIZE_D)
     void beanValidationDisabled() {
+        @SuppressWarnings("NullAway.Init")
         class Pojo {
             @StringSuffix(SUFFIX)
             @NotNull

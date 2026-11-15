@@ -20,6 +20,7 @@ import org.instancio.exception.InstancioTerminatingException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.settings.Settings;
 import org.instancio.support.DefaultRandom;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,7 +34,7 @@ class GeneratorUtilTest {
         }
 
         @Override
-        public String apiMethod() {
+        public @Nullable String apiMethod() {
             return null;
         }
 

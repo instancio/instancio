@@ -20,6 +20,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
+@SuppressWarnings("NullAway.Init")
 public class ZeroArgSetter {
 
     private Integer value;

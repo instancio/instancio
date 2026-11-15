@@ -16,6 +16,7 @@
 package org.instancio.internal.generator.shuffle;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -24,7 +25,7 @@ class ShuffleGeneratorTest extends AbstractGeneratorTestTemplate<Collection<Stri
     private final ShuffleGenerator<String> generator = new ShuffleGenerator<>(getGeneratorContext());
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 

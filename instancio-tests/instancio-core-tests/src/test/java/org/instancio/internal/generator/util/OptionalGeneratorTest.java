@@ -40,6 +40,7 @@ class OptionalGeneratorTest extends AbstractGeneratorTestTemplate<Optional<Boole
 
     @Override
     @Test
+    @SuppressWarnings("NullAway")
     protected void hints() {
         final Hints hints = generator().hints();
 

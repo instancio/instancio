@@ -17,13 +17,14 @@ package org.instancio.internal.generator.concurrent.atomic;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.internal.generator.util.concurrent.atomic.AtomicBooleanGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 class AtomicBooleanGeneratorTest extends AbstractGeneratorTestTemplate<AtomicBoolean, AtomicBooleanGenerator> {
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 

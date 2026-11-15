@@ -21,6 +21,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Getter
+@SuppressWarnings("NullAway.Init")
 public final class SealedFooSubclass extends SealedFoo {
     private LocalDate fooDate;
     @Setter

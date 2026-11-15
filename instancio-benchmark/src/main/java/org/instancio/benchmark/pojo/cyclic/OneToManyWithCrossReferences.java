@@ -17,6 +17,7 @@ package org.instancio.benchmark.pojo.cyclic;
 
 import java.util.List;
 
+@SuppressWarnings("NullAway.Init")
 public class OneToManyWithCrossReferences {
 
     public static class ObjectA {

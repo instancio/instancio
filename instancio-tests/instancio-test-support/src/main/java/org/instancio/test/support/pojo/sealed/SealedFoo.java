@@ -18,6 +18,7 @@ package org.instancio.test.support.pojo.sealed;
 import lombok.Getter;
 
 @Getter
+@SuppressWarnings("NullAway.Init")
 public sealed class SealedFoo permits SealedFooSubclass {
     private FooRecord fooRecord;
 }

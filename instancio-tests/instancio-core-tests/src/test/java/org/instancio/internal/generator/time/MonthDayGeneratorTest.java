@@ -93,6 +93,7 @@ class MonthDayGeneratorTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void validateMinMax() {
         assertThatThrownBy(() -> generator.min(null))
                 .isExactlyInstanceOf(InstancioApiException.class)

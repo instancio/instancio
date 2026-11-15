@@ -16,7 +16,7 @@
 package org.instancio.test.support.pojo.misc.getters;
 
 // used via reflection
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "NullAway.Init"})
 public class BeanStylePojo {
 
     private String foo;

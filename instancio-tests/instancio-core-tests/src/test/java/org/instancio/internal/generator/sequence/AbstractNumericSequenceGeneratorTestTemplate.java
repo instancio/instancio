@@ -67,6 +67,7 @@ public abstract class AbstractNumericSequenceGeneratorTestTemplate<T extends Num
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void validation() {
         final AbstractNumericSequenceGenerator<T> generator = generator();
 

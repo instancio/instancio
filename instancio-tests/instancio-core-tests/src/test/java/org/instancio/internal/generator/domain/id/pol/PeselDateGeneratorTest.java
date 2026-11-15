@@ -17,6 +17,7 @@ package org.instancio.internal.generator.domain.id.pol;
 
 import org.instancio.exception.InstancioApiException;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +28,7 @@ class PeselDateGeneratorTest extends AbstractGeneratorTestTemplate<String, Pesel
     private final PeselDateGenerator generator = new PeselDateGenerator(getGeneratorContext());
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 
@@ -55,6 +56,7 @@ class PeselDateGeneratorTest extends AbstractGeneratorTestTemplate<String, Pesel
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void localDateInvalidReturnValue() {
         generator.withLocalDate(rand -> null);
 

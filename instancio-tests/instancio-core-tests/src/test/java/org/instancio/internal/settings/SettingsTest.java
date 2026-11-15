@@ -395,6 +395,7 @@ class SettingsTest {
         private final Settings settings = Settings.create();
 
         @Test
+        @SuppressWarnings("NullAway")
         void setNullOnNonNullableValue() {
             assertThatThrownBy(() -> settings.set(Keys.INTEGER_MIN, null))
                     .isInstanceOf(InstancioApiException.class)
@@ -402,6 +403,7 @@ class SettingsTest {
         }
 
         @Test
+        @SuppressWarnings("NullAway")
         void nullAllowedForNullableValue() {
             final SettingKey<Long> key = Keys.SEED;
             assertThat(key.allowsNullValue()).isTrue();
@@ -410,6 +412,7 @@ class SettingsTest {
         }
 
         @Test
+        @SuppressWarnings("NullAway")
         void nullKeyNotAllowed() {
             assertThatThrownBy(() -> settings.set(null, "some value"))
                     .isExactlyInstanceOf(InstancioApiException.class)

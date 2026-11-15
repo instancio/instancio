@@ -19,6 +19,7 @@ package org.instancio.test.support.pojo.constructor;
  * A constructor POJO with a self-referencing (cyclic) field
  * that is not a constructor parameter.
  */
+@SuppressWarnings("NullAway.Init")
 public class CyclicCtorPojo {
 
     private final String id;

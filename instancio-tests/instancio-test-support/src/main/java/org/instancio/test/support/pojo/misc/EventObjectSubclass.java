@@ -17,6 +17,7 @@ package org.instancio.test.support.pojo.misc;
 
 import java.util.EventObject;
 
+@SuppressWarnings("NullAway.Init")
 public class EventObjectSubclass extends EventObject {
 
     // used via reflection

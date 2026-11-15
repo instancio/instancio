@@ -17,6 +17,7 @@ package org.instancio.internal.generator.util;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.internal.generator.time.TimeZoneGenerator;
+import org.jspecify.annotations.Nullable;
 
 import java.util.TimeZone;
 
@@ -25,7 +26,7 @@ class TimeZoneGeneratorTest extends AbstractGeneratorTestTemplate<TimeZone, Time
     private final TimeZoneGenerator generator = new TimeZoneGenerator(getGeneratorContext());
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 

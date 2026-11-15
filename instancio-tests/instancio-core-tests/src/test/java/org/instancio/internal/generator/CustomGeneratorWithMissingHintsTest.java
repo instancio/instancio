@@ -31,6 +31,7 @@ class CustomGeneratorWithMissingHintsTest {
 
     @Test
     @DisplayName("Should generate expected value if hints or AfterGenerate are null")
+    @SuppressWarnings("NullAway")
     void nullHints() {
         final Hints mockHints = Mockito.mock(Hints.class);
         assertGeneratedValueWithHints(mockHints);

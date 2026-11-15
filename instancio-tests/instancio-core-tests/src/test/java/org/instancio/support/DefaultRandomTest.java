@@ -453,6 +453,7 @@ class DefaultRandomTest {
         }
 
         @Test
+        @SuppressWarnings("NullAway")
         void nullOrEmptyArray() {
             final String expectedErrorMsg = "Character array must have at least one element";
 

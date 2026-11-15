@@ -45,6 +45,7 @@ class HintsTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void emptyHintsShouldHaveNullAfterGenerate() {
         assertHints(Hints.builder().build())
                 .afterGenerate(null);

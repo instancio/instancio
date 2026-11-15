@@ -47,8 +47,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
-        <!-- Modules that don't pass NullAway yet set this to OFF -->
-        <nullaway.severity>ERROR</nullaway.severity>
         <maven.enforcer.require.java.version>[17,)</maven.enforcer.require.java.version>
         <sonar.organization>instancio</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -147,13 +145,14 @@
                                     <arg>--should-stop=ifError=FLOW</arg>
                                     <arg>
                                         -Xplugin:ErrorProne
-                                        -Xep:NullAway:${nullaway.severity}
+                                        -Xep:NullAway:ERROR
                                         -XepExcludedPaths:.*/target/generated-sources/.*
                                         -XepOpt:NullAway:AnnotatedPackages=org.instancio
                                         -XepOpt:NullAway:CustomContractAnnotations=org.instancio.documentation.Contract
                                         -XepOpt:NullAway:CustomInitializerAnnotations=org.instancio.documentation.Initializer
                                         -XepOpt:NullAway:ExcludedClassAnnotations=lombok.Data,lombok.Builder
                                         -XepOpt:NullAway:ExcludedFieldAnnotations=org.instancio.junit.Given,org.instancio.junit.WithSettings
+                                        -XepOpt:NullAway:HandleTestAssertionLibraries=true
                                         -XepOpt:NullAway:JSpecifyMode=true
                                         -XepOpt:NullAway:TreatGeneratedAsUnannotated=true
                                         -Xep:AnnotateFormatMethod:OFF

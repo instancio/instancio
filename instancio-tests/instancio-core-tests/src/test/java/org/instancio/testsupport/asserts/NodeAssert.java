@@ -19,6 +19,7 @@ import org.assertj.core.api.AbstractAssert;
 import org.instancio.internal.nodes.InternalNode;
 import org.instancio.internal.nodes.NodeKind;
 import org.instancio.internal.nodes.NodeTypeMap;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 
@@ -28,11 +29,11 @@ import static org.instancio.testsupport.utils.TypeUtils.getTypeVar;
 @SuppressWarnings("UnusedReturnValue")
 public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
 
-    private NodeAssert(InternalNode actual) {
+    private NodeAssert(@Nullable InternalNode actual) {
         super(actual, NodeAssert.class);
     }
 
-    public static NodeAssert assertNode(InternalNode actual) {
+    public static NodeAssert assertNode(@Nullable InternalNode actual) {
         return new NodeAssert(actual);
     }
 
@@ -151,7 +152,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, InternalNode> {
         return this;
     }
 
-    public NodeAssert hasParent(InternalNode expected) {
+    public NodeAssert hasParent(@Nullable InternalNode expected) {
         isNotNull();
         assertThat(actual.getParent()).isSameAs(expected);
         return this;

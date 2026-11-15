@@ -22,6 +22,8 @@ import org.instancio.spi.ServiceProviderContext;
 import org.jooq.Field;
 import org.jooq.Record;
 
+import static java.util.Objects.requireNonNull;
+
 public class JooqSpi implements InstancioServiceProvider {
 
     private int stringSettingsMaxLength;
@@ -39,12 +41,14 @@ public class JooqSpi implements InstancioServiceProvider {
     public GeneratorProvider getGeneratorProvider() {
         return (node, generators) -> {
             // set max length of generated strings
+            final Node parent = node.getParent();
             if (node.getTargetClass() != String.class
-                    || !Record.class.isAssignableFrom(node.getParent().getTargetClass())) {
+                    || parent == null
+                    || !Record.class.isAssignableFrom(parent.getTargetClass())) {
                 return null;
             }
 
-            final int columnSize = getColumnSize(node);
+            final int columnSize = getColumnSize(parent, node);
             final int maxLength = Math.min(columnSize, stringSettingsMaxLength);
             return generators.string().maxLength(maxLength);
         };
@@ -56,13 +60,13 @@ public class JooqSpi implements InstancioServiceProvider {
      * <p>Generating values that fit within column size would be useful for
      * integration tests (e.g. persisting objects), but less so for unit tests.
      */
-    private static int getColumnSize(final Node node) {
+    private static int getColumnSize(final Node parent, final Node node) {
         try {
             // A bit of a hack to get column size.
             // Is it possible to do this without instantiating the record?
-            final Record rec = (Record) node.getParent().getTargetClass().getDeclaredConstructor().newInstance();
-            final String columnName = getColumnName(node.getSetter().getName());
-            final Field<?> field = rec.field(columnName);
+            final Record rec = (Record) parent.getTargetClass().getDeclaredConstructor().newInstance();
+            final String columnName = getColumnName(requireNonNull(node.getSetter()).getName());
+            final Field<?> field = requireNonNull(rec.field(columnName));
             return field.getDataType().length();
         } catch (Exception ex) {
             throw new AssertionError(ex);

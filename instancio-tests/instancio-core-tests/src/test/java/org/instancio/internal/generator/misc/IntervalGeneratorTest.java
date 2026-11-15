@@ -19,6 +19,7 @@ import org.instancio.IntervalSupplier;
 import org.instancio.exception.InstancioApiException;
 import org.instancio.generator.GeneratorContext;
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ class IntervalGeneratorTest extends AbstractGeneratorTestTemplate<IntervalSuppli
             .nextEnd((i, random) -> i);
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 
@@ -52,6 +53,7 @@ class IntervalGeneratorTest extends AbstractGeneratorTestTemplate<IntervalSuppli
     class ValidationTest {
 
         @Test
+        @SuppressWarnings("NullAway")
         void nullStartingValue() {
             final GeneratorContext generatorContext = getGeneratorContext();
 

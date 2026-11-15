@@ -20,6 +20,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @EqualsAndHashCode
+@SuppressWarnings("NullAway.Init")
 public class PropertyStylePojo {
 
     private String foo;

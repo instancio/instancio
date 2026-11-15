@@ -27,6 +27,7 @@ import java.util.List;
  *
  * <p>Constructor-based analogue of {@link MainPojo}.
  */
+@SuppressWarnings("NullAway.Init")
 public class MainCtorPojo {
 
     private final Long id;

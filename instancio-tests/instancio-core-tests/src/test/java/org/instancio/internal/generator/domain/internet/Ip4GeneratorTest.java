@@ -71,6 +71,7 @@ class Ip4GeneratorTest extends AbstractGeneratorTestTemplate<String, Ip4Generato
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void fromCidrNull() {
         assertThatThrownBy(() -> generator.fromCidr(null))
                 .isExactlyInstanceOf(InstancioApiException.class)

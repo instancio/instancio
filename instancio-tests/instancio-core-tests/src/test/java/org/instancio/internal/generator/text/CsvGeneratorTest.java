@@ -53,6 +53,7 @@ class CsvGeneratorTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void validationWrapIf() {
         assertThatThrownBy(() -> generator.wrapIf(null))
                 .isExactlyInstanceOf(InstancioApiException.class)
@@ -60,6 +61,7 @@ class CsvGeneratorTest {
     }
 
     @Test
+    @SuppressWarnings("NullAway")
     void validationColumns() {
         assertThatThrownBy(() -> generator.column(null, random -> "foo"))
                 .isExactlyInstanceOf(InstancioApiException.class)

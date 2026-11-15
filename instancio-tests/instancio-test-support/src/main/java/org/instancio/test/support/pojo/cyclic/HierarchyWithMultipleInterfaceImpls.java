@@ -25,6 +25,7 @@ public class HierarchyWithMultipleInterfaceImpls {
     }
 
     @Getter
+    @SuppressWarnings("NullAway.Init")
     public static class A implements Identifiable {
         ID id;
         B b;
@@ -32,11 +33,13 @@ public class HierarchyWithMultipleInterfaceImpls {
     }
 
     @Getter
+    @SuppressWarnings("NullAway.Init")
     public static class B implements Identifiable {
         ID id;
     }
 
     @Getter
+    @SuppressWarnings("NullAway.Init")
     public static class C implements Identifiable {
         ID id;
     }

@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.all;
 
+@SuppressWarnings("NullAway")
 class AssignmentNodeHandlerTest {
     // required ctor args but not needed for the test
     private final AssignmentObjectStore objectStore = null;

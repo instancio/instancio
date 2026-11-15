@@ -11,7 +11,6 @@
     <name>Instancio Tests: Hibernate Bean Validation Tests</name>
 
     <properties>
-        <nullaway.severity>OFF</nullaway.severity>
         <sonar.exclusions>**/test/pojo/beanvalidation/**/*</sonar.exclusions>
         <version.expressly>6.0.0</version.expressly>
     </properties>

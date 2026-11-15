@@ -15,6 +15,7 @@
  */
 package org.instancio.test.support.pojo.constructor;
 
+@SuppressWarnings("NullAway.Init")
 public class DetailCtorPojo {
 
     private final Long id;

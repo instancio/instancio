@@ -33,6 +33,7 @@ import org.instancio.test.support.pojo.person.Pet;
 import org.instancio.test.support.pojo.person.Phone;
 import org.instancio.test.support.pojo.person.RichPerson;
 import org.instancio.testsupport.fixtures.Fixtures;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.allStrings;
 import static org.instancio.Select.field;
@@ -190,6 +192,10 @@ class SelectorMapImplTest {
     }
 
     private static InternalNode getNodeWithField(final InternalNode node, final Class<?> declaringClass, final String fieldName) {
+        return requireNonNull(findNodeWithField(node, declaringClass, fieldName));
+    }
+
+    private static @Nullable InternalNode findNodeWithField(final InternalNode node, final Class<?> declaringClass, final String fieldName) {
         final Field field = ReflectionUtils.getField(declaringClass, fieldName);
         assertThat(field).as("null field").isNotNull();
         if (Objects.equals(node.getField(), field)) {
@@ -198,7 +204,7 @@ class SelectorMapImplTest {
 
         InternalNode result = null;
         for (InternalNode child : node.getChildren()) {
-            result = getNodeWithField(child, declaringClass, fieldName);
+            result = findNodeWithField(child, declaringClass, fieldName);
             if (result != null) break;
         }
         return result;

@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 @ToString
+@SuppressWarnings("NullAway.Init")
 public class NonSetter {
 
     @Getter

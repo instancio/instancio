@@ -17,6 +17,7 @@ package org.instancio.internal.generator.util;
 
 import org.instancio.internal.generator.AbstractGeneratorTestTemplate;
 import org.instancio.test.support.tags.NonDeterministicTag;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
@@ -34,7 +35,7 @@ class LocaleGeneratorTest extends AbstractGeneratorTestTemplate<Locale, LocaleGe
     private final LocaleGenerator generator = new LocaleGenerator(getGeneratorContext());
 
     @Override
-    protected String getApiMethod() {
+    protected @Nullable String getApiMethod() {
         return null;
     }
 

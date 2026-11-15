@@ -34,6 +34,7 @@ class GuavaImmutableListTest {
 
     private static final int EXPECTED_SIZE = 10;
 
+    @SuppressWarnings("NullAway.Init")
     private static class Holder {
         private List<String> list;
     }

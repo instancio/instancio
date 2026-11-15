@@ -22,6 +22,7 @@ import lombok.ToString;
  * the expected parameter type is resolved.
  */
 @ToString
+@SuppressWarnings("NullAway.Init")
 public class OverloadedSettersPojo {
 
     private Integer theOne;

@@ -33,12 +33,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InstancioExtension.class)
 class GenericFieldBVTest {
 
+    @SuppressWarnings("NullAway.Init")
     private static class WithSize<T> {
         @Size(min = 1, max = 3)
         @NotNull
         private T value;
     }
 
+    @SuppressWarnings("NullAway.Init")
     private static class WithMinMax<T> {
         @Min(1)
         @Max(2)
