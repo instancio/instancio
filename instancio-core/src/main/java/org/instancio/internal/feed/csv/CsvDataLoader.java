@@ -84,6 +84,7 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
             if (currentChar == '"') {
                 isQuotedToken = true;
                 if (inQuotes && index + 1 < line.length() && line.charAt(index + 1) == '"') {
+                    currentToken.append('"');
                     index++;
                 } else {
                     inQuotes = !inQuotes;
