@@ -51,7 +51,14 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
             final List<String[]> results = new ArrayList<>();
 
             String line;
+            boolean firstLine = true;
             while ((line = br.readLine()) != null) { //NOPMD
+                if (firstLine) {
+                    firstLine = false;
+                    if (line.startsWith("\uFEFF")) {
+                        line = line.substring(1);
+                    }
+                }
                 if (line.isEmpty() || line.startsWith(commentChar)) {
                     continue;
                 }
