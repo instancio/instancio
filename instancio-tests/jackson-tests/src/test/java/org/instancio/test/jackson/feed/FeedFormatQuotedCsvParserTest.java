@@ -34,6 +34,35 @@ import static org.instancio.settings.Keys.FEED_DATA_TRIM;
 @ExtendWith(InstancioExtension.class)
 class FeedFormatQuotedCsvParserTest {
 
+    @Feed.Source(string = "col1,col2\n\"say \"\"hi\"\"\",\"\"\n")
+    private interface SampleFeed extends Feed {
+
+        FeedSpec<String> col1();
+
+        FeedSpec<String> col2();
+    }
+
+    @Feed.Source(string = "col1\n\"\"\"\"\n")
+    private interface SingleQuoteFeed extends Feed {
+
+        FeedSpec<String> col1();
+    }
+
+    @Test
+    void csvWithEscapedQuotes() {
+        final SampleFeed feed = createFeed(SampleFeed.class);
+
+        assertThat(feed.col1().get()).isEqualTo("say \"hi\"");
+        assertThat(feed.col2().get()).isNull();
+    }
+
+    @Test
+    void csvWithQuotedValueContainingOnlyQuote() {
+        final SingleQuoteFeed feed = createFeed(SingleQuoteFeed.class);
+
+        assertThat(feed.col1().get()).isEqualTo("\"");
+    }
+
     @Test
     void sampleQuotedFeed() {
         @Feed.Source(string = """
