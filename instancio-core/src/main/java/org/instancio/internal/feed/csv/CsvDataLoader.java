@@ -29,7 +29,7 @@ import java.util.List;
 import static org.instancio.settings.FeedDataTrim.UNQUOTED;
 
 /**
- * A very basic CSV parser does not support escape characters.
+ * A very basic CSV parser.
  */
 public final class CsvDataLoader implements DataLoader<List<String[]>> {
 
@@ -84,6 +84,7 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
             if (currentChar == '"') {
                 isQuotedToken = true;
                 if (inQuotes && index + 1 < line.length() && line.charAt(index + 1) == '"') {
+                    currentToken.append('"');
                     index++;
                 } else {
                     inQuotes = !inQuotes;
