@@ -102,6 +102,26 @@ class FeedFormatCsvTest {
         assertThat(result.stringSpec("desc").get()).isEqualTo("Awesome product");
     }
 
+    @Test
+    void csvWithUtf8ByteOrderMark() {
+        final Feed feed = Instancio.ofFeed(Feed.class)
+                .withDataSource(source -> source.ofString("\uFEFFfirstName,lastName\nJohn,Doe"))
+                .create();
+
+        assertThat(feed.stringSpec("firstName").get()).isEqualTo("John");
+        assertThat(feed.stringSpec("lastName").get()).isEqualTo("Doe");
+    }
+
+    @Test
+    void csvWithByteOrderMarkBeforeCommentLine() {
+        final Feed feed = Instancio.ofFeed(Feed.class)
+                .withDataSource(source -> source.ofString("\uFEFF# comment\nfirstName,lastName\nJohn,Doe"))
+                .create();
+
+        assertThat(feed.stringSpec("firstName").get()).isEqualTo("John");
+        assertThat(feed.stringSpec("lastName").get()).isEqualTo("Doe");
+    }
+
     @Nested
     class FeedDataTrimSettingsTest {
 

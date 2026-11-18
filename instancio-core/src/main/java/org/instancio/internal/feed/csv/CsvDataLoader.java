@@ -33,6 +33,8 @@ import static org.instancio.settings.FeedDataTrim.UNQUOTED;
  */
 public final class CsvDataLoader implements DataLoader<List<String[]>> {
 
+    private static final String UTF8_BOM = "\uFEFF";
+
     private final FeedDataTrim feedDataTrim;
     private final String commentChar;
     private final char delimiter;
@@ -51,7 +53,14 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
             final List<String[]> results = new ArrayList<>();
 
             String line;
+            boolean firstLine = true;
             while ((line = br.readLine()) != null) { //NOPMD
+                if (firstLine) {
+                    firstLine = false;
+                    if (line.startsWith(UTF8_BOM)) {
+                        line = line.substring(UTF8_BOM.length());
+                    }
+                }
                 if (line.isEmpty() || line.startsWith(commentChar)) {
                     continue;
                 }
