@@ -29,7 +29,7 @@ import java.util.List;
 import static org.instancio.settings.FeedDataTrim.UNQUOTED;
 
 /**
- * A very basic CSV parser does not support escape characters.
+ * A very basic CSV parser.
  */
 public final class CsvDataLoader implements DataLoader<List<String[]>> {
 
