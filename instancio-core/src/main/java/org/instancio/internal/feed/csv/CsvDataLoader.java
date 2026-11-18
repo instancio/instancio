@@ -29,7 +29,10 @@ import java.util.List;
 import static org.instancio.settings.FeedDataTrim.UNQUOTED;
 
 /**
- * A very basic CSV parser.
+ * A basic CSV parser. Quoted values may contain the delimiter.
+ * Inside a quoted value, {@code ""} stands for one {@code "}, as in RFC 4180.
+ * A quote that does not start a value is kept as a normal character.
+ * Line breaks inside quoted values and backslash escapes are not supported.
  */
 public final class CsvDataLoader implements DataLoader<List<String[]>> {
 
@@ -81,15 +84,16 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
         while (index < line.length()) {
             char currentChar = line.charAt(index);
 
-            if (currentChar == '"') {
+            if (inQuotes && currentChar == '"' && isQuoteAt(line, index + 1)) {
+                currentToken.append('"');
+                index++;
+            } else if (inQuotes && currentChar == '"') {
+                inQuotes = false;
+            } else if (currentChar == '"' && !isQuotedToken && currentToken.toString().isBlank()) {
+                // whitespace before the opening quote is dropped
+                inQuotes = true;
                 isQuotedToken = true;
-                if (inQuotes && index + 1 < line.length() && line.charAt(index + 1) == '"') {
-                    currentToken.append('"');
-                    index++;
-                } else {
-                    inQuotes = !inQuotes;
-                    resetToken(inQuotes, currentToken);
-                }
+                currentToken.setLength(0);
             } else if (currentChar == delimiter && !inQuotes) {
                 tokens.add(trimToken(currentToken.toString(), isQuotedToken));
                 currentToken.setLength(0);
@@ -100,35 +104,24 @@ public final class CsvDataLoader implements DataLoader<List<String[]>> {
                 currentToken.append(currentChar);
             }
             index++;
-            if (index == line.length()) {
-                tokens.add(trimToken(currentToken.toString(), isQuotedToken));
-            }
         }
+        tokens.add(trimToken(currentToken.toString(), isQuotedToken));
 
         return tokens.toArray(new String[0]);
     }
 
-    private void resetToken(boolean inQuotes, StringBuilder currentToken) {
-        if (inQuotes) {
-            currentToken.setLength(0);
-        }
+    private static boolean isQuoteAt(String line, int index) {
+        return index < line.length() && line.charAt(index) == '"';
     }
 
     @Nullable
     private String trimToken(String token, boolean isQuotedToken) {
-        String result = token;
-        if (result.isEmpty()) {
+        if (token.isEmpty()) {
             return null;
         }
-        if (isQuotedToken) {
-            return result;
+        if (!isQuotedToken && feedDataTrim == UNQUOTED) {
+            return token.trim();
         }
-        if (feedDataTrim == UNQUOTED) {
-            return result.trim();
-        }
-        if (result.startsWith("\"") && result.endsWith("\"")) {
-            result = result.substring(1, result.length() - 1);
-        }
-        return result.replace("\"\"", "\"");
+        return token;
     }
 }

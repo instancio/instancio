@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.instancio.test.jackson.feed;
+package org.instancio.test.features.feed;
 
 import org.instancio.junit.InstancioExtension;
 import org.instancio.feed.Feed;
@@ -34,33 +34,66 @@ import static org.instancio.settings.Keys.FEED_DATA_TRIM;
 @ExtendWith(InstancioExtension.class)
 class FeedFormatQuotedCsvParserTest {
 
-    @Feed.Source(string = "col1,col2\n\"say \"\"hi\"\"\",\"\"\n")
-    private interface SampleFeed extends Feed {
-
-        FeedSpec<String> col1();
-
-        FeedSpec<String> col2();
-    }
-
-    @Feed.Source(string = "col1\n\"\"\"\"\n")
-    private interface SingleQuoteFeed extends Feed {
-
-        FeedSpec<String> col1();
-    }
-
     @Test
     void csvWithEscapedQuotes() {
-        final SampleFeed feed = createFeed(SampleFeed.class);
+        @Feed.Source(string = "col1,col2\n\"say \"\"hi\"\"\",\"\"\n")
+        interface SampleFeed extends Feed {
+            FeedSpec<String> col1();
+            FeedSpec<String> col2();
+        }
 
+        var feed = createFeed(SampleFeed.class);
         assertThat(feed.col1().get()).isEqualTo("say \"hi\"");
         assertThat(feed.col2().get()).isNull();
     }
 
     @Test
     void csvWithQuotedValueContainingOnlyQuote() {
-        final SingleQuoteFeed feed = createFeed(SingleQuoteFeed.class);
+        @Feed.Source(string = "col1\n\"\"\"\"\n")
+        interface SampleFeed extends Feed {
+            FeedSpec<String> col1();
+        }
 
+        var feed = createFeed(SampleFeed.class);
         assertThat(feed.col1().get()).isEqualTo("\"");
+    }
+
+    @Test
+    void shouldKeepQuotesInsideUnquotedValues() {
+        @Feed.Source(string = """
+            col1,col2,col3
+            say "hi",say ""hi"",  a "b"
+            """)
+        interface SampleFeed extends Feed {
+            FeedSpec<String> col1();
+            FeedSpec<String> col2();
+            FeedSpec<String> col3();
+        }
+
+        var feed = ofFeed(SampleFeed.class)
+                .withSetting(FEED_DATA_TRIM, UNQUOTED)
+                .create();
+
+        assertThat(feed.col1().get()).isEqualTo("say \"hi\"");
+        assertThat(feed.col2().get()).isEqualTo("say \"\"hi\"\"");
+        assertThat(feed.col3().get()).isEqualTo("a \"b\"");
+    }
+
+    @Test
+    void shouldKeepQuotesInsideUnquotedValuesWithoutTrimming() {
+        @Feed.Source(string = """
+            col1
+              a "b"
+            """)
+        interface SampleFeed extends Feed {
+            FeedSpec<String> col1();
+        }
+
+        var feed = ofFeed(SampleFeed.class)
+                .withSetting(FEED_DATA_TRIM, NONE)
+                .create();
+
+        assertThat(feed.col1().get()).isEqualTo("  a \"b\"");
     }
 
     @Test
