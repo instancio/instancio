@@ -12,7 +12,7 @@
     <description>Kotlin extensions for the Instancio API</description>
 
     <properties>
-        <version.build-helper-maven-plugin>3.7.0</version.build-helper-maven-plugin>
+        <version.build-helper-maven-plugin>3.8.0</version.build-helper-maven-plugin>
         <version.dokka-maven-plugin>2.3.0</version.dokka-maven-plugin>
         <!-- Dokka builds the javadoc jar. The javadoc plugin's jar would replace it. -->
         <maven.javadoc.skip>true</maven.javadoc.skip>
