@@ -14,3 +14,4 @@ docs = [
 [tool.uv]
 package = false
 default-groups = ["docs"]
+no-build = true
