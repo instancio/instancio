@@ -3,7 +3,7 @@ site_url: https://www.instancio.org
 repo_url: https://github.com/instancio/instancio
 repo_name: instancio
 extra:
-  latest_release: 6.2.1
+  latest_release: !ENV [LATEST_RELEASE, '0.0.0-LOCAL']
 copyright: '&copy; Instancio 2022-2026'
 edit_uri: ''  #disables edit button
 

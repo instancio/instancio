@@ -27,4 +27,4 @@ release:
     echo "Close, Release: https://central.sonatype.com/publishing/deployments"
 
 site:
-    cd website && uv run mkdocs serve
+    cd website && uv run --locked --no-build mkdocs serve
