@@ -194,10 +194,25 @@ jobs:
       - name: 'Build and test'
         run: ./mvnw verify -pl :instancio-guava-tests,:jpms-guava-tests -am -Dversion.guava=${{ matrix.guava }}
 
+  build-website:
+    name: 'Build website'
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: 'Set up uv'
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - name: 'Build website'
+        working-directory: website
+        run: uv run --locked --no-build mkdocs build --strict
+
   every-ci-check-passed:
     name: 'Every CI check passed'
     # The ruleset requires this job instead of each job. A new job must join its needs.
-    needs: [ build-and-analyze, test-jdk, test-kotlin, test-junit, test-guava ]
+    needs: [ build-and-analyze, test-jdk, test-kotlin, test-junit, test-guava, build-website ]
     # Also after a failure, because a skipped required check counts as passed.
     if: ${{ always() && !github.event.pull_request.draft }}
     runs-on: ubuntu-latest

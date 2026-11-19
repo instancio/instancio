@@ -24,4 +24,5 @@ and <a href="https://squidfunk.github.io/mkdocs-material">MkDocs Material</a> th
 To build the site, you will need <a href="https://docs.astral.sh/uv/">uv</a>.
 It installs the exact versions of MkDocs and its plugins from `uv.lock` on first use.
 
-To run the site locally: `cd website && uv run mkdocs serve`. To generate static HTML: `cd website && uv run mkdocs build`.
+To run the site locally: `cd website && uv run --locked --no-build mkdocs serve`.
+To generate static HTML: `cd website && uv run --locked --no-build mkdocs build`.
