@@ -6,6 +6,7 @@ extra:
   latest_release: !ENV [LATEST_RELEASE, '0.0.0-LOCAL']
 copyright: '&copy; Instancio 2022-2026'
 edit_uri: ''  #disables edit button
+strict: true
 
 theme:
   name: material
