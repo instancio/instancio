@@ -35,6 +35,14 @@
                         </goals>
                         <configuration>
                             <aggregate>true</aggregate>
+                            <!-- Other modules get their coverage from JaCoCo -->
+                            <filters>
+                                <includes>
+                                    <classes>
+                                        <class>org.instancio.kotlin.*</class>
+                                    </classes>
+                                </includes>
+                            </filters>
                             <xmlFile>${project.build.directory}/kover/report.xml</xmlFile>
                         </configuration>
                     </execution>
