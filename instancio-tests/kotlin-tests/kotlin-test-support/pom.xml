@@ -8,4 +8,8 @@
     </parent>
     <artifactId>kotlin-test-support</artifactId>
     <name>Instancio Tests: Kotlin Test Support</name>
+
+    <properties>
+        <failIfNoTests>false</failIfNoTests>
+    </properties>
 </project>

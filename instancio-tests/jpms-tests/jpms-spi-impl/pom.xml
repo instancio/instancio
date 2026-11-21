@@ -12,6 +12,7 @@
     <properties>
         <sonar.skip>true</sonar.skip>
         <jacoco.skip>true</jacoco.skip>
+        <failIfNoTests>false</failIfNoTests>
     </properties>
 
     <dependencies>

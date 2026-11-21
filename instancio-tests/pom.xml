@@ -16,6 +16,9 @@
         <maven.source.skip>true</maven.source.skip>
         <gpg.skip>true</gpg.skip>
         <skipPublishing>true</skipPublishing>
+        <!-- A broken build setup can skip a module's tests and still pass.
+             To run a single test across modules, add -DfailIfNoTests=false. -->
+        <failIfNoTests>true</failIfNoTests>
         <version.apache.commons>3.22.0</version.apache.commons>
         <version.archunit>1.5.1</version.archunit>
         <version.assertj>3.27.7</version.assertj>
