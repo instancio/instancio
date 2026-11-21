@@ -10,6 +10,8 @@
     <name>Instancio Tests: Kotlin Test Support</name>
 
     <properties>
+        <!-- No report covers this module -->
+        <sonar.coverage.jacoco.xmlReportPaths/>
         <failIfNoTests>false</failIfNoTests>
     </properties>
 </project>

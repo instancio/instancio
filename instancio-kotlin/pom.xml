@@ -16,6 +16,7 @@
         <version.dokka-maven-plugin>2.3.0</version.dokka-maven-plugin>
         <!-- Dokka builds the javadoc jar. The javadoc plugin's jar would replace it. -->
         <maven.javadoc.skip>true</maven.javadoc.skip>
+        <sonar.coverage.jacoco.xmlReportPaths>${coverage.report.jacoco},${coverage.report.kover}</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <build>
