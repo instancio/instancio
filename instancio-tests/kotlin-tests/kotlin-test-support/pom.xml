@@ -4,14 +4,14 @@
     <parent>
         <groupId>org.instancio</groupId>
         <artifactId>kotlin-tests</artifactId>
-        <version>6.2.2-SNAPSHOT</version>
+        <version>6.2.2</version>
     </parent>
     <artifactId>kotlin-test-support</artifactId>
     <name>Instancio Tests: Kotlin Test Support</name>
 
     <properties>
         <!-- No report covers this module -->
-        <sonar.coverage.jacoco.xmlReportPaths/>
+        <sonar.coverage.jacoco.xmlReportPaths />
         <failIfNoTests>false</failIfNoTests>
     </properties>
 </project>
