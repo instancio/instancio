@@ -17,8 +17,9 @@ package org.instancio.test.support.pojo.containers;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jspecify.annotations.Nullable;
 
-public final class OptionalLike<T> {
+public final class OptionalLike<T extends @Nullable Object> {
 
     private final T object;
 
@@ -26,7 +27,7 @@ public final class OptionalLike<T> {
         this.object = object;
     }
 
-    public static <T> OptionalLike<T> of(final T object) {
+    public static <T extends @Nullable Object> OptionalLike<T> of(final T object) {
         return new OptionalLike<>(object);
     }
 
