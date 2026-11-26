@@ -12,7 +12,7 @@
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
-        <version.jooq>3.21.9</version.jooq>
+        <version.jooq>3.21.10</version.jooq>
     </properties>
 
     <build>
